@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var apiEngine = require('dme');
+var config = require("./config");
 
 var app = module.exports =  express();
 
@@ -28,9 +29,12 @@ app.use(logger('dev'));
 
 //expose the config file to the request objects
 app.use(function(req,res,next){
-	req.config=app.config;
-	req.dataModel = app.dataModel;
-	next();
+        req.config=config;
+        if (config.get('production')){
+                req.production = true;
+        }
+        req.dataModel = app.dataModel;
+        next();
 });
 
 //app.use(bodyParser.json());

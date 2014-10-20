@@ -1,7 +1,7 @@
 define([
 	"dojo/_base/declare","dijit/_WidgetBase","dojo/on","dijit/layout/BorderContainer",
 	"dojo/dom-class", "dojo/store/Memory",
-	"dijit/tree/ObjectStoreModel", "dijit/layout/ContentPane",
+	"dijit/tree/ObjectStoreModel", "dijit/layout/ContentPane"
 
 ], function(
 	declare, WidgetBase, on,BorderContainer,

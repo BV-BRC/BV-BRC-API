@@ -132,11 +132,12 @@ define([
 
 		updateWorkspaceHeaderGroups: function(){
 			if (!this.currentWorkspace || !this.currentWorkspace.items) { return; }
+			/*
 			this.currentWorkspace.items.forEach(function(item){
 				console.log("items: ", item);
 				if (item.itemType=="group") {
 					if  (item.id && !this.headerGroupNodes[item.id]) {
-						console.log("item.id: ", item.id, item.itemData);
+						//console.log("item.id: ", item.id, item.itemData);
 						this.headerGroupNodes[item.id] = new WorkspaceGroupButton({class:"", text: item.name + " (" + ((item&&item.itemData)?item.itemData.length:0)+ ") ", data: item.itemData}).placeAt(this.groupsContainer);
 					}else{
 						this.headerGroupNodes[item.id].set('text', item.name + " (" + item.itemData.length +  ") ");
@@ -144,6 +145,7 @@ define([
 					}
 				}
 			},this);
+			*/
 		},
 
 		updateWorkspaceHeader: function(){

@@ -50,10 +50,28 @@ var profile = {
 		{ 
 			name: "dbind", 
 			location: "./dbind"
+		},
+		{ 
+			name: "rql", 
+			location: "./rql"
 		}
+	
 	], 
 
 	layers: {             
+                "cid/layer/p3api": {
+                        include: [
+				"cid/widget/WorkspaceManager", 
+				"cid/widget/PatricHeader",
+				"cid/widget/BorderContainer",
+				"cid/app/apiexplorer",
+                                "put-selector/put",
+                                "dijit/_base",
+                                "dijit/form/ComboButton",
+                                "dijit/form/RadioButton",
+                                "dijit/CheckedMenuItem"
+                        ]
+                },
 	}
 };
 
