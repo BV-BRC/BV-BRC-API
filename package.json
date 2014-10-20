@@ -15,6 +15,7 @@
     "ejs": "~0.8.5",
     "nconf": "~0.6.9",
     "dojo-declare": "0.0.1",
-    "promised-io": "~0.3.4"
+    "promised-io": "~0.3.4",
+    "dme": "~2.0.2"
   }
 }
