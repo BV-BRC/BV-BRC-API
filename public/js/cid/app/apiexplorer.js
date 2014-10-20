@@ -4,7 +4,7 @@ define([
 	"dijit/registry","dojo/request",
 	"dojo/_base/Deferred","../widget/GlobalSearch",
 	"cid/widget/Grid","dojo/store/JsonRest",
-	"dojo/ready","./App"
+	"dojo/ready","./app"
 ],function(
 	declare,
 	Topic,on,dom,domClass,domAttr,domConstruct,

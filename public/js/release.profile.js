@@ -50,7 +50,12 @@ var profile = {
 		{ 
 			name: "dbind", 
 			location: "./dbind"
+		},
+		{ 
+			name: "rql", 
+			location: "./rql"
 		}
+	
 	], 
 
 	layers: {             
@@ -60,7 +65,6 @@ var profile = {
 				"cid/widget/PatricHeader",
 				"cid/widget/BorderContainer",
 				"cid/app/apiexplorer",
-                                "cid/api/apiserver",
                                 "put-selector/put",
                                 "dijit/_base",
                                 "dijit/form/ComboButton",

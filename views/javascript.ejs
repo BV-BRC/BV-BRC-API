@@ -1,30 +1,27 @@
-		<script>
-			var dojoConfig = {
-				parseOnLoad: false
-			}
-		</script>
-		<% if (request&&request.production){ %>
-		<!-- <script src="/js/release/current/dojo/dojo.js"></script> -->
-		<script>
-		//	require(["mhis/layer/PatientUI"], function(){
-		//		require(["mhis/PatientUI"],function(App){
-		//			window.app = new App({
-		//				loggedIn:'<%= request.user.id||request.remoteUser %>',
-		//				production: true
-		//			});
-		//		});
-		//	});
-		<% } else { %>
-		<script src="/js/dojo/dojo.js"></script> 
-			<script>
 
+                <script>
+                        var dojoConfig = {
+                                parseOnLoad: false
+                        }
+                </script>
+                <% if (request&&request.production){ %>
+                        <script src="/js/release/dojo/dojo.js"></script>
+                        <script>
+                        require(["cid/layer/p3api"], function(){
+                <% } else { %>
+                        <script src="/js/dojo/dojo.js"></script>
+                        <script>
+                <% } %>
 
-			require(["cid/widget/WorkspaceManager", "cid/widget/PatricHeader","cid/widget/BorderContainer","cid/app/apiexplorer"],function(WorkspaceManager, PatricHeader,BorderContainer,App){
-				new App({
-					launchGridColumns:<%- JSON.stringify(Object.keys(results.results[0])) %>
-				});
+                        require(["cid/widget/WorkspaceManager", "cid/widget/PatricHeader","cid/widget/BorderContainer","cid/app/apiexplorer"],function(WorkspaceManager, PatricHeader,BorderContainer,App){
+                                new App({
+                                        launchGridColumns:<%- JSON.stringify(Object.keys(results.results[0])) %>
+                                });
 
-			});
-		<% } %>
-		</script>
+                        });
+                <% if (request&&request.production){ %>
+                        });
+                <% } %>
+                </script>
+
 

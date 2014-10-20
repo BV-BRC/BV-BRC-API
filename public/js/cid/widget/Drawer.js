@@ -1,11 +1,11 @@
 define([
 	"dojo/_base/declare","dijit/_WidgetBase","dojo/on",
 	"dojo/dom-class","dijit/_WidgetsInTemplateMixin",
-	"dijit/_TemplatedMixin","dojo/dom-class","dojo/topic"
+	"dijit/_TemplatedMixin","dojo/topic"
 ],function(
 	declare, WidgetBase, on,
 	domClass,WiT,
-	Templated,domClass,Topic
+	Templated,Topic
 ){
 	return declare([WidgetBase,Templated], {
 		templateString: "<div class='Drawer'><div data-dojo-attach-event='click:toggle' class='handle'><div>${title}</div></div><div data-dojo-attach-point='panelContainer' class='PanelContainer'></div></div>",
