@@ -54,6 +54,20 @@ var profile = {
 	], 
 
 	layers: {             
+                "cid/layer/p3api": {
+                        include: [
+				"cid/widget/WorkspaceManager", 
+				"cid/widget/PatricHeader",
+				"cid/widget/BorderContainer",
+				"cid/app/apiexplorer",
+                                "cid/api/apiserver",
+                                "put-selector/put",
+                                "dijit/_base",
+                                "dijit/form/ComboButton",
+                                "dijit/form/RadioButton",
+                                "dijit/CheckedMenuItem"
+                        ]
+                },
 	}
 };
 
