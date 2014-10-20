@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+	<div style="text-align: right;">
+		Matching Documents: <%= results.metadata.totalCount %>
+	</div>
+	<table style="width:100%">
+		<tbody>
+			<tr>
+				<% var keys = Object.keys(results.results[0]); %>
+
+				<% keys.forEach(function(key){ %>	
+					<th style="text-align:left;text-transform:uppercase;border-bottom:1px solid gray;"><%= key  %></th>
+				<% }) %>
+			</tr>
+	
+	<% results.results.forEach(function(res) { %>
+			<tr>
+				<% keys.forEach(function(key){ %>	
+						<% if (res[key] instanceof Array) { %>
+					<td style="overflow:hidden;vertical-align:top;">
+							<%= res[key].join(" \n") %>
+						<% } else { %>
+					<td style="white-space:nowrap;overflow:hidden;vertical-align:top;">
+							<%= res[key] || "" %>
+						<% } %>
+					</td>
+				<% }) %>
+			</tr>
+	<% }) %>
+		</tbody>
+	</table>
+  </body>
+</html>
+

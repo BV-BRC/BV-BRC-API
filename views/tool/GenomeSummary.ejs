@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<% include ../header %>	
+	</head>
+	<body class="claro patric">
+		<div id="ApplicationContainer" data-dojo-type="cid/widget/BorderContainer" class="layoutContainer" data-dojo-props="id:'ApplicationContainer',gutters:false">
+			<% include ../patricheader %>
+			<% include ../toolbar %>
+			<div data-dojo-type="<%= results.toolClassName %>" data-dojo-props="region:'center',apiServer:'http://<%= request.settings.APIService.hostname + "." + request.settings.serviceDomain + ":" +request.settings.APIService.port %>'">
+			</div>
+			<% include ../footer %> 
+		</div>
+		<% include ../javascript %>
+	</body>
+</html>

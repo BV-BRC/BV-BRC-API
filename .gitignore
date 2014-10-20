@@ -1,0 +1,7 @@
+public/js/*.bak
+node_modules/*
+log/*
+run/*
+*.swp
+dump.rdb
+p3api.conf

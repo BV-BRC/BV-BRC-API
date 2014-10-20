@@ -1,0 +1,132 @@
+@import url("../../dijit/themes/claro/claro.css");
+@import url("Footer.css");
+@import url("HeaderBar.css");
+@import url("Toolbar.css");
+@import url("icons.css");
+@import url("slideshow.css");
+@import url("WordCloud.css");
+@import url("taxon.css");
+@import url("Drawer.css");
+@import url("Workspace.css");
+@import url("grids.css");
+
+html, body,
+body.patric {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    font-family: arial;
+    background: #efefef;
+
+
+}
+
+.patric table {
+	border-spacing:0px;
+	border-collapse: collapse;
+}
+
+.MainContent {
+	padding:0px;
+	padding-top: 0px;	
+	padding-bottom: 25px;
+	overflow: auto;
+	z-index: 50;
+}
+
+.patric A,
+.patric A:visited,
+.patric A:hover {
+	text-decoration: none;
+	color: inherit;
+}
+
+
+.patric A:hover {
+	color: green;
+}
+
+
+.wideLayer,
+.layer {
+	display: block;
+	width: 1024px;
+	margin-top:0px;
+	margin-bottom:0px;
+	margin-left: auto;
+	margin-right: auto;
+	padding-top: 5px;
+	background: #fff;
+}
+
+.wideLayer {
+	width: 100%;
+}
+
+.PatricFeaturesColumn {
+	width: 375px;
+	padding: 4px;
+	font-size: .75em;
+	color: #333;
+	text-align: left;
+	vertical-align: top;
+}
+.PatricFeaturesColumn label {
+	font-weight: 900;
+	margin:0px;
+}
+
+
+.PatricFeaturesLabel {
+background: -moz-linear-gradient(left,  rgba(24,68,104,0) 0%, rgba(24,68,104,0.65) 95%, rgba(24,68,104,0.65) 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(24,68,104,0)), color-stop(95%,rgba(24,68,104,0.65)), color-stop(100%,rgba(24,68,104,0.65))); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(left,  rgba(24,68,104,0) 0%,rgba(24,68,104,0.65) 95%,rgba(24,68,104,0.65) 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(left,  rgba(24,68,104,0) 0%,rgba(24,68,104,0.65) 95%,rgba(24,68,104,0.65) 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(left,  rgba(24,68,104,0) 0%,rgba(24,68,104,0.65) 95%,rgba(24,68,104,0.65) 100%); /* IE10+ */
+background: linear-gradient(to right,  rgba(24,68,104,0) 0%,rgba(24,68,104,0.65) 95%,rgba(24,68,104,0.65) 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00184468', endColorstr='#a6184468',GradientType=1 ); /* IE6-9 */
+font-weight: 900;	
+	padding:4px;
+	margin-top:0px;
+	
+}
+
+.layoutContainer {
+	width: 100%;
+	height: 100%;
+	margin:0px;
+	padding:0px;
+	overflow: hidden;
+}
+
+.sidebarColumn {
+	padding: 4px;
+	overflow-x: visible;	
+}
+
+.sidebarSection {
+	width: 100%;
+	background: #dedede;
+}
+
+.leftColumn {
+	display: inline-block;
+	width: 800px;
+	padding-top: 0px;
+}
+
+.rightColumn {
+	width: 220px;
+	vertical-align: top;
+	float:right;
+	padding-top: 0px;
+}
+
+.patric .PatricTool.dijitTabContainer{
+	margin:8px;
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-bottom: 4px;
+}
+
