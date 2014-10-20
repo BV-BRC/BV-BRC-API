@@ -10,7 +10,7 @@ var defer= require("promised-io/promise").defer;
 
 module.exports = declare([Restrictive], {
 	query: function(query /*string*/,opts /*object*/ /*exposed*/){
-		query += "&eq(public,true)";
+		//query += "&eq(public,true)";
 		debug("Public Facet Query: ", query);
 		return this.model.query(query,opts);	
 	},
