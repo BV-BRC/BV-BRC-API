@@ -16,9 +16,32 @@ define([
 	return declare([App], {
 		launchGridColumns: null,
 
+		getGlobalSearchBox: function(){
+			if (this.globalSearchBox) {
+				return this.globalSearchBox;
+			}
+			return Registry.byId("GlobalSearchBox");
+		},
 		startup: function(){
 			this.inherited(arguments);
+
+			var gsb = this.getGlobalSearchBox();
+
+			console.log("Global Search Box: ", gsb);
+
+			if (gsb){
+				var query = window.location.search;
+				var path = window.location.pathname;
+				console.log("Path: ", path, "Query: ", query);
+				query = (decodeURIComponent((query && query.charAt(0)=="?")?query.substr(1):query)).replace(/\&/g," ");
+				if (!path) {
+					console.log("setup global dataTypes");
+				}
+				gsb.set('value', query, false);
+			}
+
 			if (this.launchGridColumns) {	
+				console.log("Launch Grid Columns: ", this.launchGridColuns);
 				var store = new JsonRest({
 					target: window.location.pathname,
 					idProperty:'feature_id',
@@ -30,15 +53,20 @@ define([
 				});
 
 				var grid = new Grid({
+					region: "center",
 					columns: this.launchGridColumns.map(function(col){
 						return { label: col.toUpperCase(), field: col }
 					}),
 					store:store,
 					query: window.location.search
 				})
-				domConstruct.place(grid.domNode, this.getCurrentContainer().containerNode, "last");
-				grid.startup();	
-				this.getApplicationContainer().layout();
+
+				//domConstruct.place(grid.domNode, this.getCurrentContainer().containerNode, "last");
+				var ac = this.getApplicationContainer();
+				ac.removeChild(this.getCurrentContainer());
+				ac.addChild(grid);
+//				grid.startup();	
+//				this.getApplicationContainer().layout();
 			}
 		}
 	});

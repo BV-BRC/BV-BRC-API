@@ -15,8 +15,17 @@ define([
 		},
 		"baseClass": "GlobalSearch",
 		"disabled":false,
+		"value": "",
+		_setValueAttr: function(q){
+			this.query=q;	
+			this.searchInput.set("value", q);
+		},
 		onInputChange: function(val){
-			console.log("New Search Value",val);
+			val = val.replace(/\ /g, "&");
+			var dest = window.location.pathname + "?" + val;
+			console.log("New Search Value",val,dest );
+			Topic.publish("/navigate", {href: dest, set: "query", value: "?"+val});
+			
 		}
 	});
 });

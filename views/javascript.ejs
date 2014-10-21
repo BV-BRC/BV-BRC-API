@@ -14,9 +14,14 @@
                 <% } %>
 
                         require(["cid/widget/WorkspaceManager", "cid/widget/PatricHeader","cid/widget/BorderContainer","cid/app/apiexplorer"],function(WorkspaceManager, PatricHeader,BorderContainer,App){
-                                new App({
-                                        launchGridColumns:<%- JSON.stringify(Object.keys(results.results[0])) %>
-                                });
+
+			var appOpts={}
+
+			<% if (results && results.results && results.results[0]) { %>
+				appOpts.launchGridColumns=<%- JSON.stringify(Object.keys(results.results[0])) %>;
+			<% } %>
+
+                                app = new App(appOpts);
 
                         });
                 <% if (request&&request.production){ %>
