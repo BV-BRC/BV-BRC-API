@@ -1,15 +1,15 @@
 require({cache:{
-'url:cid/widget/templates/GlobalSearch.html':"<div class=\"GlobalSearch\">\n\t<input data-dojo-type=\"dijit/form/Textbox\" data-dojo-attach-event=\"onChange:onInputChange\" data-dojo-attach-point=\"searchInput\" style=\"width:100%\"/>\n</div>\n"}});
+'url:cid/widget/templates/GlobalSearch.html':"<div class=\"GlobalSearch\">\n\t<input data-dojo-type=\"dijit/form/TextBox\" data-dojo-attach-event=\"onChange:onInputChange\" data-dojo-attach-point=\"searchInput\" style=\"width:100%\"/>\n</div>\n"}});
 define("cid/widget/GlobalSearch", [
 	"dojo/_base/declare","dijit/_WidgetBase","dojo/on","dojo/dom-construct",
 	"dojo/dom-class","dijit/_TemplatedMixin","dijit/_WidgetsInTemplateMixin",
 	"dojo/text!./templates/GlobalSearch.html","./Button","dijit/registry","dojo/_base/lang",
-	"dojo/dom","dojo/topic"
+	"dojo/dom","dojo/topic","dijit/form/TextBox"
 ], function(
 	declare, WidgetBase, on,domConstruct,
 	domClass,Templated,WidgetsInTemplate,
 	template,Button,Registry,lang,
-	dom,Topic
+	dom,Topic,TextBox
 ){
 	return declare([WidgetBase,Templated,WidgetsInTemplate], {
 		templateString: template,

@@ -69,7 +69,12 @@ var profile = {
                                 "dijit/_base",
                                 "dijit/form/ComboButton",
                                 "dijit/form/RadioButton",
-                                "dijit/CheckedMenuItem"
+                                "dijit/CheckedMenuItem",
+				"dojo/dnd/AutoSource",
+				"dijit/TooltipDialog",
+				"dijit/PopupMenuItem",
+				"dijit/MenuSeparator"
+
                         ]
                 },
 	}
