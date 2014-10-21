@@ -2,12 +2,12 @@ define([
 	"dojo/_base/declare","dijit/_WidgetBase","dojo/on","dojo/dom-construct",
 	"dojo/dom-class","dijit/_TemplatedMixin","dijit/_WidgetsInTemplateMixin",
 	"dojo/text!./templates/GlobalSearch.html","./Button","dijit/registry","dojo/_base/lang",
-	"dojo/dom","dojo/topic"
+	"dojo/dom","dojo/topic","dijit/form/TextBox"
 ], function(
 	declare, WidgetBase, on,domConstruct,
 	domClass,Templated,WidgetsInTemplate,
 	template,Button,Registry,lang,
-	dom,Topic
+	dom,Topic,TextBox
 ){
 	return declare([WidgetBase,Templated,WidgetsInTemplate], {
 		templateString: template,

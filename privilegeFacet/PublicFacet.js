@@ -16,12 +16,16 @@ module.exports = declare([Restrictive], {
 	},
 
 	get: function(id /*string*/, opts /*object*/ /*exposed*/){
+
+		/*
 		return when(this.model.get(id,opts), function(obj){
 			if (!obj.public){
 				throw new Error("Not Allowed");	
 			}
 			return obj;
 		});
+		*/
+		return this.model.get(id,opts);
 	},
 
 	properties: "*"

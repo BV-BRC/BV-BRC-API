@@ -14675,12 +14675,12 @@ define([
 	"dojo/_base/declare","dijit/_WidgetBase","dojo/on","dojo/dom-construct",
 	"dojo/dom-class","dijit/_TemplatedMixin","dijit/_WidgetsInTemplateMixin",
 	"dojo/text!./templates/GlobalSearch.html","./Button","dijit/registry","dojo/_base/lang",
-	"dojo/dom","dojo/topic"
+	"dojo/dom","dojo/topic","dijit/form/TextBox"
 ], function(
 	declare, WidgetBase, on,domConstruct,
 	domClass,Templated,WidgetsInTemplate,
 	template,Button,Registry,lang,
-	dom,Topic
+	dom,Topic,TextBox
 ){
 	return declare([WidgetBase,Templated,WidgetsInTemplate], {
 		templateString: template,
@@ -14807,6 +14807,1146 @@ define([
 			this.inherited(arguments);
 		}
 	});
+});
+
+},
+'dijit/form/TextBox':function(){
+define([
+	"dojo/_base/declare", // declare
+	"dojo/dom-construct", // domConstruct.create
+	"dojo/dom-style", // domStyle.getComputedStyle
+	"dojo/_base/kernel", // kernel.deprecated
+	"dojo/_base/lang", // lang.hitch
+	"dojo/on",
+	"dojo/sniff", // has("ie") has("mozilla")
+	"./_FormValueWidget",
+	"./_TextBoxMixin",
+	"dojo/text!./templates/TextBox.html",
+	"../main"	// to export dijit._setSelectionRange, remove in 2.0
+], function(declare, domConstruct, domStyle, kernel, lang, on, has,
+			_FormValueWidget, _TextBoxMixin, template, dijit){
+
+	// module:
+	//		dijit/form/TextBox
+
+	var TextBox = declare("dijit.form.TextBox" + (has("dojo-bidi") ? "_NoBidi" : ""), [_FormValueWidget, _TextBoxMixin], {
+		// summary:
+		//		A base class for textbox form inputs
+
+		templateString: template,
+		_singleNodeTemplate: '<input class="dijit dijitReset dijitLeft dijitInputField" data-dojo-attach-point="textbox,focusNode" autocomplete="off" type="${type}" ${!nameAttrSetting} />',
+
+		_buttonInputDisabled: has("ie") ? "disabled" : "", // allows IE to disallow focus, but Firefox cannot be disabled for mousedown events
+
+		baseClass: "dijitTextBox",
+
+		postMixInProperties: function(){
+			var type = this.type.toLowerCase();
+			if(this.templateString && this.templateString.toLowerCase() == "input" || ((type == "hidden" || type == "file") && this.templateString == this.constructor.prototype.templateString)){
+				this.templateString = this._singleNodeTemplate;
+			}
+			this.inherited(arguments);
+		},
+
+		postCreate: function(){
+			this.inherited(arguments);
+
+			if(has("ie") < 9){
+				// IE INPUT tag fontFamily has to be set directly using STYLE
+				// the defer gives IE a chance to render the TextBox and to deal with font inheritance
+				this.defer(function(){
+					try{
+						var s = domStyle.getComputedStyle(this.domNode); // can throw an exception if widget is immediately destroyed
+						if(s){
+							var ff = s.fontFamily;
+							if(ff){
+								var inputs = this.domNode.getElementsByTagName("INPUT");
+								if(inputs){
+									for(var i=0; i < inputs.length; i++){
+										inputs[i].style.fontFamily = ff;
+									}
+								}
+							}
+						}
+					}catch(e){/*when used in a Dialog, and this is called before the dialog is
+					 shown, s.fontFamily would trigger "Invalid Argument" error.*/}
+				});
+			}
+		},
+
+		_setPlaceHolderAttr: function(v){
+			this._set("placeHolder", v);
+			if(!this._phspan){
+				this._attachPoints.push('_phspan');
+				this._phspan = domConstruct.create('span', {
+					// dijitInputField class gives placeHolder same padding as the input field
+					// parent node already has dijitInputField class but it doesn't affect this <span>
+					// since it's position: absolute.
+					className: 'dijitPlaceHolder dijitInputField'
+				}, this.textbox, 'after');
+				this.own(
+					on(this._phspan, "mousedown", function(evt){ evt.preventDefault(); }),
+					on(this._phspan, "touchend, pointerup, MSPointerUp", lang.hitch(this, function(){
+						// If the user clicks placeholder rather than the <input>, need programmatic focus.  Normally this
+						// is done in _FormWidgetMixin._onFocus() but after [30663] it's done on a delay, which is ineffective.
+						this.focus();
+					}))
+				);
+			}
+			this._phspan.innerHTML="";
+			this._phspan.appendChild(this._phspan.ownerDocument.createTextNode(v));
+			this._updatePlaceHolder();
+		},
+
+		_onInput: function(/*Event*/ evt){
+			// summary:
+			//		Called AFTER the input event has happened
+			//		See if the placeHolder text should be removed or added while editing.
+			this.inherited(arguments);
+			this._updatePlaceHolder();
+		},
+
+		_updatePlaceHolder: function(){
+			if(this._phspan){
+				this._phspan.style.display = (this.placeHolder && !this.textbox.value) ? "" : "none";
+			}
+		},
+
+		_setValueAttr: function(value, /*Boolean?*/ priorityChange, /*String?*/ formattedValue){
+			this.inherited(arguments);
+			this._updatePlaceHolder();
+		},
+
+		getDisplayedValue: function(){
+			// summary:
+			//		Deprecated.  Use get('displayedValue') instead.
+			// tags:
+			//		deprecated
+			kernel.deprecated(this.declaredClass+"::getDisplayedValue() is deprecated. Use get('displayedValue') instead.", "", "2.0");
+			return this.get('displayedValue');
+		},
+
+		setDisplayedValue: function(/*String*/ value){
+			// summary:
+			//		Deprecated.  Use set('displayedValue', ...) instead.
+			// tags:
+			//		deprecated
+			kernel.deprecated(this.declaredClass+"::setDisplayedValue() is deprecated. Use set('displayedValue', ...) instead.", "", "2.0");
+			this.set('displayedValue', value);
+		},
+
+		_onBlur: function(e){
+			if(this.disabled){ return; }
+			this.inherited(arguments);
+			this._updatePlaceHolder();
+
+			if(has("mozilla")){
+				if(this.selectOnClick){
+					// clear selection so that the next mouse click doesn't reselect
+					this.textbox.selectionStart = this.textbox.selectionEnd = undefined;
+				}
+			}
+		},
+
+		_onFocus: function(/*String*/ by){
+			if(this.disabled || this.readOnly){ return; }
+			this.inherited(arguments);
+			this._updatePlaceHolder();
+		}
+	});
+
+	if(has("ie") < 9){
+		TextBox.prototype._isTextSelected = function(){
+			var range = this.ownerDocument.selection.createRange();
+			var parent = range.parentElement();
+			return parent == this.textbox && range.text.length > 0;
+		};
+
+		// Overrides definition of _setSelectionRange from _TextBoxMixin (TODO: move to _TextBoxMixin.js?)
+		dijit._setSelectionRange = _TextBoxMixin._setSelectionRange = function(/*DomNode*/ element, /*Number?*/ start, /*Number?*/ stop){
+			if(element.createTextRange){
+				var r = element.createTextRange();
+				r.collapse(true);
+				r.moveStart("character", -99999); // move to 0
+				r.moveStart("character", start); // delta from 0 is the correct position
+				r.moveEnd("character", stop-start);
+				r.select();
+			}
+		}
+	}
+
+	if(has("dojo-bidi")){
+		TextBox = declare("dijit.form.TextBox", TextBox, {
+			_setPlaceHolderAttr: function(v){
+				this.inherited(arguments);
+				this.applyTextDir(this._phspan);
+			}
+		});
+	}
+
+	return TextBox;
+});
+
+},
+'dijit/form/_FormValueWidget':function(){
+define([
+	"dojo/_base/declare", // declare
+	"dojo/sniff", // has("ie")
+	"./_FormWidget",
+	"./_FormValueMixin"
+], function(declare, has, _FormWidget, _FormValueMixin){
+
+	// module:
+	//		dijit/form/_FormValueWidget
+
+	return declare("dijit.form._FormValueWidget", [_FormWidget, _FormValueMixin], {
+		// summary:
+		//		Base class for widgets corresponding to native HTML elements such as `<input>` or `<select>`
+		//		that have user changeable values.
+		// description:
+		//		Each _FormValueWidget represents a single input value, and has a (possibly hidden) `<input>` element,
+		//		to which it serializes it's input value, so that form submission (either normal submission or via FormBind?)
+		//		works as expected.
+
+		// Don't attempt to mixin the 'type', 'name' attributes here programatically -- they must be declared
+		// directly in the template as read by the parser in order to function. IE is known to specifically
+		// require the 'name' attribute at element creation time.  See #8484, #8660.
+
+		_layoutHackIE7: function(){
+			// summary:
+			//		Work around table sizing bugs on IE7 by forcing redraw
+
+			if(has("ie") == 7){ // fix IE7 layout bug when the widget is scrolled out of sight
+				var domNode = this.domNode;
+				var parent = domNode.parentNode;
+				var pingNode = domNode.firstChild || domNode; // target node most unlikely to have a custom filter
+				var origFilter = pingNode.style.filter; // save custom filter, most likely nothing
+				var _this = this;
+				while(parent && parent.clientHeight == 0){ // search for parents that haven't rendered yet
+					(function ping(){
+						var disconnectHandle = _this.connect(parent, "onscroll",
+							function(){
+								_this.disconnect(disconnectHandle); // only call once
+								pingNode.style.filter = (new Date()).getMilliseconds(); // set to anything that's unique
+								_this.defer(function(){
+									pingNode.style.filter = origFilter;
+								}); // restore custom filter, if any
+							}
+						);
+					})();
+					parent = parent.parentNode;
+				}
+			}
+		}
+	});
+});
+
+},
+'dijit/form/_FormWidget':function(){
+define([
+	"dojo/_base/declare", // declare
+	"dojo/sniff", // has("dijit-legacy-requires"), has("msapp")
+	"dojo/_base/kernel", // kernel.deprecated
+	"dojo/ready",
+	"../_Widget",
+	"../_CssStateMixin",
+	"../_TemplatedMixin",
+	"./_FormWidgetMixin"
+], function(declare, has, kernel, ready, _Widget, _CssStateMixin, _TemplatedMixin, _FormWidgetMixin){
+
+	// module:
+	//		dijit/form/_FormWidget
+
+	// Back compat w/1.6, remove for 2.0
+	if(has("dijit-legacy-requires")){
+		ready(0, function(){
+			var requires = ["dijit/form/_FormValueWidget"];
+			require(requires);	// use indirection so modules not rolled into a build
+		});
+	}
+
+	return declare("dijit.form._FormWidget", [_Widget, _TemplatedMixin, _CssStateMixin, _FormWidgetMixin], {
+		// summary:
+		//		Base class for widgets corresponding to native HTML elements such as `<checkbox>` or `<button>`,
+		//		which can be children of a `<form>` node or a `dijit/form/Form` widget.
+		//
+		// description:
+		//		Represents a single HTML element.
+		//		All these widgets should have these attributes just like native HTML input elements.
+		//		You can set them during widget construction or afterwards, via `dijit/_WidgetBase.set()`.
+		//
+		//		They also share some common methods.
+
+		setDisabled: function(/*Boolean*/ disabled){
+			// summary:
+			//		Deprecated.  Use set('disabled', ...) instead.
+			kernel.deprecated("setDisabled(" + disabled + ") is deprecated. Use set('disabled'," + disabled + ") instead.", "", "2.0");
+			this.set('disabled', disabled);
+		},
+
+		setValue: function(/*String*/ value){
+			// summary:
+			//		Deprecated.  Use set('value', ...) instead.
+			kernel.deprecated("dijit.form._FormWidget:setValue(" + value + ") is deprecated.  Use set('value'," + value + ") instead.", "", "2.0");
+			this.set('value', value);
+		},
+
+		getValue: function(){
+			// summary:
+			//		Deprecated.  Use get('value') instead.
+			kernel.deprecated(this.declaredClass + "::getValue() is deprecated. Use get('value') instead.", "", "2.0");
+			return this.get('value');
+		},
+
+		postMixInProperties: function(){
+			// Setup name=foo string to be referenced from the template (but only if a name has been specified).
+			// Unfortunately we can't use _setNameAttr to set the name in IE due to IE limitations, see #8484, #8660.
+			// But when IE6 and IE7 are desupported, then we probably don't need this anymore, so should remove it in 2.0.
+			// Also, don't do this for Windows 8 Store Apps because it causes a security exception (see #16452).
+			// Regarding escaping, see heading "Attribute values" in
+			// http://www.w3.org/TR/REC-html40/appendix/notes.html#h-B.3.2
+			this.nameAttrSetting = (this.name && !has("msapp")) ? ('name="' + this.name.replace(/"/g, "&quot;") + '"') : '';
+			this.inherited(arguments);
+		}
+	});
+});
+
+},
+'dijit/form/_FormWidgetMixin':function(){
+define([
+	"dojo/_base/array", // array.forEach
+	"dojo/_base/declare", // declare
+	"dojo/dom-attr", // domAttr.set
+	"dojo/dom-style", // domStyle.get
+	"dojo/_base/lang", // lang.hitch lang.isArray
+	"dojo/mouse", // mouse.isLeft
+	"dojo/on",
+	"dojo/sniff", // has("webkit")
+	"dojo/window", // winUtils.scrollIntoView
+	"../a11y"    // a11y.hasDefaultTabStop
+], function(array, declare, domAttr, domStyle, lang, mouse, on, has, winUtils, a11y){
+
+	// module:
+	//		dijit/form/_FormWidgetMixin
+
+	return declare("dijit.form._FormWidgetMixin", null, {
+		// summary:
+		//		Mixin for widgets corresponding to native HTML elements such as `<checkbox>` or `<button>`,
+		//		which can be children of a `<form>` node or a `dijit/form/Form` widget.
+		//
+		// description:
+		//		Represents a single HTML element.
+		//		All these widgets should have these attributes just like native HTML input elements.
+		//		You can set them during widget construction or afterwards, via `dijit/_WidgetBase.set()`.
+		//
+		//		They also share some common methods.
+
+		// name: [const] String
+		//		Name used when submitting form; same as "name" attribute or plain HTML elements
+		name: "",
+
+		// alt: String
+		//		Corresponds to the native HTML `<input>` element's attribute.
+		alt: "",
+
+		// value: String
+		//		Corresponds to the native HTML `<input>` element's attribute.
+		value: "",
+
+		// type: [const] String
+		//		Corresponds to the native HTML `<input>` element's attribute.
+		type: "text",
+
+		// type: String
+		//		Apply aria-label in markup to the widget's focusNode
+		"aria-label": "focusNode",
+
+		// tabIndex: String
+		//		Order fields are traversed when user hits the tab key
+		tabIndex: "0",
+		_setTabIndexAttr: "focusNode", // force copy even when tabIndex default value, needed since Button is <span>
+
+		// disabled: Boolean
+		//		Should this widget respond to user input?
+		//		In markup, this is specified as "disabled='disabled'", or just "disabled".
+		disabled: false,
+
+		// intermediateChanges: Boolean
+		//		Fires onChange for each value change or only on demand
+		intermediateChanges: false,
+
+		// scrollOnFocus: Boolean
+		//		On focus, should this widget scroll into view?
+		scrollOnFocus: true,
+
+		// Override _WidgetBase mapping id to this.domNode, needs to be on focusNode so <label> etc.
+		// works with screen reader
+		_setIdAttr: "focusNode",
+
+		_setDisabledAttr: function(/*Boolean*/ value){
+			this._set("disabled", value);
+			domAttr.set(this.focusNode, 'disabled', value);
+			if(this.valueNode){
+				domAttr.set(this.valueNode, 'disabled', value);
+			}
+			this.focusNode.setAttribute("aria-disabled", value ? "true" : "false");
+
+			if(value){
+				// reset these, because after the domNode is disabled, we can no longer receive
+				// mouse related events, see #4200
+				this._set("hovering", false);
+				this._set("active", false);
+
+				// clear tab stop(s) on this widget's focusable node(s)  (ComboBox has two focusable nodes)
+				var attachPointNames = "tabIndex" in this.attributeMap ? this.attributeMap.tabIndex :
+					("_setTabIndexAttr" in this) ? this._setTabIndexAttr : "focusNode";
+				array.forEach(lang.isArray(attachPointNames) ? attachPointNames : [attachPointNames], function(attachPointName){
+					var node = this[attachPointName];
+					// complex code because tabIndex=-1 on a <div> doesn't work on FF
+					if(has("webkit") || a11y.hasDefaultTabStop(node)){    // see #11064 about webkit bug
+						node.setAttribute('tabIndex', "-1");
+					}else{
+						node.removeAttribute('tabIndex');
+					}
+				}, this);
+			}else{
+				if(this.tabIndex != ""){
+					this.set('tabIndex', this.tabIndex);
+				}
+			}
+		},
+
+		_onFocus: function(/*String*/ by){
+			// If user clicks on the widget, even if the mouse is released outside of it,
+			// this widget's focusNode should get focus (to mimic native browser behavior).
+			// Browsers often need help to make sure the focus via mouse actually gets to the focusNode.
+			// TODO: consider removing all of this for 2.0 or sooner, see #16622 etc.
+			if(by == "mouse" && this.isFocusable()){
+				// IE exhibits strange scrolling behavior when refocusing a node so only do it when !focused.
+				var focusHandle = this.own(on(this.focusNode, "focus", function(){
+					mouseUpHandle.remove();
+					focusHandle.remove();
+				}))[0];
+				// Set a global event to handle mouseup, so it fires properly
+				// even if the cursor leaves this.domNode before the mouse up event.
+				var event = has("pointer-events") ? "pointerup" : has("MSPointer") ? "MSPointerUp" :
+					has("touch-events") ? "touchend, mouseup" :		// seems like overkill but see #16622, #16725
+					"mouseup";
+				var mouseUpHandle = this.own(on(this.ownerDocumentBody, event, lang.hitch(this, function(evt){
+					mouseUpHandle.remove();
+					focusHandle.remove();
+					// if here, then the mousedown did not focus the focusNode as the default action
+					if(this.focused){
+						if(evt.type == "touchend"){
+							this.defer("focus"); // native focus hasn't occurred yet
+						}else{
+							this.focus(); // native focus already occurred on mousedown
+						}
+					}
+				})))[0];
+			}
+			if(this.scrollOnFocus){
+				this.defer(function(){
+					winUtils.scrollIntoView(this.domNode);
+				}); // without defer, the input caret position can change on mouse click
+			}
+			this.inherited(arguments);
+		},
+
+		isFocusable: function(){
+			// summary:
+			//		Tells if this widget is focusable or not.  Used internally by dijit.
+			// tags:
+			//		protected
+			return !this.disabled && this.focusNode && (domStyle.get(this.domNode, "display") != "none");
+		},
+
+		focus: function(){
+			// summary:
+			//		Put focus on this widget
+			if(!this.disabled && this.focusNode.focus){
+				try{
+					this.focusNode.focus();
+				}catch(e){
+				}
+				/*squelch errors from hidden nodes*/
+			}
+		},
+
+		compare: function(/*anything*/ val1, /*anything*/ val2){
+			// summary:
+			//		Compare 2 values (as returned by get('value') for this widget).
+			// tags:
+			//		protected
+			if(typeof val1 == "number" && typeof val2 == "number"){
+				return (isNaN(val1) && isNaN(val2)) ? 0 : val1 - val2;
+			}else if(val1 > val2){
+				return 1;
+			}else if(val1 < val2){
+				return -1;
+			}else{
+				return 0;
+			}
+		},
+
+		onChange: function(/*===== newValue =====*/){
+			// summary:
+			//		Callback when this widget's value is changed.
+			// tags:
+			//		callback
+		},
+
+		// _onChangeActive: [private] Boolean
+		//		Indicates that changes to the value should call onChange() callback.
+		//		This is false during widget initialization, to avoid calling onChange()
+		//		when the initial value is set.
+		_onChangeActive: false,
+
+		_handleOnChange: function(/*anything*/ newValue, /*Boolean?*/ priorityChange){
+			// summary:
+			//		Called when the value of the widget is set.  Calls onChange() if appropriate
+			// newValue:
+			//		the new value
+			// priorityChange:
+			//		For a slider, for example, dragging the slider is priorityChange==false,
+			//		but on mouse up, it's priorityChange==true.  If intermediateChanges==false,
+			//		onChange is only called form priorityChange=true events.
+			// tags:
+			//		private
+			if(this._lastValueReported == undefined && (priorityChange === null || !this._onChangeActive)){
+				// this block executes not for a change, but during initialization,
+				// and is used to store away the original value (or for ToggleButton, the original checked state)
+				this._resetValue = this._lastValueReported = newValue;
+			}
+			this._pendingOnChange = this._pendingOnChange
+				|| (typeof newValue != typeof this._lastValueReported)
+				|| (this.compare(newValue, this._lastValueReported) != 0);
+			if((this.intermediateChanges || priorityChange || priorityChange === undefined) && this._pendingOnChange){
+				this._lastValueReported = newValue;
+				this._pendingOnChange = false;
+				if(this._onChangeActive){
+					if(this._onChangeHandle){
+						this._onChangeHandle.remove();
+					}
+					// defer allows hidden value processing to run and
+					// also the onChange handler can safely adjust focus, etc
+					this._onChangeHandle = this.defer(
+						function(){
+							this._onChangeHandle = null;
+							this.onChange(newValue);
+						}); // try to collapse multiple onChange's fired faster than can be processed
+				}
+			}
+		},
+
+		create: function(){
+			// Overrides _Widget.create()
+			this.inherited(arguments);
+			this._onChangeActive = true;
+		},
+
+		destroy: function(){
+			if(this._onChangeHandle){ // destroy called before last onChange has fired
+				this._onChangeHandle.remove();
+				this.onChange(this._lastValueReported);
+			}
+			this.inherited(arguments);
+		}
+	});
+});
+
+},
+'dijit/form/_FormValueMixin':function(){
+define([
+	"dojo/_base/declare", // declare
+	"dojo/dom-attr", // domAttr.set
+	"dojo/keys", // keys.ESCAPE
+	"dojo/_base/lang",
+	"dojo/on",
+	"./_FormWidgetMixin"
+], function(declare, domAttr, keys, lang, on, _FormWidgetMixin){
+
+	// module:
+	//		dijit/form/_FormValueMixin
+
+	return declare("dijit.form._FormValueMixin", _FormWidgetMixin, {
+		// summary:
+		//		Mixin for widgets corresponding to native HTML elements such as `<input>` or `<select>`
+		//		that have user changeable values.
+		// description:
+		//		Each _FormValueMixin represents a single input value, and has a (possibly hidden) `<input>` element,
+		//		to which it serializes it's input value, so that form submission (either normal submission or via FormBind?)
+		//		works as expected.
+
+		// readOnly: Boolean
+		//		Should this widget respond to user input?
+		//		In markup, this is specified as "readOnly".
+		//		Similar to disabled except readOnly form values are submitted.
+		readOnly: false,
+
+		_setReadOnlyAttr: function(/*Boolean*/ value){
+			domAttr.set(this.focusNode, 'readOnly', value);
+			this._set("readOnly", value);
+		},
+
+		postCreate: function(){
+			this.inherited(arguments);
+
+			// Update our reset value if it hasn't yet been set (because this.set()
+			// is only called when there *is* a value)
+			if(this._resetValue === undefined){
+				this._lastValueReported = this._resetValue = this.value;
+			}
+		},
+
+		_setValueAttr: function(/*anything*/ newValue, /*Boolean?*/ priorityChange){
+			// summary:
+			//		Hook so set('value', value) works.
+			// description:
+			//		Sets the value of the widget.
+			//		If the value has changed, then fire onChange event, unless priorityChange
+			//		is specified as null (or false?)
+			this._handleOnChange(newValue, priorityChange);
+		},
+
+		_handleOnChange: function(/*anything*/ newValue, /*Boolean?*/ priorityChange){
+			// summary:
+			//		Called when the value of the widget has changed.  Saves the new value in this.value,
+			//		and calls onChange() if appropriate.   See _FormWidget._handleOnChange() for details.
+			this._set("value", newValue);
+			this.inherited(arguments);
+		},
+
+		undo: function(){
+			// summary:
+			//		Restore the value to the last value passed to onChange
+			this._setValueAttr(this._lastValueReported, false);
+		},
+
+		reset: function(){
+			// summary:
+			//		Reset the widget's value to what it was at initialization time
+			this._hasBeenBlurred = false;
+			this._setValueAttr(this._resetValue, true);
+		}
+	});
+});
+
+},
+'dijit/form/_TextBoxMixin':function(){
+define([
+	"dojo/_base/array", // array.forEach
+	"dojo/_base/declare", // declare
+	"dojo/dom", // dom.byId
+	"dojo/has",
+	"dojo/keys", // keys.ALT keys.CAPS_LOCK keys.CTRL keys.META keys.SHIFT
+	"dojo/_base/lang", // lang.mixin
+	"dojo/on", // on
+	"../main"    // for exporting dijit._setSelectionRange, dijit.selectInputText
+], function(array, declare, dom, has, keys, lang, on, dijit){
+
+	// module:
+	//		dijit/form/_TextBoxMixin
+
+	var _TextBoxMixin = declare("dijit.form._TextBoxMixin" + (has("dojo-bidi") ? "_NoBidi" : ""), null, {
+		// summary:
+		//		A mixin for textbox form input widgets
+
+		// trim: Boolean
+		//		Removes leading and trailing whitespace if true.  Default is false.
+		trim: false,
+
+		// uppercase: Boolean
+		//		Converts all characters to uppercase if true.  Default is false.
+		uppercase: false,
+
+		// lowercase: Boolean
+		//		Converts all characters to lowercase if true.  Default is false.
+		lowercase: false,
+
+		// propercase: Boolean
+		//		Converts the first character of each word to uppercase if true.
+		propercase: false,
+
+		// maxLength: String
+		//		HTML INPUT tag maxLength declaration.
+		maxLength: "",
+
+		// selectOnClick: [const] Boolean
+		//		If true, all text will be selected when focused with mouse
+		selectOnClick: false,
+
+		// placeHolder: String
+		//		Defines a hint to help users fill out the input field (as defined in HTML 5).
+		//		This should only contain plain text (no html markup).
+		placeHolder: "",
+
+		_getValueAttr: function(){
+			// summary:
+			//		Hook so get('value') works as we like.
+			// description:
+			//		For `dijit/form/TextBox` this basically returns the value of the `<input>`.
+			//
+			//		For `dijit/form/MappedTextBox` subclasses, which have both
+			//		a "displayed value" and a separate "submit value",
+			//		This treats the "displayed value" as the master value, computing the
+			//		submit value from it via this.parse().
+			return this.parse(this.get('displayedValue'), this.constraints);
+		},
+
+		_setValueAttr: function(value, /*Boolean?*/ priorityChange, /*String?*/ formattedValue){
+			// summary:
+			//		Hook so set('value', ...) works.
+			//
+			// description:
+			//		Sets the value of the widget to "value" which can be of
+			//		any type as determined by the widget.
+			//
+			// value:
+			//		The visual element value is also set to a corresponding,
+			//		but not necessarily the same, value.
+			//
+			// formattedValue:
+			//		If specified, used to set the visual element value,
+			//		otherwise a computed visual value is used.
+			//
+			// priorityChange:
+			//		If true, an onChange event is fired immediately instead of
+			//		waiting for the next blur event.
+
+			var filteredValue;
+			if(value !== undefined){
+				// TODO: this is calling filter() on both the display value and the actual value.
+				// I added a comment to the filter() definition about this, but it should be changed.
+				filteredValue = this.filter(value);
+				if(typeof formattedValue != "string"){
+					if(filteredValue !== null && ((typeof filteredValue != "number") || !isNaN(filteredValue))){
+						formattedValue = this.filter(this.format(filteredValue, this.constraints));
+					}else{
+						formattedValue = '';
+					}
+					// Ensure the filtered value does not change after being formatted. See track #17955.
+					//
+					// This check is only applied when the formatted value is not specified by the caller in order to allow the 
+					// behavior to be overriden. This is needed whenever value synonyms cannot be determined using parse/compare. For
+					// example, dijit/form/FilteringSelect determines the formatted value asynchronously and applies it using a 
+					// callback to this method.
+					//
+					// TODO: Should developers be warned that they broke the round trip on format?
+					if (this.compare(filteredValue, this.filter(this.parse(formattedValue, this.constraints))) != 0){
+						formattedValue = null;
+					}
+				}
+			}
+			if(formattedValue != null /* and !undefined */ && ((typeof formattedValue) != "number" || !isNaN(formattedValue)) && this.textbox.value != formattedValue){
+				this.textbox.value = formattedValue;
+				this._set("displayedValue", this.get("displayedValue"));
+			}
+
+			this.inherited(arguments, [filteredValue, priorityChange]);
+		},
+
+		// displayedValue: String
+		//		For subclasses like ComboBox where the displayed value
+		//		(ex: Kentucky) and the serialized value (ex: KY) are different,
+		//		this represents the displayed value.
+		//
+		//		Setting 'displayedValue' through set('displayedValue', ...)
+		//		updates 'value', and vice-versa.  Otherwise 'value' is updated
+		//		from 'displayedValue' periodically, like onBlur etc.
+		//
+		//		TODO: move declaration to MappedTextBox?
+		//		Problem is that ComboBox references displayedValue,
+		//		for benefit of FilteringSelect.
+		displayedValue: "",
+
+		_getDisplayedValueAttr: function(){
+			// summary:
+			//		Hook so get('displayedValue') works.
+			// description:
+			//		Returns the displayed value (what the user sees on the screen),
+			//		after filtering (ie, trimming spaces etc.).
+			//
+			//		For some subclasses of TextBox (like ComboBox), the displayed value
+			//		is different from the serialized value that's actually
+			//		sent to the server (see `dijit/form/ValidationTextBox.serialize()`)
+
+			// TODO: maybe we should update this.displayedValue on every keystroke so that we don't need
+			// this method
+			// TODO: this isn't really the displayed value when the user is typing
+			return this.filter(this.textbox.value);
+		},
+
+		_setDisplayedValueAttr: function(/*String*/ value){
+			// summary:
+			//		Hook so set('displayedValue', ...) works.
+			// description:
+			//		Sets the value of the visual element to the string "value".
+			//		The widget value is also set to a corresponding,
+			//		but not necessarily the same, value.
+
+			if(value == null /* or undefined */){
+				value = ''
+			}
+			else if(typeof value != "string"){
+				value = String(value)
+			}
+
+			this.textbox.value = value;
+
+			// sets the serialized value to something corresponding to specified displayedValue
+			// (if possible), and also updates the textbox.value, for example converting "123"
+			// to "123.00"
+			this._setValueAttr(this.get('value'), undefined);
+
+			this._set("displayedValue", this.get('displayedValue'));
+		},
+
+		format: function(value /*=====, constraints =====*/){
+			// summary:
+			//		Replaceable function to convert a value to a properly formatted string.
+			// value: String
+			// constraints: Object
+			// tags:
+			//		protected extension
+			return value == null /* or undefined */ ? "" : (value.toString ? value.toString() : value);
+		},
+
+		parse: function(value /*=====, constraints =====*/){
+			// summary:
+			//		Replaceable function to convert a formatted string to a value
+			// value: String
+			// constraints: Object
+			// tags:
+			//		protected extension
+
+			return value;	// String
+		},
+
+		_refreshState: function(){
+			// summary:
+			//		After the user types some characters, etc., this method is
+			//		called to check the field for validity etc.  The base method
+			//		in `dijit/form/TextBox` does nothing, but subclasses override.
+			// tags:
+			//		protected
+		},
+
+		 onInput: function(/*===== event =====*/){
+			 // summary:
+			 //		Connect to this function to receive notifications of various user data-input events.
+			 //		Return false to cancel the event and prevent it from being processed.
+			 // event:
+			 //		keydown | keypress | cut | paste | input
+			 // tags:
+			 //		callback
+		 },
+
+		__skipInputEvent: false,
+		_onInput: function(/*Event*/ evt){
+			// summary:
+			//		Called AFTER the input event has happened
+
+			this._processInput(evt);
+
+			if(this.intermediateChanges){
+				// allow the key to post to the widget input box
+				this.defer(function(){
+					this._handleOnChange(this.get('value'), false);
+				});
+			}
+		},
+
+		_processInput: function(/*Event*/ evt){
+			// summary:
+			//		Default action handler for user input events
+
+			this._refreshState();
+
+			// In case someone is watch()'ing for changes to displayedValue
+			this._set("displayedValue", this.get("displayedValue"));
+		},
+
+		postCreate: function(){
+			// setting the value here is needed since value="" in the template causes "undefined"
+			// and setting in the DOM (instead of the JS object) helps with form reset actions
+			this.textbox.setAttribute("value", this.textbox.value); // DOM and JS values should be the same
+
+			this.inherited(arguments);
+
+			// normalize input events to reduce spurious event processing
+			//	onkeydown: do not forward modifier keys
+			//		       set charOrCode to numeric keycode
+			//	onkeypress: do not forward numeric charOrCode keys (already sent through onkeydown)
+			//	onpaste & oncut: set charOrCode to 229 (IME)
+			//	oninput: if primary event not already processed, set charOrCode to 229 (IME), else do not forward
+			function handleEvent(e){
+				var charOrCode;
+				if(e.type == "keydown"){
+					charOrCode = e.keyCode;
+					switch(charOrCode){ // ignore state keys
+						case keys.SHIFT:
+						case keys.ALT:
+						case keys.CTRL:
+						case keys.META:
+						case keys.CAPS_LOCK:
+						case keys.NUM_LOCK:
+						case keys.SCROLL_LOCK:
+							return;
+					}
+					if(!e.ctrlKey && !e.metaKey && !e.altKey){ // no modifiers
+						switch(charOrCode){ // ignore location keys
+							case keys.NUMPAD_0:
+							case keys.NUMPAD_1:
+							case keys.NUMPAD_2:
+							case keys.NUMPAD_3:
+							case keys.NUMPAD_4:
+							case keys.NUMPAD_5:
+							case keys.NUMPAD_6:
+							case keys.NUMPAD_7:
+							case keys.NUMPAD_8:
+							case keys.NUMPAD_9:
+							case keys.NUMPAD_MULTIPLY:
+							case keys.NUMPAD_PLUS:
+							case keys.NUMPAD_ENTER:
+							case keys.NUMPAD_MINUS:
+							case keys.NUMPAD_PERIOD:
+							case keys.NUMPAD_DIVIDE:
+								return;
+						}
+						if((charOrCode >= 65 && charOrCode <= 90) || (charOrCode >= 48 && charOrCode <= 57) || charOrCode == keys.SPACE){
+							return; // keypress will handle simple non-modified printable keys
+						}
+						var named = false;
+						for(var i in keys){
+							if(keys[i] === e.keyCode){
+								named = true;
+								break;
+							}
+						}
+						if(!named){
+							return;
+						} // only allow named ones through
+					}
+				}
+				charOrCode = e.charCode >= 32 ? String.fromCharCode(e.charCode) : e.charCode;
+				if(!charOrCode){
+					charOrCode = (e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 48 && e.keyCode <= 57) || e.keyCode == keys.SPACE ? String.fromCharCode(e.keyCode) : e.keyCode;
+				}
+				if(!charOrCode){
+					charOrCode = 229; // IME
+				}
+				if(e.type == "keypress"){
+					if(typeof charOrCode != "string"){
+						return;
+					}
+					if((charOrCode >= 'a' && charOrCode <= 'z') || (charOrCode >= 'A' && charOrCode <= 'Z') || (charOrCode >= '0' && charOrCode <= '9') || (charOrCode === ' ')){
+						if(e.ctrlKey || e.metaKey || e.altKey){
+							return;
+						} // can only be stopped reliably in keydown
+					}
+				}
+				if(e.type == "input"){
+					if(this.__skipInputEvent){ // duplicate event
+						this.__skipInputEvent = false;
+						return;
+					}
+				}else{
+					this.__skipInputEvent = true;
+				}
+				// create fake event to set charOrCode and to know if preventDefault() was called
+				var faux = { faux: true }, attr;
+				for(attr in e){
+					if(!/^(layer[XY]|returnValue|keyLocation)$/.test(attr)){ // prevent WebKit warnings
+						var v = e[attr];
+						if(typeof v != "function" && typeof v != "undefined"){
+							faux[attr] = v;
+						}
+					}
+				}
+				lang.mixin(faux, {
+					charOrCode: charOrCode,
+					_wasConsumed: false,
+					preventDefault: function(){
+						faux._wasConsumed = true;
+						e.preventDefault();
+					},
+					stopPropagation: function(){
+						e.stopPropagation();
+					}
+				});
+				// give web page author a chance to consume the event
+				//console.log(faux.type + ', charOrCode = (' + (typeof charOrCode) + ') ' + charOrCode + ', ctrl ' + !!faux.ctrlKey + ', alt ' + !!faux.altKey + ', meta ' + !!faux.metaKey + ', shift ' + !!faux.shiftKey);
+				if(this.onInput(faux) === false){ // return false means stop
+					faux.preventDefault();
+					faux.stopPropagation();
+				}
+				if(faux._wasConsumed){
+					return;
+				} // if preventDefault was called
+				this.defer(function(){
+					this._onInput(faux);
+				}); // widget notification after key has posted
+			}
+			this.own(
+				on(this.textbox, "keydown, keypress, paste, cut, input, compositionend", lang.hitch(this, handleEvent)),
+
+				// Allow keypress to bubble to this.domNode, so that TextBox.on("keypress", ...) works,
+				// but prevent it from further propagating, so that typing into a TextBox inside a Toolbar doesn't
+				// trigger the Toolbar's letter key navigation.
+				on(this.domNode, "keypress", function(e){ e.stopPropagation(); })
+			);
+		},
+
+		_blankValue: '', // if the textbox is blank, what value should be reported
+		filter: function(val){
+			// summary:
+			//		Auto-corrections (such as trimming) that are applied to textbox
+			//		value on blur or form submit.
+			// description:
+			//		For MappedTextBox subclasses, this is called twice
+			//
+			//		- once with the display value
+			//		- once the value as set/returned by set('value', ...)
+			//
+			//		and get('value'), ex: a Number for NumberTextBox.
+			//
+			//		In the latter case it does corrections like converting null to NaN.  In
+			//		the former case the NumberTextBox.filter() method calls this.inherited()
+			//		to execute standard trimming code in TextBox.filter().
+			//
+			//		TODO: break this into two methods in 2.0
+			//
+			// tags:
+			//		protected extension
+			if(val === null){
+				return this._blankValue;
+			}
+			if(typeof val != "string"){
+				return val;
+			}
+			if(this.trim){
+				val = lang.trim(val);
+			}
+			if(this.uppercase){
+				val = val.toUpperCase();
+			}
+			if(this.lowercase){
+				val = val.toLowerCase();
+			}
+			if(this.propercase){
+				val = val.replace(/[^\s]+/g, function(word){
+					return word.substring(0, 1).toUpperCase() + word.substring(1);
+				});
+			}
+			return val;
+		},
+
+		_setBlurValue: function(){
+			// Format the displayed value, for example (for NumberTextBox) convert 1.4 to 1.400,
+			// or (for CurrencyTextBox) 2.50 to $2.50
+
+			this._setValueAttr(this.get('value'), true);
+		},
+
+		_onBlur: function(e){
+			if(this.disabled){
+				return;
+			}
+			this._setBlurValue();
+			this.inherited(arguments);
+		},
+
+		_isTextSelected: function(){
+			return this.textbox.selectionStart != this.textbox.selectionEnd;
+		},
+
+		_onFocus: function(/*String*/ by){
+			if(this.disabled || this.readOnly){
+				return;
+			}
+
+			// Select all text on focus via click if nothing already selected.
+			// Since mouse-up will clear the selection, need to defer selection until after mouse-up.
+			// Don't do anything on focus by tabbing into the widget since there's no associated mouse-up event.
+			if(this.selectOnClick && by == "mouse"){
+				// Use on.once() to only select all text on first click only; otherwise users would have no way to clear
+				// the selection.
+				this._selectOnClickHandle = on.once(this.domNode, "mouseup, touchend", lang.hitch(this, function(evt){
+					// Check if the user selected some text manually (mouse-down, mouse-move, mouse-up)
+					// and if not, then select all the text
+					if(!this._isTextSelected()){
+						_TextBoxMixin.selectInputText(this.textbox);
+					}
+				}));
+				this.own(this._selectOnClickHandle);
+
+				// in case the mouseup never comes
+				this.defer(function(){
+					if(this._selectOnClickHandle){
+						this._selectOnClickHandle.remove();
+						this._selectOnClickHandle = null;
+					}
+				}, 500); // if mouseup not received soon, then treat it as some gesture
+			}
+			// call this.inherited() before refreshState(), since this.inherited() will possibly scroll the viewport
+			// (to scroll the TextBox into view), which will affect how _refreshState() positions the tooltip
+			this.inherited(arguments);
+
+			this._refreshState();
+		},
+
+		reset: function(){
+			// Overrides `dijit/_FormWidget/reset()`.
+			// Additionally resets the displayed textbox value to ''
+			this.textbox.value = '';
+			this.inherited(arguments);
+		}
+	});
+
+	if(has("dojo-bidi")){
+		_TextBoxMixin = declare("dijit.form._TextBoxMixin", _TextBoxMixin, {
+			_setValueAttr: function(){
+				this.inherited(arguments);
+				this.applyTextDir(this.focusNode);
+			},
+			_setDisplayedValueAttr: function(){
+				this.inherited(arguments);
+				this.applyTextDir(this.focusNode);
+			},
+			_onInput: function(){
+				this.applyTextDir(this.focusNode);
+				this.inherited(arguments);
+			}
+		});
+	}
+
+	_TextBoxMixin._setSelectionRange = dijit._setSelectionRange = function(/*DomNode*/ element, /*Number?*/ start, /*Number?*/ stop){
+		if(element.setSelectionRange){
+			element.setSelectionRange(start, stop);
+		}
+	};
+
+	_TextBoxMixin.selectInputText = dijit.selectInputText = function(/*DomNode*/ element, /*Number?*/ start, /*Number?*/ stop){
+		// summary:
+		//		Select text in the input element argument, from start (default 0), to stop (default end).
+
+		// TODO: use functions in _editor/selection.js?
+		element = dom.byId(element);
+		if(isNaN(start)){
+			start = 0;
+		}
+		if(isNaN(stop)){
+			stop = element.value ? element.value.length : 0;
+		}
+		try{
+			element.focus();
+			_TextBoxMixin._setSelectionRange(element, start, stop);
+		}catch(e){ /* squelch random errors (esp. on IE) from unexpected focus changes or DOM nodes being hidden */
+		}
+	};
+
+	return _TextBoxMixin;
 });
 
 },
@@ -24470,320 +25610,6 @@ define([
 });
 
 },
-'dijit/form/_FormWidget':function(){
-define([
-	"dojo/_base/declare", // declare
-	"dojo/sniff", // has("dijit-legacy-requires"), has("msapp")
-	"dojo/_base/kernel", // kernel.deprecated
-	"dojo/ready",
-	"../_Widget",
-	"../_CssStateMixin",
-	"../_TemplatedMixin",
-	"./_FormWidgetMixin"
-], function(declare, has, kernel, ready, _Widget, _CssStateMixin, _TemplatedMixin, _FormWidgetMixin){
-
-	// module:
-	//		dijit/form/_FormWidget
-
-	// Back compat w/1.6, remove for 2.0
-	if(has("dijit-legacy-requires")){
-		ready(0, function(){
-			var requires = ["dijit/form/_FormValueWidget"];
-			require(requires);	// use indirection so modules not rolled into a build
-		});
-	}
-
-	return declare("dijit.form._FormWidget", [_Widget, _TemplatedMixin, _CssStateMixin, _FormWidgetMixin], {
-		// summary:
-		//		Base class for widgets corresponding to native HTML elements such as `<checkbox>` or `<button>`,
-		//		which can be children of a `<form>` node or a `dijit/form/Form` widget.
-		//
-		// description:
-		//		Represents a single HTML element.
-		//		All these widgets should have these attributes just like native HTML input elements.
-		//		You can set them during widget construction or afterwards, via `dijit/_WidgetBase.set()`.
-		//
-		//		They also share some common methods.
-
-		setDisabled: function(/*Boolean*/ disabled){
-			// summary:
-			//		Deprecated.  Use set('disabled', ...) instead.
-			kernel.deprecated("setDisabled(" + disabled + ") is deprecated. Use set('disabled'," + disabled + ") instead.", "", "2.0");
-			this.set('disabled', disabled);
-		},
-
-		setValue: function(/*String*/ value){
-			// summary:
-			//		Deprecated.  Use set('value', ...) instead.
-			kernel.deprecated("dijit.form._FormWidget:setValue(" + value + ") is deprecated.  Use set('value'," + value + ") instead.", "", "2.0");
-			this.set('value', value);
-		},
-
-		getValue: function(){
-			// summary:
-			//		Deprecated.  Use get('value') instead.
-			kernel.deprecated(this.declaredClass + "::getValue() is deprecated. Use get('value') instead.", "", "2.0");
-			return this.get('value');
-		},
-
-		postMixInProperties: function(){
-			// Setup name=foo string to be referenced from the template (but only if a name has been specified).
-			// Unfortunately we can't use _setNameAttr to set the name in IE due to IE limitations, see #8484, #8660.
-			// But when IE6 and IE7 are desupported, then we probably don't need this anymore, so should remove it in 2.0.
-			// Also, don't do this for Windows 8 Store Apps because it causes a security exception (see #16452).
-			// Regarding escaping, see heading "Attribute values" in
-			// http://www.w3.org/TR/REC-html40/appendix/notes.html#h-B.3.2
-			this.nameAttrSetting = (this.name && !has("msapp")) ? ('name="' + this.name.replace(/"/g, "&quot;") + '"') : '';
-			this.inherited(arguments);
-		}
-	});
-});
-
-},
-'dijit/form/_FormWidgetMixin':function(){
-define([
-	"dojo/_base/array", // array.forEach
-	"dojo/_base/declare", // declare
-	"dojo/dom-attr", // domAttr.set
-	"dojo/dom-style", // domStyle.get
-	"dojo/_base/lang", // lang.hitch lang.isArray
-	"dojo/mouse", // mouse.isLeft
-	"dojo/on",
-	"dojo/sniff", // has("webkit")
-	"dojo/window", // winUtils.scrollIntoView
-	"../a11y"    // a11y.hasDefaultTabStop
-], function(array, declare, domAttr, domStyle, lang, mouse, on, has, winUtils, a11y){
-
-	// module:
-	//		dijit/form/_FormWidgetMixin
-
-	return declare("dijit.form._FormWidgetMixin", null, {
-		// summary:
-		//		Mixin for widgets corresponding to native HTML elements such as `<checkbox>` or `<button>`,
-		//		which can be children of a `<form>` node or a `dijit/form/Form` widget.
-		//
-		// description:
-		//		Represents a single HTML element.
-		//		All these widgets should have these attributes just like native HTML input elements.
-		//		You can set them during widget construction or afterwards, via `dijit/_WidgetBase.set()`.
-		//
-		//		They also share some common methods.
-
-		// name: [const] String
-		//		Name used when submitting form; same as "name" attribute or plain HTML elements
-		name: "",
-
-		// alt: String
-		//		Corresponds to the native HTML `<input>` element's attribute.
-		alt: "",
-
-		// value: String
-		//		Corresponds to the native HTML `<input>` element's attribute.
-		value: "",
-
-		// type: [const] String
-		//		Corresponds to the native HTML `<input>` element's attribute.
-		type: "text",
-
-		// type: String
-		//		Apply aria-label in markup to the widget's focusNode
-		"aria-label": "focusNode",
-
-		// tabIndex: String
-		//		Order fields are traversed when user hits the tab key
-		tabIndex: "0",
-		_setTabIndexAttr: "focusNode", // force copy even when tabIndex default value, needed since Button is <span>
-
-		// disabled: Boolean
-		//		Should this widget respond to user input?
-		//		In markup, this is specified as "disabled='disabled'", or just "disabled".
-		disabled: false,
-
-		// intermediateChanges: Boolean
-		//		Fires onChange for each value change or only on demand
-		intermediateChanges: false,
-
-		// scrollOnFocus: Boolean
-		//		On focus, should this widget scroll into view?
-		scrollOnFocus: true,
-
-		// Override _WidgetBase mapping id to this.domNode, needs to be on focusNode so <label> etc.
-		// works with screen reader
-		_setIdAttr: "focusNode",
-
-		_setDisabledAttr: function(/*Boolean*/ value){
-			this._set("disabled", value);
-			domAttr.set(this.focusNode, 'disabled', value);
-			if(this.valueNode){
-				domAttr.set(this.valueNode, 'disabled', value);
-			}
-			this.focusNode.setAttribute("aria-disabled", value ? "true" : "false");
-
-			if(value){
-				// reset these, because after the domNode is disabled, we can no longer receive
-				// mouse related events, see #4200
-				this._set("hovering", false);
-				this._set("active", false);
-
-				// clear tab stop(s) on this widget's focusable node(s)  (ComboBox has two focusable nodes)
-				var attachPointNames = "tabIndex" in this.attributeMap ? this.attributeMap.tabIndex :
-					("_setTabIndexAttr" in this) ? this._setTabIndexAttr : "focusNode";
-				array.forEach(lang.isArray(attachPointNames) ? attachPointNames : [attachPointNames], function(attachPointName){
-					var node = this[attachPointName];
-					// complex code because tabIndex=-1 on a <div> doesn't work on FF
-					if(has("webkit") || a11y.hasDefaultTabStop(node)){    // see #11064 about webkit bug
-						node.setAttribute('tabIndex', "-1");
-					}else{
-						node.removeAttribute('tabIndex');
-					}
-				}, this);
-			}else{
-				if(this.tabIndex != ""){
-					this.set('tabIndex', this.tabIndex);
-				}
-			}
-		},
-
-		_onFocus: function(/*String*/ by){
-			// If user clicks on the widget, even if the mouse is released outside of it,
-			// this widget's focusNode should get focus (to mimic native browser behavior).
-			// Browsers often need help to make sure the focus via mouse actually gets to the focusNode.
-			// TODO: consider removing all of this for 2.0 or sooner, see #16622 etc.
-			if(by == "mouse" && this.isFocusable()){
-				// IE exhibits strange scrolling behavior when refocusing a node so only do it when !focused.
-				var focusHandle = this.own(on(this.focusNode, "focus", function(){
-					mouseUpHandle.remove();
-					focusHandle.remove();
-				}))[0];
-				// Set a global event to handle mouseup, so it fires properly
-				// even if the cursor leaves this.domNode before the mouse up event.
-				var event = has("pointer-events") ? "pointerup" : has("MSPointer") ? "MSPointerUp" :
-					has("touch-events") ? "touchend, mouseup" :		// seems like overkill but see #16622, #16725
-					"mouseup";
-				var mouseUpHandle = this.own(on(this.ownerDocumentBody, event, lang.hitch(this, function(evt){
-					mouseUpHandle.remove();
-					focusHandle.remove();
-					// if here, then the mousedown did not focus the focusNode as the default action
-					if(this.focused){
-						if(evt.type == "touchend"){
-							this.defer("focus"); // native focus hasn't occurred yet
-						}else{
-							this.focus(); // native focus already occurred on mousedown
-						}
-					}
-				})))[0];
-			}
-			if(this.scrollOnFocus){
-				this.defer(function(){
-					winUtils.scrollIntoView(this.domNode);
-				}); // without defer, the input caret position can change on mouse click
-			}
-			this.inherited(arguments);
-		},
-
-		isFocusable: function(){
-			// summary:
-			//		Tells if this widget is focusable or not.  Used internally by dijit.
-			// tags:
-			//		protected
-			return !this.disabled && this.focusNode && (domStyle.get(this.domNode, "display") != "none");
-		},
-
-		focus: function(){
-			// summary:
-			//		Put focus on this widget
-			if(!this.disabled && this.focusNode.focus){
-				try{
-					this.focusNode.focus();
-				}catch(e){
-				}
-				/*squelch errors from hidden nodes*/
-			}
-		},
-
-		compare: function(/*anything*/ val1, /*anything*/ val2){
-			// summary:
-			//		Compare 2 values (as returned by get('value') for this widget).
-			// tags:
-			//		protected
-			if(typeof val1 == "number" && typeof val2 == "number"){
-				return (isNaN(val1) && isNaN(val2)) ? 0 : val1 - val2;
-			}else if(val1 > val2){
-				return 1;
-			}else if(val1 < val2){
-				return -1;
-			}else{
-				return 0;
-			}
-		},
-
-		onChange: function(/*===== newValue =====*/){
-			// summary:
-			//		Callback when this widget's value is changed.
-			// tags:
-			//		callback
-		},
-
-		// _onChangeActive: [private] Boolean
-		//		Indicates that changes to the value should call onChange() callback.
-		//		This is false during widget initialization, to avoid calling onChange()
-		//		when the initial value is set.
-		_onChangeActive: false,
-
-		_handleOnChange: function(/*anything*/ newValue, /*Boolean?*/ priorityChange){
-			// summary:
-			//		Called when the value of the widget is set.  Calls onChange() if appropriate
-			// newValue:
-			//		the new value
-			// priorityChange:
-			//		For a slider, for example, dragging the slider is priorityChange==false,
-			//		but on mouse up, it's priorityChange==true.  If intermediateChanges==false,
-			//		onChange is only called form priorityChange=true events.
-			// tags:
-			//		private
-			if(this._lastValueReported == undefined && (priorityChange === null || !this._onChangeActive)){
-				// this block executes not for a change, but during initialization,
-				// and is used to store away the original value (or for ToggleButton, the original checked state)
-				this._resetValue = this._lastValueReported = newValue;
-			}
-			this._pendingOnChange = this._pendingOnChange
-				|| (typeof newValue != typeof this._lastValueReported)
-				|| (this.compare(newValue, this._lastValueReported) != 0);
-			if((this.intermediateChanges || priorityChange || priorityChange === undefined) && this._pendingOnChange){
-				this._lastValueReported = newValue;
-				this._pendingOnChange = false;
-				if(this._onChangeActive){
-					if(this._onChangeHandle){
-						this._onChangeHandle.remove();
-					}
-					// defer allows hidden value processing to run and
-					// also the onChange handler can safely adjust focus, etc
-					this._onChangeHandle = this.defer(
-						function(){
-							this._onChangeHandle = null;
-							this.onChange(newValue);
-						}); // try to collapse multiple onChange's fired faster than can be processed
-				}
-			}
-		},
-
-		create: function(){
-			// Overrides _Widget.create()
-			this.inherited(arguments);
-			this._onChangeActive = true;
-		},
-
-		destroy: function(){
-			if(this._onChangeHandle){ // destroy called before last onChange has fired
-				this._onChangeHandle.remove();
-				this.onChange(this._lastValueReported);
-			}
-			this.inherited(arguments);
-		}
-	});
-});
-
-},
 'dijit/form/_ButtonMixin':function(){
 define([
 	"dojo/_base/declare", // declare
@@ -31815,8 +32641,365 @@ define([
 });
 
 },
+'dojo/dnd/AutoSource':function(){
+define(["../_base/declare", "./Source"], function(declare, Source){
+	return declare("dojo.dnd.AutoSource", Source, {
+		// summary:
+		//		a source that syncs its DnD nodes by default
+
+		constructor: function(/*===== node, params =====*/){
+			// summary:
+			//		constructor of the AutoSource --- see the Source constructor for details
+			this.autoSync = true;
+		}
+	});
+});
+
+},
+'dijit/TooltipDialog':function(){
+define([
+	"dojo/_base/declare", // declare
+	"dojo/dom-class", // domClass.replace
+	"dojo/has",
+	"dojo/keys", // keys
+	"dojo/_base/lang", // lang.hitch
+	"dojo/on",
+	"./focus",
+	"./layout/ContentPane",
+	"./_DialogMixin",
+	"./form/_FormMixin",
+	"./_TemplatedMixin",
+	"dojo/text!./templates/TooltipDialog.html",
+	"./main"        // exports methods to dijit global
+], function(declare, domClass, has, keys, lang, on, focus, ContentPane, _DialogMixin, _FormMixin, _TemplatedMixin, template, dijit){
+
+	// module:
+	//		dijit/TooltipDialog
+
+
+	var TooltipDialog = declare("dijit.TooltipDialog",
+		[ContentPane, _TemplatedMixin, _FormMixin, _DialogMixin], {
+			// summary:
+			//		Pops up a dialog that appears like a Tooltip
+
+			// title: String
+			//		Description of tooltip dialog (required for a11y)
+			title: "",
+
+			// doLayout: [protected] Boolean
+			//		Don't change this parameter from the default value.
+			//		This ContentPane parameter doesn't make sense for TooltipDialog, since TooltipDialog
+			//		is never a child of a layout container, nor can you specify the size of
+			//		TooltipDialog in order to control the size of an inner widget.
+			doLayout: false,
+
+			// autofocus: Boolean
+			//		A Toggle to modify the default focus behavior of a Dialog, which
+			//		is to focus on the first dialog element after opening the dialog.
+			//		False will disable autofocusing.  Default: true.
+			autofocus: true,
+
+			// baseClass: [protected] String
+			//		The root className to use for the various states of this widget
+			baseClass: "dijitTooltipDialog",
+
+			// _firstFocusItem: [private readonly] DomNode
+			//		The pointer to the first focusable node in the dialog.
+			//		Set by `dijit/_DialogMixin._getFocusItems()`.
+			_firstFocusItem: null,
+
+			// _lastFocusItem: [private readonly] DomNode
+			//		The pointer to which node has focus prior to our dialog.
+			//		Set by `dijit/_DialogMixin._getFocusItems()`.
+			_lastFocusItem: null,
+
+			templateString: template,
+
+			_setTitleAttr: "containerNode",
+
+			postCreate: function(){
+				this.inherited(arguments);
+				this.own(on(this.domNode, "keydown", lang.hitch(this, "_onKey")));
+			},
+
+			orient: function(/*DomNode*/ node, /*String*/ aroundCorner, /*String*/ tooltipCorner){
+				// summary:
+				//		Configure widget to be displayed in given position relative to the button.
+				//		This is called from the dijit.popup code, and should not be called
+				//		directly.
+				// tags:
+				//		protected
+
+				// Note: intentionally not using dijitTooltip class since that sets position:absolute, which
+				// confuses dijit/popup trying to get the size of the tooltip.
+				var newC = {
+					// Real around node
+					"MR-ML": "dijitTooltipRight",
+					"ML-MR": "dijitTooltipLeft",
+					"TM-BM": "dijitTooltipAbove",
+					"BM-TM": "dijitTooltipBelow",
+					"BL-TL": "dijitTooltipBelow dijitTooltipABLeft",
+					"TL-BL": "dijitTooltipAbove dijitTooltipABLeft",
+					"BR-TR": "dijitTooltipBelow dijitTooltipABRight",
+					"TR-BR": "dijitTooltipAbove dijitTooltipABRight",
+					"BR-BL": "dijitTooltipRight",
+					"BL-BR": "dijitTooltipLeft",
+
+					// Positioning "around" a point, ex: mouse position
+					"BR-TL": "dijitTooltipBelow dijitTooltipABLeft",
+					"BL-TR": "dijitTooltipBelow dijitTooltipABRight",
+					"TL-BR": "dijitTooltipAbove dijitTooltipABRight",
+					"TR-BL": "dijitTooltipAbove dijitTooltipABLeft"
+				}[aroundCorner + "-" + tooltipCorner];
+
+				domClass.replace(this.domNode, newC, this._currentOrientClass || "");
+				this._currentOrientClass = newC;
+
+				// Tooltip.orient() has code to reposition connector for when Tooltip is before/after anchor.
+				// Not putting here to avoid code bloat, and since TooltipDialogs are generally above/below.
+				// Should combine code from Tooltip and TooltipDialog.
+			},
+
+			focus: function(){
+				// summary:
+				//		Focus on first field
+				this._getFocusItems();
+				focus.focus(this._firstFocusItem);
+			},
+
+			onOpen: function(/*Object*/ pos){
+				// summary:
+				//		Called when dialog is displayed.
+				//		This is called from the dijit.popup code, and should not be called directly.
+				// tags:
+				//		protected
+
+				this.orient(this.domNode, pos.aroundCorner, pos.corner);
+
+				// Position the tooltip connector for middle alignment.
+				// This could not have been done in orient() since the tooltip wasn't positioned at that time.
+				var aroundNodeCoords = pos.aroundNodePos;
+				if(pos.corner.charAt(0) == 'M' && pos.aroundCorner.charAt(0) == 'M'){
+					this.connectorNode.style.top = aroundNodeCoords.y + ((aroundNodeCoords.h - this.connectorNode.offsetHeight) >> 1) - pos.y + "px";
+					this.connectorNode.style.left = "";
+				}else if(pos.corner.charAt(1) == 'M' && pos.aroundCorner.charAt(1) == 'M'){
+					this.connectorNode.style.left = aroundNodeCoords.x + ((aroundNodeCoords.w - this.connectorNode.offsetWidth) >> 1) - pos.x + "px";
+				}
+
+				this._onShow(); // lazy load trigger  (TODO: shouldn't we load before positioning?)
+			},
+
+			onClose: function(){
+				// summary:
+				//		Called when dialog is hidden.
+				//		This is called from the dijit.popup code, and should not be called directly.
+				// tags:
+				//		protected
+				this.onHide();
+			},
+
+			_onKey: function(/*Event*/ evt){
+				// summary:
+				//		Handler for keydown events
+				// description:
+				//		Keep keyboard focus in dialog; close dialog on escape key
+				// tags:
+				//		private
+
+				if(evt.keyCode == keys.ESCAPE){
+					// Use defer to avoid crash on IE, see #10396.  Not sure if this is still needed or not.
+					// If this if() wasn't here, presumably dijit/popup would catch the ESCAPE key and close the popup.
+					this.defer("onCancel");
+					evt.stopPropagation();
+					evt.preventDefault();
+				}else if(evt.keyCode == keys.TAB){
+					var node = evt.target;
+					this._getFocusItems();
+					if(this._firstFocusItem == this._lastFocusItem){
+						evt.stopPropagation();
+						evt.preventDefault();
+					}else if(node == this._firstFocusItem && evt.shiftKey){
+						focus.focus(this._lastFocusItem); // send focus to last item in dialog
+						evt.stopPropagation();
+						evt.preventDefault();
+					}else if(node == this._lastFocusItem && !evt.shiftKey){
+						focus.focus(this._firstFocusItem); // send focus to first item in dialog
+						evt.stopPropagation();
+						evt.preventDefault();
+					}else{
+						// we want the browser's default tab handling to move focus
+						// but we don't want the tab to propagate upwards
+						evt.stopPropagation();
+					}
+				}
+			}
+		});
+
+	if(has("dojo-bidi")){
+		TooltipDialog.extend({
+			_setTitleAttr: function(/*String*/ title){
+				this.containerNode.title = (this.textDir && this.enforceTextDirWithUcc) ? this.enforceTextDirWithUcc(null, title) : title;
+				this._set("title", title);
+			},
+
+			_setTextDirAttr: function(/*String*/ textDir){
+				if(!this._created || this.textDir != textDir){
+					this._set("textDir", textDir);
+					if(this.textDir && this.title){
+						this.containerNode.title = this.enforceTextDirWithUcc(null, this.title);
+					}
+				}
+			}
+		});
+	}
+
+	return TooltipDialog;
+});
+
+},
+'dijit/PopupMenuItem':function(){
+define([
+	"dojo/_base/declare", // declare
+	"dojo/dom-style", // domStyle.set
+	"dojo/_base/lang",
+	"dojo/query", // query
+	"./popup",
+	"./registry",	// registry.byNode
+	"./MenuItem",
+	"./hccss"
+], function(declare, domStyle, lang, query, pm, registry, MenuItem){
+
+	// module:
+	//		dijit/PopupMenuItem
+
+	return declare("dijit.PopupMenuItem", MenuItem, {
+		// summary:
+		//		An item in a Menu that spawn a drop down (usually a drop down menu)
+
+		baseClass: "dijitMenuItem dijitPopupMenuItem",
+
+		_fillContent: function(){
+			// summary:
+			//		When Menu is declared in markup, this code gets the menu label and
+			//		the popup widget from the srcNodeRef.
+			// description:
+			//		srcNodeRef.innerHTML contains both the menu item text and a popup widget
+			//		The first part holds the menu item text and the second part is the popup
+			// example:
+			// |	<div data-dojo-type="dijit/PopupMenuItem">
+			// |		<span>pick me</span>
+			// |		<popup> ... </popup>
+			// |	</div>
+			// tags:
+			//		protected
+
+			if(this.srcNodeRef){
+				var nodes = query("*", this.srcNodeRef);
+				this.inherited(arguments, [nodes[0]]);
+
+				// save pointer to srcNode so we can grab the drop down widget after it's instantiated
+				this.dropDownContainer = this.srcNodeRef;
+			}
+		},
+
+		_openPopup: function(/*Object*/ params, /*Boolean*/ focus){
+			// summary:
+			//		Open the popup to the side of/underneath this MenuItem, and optionally focus first item
+			// tags:
+			//		protected
+
+			var popup = this.popup;
+
+			pm.open(lang.delegate(params, {
+				popup: this.popup,
+				around: this.domNode
+			}));
+
+			if(focus && popup.focus){
+				popup.focus();
+			}
+		},
+
+		_closePopup: function(){
+			pm.close(this.popup);
+			this.popup.parentMenu = null;
+		},
+
+		startup: function(){
+			if(this._started){ return; }
+			this.inherited(arguments);
+
+			// We didn't copy the dropdown widget from the this.srcNodeRef, so it's in no-man's
+			// land now.  Move it to <body>.
+			if(!this.popup){
+				var node = query("[widgetId]", this.dropDownContainer)[0];
+				this.popup = registry.byNode(node);
+			}
+			this.ownerDocumentBody.appendChild(this.popup.domNode);
+			this.popup.domNode.setAttribute("aria-labelledby", this.containerNode.id);
+			this.popup.startup();
+
+			this.popup.domNode.style.display="none";
+			if(this.arrowWrapper){
+				domStyle.set(this.arrowWrapper, "visibility", "");
+			}
+			this.focusNode.setAttribute("aria-haspopup", "true");
+		},
+
+		destroyDescendants: function(/*Boolean*/ preserveDom){
+			if(this.popup){
+				// Destroy the popup, unless it's already been destroyed.  This can happen because
+				// the popup is a direct child of <body> even though it's logically my child.
+				if(!this.popup._destroyed){
+					this.popup.destroyRecursive(preserveDom);
+				}
+				delete this.popup;
+			}
+			this.inherited(arguments);
+		}
+	});
+});
+
+},
+'dijit/MenuSeparator':function(){
+define([
+	"dojo/_base/declare", // declare
+	"dojo/dom", // dom.setSelectable
+	"./_WidgetBase",
+	"./_TemplatedMixin",
+	"./_Contained",
+	"dojo/text!./templates/MenuSeparator.html"
+], function(declare, dom, _WidgetBase, _TemplatedMixin, _Contained, template){
+
+	// module:
+	//		dijit/MenuSeparator
+
+	return declare("dijit.MenuSeparator", [_WidgetBase, _TemplatedMixin, _Contained], {
+		// summary:
+		//		A line between two menu items
+
+		templateString: template,
+
+		buildRendering: function(){
+			this.inherited(arguments);
+			dom.setSelectable(this.domNode, false);
+		},
+
+		isFocusable: function(){
+			// summary:
+			//		Override to always return false
+			// tags:
+			//		protected
+
+			return false; // Boolean
+		}
+	});
+});
+
+},
 'url:dijit/templates/Dialog.html':"<div class=\"dijitDialog\" role=\"dialog\" aria-labelledby=\"${id}_title\">\n\t<div data-dojo-attach-point=\"titleBar\" class=\"dijitDialogTitleBar\">\n\t\t<span data-dojo-attach-point=\"titleNode\" class=\"dijitDialogTitle\" id=\"${id}_title\"\n\t\t\t\trole=\"heading\" level=\"1\"></span>\n\t\t<span data-dojo-attach-point=\"closeButtonNode\" class=\"dijitDialogCloseIcon\" data-dojo-attach-event=\"ondijitclick: onCancel\" title=\"${buttonCancel}\" role=\"button\" tabindex=\"-1\">\n\t\t\t<span data-dojo-attach-point=\"closeText\" class=\"closeText\" title=\"${buttonCancel}\">x</span>\n\t\t</span>\n\t</div>\n\t<div data-dojo-attach-point=\"containerNode\" class=\"dijitDialogPaneContent\"></div>\n\t${!actionBarTemplate}\n</div>\n\n",
-'url:cid/widget/templates/GlobalSearch.html':"<div class=\"GlobalSearch\">\n\t<input data-dojo-type=\"dijit/form/Textbox\" data-dojo-attach-event=\"onChange:onInputChange\" data-dojo-attach-point=\"searchInput\" style=\"width:100%\"/>\n</div>\n",
+'url:cid/widget/templates/GlobalSearch.html':"<div class=\"GlobalSearch\">\n\t<input data-dojo-type=\"dijit/form/TextBox\" data-dojo-attach-event=\"onChange:onInputChange\" data-dojo-attach-point=\"searchInput\" style=\"width:100%\"/>\n</div>\n",
+'url:dijit/form/templates/TextBox.html':"<div class=\"dijit dijitReset dijitInline dijitLeft\" id=\"widget_${id}\" role=\"presentation\"\n\t><div class=\"dijitReset dijitInputField dijitInputContainer\"\n\t\t><input class=\"dijitReset dijitInputInner\" data-dojo-attach-point='textbox,focusNode' autocomplete=\"off\"\n\t\t\t${!nameAttrSetting} type='${type}'\n\t/></div\n></div>\n",
 'url:dgrid/css/dgrid.css':{"cssText":".dgrid{position:relative;overflow:hidden;border:1px solid #ddd;height:30em;display:block;}.dgrid-header{background-color:#eee;}.dgrid-header-row{position:absolute;right:17px;left:0;}.dgrid-header-scroll{position:absolute;top:0;right:0;}.dgrid-footer{position:absolute;bottom:0;width:100%;}.dgrid-header-hidden, html.has-quirks .dgrid-header-hidden .dgrid-cell{font-size:0;height:0 !important;border-top:none !important;border-bottom:none !important;margin-top:0 !important;margin-bottom:0 !important;padding-top:0 !important;padding-bottom:0 !important;}.dgrid-footer-hidden{display:none;}.dgrid-sortable{cursor:pointer;}.dgrid-header, .dgrid-header-row, .dgrid-footer{overflow:hidden;background-color:#eee;}.dgrid-row-table{border-collapse:collapse;border:none;table-layout:fixed;empty-cells:show;width:100%;height:100%;}.dgrid-cell{padding:0px;text-align:left;overflow:hidden;vertical-align:top;border:1px solid #ddd;border-top-style:none;box-sizing:border-box;-moz-box-sizing:border-box;-ms-box-sizing:border-box;-webkit-box-sizing:border-box;}.dgrid-cell-padding{padding:3px;}.dgrid-content{position:relative;height:99%;}.dgrid-scroller{overflow-x:auto;overflow-y:scroll;position:absolute;top:0px;margin-top:25px;bottom:0px;width:100%;}.dgrid-preload{font-size:0;line-height:0;}.dgrid-loading{position:relative;height:100%;}.dgrid-above{position:absolute;bottom:0;}.ui-icon{width:16px;height:16px;background-image:url(\"images/ui-icons_222222_256x240.png\");}.ui-icon-triangle-1-e{background-position:-32px -16px;}.ui-icon-triangle-1-se{background-position:-48px -16px;}.dgrid-expando-icon{width:16px;height:16px;}.dgrid-tree-container{-webkit-transition-duration:0.3s;-moz-transition-duration:0.3s;-ms-transition-duration:0.3s;-o-transition-duration:0.3s;transition-duration:0.3s;overflow:hidden;}.dgrid-tree-container.dgrid-tree-resetting{-webkit-transition-duration:0;-moz-transition-duration:0;-ms-transition-duration:0;-o-transition-duration:0;transition-duration:0;}.dgrid-sort-arrow{background-position:-64px -16px;display:block;float:right;margin:0 4px 0 5px;height:12px;}.dgrid-sort-up .dgrid-sort-arrow{background-position:0px -16px;}.dgrid-selected{background-color:#bfd6eb;}.dgrid-input{width:99%;}html.has-mozilla .dgrid *:focus, html.has-opera .dgrid *:focus{outline:1px dotted;}html.has-ie-6-7.has-no-quirks .dgrid-row-table{width:auto;}html.has-quirks .dgrid-row-table, html.has-ie-6 .dgrid-row-table{height:auto;}html.has-quirks .dgrid-header-scroll, html.has-ie-6 .dgrid-header-scroll{font-size:0;}html.has-mozilla .dgrid-focus{outline-offset:-1px;}.dgrid-scrollbar-measure{width:100px;height:100px;overflow:scroll;position:absolute;top:-9999px;}.dgrid-autoheight{height:auto;}.dgrid-autoheight .dgrid-scroller{position:relative;overflow-y:hidden;}.dgrid-autoheight .dgrid-header-scroll{display:none;}.dgrid-autoheight .dgrid-header{right:0;}#dgrid-css-dgrid-loaded{display:none;}","xCss":"html.has-mozilla .dgrid *:{/27};{/17background-image:url(\"images/ui-icons_222222_256x240.png\");}"},
 'url:dgrid/css/extensions/Pagination.css':".dgrid-status{padding:2px;}.dgrid-pagination .dgrid-status{float:left;}.dgrid-pagination .dgrid-navigation, .dgrid-pagination .dgrid-page-size{float:right;}.dgrid-navigation .dgrid-page-link{cursor:pointer;font-weight:bold;text-decoration:none;color:inherit;padding:0 4px;}.dgrid-first, .dgrid-last, .dgrid-next, .dgrid-previous{font-size:130%;}.dgrid-pagination .dgrid-page-disabled, .has-ie-6-7 .dgrid-navigation .dgrid-page-disabled, .has-ie.has-quirks .dgrid-navigation .dgrid-page-disabled{color:#aaa;cursor:default;}.dgrid-page-input{margin-top:1px;width:2em;text-align:center;}.dgrid-page-size{margin:1px 4px 0 4px;}#dgrid-css-extensions-Pagination-loaded{display:none;}",
 'url:dgrid/css/extensions/ColumnResizer.css':{"cssText":".dgrid-column-resizer{position:absolute;width:2px;background-color:#666;z-index:1000;}.dgrid-resize-handle{height:100px;width:0;position:absolute;right:-4px;top:-4px;cursor:col-resize;z-index:999;border-left:5px solid transparent;outline:none;}html.has-ie-6 .dgrid-resize-handle{border-color:pink;filter:chroma(color=pink);}html.has-mozilla .dgrid .dgrid-resize-handle:focus, html.has-opera .dgrid .dgrid-resize-handle:focus{outline:none;}.dgrid-resize-header-container{height:100%;}html.has-touch .dgrid-resize-handle{border-left:20px solid transparent;}html.has-touch .dgrid-column-resizer{width:2px;}html.has-no-quirks .dgrid-resize-header-container{position:relative;}html.has-ie-6 .dgrid-resize-header-container{position:static;}.dgrid-header .dgrid-cell-padding{overflow:hidden;}html.has-ie-6 .dgrid-header .dgrid-cell-padding{margin-right:4px;}html.has-ie-6 .dgrid-header .dgrid-sort-arrow{margin-right:0;}html.has-quirks .dgrid-header .dgrid-cell-padding, html.has-ie-6 .dgrid-header .dgrid-cell{position:relative;}#dgrid-css-extensions-ColumnResizer-loaded{display:none;}","xCss":"html.has-mozilla .dgrid .dgrid-resize-handle:{/3};{/2filter:chroma(color=pink);}"},
@@ -31833,6 +33016,8 @@ define([
 'url:dijit/form/templates/ComboButton.html':"<table class=\"dijit dijitReset dijitInline dijitLeft\"\n\tcellspacing='0' cellpadding='0' role=\"presentation\"\n\t><tbody role=\"presentation\"><tr role=\"presentation\"\n\t\t><td class=\"dijitReset dijitStretch dijitButtonNode\" data-dojo-attach-point=\"buttonNode\" data-dojo-attach-event=\"ondijitclick:__onClick,onkeydown:_onButtonKeyDown\"\n\t\t><div id=\"${id}_button\" class=\"dijitReset dijitButtonContents\"\n\t\t\tdata-dojo-attach-point=\"titleNode\"\n\t\t\trole=\"button\" aria-labelledby=\"${id}_label\"\n\t\t\t><div class=\"dijitReset dijitInline dijitIcon\" data-dojo-attach-point=\"iconNode\" role=\"presentation\"></div\n\t\t\t><div class=\"dijitReset dijitInline dijitButtonText\" id=\"${id}_label\" data-dojo-attach-point=\"containerNode\" role=\"presentation\"></div\n\t\t></div\n\t\t></td\n\t\t><td id=\"${id}_arrow\" class='dijitReset dijitRight dijitButtonNode dijitArrowButton'\n\t\t\tdata-dojo-attach-point=\"_popupStateNode,focusNode,_buttonNode\"\n\t\t\tdata-dojo-attach-event=\"onkeydown:_onArrowKeyDown\"\n\t\t\ttitle=\"${optionsTitle}\"\n\t\t\trole=\"button\" aria-haspopup=\"true\"\n\t\t\t><div class=\"dijitReset dijitArrowButtonInner\" role=\"presentation\"></div\n\t\t\t><div class=\"dijitReset dijitArrowButtonChar\" role=\"presentation\">&#9660;</div\n\t\t></td\n\t\t><td style=\"display:none !important;\"\n\t\t\t><input ${!nameAttrSetting} type=\"${type}\" value=\"${value}\" data-dojo-attach-point=\"valueNode\"\n\t\t\t\tclass=\"dijitOffScreen\"\n\t\t\t\trole=\"presentation\" aria-hidden=\"true\"\n\t\t\t\tdata-dojo-attach-event=\"onclick:_onClick\"\n\t\t/></td></tr></tbody\n></table>\n",
 'url:dijit/form/templates/CheckBox.html':"<div class=\"dijit dijitReset dijitInline\" role=\"presentation\"\n\t><input\n\t \t${!nameAttrSetting} type=\"${type}\" role=\"${type}\" aria-checked=\"false\" ${checkedAttrSetting}\n\t\tclass=\"dijitReset dijitCheckBoxInput\"\n\t\tdata-dojo-attach-point=\"focusNode\"\n\t \tdata-dojo-attach-event=\"ondijitclick:_onClick\"\n/></div>\n",
 'url:dijit/templates/CheckedMenuItem.html':"<tr class=\"dijitReset\" data-dojo-attach-point=\"focusNode\" role=\"${role}\" tabIndex=\"-1\" aria-checked=\"${checked}\">\n\t<td class=\"dijitReset dijitMenuItemIconCell\" role=\"presentation\">\n\t\t<span class=\"dijitInline dijitIcon dijitMenuItemIcon dijitCheckedMenuItemIcon\" data-dojo-attach-point=\"iconNode\"></span>\n\t\t<span class=\"dijitMenuItemIconChar dijitCheckedMenuItemIconChar\">${!checkedChar}</span>\n\t</td>\n\t<td class=\"dijitReset dijitMenuItemLabel\" colspan=\"2\" data-dojo-attach-point=\"containerNode,labelNode,textDirNode\"></td>\n\t<td class=\"dijitReset dijitMenuItemAccelKey\" style=\"display: none\" data-dojo-attach-point=\"accelKeyNode\"></td>\n\t<td class=\"dijitReset dijitMenuArrowCell\" role=\"presentation\">&#160;</td>\n</tr>\n",
+'url:dijit/templates/TooltipDialog.html':"<div role=\"alertdialog\" tabIndex=\"-1\">\n\t<div class=\"dijitTooltipContainer\" role=\"presentation\">\n\t\t<div data-dojo-attach-point=\"contentsNode\" class=\"dijitTooltipContents dijitTooltipFocusNode\">\n\t\t\t<div data-dojo-attach-point=\"containerNode\"></div>\n\t\t\t${!actionBarTemplate}\n\t\t</div>\n\t</div>\n\t<div class=\"dijitTooltipConnector\" role=\"presentation\" data-dojo-attach-point=\"connectorNode\"></div>\n</div>\n",
+'url:dijit/templates/MenuSeparator.html':"<tr class=\"dijitMenuSeparator\" role=\"separator\">\n\t<td class=\"dijitMenuSeparatorIconCell\">\n\t\t<div class=\"dijitMenuSeparatorTop\"></div>\n\t\t<div class=\"dijitMenuSeparatorBottom\"></div>\n\t</td>\n\t<td colspan=\"3\" class=\"dijitMenuSeparatorLabelCell\">\n\t\t<div class=\"dijitMenuSeparatorTop dijitMenuSeparatorLabel\"></div>\n\t\t<div class=\"dijitMenuSeparatorBottom\"></div>\n\t</td>\n</tr>\n",
 '*now':function(r){r(['dojo/i18n!*preload*cid/layer/nls/p3api*["ar","ca","cs","da","de","el","en-gb","en-us","es-es","fi-fi","fr-fr","he-il","hu","it-it","ja-jp","ko-kr","nl-nl","nb","pl","pt-br","pt-pt","ru","sk","sl","sv","th","tr","zh-tw","zh-cn","ROOT"]']);}
 }});
 define("cid/layer/p3api", [], 1);

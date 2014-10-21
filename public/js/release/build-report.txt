@@ -1,4 +1,4 @@
-Build started: Mon Oct 20 2014 18:27:24 GMT-0400 (EDT)
+Build started: Mon Oct 20 2014 22:50:17 GMT-0400 (EDT)
 Build application version: 1.11.0-pre (NaN)
 Messages:
 info(100) Assumed module uses legacy loader API.
@@ -127,8 +127,8 @@ info(100) Assumed module uses legacy loader API.
 	module: dojox/xmpp/xmppSession
 	module: dojox/xmpp/widget/ChatSession
 info(103) Optimizing module complete.
-	/Users/dmachi/work/p3api/public/js/release/dojo/dojo.js (compile time:8.397s)
-	/Users/dmachi/work/p3api/public/js/release/cid/layer/p3api.js (compile time:9.566s)
+	/Users/dmachi/work/p3api/public/js/release/dojo/dojo.js (compile time:7.979s)
+	/Users/dmachi/work/p3api/public/js/release/cid/layer/p3api.js (compile time:9.381s)
 info(106) Optimizing CSS.
 	file: /Users/dmachi/work/p3api/public/js/dojo/_firebug/firebug.css
 	file: /Users/dmachi/work/p3api/public/js/dojo/resources/dnd.css
@@ -1545,6 +1545,13 @@ cid/layer/p3api:
 	cid/widget/GlobalSearch
 	dijit/_WidgetsInTemplateMixin
 	cid/widget/templates/GlobalSearch.html
+	dijit/form/TextBox
+	dijit/form/_FormValueWidget
+	dijit/form/_FormWidget
+	dijit/form/_FormWidgetMixin
+	dijit/form/_FormValueMixin
+	dijit/form/_TextBoxMixin
+	dijit/form/templates/TextBox.html
 	cid/widget/PageGrid
 	dgrid/Grid
 	put-selector/put
@@ -1590,8 +1597,6 @@ cid/layer/p3api:
 	dijit/layout/StackController
 	dijit/form/ToggleButton
 	dijit/form/Button
-	dijit/form/_FormWidget
-	dijit/form/_FormWidgetMixin
 	dijit/form/_ButtonMixin
 	dijit/form/templates/Button.html
 	dijit/form/_ToggleButtonMixin
@@ -1639,6 +1644,12 @@ cid/layer/p3api:
 	dijit/form/_RadioButtonMixin
 	dijit/CheckedMenuItem
 	dijit/templates/CheckedMenuItem.html
+	dojo/dnd/AutoSource
+	dijit/TooltipDialog
+	dijit/templates/TooltipDialog.html
+	dijit/PopupMenuItem
+	dijit/MenuSeparator
+	dijit/templates/MenuSeparator.html
 
 Optimizer Messages:
 /Users/dmachi/work/p3api/public/js/release/dojo/dojo.js:
@@ -1763,7 +1774,7 @@ dojo.js.uncompressed.js:15600: WARNING - unreachable code
 	         ^
 
 0 error(s), 30 warning(s)
-Done (compile time:8.397s)
+Done (compile time:7.979s)
 /Users/dmachi/work/p3api/public/js/release/dojo/dojo.js:
 dojo.js.uncompressed.js:148: WARNING - unreachable code
 	if( 0 ){
@@ -1886,7 +1897,7 @@ dojo.js.uncompressed.js:15600: WARNING - unreachable code
 	         ^
 
 0 error(s), 30 warning(s)
-Done (compile time:8.397s)
+Done (compile time:7.979s)
 /Users/dmachi/work/p3api/public/js/release/cid/layer/p3api.js:
 p3api.js.uncompressed.js:254: WARNING - unreachable code
 			 0 && console.log("Get Workspace Items Query: ", query);
@@ -1904,28 +1915,28 @@ p3api.js.uncompressed.js:11580: WARNING - Suspicious code. This code lacks side-
 	new Date("X"); // workaround for #11279, new Date("") == NaN
 	^
 
-p3api.js.uncompressed.js:14832: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+p3api.js.uncompressed.js:15972: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
                                 if (hint == 'avatar') {
                                 ^
 
-p3api.js.uncompressed.js:16632: WARNING - unreachable code
+p3api.js.uncompressed.js:17772: WARNING - unreachable code
 			if(! 1  && typeof this[fn + "Attr"] === "function"){
 			                                                   ^
 
-p3api.js.uncompressed.js:16671: WARNING - unreachable code
+p3api.js.uncompressed.js:17811: WARNING - unreachable code
 					if(! 1  && typeof this[fn + "Attr"] === "function"){
 					                                                   ^
 
-p3api.js.uncompressed.js:17019: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+p3api.js.uncompressed.js:18159: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
 				if(xCss){
 				^
 
-p3api.js.uncompressed.js:28759: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+p3api.js.uncompressed.js:29585: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
                                 if (hint == 'avatar') {
                                 ^
 
 0 error(s), 9 warning(s)
-Done (compile time:9.566s)
+Done (compile time:9.381s)
 
 
 Has Features Detected
@@ -2371,4 +2382,4 @@ Has Features Detected
 Process finished normally
 	errors: 0
 	warnings: 114
-	build time: 143.015 seconds
+	build time: 140.598 seconds
