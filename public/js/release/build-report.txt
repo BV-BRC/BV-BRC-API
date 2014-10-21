@@ -1,4 +1,4 @@
-Build started: Mon Oct 20 2014 16:09:28 GMT-0400 (EDT)
+Build started: Mon Oct 20 2014 18:27:24 GMT-0400 (EDT)
 Build application version: 1.11.0-pre (NaN)
 Messages:
 info(100) Assumed module uses legacy loader API.
@@ -127,8 +127,8 @@ info(100) Assumed module uses legacy loader API.
 	module: dojox/xmpp/xmppSession
 	module: dojox/xmpp/widget/ChatSession
 info(103) Optimizing module complete.
-	/Users/dmachi/work/p3api/public/js/release/dojo/dojo.js (compile time:7.873s)
-	/Users/dmachi/work/p3api/public/js/release/cid/layer/p3api.js (compile time:9.168s)
+	/Users/dmachi/work/p3api/public/js/release/dojo/dojo.js (compile time:8.397s)
+	/Users/dmachi/work/p3api/public/js/release/cid/layer/p3api.js (compile time:9.566s)
 info(106) Optimizing CSS.
 	file: /Users/dmachi/work/p3api/public/js/dojo/_firebug/firebug.css
 	file: /Users/dmachi/work/p3api/public/js/dojo/resources/dnd.css
@@ -1316,6 +1316,7 @@ warn(205) Module not tagged as pure AMD yet it contains AMD API applications.
 	module: cid/widget/Grid
 	module: cid/widget/Heatmap
 	module: cid/widget/NewsGrid
+	module: cid/widget/PageGrid
 	module: cid/widget/PathogenPortalHeader
 	module: cid/widget/PathwayGrid
 	module: cid/widget/PathwayViewer
@@ -1544,8 +1545,7 @@ cid/layer/p3api:
 	cid/widget/GlobalSearch
 	dijit/_WidgetsInTemplateMixin
 	cid/widget/templates/GlobalSearch.html
-	cid/widget/Grid
-	dgrid/OnDemandGrid
+	cid/widget/PageGrid
 	dgrid/Grid
 	put-selector/put
 	dgrid/List
@@ -1554,11 +1554,13 @@ cid/layer/p3api:
 	xstyle/css
 	xstyle/core/load-css
 	dgrid/css/dgrid.css
-	dgrid/OnDemandList
-	dgrid/_StoreMixin
 	dojo/store/JsonRest
 	dojo/store/util/QueryResults
 	dgrid/extensions/DijitRegistry
+	dgrid/extensions/Pagination
+	dgrid/_StoreMixin
+	dgrid/extensions/nls/pagination
+	dgrid/css/extensions/Pagination.css
 	dgrid/Keyboard
 	dgrid/Selection
 	cid/widget/formatter
@@ -1609,6 +1611,9 @@ cid/layer/p3api:
 	dijit/layout/templates/_ScrollingTabControllerButton.html
 	dijit/_HasDropDown
 	cid/widget/GenomeGrid
+	cid/widget/Grid
+	dgrid/OnDemandGrid
+	dgrid/OnDemandList
 	cid/widget/SequenceGrid
 	cid/widget/PatricTool
 	dijit/_base
@@ -1758,7 +1763,7 @@ dojo.js.uncompressed.js:15600: WARNING - unreachable code
 	         ^
 
 0 error(s), 30 warning(s)
-Done (compile time:7.873s)
+Done (compile time:8.397s)
 /Users/dmachi/work/p3api/public/js/release/dojo/dojo.js:
 dojo.js.uncompressed.js:148: WARNING - unreachable code
 	if( 0 ){
@@ -1881,7 +1886,7 @@ dojo.js.uncompressed.js:15600: WARNING - unreachable code
 	         ^
 
 0 error(s), 30 warning(s)
-Done (compile time:7.873s)
+Done (compile time:8.397s)
 /Users/dmachi/work/p3api/public/js/release/cid/layer/p3api.js:
 p3api.js.uncompressed.js:254: WARNING - unreachable code
 			 0 && console.log("Get Workspace Items Query: ", query);
@@ -1903,20 +1908,24 @@ p3api.js.uncompressed.js:14832: WARNING - Suspicious code. This code lacks side-
                                 if (hint == 'avatar') {
                                 ^
 
-p3api.js.uncompressed.js:16636: WARNING - unreachable code
+p3api.js.uncompressed.js:16632: WARNING - unreachable code
 			if(! 1  && typeof this[fn + "Attr"] === "function"){
 			                                                   ^
 
-p3api.js.uncompressed.js:16675: WARNING - unreachable code
+p3api.js.uncompressed.js:16671: WARNING - unreachable code
 					if(! 1  && typeof this[fn + "Attr"] === "function"){
 					                                                   ^
 
-p3api.js.uncompressed.js:17023: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+p3api.js.uncompressed.js:17019: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
 				if(xCss){
 				^
 
-0 error(s), 8 warning(s)
-Done (compile time:9.168s)
+p3api.js.uncompressed.js:28759: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+                                if (hint == 'avatar') {
+                                ^
+
+0 error(s), 9 warning(s)
+Done (compile time:9.566s)
 
 
 Has Features Detected
@@ -2361,5 +2370,5 @@ Has Features Detected
 
 Process finished normally
 	errors: 0
-	warnings: 113
-	build time: 146.377 seconds
+	warnings: 114
+	build time: 143.015 seconds

@@ -1,16 +1,16 @@
-define([
-	"dojo/_base/declare", "dgrid/OnDemandGrid","dojo/store/JsonRest","dgrid/extensions/DijitRegistry",
+define("cid/widget/PageGrid", [
+	"dojo/_base/declare", "dgrid/Grid","dojo/store/JsonRest","dgrid/extensions/DijitRegistry","dgrid/extensions/Pagination",
 	"dgrid/Keyboard", "dgrid/Selection","./formatter","dgrid/extensions/ColumnResizer","dgrid/extensions/ColumnHider",
 	"dgrid/extensions/DnD","dojo/dnd/Source","./FilterPanel","dojo/_base/Deferred","dojo/aspect","dojo/_base/lang"
 
 ], 
 function(
-	declare, Grid,Store,DijitRegistry,
+	declare, Grid,Store,DijitRegistry,Pagination,
 	Keyboard,Selection,formatter,ColumnResizer,
 	ColumnHider,DnD,DnDSource,FilterPanel,
 	Deferred,aspect,lang
 ){
-	return declare([Grid,ColumnHider,DnD,Keyboard,ColumnResizer,DijitRegistry],{
+	return declare([Grid,Pagination,ColumnHider,DnD,Keyboard,ColumnResizer,DijitRegistry],{
 		constructor: function(){
 			this.dndParams.creator =lang.hitch(this,function(item, hint){
                                 console.log("item: ", item, " hint:", hint, "dataType: ", this.dndDataType);
@@ -28,6 +28,7 @@ function(
 		selectionMode: "extended",
 		allowTextSelection: false,
 		deselectOnRefresh: false,
+		rowsPerPage:200,
 		minRowsPerPage: 50,
 		bufferRows: 100,
 		maxRowsPerPage: 1000,
