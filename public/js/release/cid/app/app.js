@@ -34,11 +34,12 @@ define("cid/app/app", [
 		startup: function() {	
 			var _self=this;
 
-			//this.initHistory();
+			this.initHistory();
 
-			//Topic.subscribe("/navigate", function(msg){
-			//	_self.navigate(msg);
-			//});	
+			Topic.subscribe("/navigate", function(msg){
+				console.log("do navigation");
+				_self.navigate(msg);
+			});	
 
 			//on(window,".WorkspaceHeader:click", function(){
 			//	_self.toggleFooterMenu();
@@ -102,9 +103,11 @@ define("cid/app/app", [
 
 		getApplicationContainer: function(){
 			if (this.applicationContainer){
+				console.log("Already existing AppContainer");
 				return this.applicationContainer;
 			}
 			this.applicationContainer = Registry.byId("ApplicationContainer");
+			console.log("Application Container from registry: ", this.applicationContainer);
 			return this.applicationContainer;
 		},
 
@@ -119,11 +122,12 @@ define("cid/app/app", [
 
 		getCurrentContainer: function(){
 			var ac = this.getApplicationContainer();
-			console.log("ac: ", ac);
+			console.log("AppContainer: ", ac);
 			var ch = ac.getChildren().filter(function(child){
+				console.log("Child Region: ", child.region, child);
 				return child.region=="center";
 			});
-			if (!ch || ch.length<1){ return false; }
+			if (!ch || ch.length<1){ console.warn("Unable to find current container"); return false; }
 
 			return ch[0];
 		},
@@ -150,6 +154,11 @@ define("cid/app/app", [
 			var prop = "content";
 
 			console.log("Ctor: ", ctor);
+			if (newNavState.set && (typeof newNavState.value != 'undefined')){
+				this.getCurrentContainer().set(newNavState.set,newNavState.value);
+				return;
+			}
+
 			if (newNavState.widgetClass) {
 				ctor = this.getConstructor(newNavState.widgetClass)
 				prop = "data";
@@ -229,13 +238,14 @@ define("cid/app/app", [
 				if (msg.id) {
 					msg.href = msg.id;
 				}
-
-				if (msg.filter) {
-					msg.href += "?filter(" + msg.filter + ")";
+			}else{
+				if ((msg.href==(window.location.pathname + window.location.search)) ||
+					(msg.href==window.location.href)) {
+					return;
 				}
 			}
+
 			this._doNavigation(msg);
-//			this.getToolbar().set("selected", msg.id);
 			console.log("PUSH STATE: ", msg.href, msg);
 			window.history.pushState(msg,null,msg.href);
 		},

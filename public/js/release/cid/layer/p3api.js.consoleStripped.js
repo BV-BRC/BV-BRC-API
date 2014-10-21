@@ -14641,9 +14641,32 @@ define([
 	return declare([App], {
 		launchGridColumns: null,
 
+		getGlobalSearchBox: function(){
+			if (this.globalSearchBox) {
+				return this.globalSearchBox;
+			}
+			return Registry.byId("GlobalSearchBox");
+		},
 		startup: function(){
 			this.inherited(arguments);
+
+			var gsb = this.getGlobalSearchBox();
+
+			 0 && console.log("Global Search Box: ", gsb);
+
+			if (gsb){
+				var query = window.location.search;
+				var path = window.location.pathname;
+				 0 && console.log("Path: ", path, "Query: ", query);
+				query = (decodeURIComponent((query && query.charAt(0)=="?")?query.substr(1):query)).replace(/\&/g," ");
+				if (!path) {
+					 0 && console.log("setup global dataTypes");
+				}
+				gsb.set('value', query, false);
+			}
+
 			if (this.launchGridColumns) {	
+				 0 && console.log("Launch Grid Columns: ", this.launchGridColuns);
 				var store = new JsonRest({
 					target: window.location.pathname,
 					idProperty:'feature_id',
@@ -14655,15 +14678,20 @@ define([
 				});
 
 				var grid = new Grid({
+					region: "center",
 					columns: this.launchGridColumns.map(function(col){
 						return { label: col.toUpperCase(), field: col }
 					}),
 					store:store,
 					query: window.location.search
 				})
-				domConstruct.place(grid.domNode, this.getCurrentContainer().containerNode, "last");
-				grid.startup();	
-				this.getApplicationContainer().layout();
+
+				//domConstruct.place(grid.domNode, this.getCurrentContainer().containerNode, "last");
+				var ac = this.getApplicationContainer();
+				ac.removeChild(this.getCurrentContainer());
+				ac.addChild(grid);
+//				grid.startup();	
+//				this.getApplicationContainer().layout();
 			}
 		}
 	});
@@ -14688,8 +14716,17 @@ define([
 		},
 		"baseClass": "GlobalSearch",
 		"disabled":false,
+		"value": "",
+		_setValueAttr: function(q){
+			this.query=q;	
+			this.searchInput.set("value", q);
+		},
 		onInputChange: function(val){
-			 0 && console.log("New Search Value",val);
+			val = val.replace(/\ /g, "&");
+			var dest = window.location.pathname + "?" + val;
+			 0 && console.log("New Search Value",val,dest );
+			Topic.publish("/navigate", {href: dest, set: "query", value: "?"+val});
+			
 		}
 	});
 });
@@ -23803,11 +23840,12 @@ define([
 		startup: function() {	
 			var _self=this;
 
-			//this.initHistory();
+			this.initHistory();
 
-			//Topic.subscribe("/navigate", function(msg){
-			//	_self.navigate(msg);
-			//});	
+			Topic.subscribe("/navigate", function(msg){
+				 0 && console.log("do navigation");
+				_self.navigate(msg);
+			});	
 
 			//on(window,".WorkspaceHeader:click", function(){
 			//	_self.toggleFooterMenu();
@@ -23871,9 +23909,11 @@ define([
 
 		getApplicationContainer: function(){
 			if (this.applicationContainer){
+				 0 && console.log("Already existing AppContainer");
 				return this.applicationContainer;
 			}
 			this.applicationContainer = Registry.byId("ApplicationContainer");
+			 0 && console.log("Application Container from registry: ", this.applicationContainer);
 			return this.applicationContainer;
 		},
 
@@ -23888,11 +23928,12 @@ define([
 
 		getCurrentContainer: function(){
 			var ac = this.getApplicationContainer();
-			 0 && console.log("ac: ", ac);
+			 0 && console.log("AppContainer: ", ac);
 			var ch = ac.getChildren().filter(function(child){
+				 0 && console.log("Child Region: ", child.region, child);
 				return child.region=="center";
 			});
-			if (!ch || ch.length<1){ return false; }
+			if (!ch || ch.length<1){  0 && console.warn("Unable to find current container"); return false; }
 
 			return ch[0];
 		},
@@ -23919,6 +23960,11 @@ define([
 			var prop = "content";
 
 			 0 && console.log("Ctor: ", ctor);
+			if (newNavState.set && (typeof newNavState.value != 'undefined')){
+				this.getCurrentContainer().set(newNavState.set,newNavState.value);
+				return;
+			}
+
 			if (newNavState.widgetClass) {
 				ctor = this.getConstructor(newNavState.widgetClass)
 				prop = "data";
@@ -23998,13 +24044,14 @@ define([
 				if (msg.id) {
 					msg.href = msg.id;
 				}
-
-				if (msg.filter) {
-					msg.href += "?filter(" + msg.filter + ")";
+			}else{
+				if ((msg.href==(window.location.pathname + window.location.search)) ||
+					(msg.href==window.location.href)) {
+					return;
 				}
 			}
+
 			this._doNavigation(msg);
-//			this.getToolbar().set("selected", msg.id);
 			 0 && console.log("PUSH STATE: ", msg.href, msg);
 			window.history.pushState(msg,null,msg.href);
 		},
