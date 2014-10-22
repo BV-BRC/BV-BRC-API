@@ -1,5 +1,5 @@
 require({cache:{
-'url:cid/widget/templates/GlobalSearch.html':"<div class=\"GlobalSearch\">\n\t<input data-dojo-type=\"dijit/form/TextBox\" data-dojo-attach-event=\"onChange:onInputChange\" data-dojo-attach-point=\"searchInput\" style=\"width:100%\"/>\n</div>\n"}});
+'url:cid/widget/templates/GlobalSearch.html':"<div class=\"GlobalSearch\">\n\t<input data-dojo-type=\"dijit/form/TextBox\" data-dojo-attach-event=\"onChange:onInputChange,keypress:onKeypress\" data-dojo-attach-point=\"searchInput\" style=\"width:100%\" />\n</div>\n"}});
 define("cid/widget/SearchResults", [
 	"dojo/_base/declare","dijit/_WidgetBase","dojo/on","dojo/dom-construct",
 	"dojo/dom-class","dijit/_TemplatedMixin","dijit/_WidgetsInTemplateMixin",

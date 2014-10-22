@@ -14703,14 +14703,14 @@ define([
 	"dojo/_base/declare","dijit/_WidgetBase","dojo/on","dojo/dom-construct",
 	"dojo/dom-class","dijit/_TemplatedMixin","dijit/_WidgetsInTemplateMixin",
 	"dojo/text!./templates/GlobalSearch.html","./Button","dijit/registry","dojo/_base/lang",
-	"dojo/dom","dojo/topic","dijit/form/TextBox"
+	"dojo/dom","dojo/topic","dijit/form/TextBox","dojo/keys","dijit/_FocusMixin","dijit/focus"
 ], function(
 	declare, WidgetBase, on,domConstruct,
 	domClass,Templated,WidgetsInTemplate,
 	template,Button,Registry,lang,
-	dom,Topic,TextBox
+	dom,Topic,TextBox,keys,FocusMixin,focusUtil
 ){
-	return declare([WidgetBase,Templated,WidgetsInTemplate], {
+	return declare([WidgetBase,Templated,WidgetsInTemplate,FocusMixin], {
 		templateString: template,
 		constructor: function(){
 		},
@@ -14721,12 +14721,18 @@ define([
 			this.query=q;	
 			this.searchInput.set("value", q);
 		},
+
+		onKeypress: function(evt){
+			if (evt.charOrCode==keys.ENTER) {
+				focusUtil.curNode.blur();
+			}
+		},
+
 		onInputChange: function(val){
 			val = val.replace(/\ /g, "&");
 			var dest = window.location.pathname + "?" + val;
 			console.log("New Search Value",val,dest );
 			Topic.publish("/navigate", {href: dest, set: "query", value: "?"+val});
-			
 		}
 	});
 });
@@ -33045,7 +33051,7 @@ define([
 
 },
 'url:dijit/templates/Dialog.html':"<div class=\"dijitDialog\" role=\"dialog\" aria-labelledby=\"${id}_title\">\n\t<div data-dojo-attach-point=\"titleBar\" class=\"dijitDialogTitleBar\">\n\t\t<span data-dojo-attach-point=\"titleNode\" class=\"dijitDialogTitle\" id=\"${id}_title\"\n\t\t\t\trole=\"heading\" level=\"1\"></span>\n\t\t<span data-dojo-attach-point=\"closeButtonNode\" class=\"dijitDialogCloseIcon\" data-dojo-attach-event=\"ondijitclick: onCancel\" title=\"${buttonCancel}\" role=\"button\" tabindex=\"-1\">\n\t\t\t<span data-dojo-attach-point=\"closeText\" class=\"closeText\" title=\"${buttonCancel}\">x</span>\n\t\t</span>\n\t</div>\n\t<div data-dojo-attach-point=\"containerNode\" class=\"dijitDialogPaneContent\"></div>\n\t${!actionBarTemplate}\n</div>\n\n",
-'url:cid/widget/templates/GlobalSearch.html':"<div class=\"GlobalSearch\">\n\t<input data-dojo-type=\"dijit/form/TextBox\" data-dojo-attach-event=\"onChange:onInputChange\" data-dojo-attach-point=\"searchInput\" style=\"width:100%\"/>\n</div>\n",
+'url:cid/widget/templates/GlobalSearch.html':"<div class=\"GlobalSearch\">\n\t<input data-dojo-type=\"dijit/form/TextBox\" data-dojo-attach-event=\"onChange:onInputChange,keypress:onKeypress\" data-dojo-attach-point=\"searchInput\" style=\"width:100%\" />\n</div>\n",
 'url:dijit/form/templates/TextBox.html':"<div class=\"dijit dijitReset dijitInline dijitLeft\" id=\"widget_${id}\" role=\"presentation\"\n\t><div class=\"dijitReset dijitInputField dijitInputContainer\"\n\t\t><input class=\"dijitReset dijitInputInner\" data-dojo-attach-point='textbox,focusNode' autocomplete=\"off\"\n\t\t\t${!nameAttrSetting} type='${type}'\n\t/></div\n></div>\n",
 'url:dgrid/css/dgrid.css':{"cssText":".dgrid{position:relative;overflow:hidden;border:1px solid #ddd;height:30em;display:block;}.dgrid-header{background-color:#eee;}.dgrid-header-row{position:absolute;right:17px;left:0;}.dgrid-header-scroll{position:absolute;top:0;right:0;}.dgrid-footer{position:absolute;bottom:0;width:100%;}.dgrid-header-hidden, html.has-quirks .dgrid-header-hidden .dgrid-cell{font-size:0;height:0 !important;border-top:none !important;border-bottom:none !important;margin-top:0 !important;margin-bottom:0 !important;padding-top:0 !important;padding-bottom:0 !important;}.dgrid-footer-hidden{display:none;}.dgrid-sortable{cursor:pointer;}.dgrid-header, .dgrid-header-row, .dgrid-footer{overflow:hidden;background-color:#eee;}.dgrid-row-table{border-collapse:collapse;border:none;table-layout:fixed;empty-cells:show;width:100%;height:100%;}.dgrid-cell{padding:0px;text-align:left;overflow:hidden;vertical-align:top;border:1px solid #ddd;border-top-style:none;box-sizing:border-box;-moz-box-sizing:border-box;-ms-box-sizing:border-box;-webkit-box-sizing:border-box;}.dgrid-cell-padding{padding:3px;}.dgrid-content{position:relative;height:99%;}.dgrid-scroller{overflow-x:auto;overflow-y:scroll;position:absolute;top:0px;margin-top:25px;bottom:0px;width:100%;}.dgrid-preload{font-size:0;line-height:0;}.dgrid-loading{position:relative;height:100%;}.dgrid-above{position:absolute;bottom:0;}.ui-icon{width:16px;height:16px;background-image:url(\"images/ui-icons_222222_256x240.png\");}.ui-icon-triangle-1-e{background-position:-32px -16px;}.ui-icon-triangle-1-se{background-position:-48px -16px;}.dgrid-expando-icon{width:16px;height:16px;}.dgrid-tree-container{-webkit-transition-duration:0.3s;-moz-transition-duration:0.3s;-ms-transition-duration:0.3s;-o-transition-duration:0.3s;transition-duration:0.3s;overflow:hidden;}.dgrid-tree-container.dgrid-tree-resetting{-webkit-transition-duration:0;-moz-transition-duration:0;-ms-transition-duration:0;-o-transition-duration:0;transition-duration:0;}.dgrid-sort-arrow{background-position:-64px -16px;display:block;float:right;margin:0 4px 0 5px;height:12px;}.dgrid-sort-up .dgrid-sort-arrow{background-position:0px -16px;}.dgrid-selected{background-color:#bfd6eb;}.dgrid-input{width:99%;}html.has-mozilla .dgrid *:focus, html.has-opera .dgrid *:focus{outline:1px dotted;}html.has-ie-6-7.has-no-quirks .dgrid-row-table{width:auto;}html.has-quirks .dgrid-row-table, html.has-ie-6 .dgrid-row-table{height:auto;}html.has-quirks .dgrid-header-scroll, html.has-ie-6 .dgrid-header-scroll{font-size:0;}html.has-mozilla .dgrid-focus{outline-offset:-1px;}.dgrid-scrollbar-measure{width:100px;height:100px;overflow:scroll;position:absolute;top:-9999px;}.dgrid-autoheight{height:auto;}.dgrid-autoheight .dgrid-scroller{position:relative;overflow-y:hidden;}.dgrid-autoheight .dgrid-header-scroll{display:none;}.dgrid-autoheight .dgrid-header{right:0;}#dgrid-css-dgrid-loaded{display:none;}","xCss":"html.has-mozilla .dgrid *:{/27};{/17background-image:url(\"images/ui-icons_222222_256x240.png\");}"},
 'url:dgrid/css/extensions/Pagination.css':".dgrid-status{padding:2px;}.dgrid-pagination .dgrid-status{float:left;}.dgrid-pagination .dgrid-navigation, .dgrid-pagination .dgrid-page-size{float:right;}.dgrid-navigation .dgrid-page-link{cursor:pointer;font-weight:bold;text-decoration:none;color:inherit;padding:0 4px;}.dgrid-first, .dgrid-last, .dgrid-next, .dgrid-previous{font-size:130%;}.dgrid-pagination .dgrid-page-disabled, .has-ie-6-7 .dgrid-navigation .dgrid-page-disabled, .has-ie.has-quirks .dgrid-navigation .dgrid-page-disabled{color:#aaa;cursor:default;}.dgrid-page-input{margin-top:1px;width:2em;text-align:center;}.dgrid-page-size{margin:1px 4px 0 4px;}#dgrid-css-extensions-Pagination-loaded{display:none;}",
