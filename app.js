@@ -17,9 +17,6 @@ var app = module.exports =  express();
 
 debug("APP MODE: ", app.get('env'))
 
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'ejs');
-
 require("./enableMultipleViewRoots")(app);
 app.set('views', [
     path.join(__dirname, 'views'),
@@ -31,6 +28,11 @@ app.set('view engine', 'ejs');
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 
 app.use(logger('dev'));
+app.use(function(req,res,next){
+	debug("APP MODE: ", app.get('env'));
+	req.production = (app.get('env')=='production')?true:false
+	next();
+});
 
 app.use(cookieParser());
 
