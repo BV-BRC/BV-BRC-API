@@ -47,7 +47,6 @@ define("cid/app/apiexplorer", [
 					idProperty:'feature_id',
 					headers:{
 						"accept": "application/json",
-						"content-type": "application/json",
 						'X-Requested-With':null
 					}
 				});

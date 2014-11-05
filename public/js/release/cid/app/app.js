@@ -247,7 +247,7 @@ define("cid/app/app", [
 
 			this._doNavigation(msg);
 			console.log("PUSH STATE: ", msg.href, msg);
-			window.history.pushState(msg,null,msg.href);
+			window.history.pushState(msg,null,encodeURIComponent(msg.href));
 		},
 		toggleFooterMenu: function(){
 			var fm = Registry.byId("FooterMenu");
