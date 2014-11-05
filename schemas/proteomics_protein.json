@@ -1,0 +1,208 @@
+{
+  "$schema": "http://json-schema.org/draft-04/hyper-schema#",
+  "title": "example",
+  "type": "object",
+  "pathStart": "/proteomics_protein",
+  "links": [
+    {
+      "rel": "self",
+      "title": "Get a proteomics_protein instance",
+      "method": "GET",
+      "template": "default",
+      "href": "/proteomics_protein/{id}",
+      "targetSchema": {
+        "$ref": "#"
+      }
+    },
+    {
+      "rel": "query",
+      "title": "Query proteomics_protein instances.",
+      "method": "GET",
+      "href": "/proteomics_protein",
+      "template": "default-list",
+      "targetSchema": {
+        "type": "array",
+        "items": {
+          "$ref": "#"
+        }
+      }
+    },
+    {
+      "rel": "create",
+      "title": "Create proteomics_protein(s).  Throw error if proteomics_protein already exists.",
+      "encType": "application/json",
+      "method": "POST",
+      "href": "/proteomics_protein",
+      "schema": {
+        "oneOf": [
+          {
+            "$ref": "#"
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#"
+            }
+          }
+        ]
+      },
+      "targetSchema": {
+        "type": "array",
+        "items": {
+          "oneOf": [
+            {
+              "$ref": "#"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "rel": "update",
+      "title": "Update proteomics_protein. Partial Update OK. Throw error if proteomics_protein does not exist",
+      "encType": "application/json",
+      "method": "POST",
+      "href": "/proteomics_protein/{id}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "$ref": "#"
+      }
+    },
+    {
+      "rel": "create",
+      "title": "Create proteomics_protein. Overwrite it if it already exists.",
+      "encType": "application/json",
+      "method": "PUT",
+      "href": "/proteomics_protein/{id}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "type": "null"
+      }
+    },
+    {
+      "rel": "delete",
+      "title": "Delete a proteomics_protein",
+      "method": "DELETE",
+      "href": "/proteomics_protein/{id}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "type": "null"
+      }
+    },
+    {
+      "rel": "delete",
+      "title": "Delete one ore more proteomics_protein by query",
+      "method": "DELETE",
+      "href": "/proteomics_protein/{,query*}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "type": "null"
+      }
+    },
+    {
+      "rel": "rpc",
+      "title": "JSON-RPC Endpoint for the proteomics_protein Model.  Parameters and Response schema as per the associated link relation.",
+      "encType": "application/jsonrpc+json",
+      "mediaType": "application/jsonrpc+json",
+      "method": "POST",
+      "href": "/proteomics_protein"
+    }
+  ],
+  "properties": {
+    "_version_": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "abundance": {
+      "indexed": true,
+      "type": "string"
+    },
+    "accession": {
+      "indexed": true,
+      "type": "string"
+    },
+    "experiment_id": {
+      "indexed": true,
+      "type": "string"
+    },
+    "experiment_label": {
+      "indexed": true,
+      "type": "string"
+    },
+    "experiment_title": {
+      "indexed": true,
+      "type": "string"
+    },
+    "genome_name": {
+      "indexed": true,
+      "type": "string"
+    },
+    "locus_tag": {
+      "indexed": true,
+      "type": "string"
+    },
+    "log_ratio": {
+      "indexed": true,
+      "type": "string"
+    },
+    "na_feature_id": {
+      "indexed": true,
+      "type": "string"
+    },
+    "peptides": {
+      "indexed": true,
+      "type": "string"
+    },
+    "product": {
+      "indexed": true,
+      "type": "string"
+    },
+    "pubmed_id": {
+      "indexed": true,
+      "type": "string"
+    },
+    "refseq_gene": {
+      "indexed": true,
+      "type": "string"
+    },
+    "refseq_locus_tag": {
+      "indexed": true,
+      "type": "string"
+    },
+    "source": {
+      "indexed": true,
+      "type": "string"
+    },
+    "taxon_id": {
+      "indexed": true,
+      "type": "string"
+    },
+    "taxon_name": {
+      "indexed": true,
+      "type": "string"
+    },
+    "text": {
+      "indexed": true,
+      "type": "string",
+      "transient": true
+    },
+    "z_score": {
+      "indexed": true,
+      "type": "string"
+    }
+  }
+}

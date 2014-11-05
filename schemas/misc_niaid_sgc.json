@@ -1,0 +1,195 @@
+{
+  "$schema": "http://json-schema.org/draft-04/hyper-schema#",
+  "title": "misc_niaid_sgc",
+  "type": "object",
+  "pathStart": "/misc_niaid_sgc",
+  "links": [
+    {
+      "rel": "self",
+      "title": "Get a misc_niaid_sgc instance",
+      "method": "GET",
+      "template": "default",
+      "href": "/misc_niaid_sgc/{id}",
+      "targetSchema": {
+        "$ref": "#"
+      }
+    },
+    {
+      "rel": "query",
+      "title": "Query misc_niaid_sgc instances.",
+      "method": "GET",
+      "href": "/misc_niaid_sgc",
+      "template": "default-list",
+      "targetSchema": {
+        "type": "array",
+        "items": {
+          "$ref": "#"
+        }
+      }
+    },
+    {
+      "rel": "create",
+      "title": "Create misc_niaid_sgc(s).  Throw error if misc_niaid_sgc already exists.",
+      "encType": "application/json",
+      "method": "POST",
+      "href": "/misc_niaid_sgc",
+      "schema": {
+        "oneOf": [
+          {
+            "$ref": "#"
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#"
+            }
+          }
+        ]
+      },
+      "targetSchema": {
+        "type": "array",
+        "items": {
+          "oneOf": [
+            {
+              "$ref": "#"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "rel": "update",
+      "title": "Update misc_niaid_sgc. Partial Update OK. Throw error if misc_niaid_sgc does not exist",
+      "encType": "application/json",
+      "method": "POST",
+      "href": "/misc_niaid_sgc/{id}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "$ref": "#"
+      }
+    },
+    {
+      "rel": "create",
+      "title": "Create misc_niaid_sgc. Overwrite it if it already exists.",
+      "encType": "application/json",
+      "method": "PUT",
+      "href": "/misc_niaid_sgc/{id}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "type": "null"
+      }
+    },
+    {
+      "rel": "delete",
+      "title": "Delete a misc_niaid_sgc",
+      "method": "DELETE",
+      "href": "/misc_niaid_sgc/{id}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "type": "null"
+      }
+    },
+    {
+      "rel": "delete",
+      "title": "Delete one ore more misc_niaid_sgc by query",
+      "method": "DELETE",
+      "href": "/misc_niaid_sgc/{,query*}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "type": "null"
+      }
+    },
+    {
+      "rel": "rpc",
+      "title": "JSON-RPC Endpoint for the misc_niaid_sgc Model.  Parameters and Response schema as per the associated link relation.",
+      "encType": "application/jsonrpc+json",
+      "mediaType": "application/jsonrpc+json",
+      "method": "POST",
+      "href": "/misc_niaid_sgc"
+    }
+  ],
+  "uniqueKey": "target_id",
+  "properties": {
+    "_version_": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "date_inserted": {
+      "indexed": true,
+      "type": "string",
+      "format": "datetime"
+    },
+    "date_modified": {
+      "indexed": true,
+      "type": "string",
+      "format": "datetime"
+    },
+    "gene_symbol_collection": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "genus": {
+      "indexed": true,
+      "type": "string"
+    },
+    "has_clones": {
+      "indexed": true,
+      "type": "string"
+    },
+    "has_proteins": {
+      "indexed": true,
+      "type": "string"
+    },
+    "selection_criteria": {
+      "indexed": true,
+      "type": "string"
+    },
+    "species": {
+      "indexed": true,
+      "type": "string"
+    },
+    "strain": {
+      "indexed": true,
+      "type": "string"
+    },
+    "target_id": {
+      "indexed": true,
+      "type": "string",
+      "unique": true
+    },
+    "target_status": {
+      "indexed": true,
+      "type": "string"
+    },
+    "text": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "transient": true
+    }
+  },
+  "required": [
+    "target_id"
+  ]
+}

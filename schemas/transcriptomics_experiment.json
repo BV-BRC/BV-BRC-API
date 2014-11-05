@@ -1,0 +1,252 @@
+{
+  "$schema": "http://json-schema.org/draft-04/hyper-schema#",
+  "title": "transcriptomics_experiment",
+  "type": "object",
+  "pathStart": "/transcriptomics_experiment",
+  "links": [
+    {
+      "rel": "self",
+      "title": "Get a transcriptomics_experiment instance",
+      "method": "GET",
+      "template": "default",
+      "href": "/transcriptomics_experiment/{id}",
+      "targetSchema": {
+        "$ref": "#"
+      }
+    },
+    {
+      "rel": "query",
+      "title": "Query transcriptomics_experiment instances.",
+      "method": "GET",
+      "href": "/transcriptomics_experiment",
+      "template": "default-list",
+      "targetSchema": {
+        "type": "array",
+        "items": {
+          "$ref": "#"
+        }
+      }
+    },
+    {
+      "rel": "create",
+      "title": "Create transcriptomics_experiment(s).  Throw error if transcriptomics_experiment already exists.",
+      "encType": "application/json",
+      "method": "POST",
+      "href": "/transcriptomics_experiment",
+      "schema": {
+        "oneOf": [
+          {
+            "$ref": "#"
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#"
+            }
+          }
+        ]
+      },
+      "targetSchema": {
+        "type": "array",
+        "items": {
+          "oneOf": [
+            {
+              "$ref": "#"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "rel": "update",
+      "title": "Update transcriptomics_experiment. Partial Update OK. Throw error if transcriptomics_experiment does not exist",
+      "encType": "application/json",
+      "method": "POST",
+      "href": "/transcriptomics_experiment/{id}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "$ref": "#"
+      }
+    },
+    {
+      "rel": "create",
+      "title": "Create transcriptomics_experiment. Overwrite it if it already exists.",
+      "encType": "application/json",
+      "method": "PUT",
+      "href": "/transcriptomics_experiment/{id}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "type": "null"
+      }
+    },
+    {
+      "rel": "delete",
+      "title": "Delete a transcriptomics_experiment",
+      "method": "DELETE",
+      "href": "/transcriptomics_experiment/{id}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "type": "null"
+      }
+    },
+    {
+      "rel": "delete",
+      "title": "Delete one ore more transcriptomics_experiment by query",
+      "method": "DELETE",
+      "href": "/transcriptomics_experiment/{,query*}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "type": "null"
+      }
+    },
+    {
+      "rel": "rpc",
+      "title": "JSON-RPC Endpoint for the transcriptomics_experiment Model.  Parameters and Response schema as per the associated link relation.",
+      "encType": "application/jsonrpc+json",
+      "mediaType": "application/jsonrpc+json",
+      "method": "POST",
+      "href": "/transcriptomics_experiment"
+    }
+  ],
+  "uniqueKey": "eid",
+  "properties": {
+    "_version_": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "accession": {
+      "indexed": true,
+      "type": "string"
+    },
+    "author": {
+      "indexed": true,
+      "type": "string"
+    },
+    "condition": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "date_inserted": {
+      "indexed": true,
+      "type": "string",
+      "format": "datetime"
+    },
+    "date_modified": {
+      "indexed": true,
+      "type": "string",
+      "format": "datetime"
+    },
+    "description": {
+      "indexed": true,
+      "type": "string"
+    },
+    "eid": {
+      "indexed": true,
+      "type": "integer",
+      "unique": true
+    },
+    "expid": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "genes": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "genome_ids": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "institution": {
+      "indexed": true,
+      "type": "string"
+    },
+    "mutant": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "organism": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "pi": {
+      "indexed": true,
+      "type": "string"
+    },
+    "platforms": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "pmid": {
+      "indexed": true,
+      "type": "string"
+    },
+    "release_date": {
+      "indexed": true,
+      "type": "string",
+      "format": "datetime"
+    },
+    "samples": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "strain": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "text": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "transient": true
+    },
+    "timeseries": {
+      "indexed": true,
+      "type": "string"
+    },
+    "title": {
+      "indexed": true,
+      "type": "string"
+    }
+  },
+  "required": [
+    "eid"
+  ]
+}

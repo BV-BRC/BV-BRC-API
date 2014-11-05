@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
 	<table style="width:100%">
 		<tbody>
 		<% var count=1; %>
-	<% Object.keys(results.results).forEach(function(key) { %>
+	<% Object.keys(results).forEach(function(key) { %>
 		<tr style="<% if (count++ % 2) { %>background:#efefef; <%} %>"> 
 			<td style='width:150px;text-align:right;font-weight:600;padding;2px;vertical-align:top;'><%= key %></td>
-			<td><%= results.results[key] %> </td>
+			<td><%= results[key] %> </td>
 		</tr>
 	<% }) %>
 		</tbody>

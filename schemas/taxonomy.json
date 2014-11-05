@@ -1,0 +1,189 @@
+{
+  "$schema": "http://json-schema.org/draft-04/hyper-schema#",
+  "title": "example",
+  "type": "object",
+  "pathStart": "/taxonomy",
+  "links": [
+    {
+      "rel": "self",
+      "title": "Get a taxonomy instance",
+      "method": "GET",
+      "template": "default",
+      "href": "/taxonomy/{id}",
+      "targetSchema": {
+        "$ref": "#"
+      }
+    },
+    {
+      "rel": "query",
+      "title": "Query taxonomy instances.",
+      "method": "GET",
+      "href": "/taxonomy",
+      "template": "default-list",
+      "targetSchema": {
+        "type": "array",
+        "items": {
+          "$ref": "#"
+        }
+      }
+    },
+    {
+      "rel": "create",
+      "title": "Create taxonomy(s).  Throw error if taxonomy already exists.",
+      "encType": "application/json",
+      "method": "POST",
+      "href": "/taxonomy",
+      "schema": {
+        "oneOf": [
+          {
+            "$ref": "#"
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#"
+            }
+          }
+        ]
+      },
+      "targetSchema": {
+        "type": "array",
+        "items": {
+          "oneOf": [
+            {
+              "$ref": "#"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "rel": "update",
+      "title": "Update taxonomy. Partial Update OK. Throw error if taxonomy does not exist",
+      "encType": "application/json",
+      "method": "POST",
+      "href": "/taxonomy/{id}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "$ref": "#"
+      }
+    },
+    {
+      "rel": "create",
+      "title": "Create taxonomy. Overwrite it if it already exists.",
+      "encType": "application/json",
+      "method": "PUT",
+      "href": "/taxonomy/{id}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "type": "null"
+      }
+    },
+    {
+      "rel": "delete",
+      "title": "Delete a taxonomy",
+      "method": "DELETE",
+      "href": "/taxonomy/{id}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "type": "null"
+      }
+    },
+    {
+      "rel": "delete",
+      "title": "Delete one ore more taxonomy by query",
+      "method": "DELETE",
+      "href": "/taxonomy/{,query*}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "type": "null"
+      }
+    },
+    {
+      "rel": "rpc",
+      "title": "JSON-RPC Endpoint for the taxonomy Model.  Parameters and Response schema as per the associated link relation.",
+      "encType": "application/jsonrpc+json",
+      "mediaType": "application/jsonrpc+json",
+      "method": "POST",
+      "href": "/taxonomy"
+    }
+  ],
+  "uniqueKey": "taxon_id",
+  "properties": {
+    "_version_": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "genomes": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "genomes_f": {
+      "indexed": true,
+      "type": "string"
+    },
+    "lineage_ids": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "uniqueItems": true
+    },
+    "lineage_names": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "lineage_ranks": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "taxon_id": {
+      "indexed": true,
+      "type": "integer",
+      "unique": true
+    },
+    "taxon_name": {
+      "indexed": true,
+      "type": "string"
+    },
+    "taxon_rank": {
+      "indexed": true,
+      "type": "string"
+    },
+    "text": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "transient": true
+    }
+  },
+  "required": [
+    "taxon_id"
+  ]
+}

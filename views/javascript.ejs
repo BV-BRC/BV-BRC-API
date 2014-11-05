@@ -17,8 +17,8 @@
 
 			var appOpts={}
 
-			<% if (results && results.results && results.results[0]) { %>
-				appOpts.launchGridColumns=<%- JSON.stringify(Object.keys(results.results[0])) %>;
+			<% if (results && results && results[0]) { %>
+				appOpts.launchGridColumns=<%- JSON.stringify(Object.keys(results[0])) %>;
 			<% } %>
 
                                 app = new App(appOpts);

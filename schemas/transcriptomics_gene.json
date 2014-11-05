@@ -1,0 +1,222 @@
+{
+  "$schema": "http://json-schema.org/draft-04/hyper-schema#",
+  "title": "transcriptomics_gene",
+  "type": "object",
+  "pathStart": "/transcriptomics_gene",
+  "links": [
+    {
+      "rel": "self",
+      "title": "Get a transcriptomics_gene instance",
+      "method": "GET",
+      "template": "default",
+      "href": "/transcriptomics_gene/{id}",
+      "targetSchema": {
+        "$ref": "#"
+      }
+    },
+    {
+      "rel": "query",
+      "title": "Query transcriptomics_gene instances.",
+      "method": "GET",
+      "href": "/transcriptomics_gene",
+      "template": "default-list",
+      "targetSchema": {
+        "type": "array",
+        "items": {
+          "$ref": "#"
+        }
+      }
+    },
+    {
+      "rel": "create",
+      "title": "Create transcriptomics_gene(s).  Throw error if transcriptomics_gene already exists.",
+      "encType": "application/json",
+      "method": "POST",
+      "href": "/transcriptomics_gene",
+      "schema": {
+        "oneOf": [
+          {
+            "$ref": "#"
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#"
+            }
+          }
+        ]
+      },
+      "targetSchema": {
+        "type": "array",
+        "items": {
+          "oneOf": [
+            {
+              "$ref": "#"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "rel": "update",
+      "title": "Update transcriptomics_gene. Partial Update OK. Throw error if transcriptomics_gene does not exist",
+      "encType": "application/json",
+      "method": "POST",
+      "href": "/transcriptomics_gene/{id}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "$ref": "#"
+      }
+    },
+    {
+      "rel": "create",
+      "title": "Create transcriptomics_gene. Overwrite it if it already exists.",
+      "encType": "application/json",
+      "method": "PUT",
+      "href": "/transcriptomics_gene/{id}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "type": "null"
+      }
+    },
+    {
+      "rel": "delete",
+      "title": "Delete a transcriptomics_gene",
+      "method": "DELETE",
+      "href": "/transcriptomics_gene/{id}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "type": "null"
+      }
+    },
+    {
+      "rel": "delete",
+      "title": "Delete one ore more transcriptomics_gene by query",
+      "method": "DELETE",
+      "href": "/transcriptomics_gene/{,query*}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "type": "null"
+      }
+    },
+    {
+      "rel": "rpc",
+      "title": "JSON-RPC Endpoint for the transcriptomics_gene Model.  Parameters and Response schema as per the associated link relation.",
+      "encType": "application/jsonrpc+json",
+      "mediaType": "application/jsonrpc+json",
+      "method": "POST",
+      "href": "/transcriptomics_gene"
+    }
+  ],
+  "properties": {
+    "_version_": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "accession": {
+      "indexed": true,
+      "type": "string"
+    },
+    "alt_locus_tag": {
+      "indexed": true,
+      "type": "string"
+    },
+    "avg_intensity": {
+      "indexed": true,
+      "type": "number"
+    },
+    "condition": {
+      "indexed": true,
+      "type": "string"
+    },
+    "date_inserted": {
+      "indexed": true,
+      "type": "string",
+      "format": "datetime"
+    },
+    "date_modified": {
+      "indexed": true,
+      "type": "string",
+      "format": "datetime"
+    },
+    "eid": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "expname": {
+      "indexed": true,
+      "type": "string"
+    },
+    "feature_id": {
+      "indexed": true,
+      "type": "string"
+    },
+    "genome_id": {
+      "indexed": true,
+      "type": "string"
+    },
+    "id": {
+      "indexed": true,
+      "type": "string"
+    },
+    "log_ratio": {
+      "indexed": true,
+      "type": "number"
+    },
+    "mutant": {
+      "indexed": true,
+      "type": "string"
+    },
+    "organism": {
+      "indexed": true,
+      "type": "string"
+    },
+    "pid": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "pmid": {
+      "indexed": true,
+      "type": "string"
+    },
+    "refseq_locus_tag": {
+      "indexed": true,
+      "type": "string"
+    },
+    "strain": {
+      "indexed": true,
+      "type": "string"
+    },
+    "text": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "transient": true
+    },
+    "timepoint": {
+      "indexed": true,
+      "type": "string"
+    },
+    "z_score": {
+      "indexed": true,
+      "type": "number"
+    }
+  }
+}

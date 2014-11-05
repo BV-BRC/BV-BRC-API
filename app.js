@@ -7,48 +7,67 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
-var apiEngine = require('dme');
+var DataModel = require('./dataModel');
 var config = require("./config");
+var cors = require('cors');
+
+require("dme/media/");
 
 var app = module.exports =  express();
 
-debug("load dataModel");
-dataModel = require('./dataModel');
-require("dme/media/");
-app.dataModel = dataModel;
+debug("APP MODE: ", app.get('env'))
 
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'ejs');
 
-//debug("app.config: ", JSON.stringify(app.config));
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
+require("./enableMultipleViewRoots")(app);
+app.set('views', [
+    path.join(__dirname, 'views'),
+    path.join(__dirname, 'node_modules',"dme","views")
+]);
 app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
+
 app.use(logger('dev'));
 
-//expose the config file to the request objects
-app.use(function(req,res,next){
-        req.config=config;
-        if (config.get('production')){
-                req.production = true;
-        }
-        req.dataModel = app.dataModel;
-        next();
-});
-
-//app.use(bodyParser.json());
-//app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use('/', routes);
-//app.use('/users', users);
-
-app.use(apiEngine(dataModel))
+app.use(cors({origin: true, methods: ["GET,PUT,POST,PUT,DELETE"], allowHeaders: ["content-type", "authorization"],exposedHeaders: ['Content-Range', 'X-Content-Range'], credential: true, maxAge: 8200}));
 
 app.use(express.static(path.join(__dirname, 'public')));
+
 app.use("/js",express.static(path.join(__dirname, 'public/js')));
 
+app.use([
+    function(req,res,next){
+        debug("Check Authentication Status, choose corresponding DataModel")
+        if (req.user) {
+            debug("Set DataModel to USER");
+            req.DataModel = DataModel.user;
+        }else if (req.user && req.user.isAdmin) {
+            debug("Set DataModel to ADMIN");
+            req.DataModel = DataModel.admin;
+        }else{
+            debug("Set DataModel to PUBLIC");
+            req.DataModel = DataModel.public
+        }
+
+        next();
+    },function(req,res,next){
+        if (!req.DataModel){
+            next(new Error("Invalid Root DataModel"));
+            return;
+        }
+        if(!req.DataModel.match(req)){
+            next("route");
+            return;
+        }
+
+        req.DataModel.dispatch(req,res,next);
+    }
+])
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -81,4 +100,4 @@ app.use(function(err, req, res, next) {
     });
 });
 
-
+require("replify")({name: "p3api", path: "./REPL"},app,{"DataModel":DataModel});

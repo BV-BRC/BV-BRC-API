@@ -1,0 +1,30 @@
+{
+	"$schema": "http://json-schema.org/draft-04/hyper-schema#",
+	"title": "",
+	"type": "object",
+	"pathStart": "/genome",
+	"links": [{
+		"rel": "self",
+		"title": "Get a product instance",
+		"method": "GET",
+		"template": "default",
+		"href": "{id}",
+		"path": "[/]([^?]+)",		
+		"targetSchema": {"$ref":"#"}
+	},{
+		"rel": "query",
+		"title": "Query Products",
+		"method": "GET",
+		"encType": "application/x-www-form-urlencoded",
+		"parseQuery": false,
+		"href": "{?query*}",
+		"path": "[\\?](.*)",
+		"template": "default-list",
+		"targetSchema": {
+			"type": "string",
+			"items": {
+				"$ref": "#"
+			}
+		}
+	}]
+}

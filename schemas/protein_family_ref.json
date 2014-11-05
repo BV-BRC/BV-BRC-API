@@ -1,0 +1,163 @@
+{
+  "$schema": "http://json-schema.org/draft-04/hyper-schema#",
+  "title": "protein_family_ref",
+  "type": "object",
+  "pathStart": "/protein_family_ref",
+  "links": [
+    {
+      "rel": "self",
+      "title": "Get a protein_family_ref instance",
+      "method": "GET",
+      "template": "default",
+      "href": "/protein_family_ref/{id}",
+      "targetSchema": {
+        "$ref": "#"
+      }
+    },
+    {
+      "rel": "query",
+      "title": "Query protein_family_ref instances.",
+      "method": "GET",
+      "href": "/protein_family_ref",
+      "template": "default-list",
+      "targetSchema": {
+        "type": "array",
+        "items": {
+          "$ref": "#"
+        }
+      }
+    },
+    {
+      "rel": "create",
+      "title": "Create protein_family_ref(s).  Throw error if protein_family_ref already exists.",
+      "encType": "application/json",
+      "method": "POST",
+      "href": "/protein_family_ref",
+      "schema": {
+        "oneOf": [
+          {
+            "$ref": "#"
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#"
+            }
+          }
+        ]
+      },
+      "targetSchema": {
+        "type": "array",
+        "items": {
+          "oneOf": [
+            {
+              "$ref": "#"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "rel": "update",
+      "title": "Update protein_family_ref. Partial Update OK. Throw error if protein_family_ref does not exist",
+      "encType": "application/json",
+      "method": "POST",
+      "href": "/protein_family_ref/{id}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "$ref": "#"
+      }
+    },
+    {
+      "rel": "create",
+      "title": "Create protein_family_ref. Overwrite it if it already exists.",
+      "encType": "application/json",
+      "method": "PUT",
+      "href": "/protein_family_ref/{id}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "type": "null"
+      }
+    },
+    {
+      "rel": "delete",
+      "title": "Delete a protein_family_ref",
+      "method": "DELETE",
+      "href": "/protein_family_ref/{id}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "type": "null"
+      }
+    },
+    {
+      "rel": "delete",
+      "title": "Delete one ore more protein_family_ref by query",
+      "method": "DELETE",
+      "href": "/protein_family_ref/{,query*}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "type": "null"
+      }
+    },
+    {
+      "rel": "rpc",
+      "title": "JSON-RPC Endpoint for the protein_family_ref Model.  Parameters and Response schema as per the associated link relation.",
+      "encType": "application/jsonrpc+json",
+      "mediaType": "application/jsonrpc+json",
+      "method": "POST",
+      "href": "/protein_family_ref"
+    }
+  ],
+  "uniqueKey": "figfam_id",
+  "properties": {
+    "_version_": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "date_inserted": {
+      "indexed": true,
+      "type": "string",
+      "format": "datetime"
+    },
+    "date_modified": {
+      "indexed": true,
+      "type": "string",
+      "format": "datetime"
+    },
+    "figfam_id": {
+      "indexed": true,
+      "type": "string",
+      "unique": true
+    },
+    "figfam_product": {
+      "indexed": false,
+      "type": "string"
+    },
+    "text": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "transient": true
+    }
+  },
+  "required": [
+    "figfam_id"
+  ]
+}

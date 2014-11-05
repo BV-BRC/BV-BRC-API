@@ -1,0 +1,285 @@
+{
+  "$schema": "http://json-schema.org/draft-04/hyper-schema#",
+  "title": "example",
+  "type": "object",
+  "pathStart": "/ppi",
+  "links": [
+    {
+      "rel": "self",
+      "title": "Get a ppi instance",
+      "method": "GET",
+      "template": "default",
+      "href": "/ppi/{id}",
+      "targetSchema": {
+        "$ref": "#"
+      }
+    },
+    {
+      "rel": "query",
+      "title": "Query ppi instances.",
+      "method": "GET",
+      "href": "/ppi",
+      "template": "default-list",
+      "targetSchema": {
+        "type": "array",
+        "items": {
+          "$ref": "#"
+        }
+      }
+    },
+    {
+      "rel": "create",
+      "title": "Create ppi(s).  Throw error if ppi already exists.",
+      "encType": "application/json",
+      "method": "POST",
+      "href": "/ppi",
+      "schema": {
+        "oneOf": [
+          {
+            "$ref": "#"
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#"
+            }
+          }
+        ]
+      },
+      "targetSchema": {
+        "type": "array",
+        "items": {
+          "oneOf": [
+            {
+              "$ref": "#"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "rel": "update",
+      "title": "Update ppi. Partial Update OK. Throw error if ppi does not exist",
+      "encType": "application/json",
+      "method": "POST",
+      "href": "/ppi/{id}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "$ref": "#"
+      }
+    },
+    {
+      "rel": "create",
+      "title": "Create ppi. Overwrite it if it already exists.",
+      "encType": "application/json",
+      "method": "PUT",
+      "href": "/ppi/{id}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "type": "null"
+      }
+    },
+    {
+      "rel": "delete",
+      "title": "Delete a ppi",
+      "method": "DELETE",
+      "href": "/ppi/{id}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "type": "null"
+      }
+    },
+    {
+      "rel": "delete",
+      "title": "Delete one ore more ppi by query",
+      "method": "DELETE",
+      "href": "/ppi/{,query*}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "type": "null"
+      }
+    },
+    {
+      "rel": "rpc",
+      "title": "JSON-RPC Endpoint for the ppi Model.  Parameters and Response schema as per the associated link relation.",
+      "encType": "application/jsonrpc+json",
+      "mediaType": "application/jsonrpc+json",
+      "method": "POST",
+      "href": "/ppi"
+    }
+  ],
+  "uniqueKey": "interaction_id",
+  "properties": {
+    "_version_": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "annotation_a": {
+      "indexed": true,
+      "type": "string"
+    },
+    "annotation_b": {
+      "indexed": true,
+      "type": "string"
+    },
+    "brc_ids_a": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "brc_ids_b": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "group_a": {
+      "indexed": true,
+      "type": "string"
+    },
+    "group_b": {
+      "indexed": true,
+      "type": "string"
+    },
+    "id_in_repository": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "interaction_id": {
+      "indexed": true,
+      "type": "string",
+      "unique": true
+    },
+    "interactor_a": {
+      "indexed": true,
+      "type": "string"
+    },
+    "interactor_b": {
+      "indexed": true,
+      "type": "string"
+    },
+    "is_hpi": {
+      "indexed": true,
+      "type": "string"
+    },
+    "litref": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "method_id": {
+      "indexed": true,
+      "type": "string"
+    },
+    "method_name": {
+      "indexed": true,
+      "type": "string"
+    },
+    "primary_id_a": {
+      "indexed": true,
+      "type": "string"
+    },
+    "primary_id_b": {
+      "indexed": true,
+      "type": "string"
+    },
+    "repository_id": {
+      "indexed": true,
+      "type": "string"
+    },
+    "repository_name": {
+      "indexed": true,
+      "type": "string"
+    },
+    "score": {
+      "indexed": true,
+      "type": "string"
+    },
+    "taxid_a": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "taxid_b": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "taxon_a": {
+      "indexed": true,
+      "type": "string"
+    },
+    "taxon_b": {
+      "indexed": true,
+      "type": "string"
+    },
+    "taxpath_a": {
+      "indexed": true,
+      "type": "string"
+    },
+    "taxpath_b": {
+      "indexed": true,
+      "type": "string"
+    },
+    "text": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "transient": true
+    },
+    "type_id": {
+      "indexed": true,
+      "type": "string"
+    },
+    "type_name": {
+      "indexed": true,
+      "type": "string"
+    },
+    "xref_a": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "xref_b": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "interaction_id"
+  ]
+}

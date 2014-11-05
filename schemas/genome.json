@@ -1,0 +1,477 @@
+{
+  "$schema": "http://json-schema.org/draft-04/hyper-schema#",
+  "id": "genome#",
+  "title": "Genome",
+  "type": "object",
+  "pathStart": "/genome",
+  "links": [
+    {
+      "rel": "self",
+      "title": "Get a genome instance",
+      "method": "GET",
+      "template": "default",
+      "href": "/genome/{id}",
+      "targetSchema": {
+        "$ref": "#"
+      }
+    },
+    {
+      "rel": "query",
+      "title": "Query genome instances.",
+      "method": "GET",
+      "href": "/genome",
+      "template": "default-list",
+      "targetSchema": {
+        "type": "array",
+        "items": {
+          "$ref": "#"
+        }
+      }
+    },
+    {
+      "rel": "create",
+      "title": "Create genome(s).  Throw error if genome already exists.",
+      "encType": "application/json",
+      "method": "POST",
+      "href": "/genome",
+      "schema": {
+        "oneOf": [
+          {
+            "$ref": "#"
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#"
+            }
+          }
+        ]
+      },
+      "targetSchema": {
+        "type": "array",
+        "items": {
+          "oneOf": [
+            {
+              "$ref": "#"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "rel": "update",
+      "title": "Update genome. Partial Update OK. Throw error if genome does not exist",
+      "encType": "application/json",
+      "method": "POST",
+      "href": "/genome/{id}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "$ref": "#"
+      }
+    },
+    {
+      "rel": "create",
+      "title": "Create genome. Overwrite it if it already exists.",
+      "encType": "application/json",
+      "method": "PUT",
+      "href": "/genome/{id}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "type": "null"
+      }
+    },
+    {
+      "rel": "delete",
+      "title": "Delete a genome",
+      "method": "DELETE",
+      "href": "/genome/{id}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "type": "null"
+      }
+    },
+    {
+      "rel": "delete",
+      "title": "Delete one ore more genome by query",
+      "method": "DELETE",
+      "href": "/genome/{,query*}",
+      "schema": {
+        "$ref": "#"
+      },
+      "targetSchema": {
+        "type": "null"
+      }
+    },
+    {
+      "rel": "rpc",
+      "title": "JSON-RPC Endpoint for the genome Model.  Parameters and Response schema as per the associated link relation.",
+      "encType": "application/jsonrpc+json",
+      "mediaType": "application/jsonrpc+json",
+      "method": "POST",
+      "href": "/genome"
+    }
+  ],
+  "required": [
+    "genome_id"
+  ],
+  "properties": {
+    "_version_": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "altitude": {
+      "indexed": true,
+      "type": "string"
+    },
+    "assembly_method": {
+      "indexed": true,
+      "type": "string"
+    },
+    "biovar": {
+      "indexed": true,
+      "type": "string"
+    },
+    "body_sample_site": {
+      "indexed": true,
+      "type": "string"
+    },
+    "body_sample_subsite": {
+      "indexed": true,
+      "type": "string"
+    },
+    "brc1_cds": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "cell_shape": {
+      "indexed": true,
+      "type": "string"
+    },
+    "chromosomes": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "class": {
+      "indexed": true,
+      "type": "string"
+    },
+    "collection_date": {
+      "indexed": true,
+      "type": "string"
+    },
+    "comments": {
+      "indexed": true,
+      "type": "string"
+    },
+    "common_name": {
+      "indexed": true,
+      "type": "string"
+    },
+    "completion_date": {
+      "indexed": true,
+      "type": "string",
+      "format": "datetime"
+    },
+    "contigs": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "culture_collection": {
+      "indexed": true,
+      "type": "string"
+    },
+    "date_inserted": {
+      "indexed": true,
+      "type": "string",
+      "format": "datetime"
+    },
+    "date_modified": {
+      "indexed": true,
+      "type": "string",
+      "format": "datetime"
+    },
+    "depth": {
+      "indexed": true,
+      "type": "string"
+    },
+    "disease": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "family": {
+      "indexed": true,
+      "type": "string"
+    },
+    "gc_content": {
+      "indexed": true,
+      "type": "number"
+    },
+    "genbank_accessions": {
+      "indexed": true,
+      "type": "string"
+    },
+    "genome_id": {
+      "indexed": true,
+      "type": "string",
+      "unique": true
+    },
+    "genome_length": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "genome_name": {
+      "indexed": true,
+      "type": "string"
+    },
+    "genome_status": {
+      "indexed": true,
+      "type": "string"
+    },
+    "genus": {
+      "indexed": true,
+      "type": "string"
+    },
+    "geographic_location": {
+      "indexed": true,
+      "type": "string"
+    },
+    "gram_stain": {
+      "indexed": true,
+      "type": "string"
+    },
+    "habitat": {
+      "indexed": true,
+      "type": "string"
+    },
+    "host_age": {
+      "indexed": true,
+      "type": "string"
+    },
+    "host_gender": {
+      "indexed": true,
+      "type": "string"
+    },
+    "host_health": {
+      "indexed": true,
+      "type": "string"
+    },
+    "host_name": {
+      "indexed": true,
+      "type": "string"
+    },
+    "isolation_comments": {
+      "indexed": true,
+      "type": "string"
+    },
+    "isolation_country": {
+      "indexed": true,
+      "type": "string"
+    },
+    "isolation_site": {
+      "indexed": true,
+      "type": "string"
+    },
+    "isolation_source": {
+      "indexed": true,
+      "type": "string"
+    },
+    "kingdom": {
+      "indexed": true,
+      "type": "string"
+    },
+    "latitude": {
+      "indexed": true,
+      "type": "string"
+    },
+    "longitude": {
+      "indexed": true,
+      "type": "string"
+    },
+    "mlst": {
+      "indexed": true,
+      "type": "string"
+    },
+    "motility": {
+      "indexed": true,
+      "type": "string"
+    },
+    "ncbi_project_id": {
+      "indexed": true,
+      "type": "string"
+    },
+    "optimal_temperature": {
+      "indexed": true,
+      "type": "string"
+    },
+    "order": {
+      "indexed": true,
+      "type": "string"
+    },
+    "organism_name": {
+      "indexed": true,
+      "type": "string"
+    },
+    "owner": {
+      "indexed": true,
+      "type": "string"
+    },
+    "oxygen_requirement": {
+      "indexed": true,
+      "type": "string"
+    },
+    "p2_genome_id": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "pathovar": {
+      "indexed": true,
+      "type": "string"
+    },
+    "patric_cds": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "phylum": {
+      "indexed": true,
+      "type": "string"
+    },
+    "plasmids": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "public": {
+      "indexed": true,
+      "type": "string"
+    },
+    "publication": {
+      "indexed": true,
+      "type": "string"
+    },
+    "reference_genome": {
+      "indexed": true,
+      "type": "string"
+    },
+    "refseq_accessions": {
+      "indexed": true,
+      "type": "string"
+    },
+    "refseq_cds": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "refseq_project_id": {
+      "indexed": true,
+      "type": "string"
+    },
+    "salinity": {
+      "indexed": true,
+      "type": "string"
+    },
+    "sequences": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "sequencing_centers": {
+      "indexed": true,
+      "type": "string"
+    },
+    "sequencing_depth": {
+      "indexed": true,
+      "type": "string"
+    },
+    "sequencing_platform": {
+      "indexed": true,
+      "type": "string"
+    },
+    "sequencing_status": {
+      "indexed": true,
+      "type": "string"
+    },
+    "serovar": {
+      "indexed": true,
+      "type": "string"
+    },
+    "species": {
+      "indexed": true,
+      "type": "string"
+    },
+    "sporulation": {
+      "indexed": true,
+      "type": "string"
+    },
+    "strain": {
+      "indexed": true,
+      "type": "string"
+    },
+    "taxon_id": {
+      "indexed": true,
+      "type": "integer"
+    },
+    "taxon_lineage_ids": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "taxon_lineage_names": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "temperature_range": {
+      "indexed": true,
+      "type": "string"
+    },
+    "text": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "transient": true
+    },
+    "type_strain": {
+      "indexed": true,
+      "type": "string"
+    },
+    "user_read": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "user_write": {
+      "indexed": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    }
+  },
+  "uniqueKey": "genome_id"
+}

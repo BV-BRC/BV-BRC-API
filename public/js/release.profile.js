@@ -59,24 +59,24 @@ var profile = {
 	], 
 
 	layers: {             
-                "cid/layer/p3api": {
-                        include: [
-				"cid/widget/WorkspaceManager", 
-				"cid/widget/PatricHeader",
-				"cid/widget/BorderContainer",
-				"cid/app/apiexplorer",
-                                "put-selector/put",
-                                "dijit/_base",
-                                "dijit/form/ComboButton",
-                                "dijit/form/RadioButton",
-                                "dijit/CheckedMenuItem",
-				"dojo/dnd/AutoSource",
-				"dijit/TooltipDialog",
-				"dijit/PopupMenuItem",
-				"dijit/MenuSeparator"
+        "cid/layer/p3api": {
+                include: [
+					"cid/widget/WorkspaceManager", 
+					"cid/widget/PatricHeader",
+					"cid/widget/BorderContainer",
+					"cid/app/apiexplorer",
+					"put-selector/put",
+					"dijit/_base",
+					"dijit/form/ComboButton",
+					"dijit/form/RadioButton",
+					"dijit/CheckedMenuItem",
+					"dojo/dnd/AutoSource",
+					"dijit/TooltipDialog",
+					"dijit/PopupMenuItem",
+					"dijit/MenuSeparator"
 
-                        ]
-                },
+                ]
+        }
 	}
 };
 
