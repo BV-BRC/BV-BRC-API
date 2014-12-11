@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/hyper-schema#",
   "title": "genome_sequence",
   "type": "object",
-  "pathStart": "/genome_sequence",
+  "pathStart": "/genome_sequence/",
   "links": [
     {
       "rel": "self",
@@ -18,7 +18,7 @@
       "rel": "query",
       "title": "Query genome_sequence instances.",
       "method": "GET",
-      "href": "/genome_sequence",
+      "href": "/genome_sequence/",
       "template": "default-list",
       "targetSchema": {
         "type": "array",
@@ -32,7 +32,7 @@
       "title": "Create genome_sequence(s).  Throw error if genome_sequence already exists.",
       "encType": "application/json",
       "method": "POST",
-      "href": "/genome_sequence",
+      "href": "/genome_sequence/",
       "schema": {
         "oneOf": [
           {
@@ -94,21 +94,6 @@
       "title": "Delete a genome_sequence",
       "method": "DELETE",
       "href": "/genome_sequence/{id}",
-      "schema": {
-        "$ref": "#"
-      },
-      "targetSchema": {
-        "type": "null"
-      }
-    },
-    {
-      "rel": "delete",
-      "title": "Delete one ore more genome_sequence by query",
-      "method": "DELETE",
-      "href": "/genome_sequence/{,query*}",
-      "schema": {
-        "$ref": "#"
-      },
       "targetSchema": {
         "type": "null"
       }
@@ -119,6 +104,14 @@
       "encType": "application/jsonrpc+json",
       "mediaType": "application/jsonrpc+json",
       "method": "POST",
+      "href": "/genome_sequence"
+    },
+    {
+      "rel": "describedBy",
+      "title": "genome_sequence Schema",
+      "encType": "application/schema+json",
+      "mediaType": "application/schema+json",
+      "method": "GET",
       "href": "/genome_sequence"
     }
   ],

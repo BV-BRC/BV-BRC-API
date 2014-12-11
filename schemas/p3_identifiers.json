@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/hyper-schema#",
   "title": "genome_feature",
   "type": "object",
-  "pathStart": "/p3_identifiers",
+  "pathStart": "/p3_identifiers/",
   "links": [
     {
       "rel": "self",
@@ -18,7 +18,7 @@
       "rel": "query",
       "title": "Query p3_identifiers instances.",
       "method": "GET",
-      "href": "/p3_identifiers",
+      "href": "/p3_identifiers/",
       "template": "default-list",
       "targetSchema": {
         "type": "array",
@@ -32,7 +32,7 @@
       "title": "Create p3_identifiers(s).  Throw error if p3_identifiers already exists.",
       "encType": "application/json",
       "method": "POST",
-      "href": "/p3_identifiers",
+      "href": "/p3_identifiers/",
       "schema": {
         "oneOf": [
           {
@@ -94,21 +94,6 @@
       "title": "Delete a p3_identifiers",
       "method": "DELETE",
       "href": "/p3_identifiers/{id}",
-      "schema": {
-        "$ref": "#"
-      },
-      "targetSchema": {
-        "type": "null"
-      }
-    },
-    {
-      "rel": "delete",
-      "title": "Delete one ore more p3_identifiers by query",
-      "method": "DELETE",
-      "href": "/p3_identifiers/{,query*}",
-      "schema": {
-        "$ref": "#"
-      },
       "targetSchema": {
         "type": "null"
       }
@@ -119,6 +104,14 @@
       "encType": "application/jsonrpc+json",
       "mediaType": "application/jsonrpc+json",
       "method": "POST",
+      "href": "/p3_identifiers"
+    },
+    {
+      "rel": "describedBy",
+      "title": "p3_identifiers Schema",
+      "encType": "application/schema+json",
+      "mediaType": "application/schema+json",
+      "method": "GET",
       "href": "/p3_identifiers"
     }
   ],

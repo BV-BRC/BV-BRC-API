@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/hyper-schema#",
   "title": "example",
   "type": "object",
-  "pathStart": "/ppi",
+  "pathStart": "/ppi/",
   "links": [
     {
       "rel": "self",
@@ -18,7 +18,7 @@
       "rel": "query",
       "title": "Query ppi instances.",
       "method": "GET",
-      "href": "/ppi",
+      "href": "/ppi/",
       "template": "default-list",
       "targetSchema": {
         "type": "array",
@@ -32,7 +32,7 @@
       "title": "Create ppi(s).  Throw error if ppi already exists.",
       "encType": "application/json",
       "method": "POST",
-      "href": "/ppi",
+      "href": "/ppi/",
       "schema": {
         "oneOf": [
           {
@@ -94,21 +94,6 @@
       "title": "Delete a ppi",
       "method": "DELETE",
       "href": "/ppi/{id}",
-      "schema": {
-        "$ref": "#"
-      },
-      "targetSchema": {
-        "type": "null"
-      }
-    },
-    {
-      "rel": "delete",
-      "title": "Delete one ore more ppi by query",
-      "method": "DELETE",
-      "href": "/ppi/{,query*}",
-      "schema": {
-        "$ref": "#"
-      },
       "targetSchema": {
         "type": "null"
       }
@@ -119,6 +104,14 @@
       "encType": "application/jsonrpc+json",
       "mediaType": "application/jsonrpc+json",
       "method": "POST",
+      "href": "/ppi"
+    },
+    {
+      "rel": "describedBy",
+      "title": "ppi Schema",
+      "encType": "application/schema+json",
+      "mediaType": "application/schema+json",
+      "method": "GET",
       "href": "/ppi"
     }
   ],

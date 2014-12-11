@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/hyper-schema#",
   "title": "transcriptomics_experiment",
   "type": "object",
-  "pathStart": "/transcriptomics_experiment",
+  "pathStart": "/transcriptomics_experiment/",
   "links": [
     {
       "rel": "self",
@@ -18,7 +18,7 @@
       "rel": "query",
       "title": "Query transcriptomics_experiment instances.",
       "method": "GET",
-      "href": "/transcriptomics_experiment",
+      "href": "/transcriptomics_experiment/",
       "template": "default-list",
       "targetSchema": {
         "type": "array",
@@ -32,7 +32,7 @@
       "title": "Create transcriptomics_experiment(s).  Throw error if transcriptomics_experiment already exists.",
       "encType": "application/json",
       "method": "POST",
-      "href": "/transcriptomics_experiment",
+      "href": "/transcriptomics_experiment/",
       "schema": {
         "oneOf": [
           {
@@ -94,21 +94,6 @@
       "title": "Delete a transcriptomics_experiment",
       "method": "DELETE",
       "href": "/transcriptomics_experiment/{id}",
-      "schema": {
-        "$ref": "#"
-      },
-      "targetSchema": {
-        "type": "null"
-      }
-    },
-    {
-      "rel": "delete",
-      "title": "Delete one ore more transcriptomics_experiment by query",
-      "method": "DELETE",
-      "href": "/transcriptomics_experiment/{,query*}",
-      "schema": {
-        "$ref": "#"
-      },
       "targetSchema": {
         "type": "null"
       }
@@ -119,6 +104,14 @@
       "encType": "application/jsonrpc+json",
       "mediaType": "application/jsonrpc+json",
       "method": "POST",
+      "href": "/transcriptomics_experiment"
+    },
+    {
+      "rel": "describedBy",
+      "title": "transcriptomics_experiment Schema",
+      "encType": "application/schema+json",
+      "mediaType": "application/schema+json",
+      "method": "GET",
       "href": "/transcriptomics_experiment"
     }
   ],

@@ -40,7 +40,7 @@ var newLinks = [{
 		"rel": "query",
 		"title": "Query "+ name +" instances.",
 		"method": "GET",
-		"href":  "/" + name,
+		"href":  "/" + name + "/",
 		"template": "default-list",
 		"targetSchema": {
 			"type": "array",
@@ -55,7 +55,7 @@ var newLinks = [{
 		"title": "Create " + name + "(s).  Throw error if " + name + " already exists.",
 		"encType": "application/json",
 		"method": "POST",
-		"href": "/" + name,
+		"href": "/" + name + "/",
 		"schema": {
 			"oneOf": [{
 				"$ref": "#"
@@ -114,34 +114,23 @@ var newLinks = [{
 		"title": "Delete a "+ name,
 		"method": "DELETE",
 		"href": "/" + name + "/{id}",
-		"schema": {
-			"$ref": "#"
-		},
 		"targetSchema": {
 			"type": "null"
 		}
-	},
-
-	{
-		"rel": "delete",
-		"title": "Delete one ore more "+ name + " by query",
-		"method": "DELETE",
-		"href": "/" + name + "/{,query*}",
-		"schema": {
-			"$ref": "#"
-		},
-		"targetSchema": {
-			"type": "null"
-		}
-	},
-
-	{
+	},{
 		"rel": "rpc",
 		"title": "JSON-RPC Endpoint for the " + name + " Model.  Parameters and Response schema as per the associated link relation.",
 		"encType": "application/jsonrpc+json",
 		"mediaType": "application/jsonrpc+json",
 		"method": "POST",
 		"href":  "/" + name
+	},{
+		"rel": "describedBy",
+		"title": name + " Schema",
+		"encType": "application/schema+json",
+		"mediaType": "application/schema+json",
+		"method": "GET",
+		"href":  "/" + name + "/"
 	}
 ];
 
@@ -151,7 +140,7 @@ fs.readJSON("./" + name + ".json", function(err,schema){
 		return err;
 	}
 
-	schema.pathStart = "/" + name;
+	schema.pathStart = "/" + name + "/";
 	// verbose("New Schema", schema)
 	schema.links = newLinks;
 

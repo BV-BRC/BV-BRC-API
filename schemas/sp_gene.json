@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/hyper-schema#",
   "title": "sp_gene",
   "type": "object",
-  "pathStart": "/sp_gene",
+  "pathStart": "/sp_gene/",
   "links": [
     {
       "rel": "self",
@@ -18,7 +18,7 @@
       "rel": "query",
       "title": "Query sp_gene instances.",
       "method": "GET",
-      "href": "/sp_gene",
+      "href": "/sp_gene/",
       "template": "default-list",
       "targetSchema": {
         "type": "array",
@@ -32,7 +32,7 @@
       "title": "Create sp_gene(s).  Throw error if sp_gene already exists.",
       "encType": "application/json",
       "method": "POST",
-      "href": "/sp_gene",
+      "href": "/sp_gene/",
       "schema": {
         "oneOf": [
           {
@@ -94,21 +94,6 @@
       "title": "Delete a sp_gene",
       "method": "DELETE",
       "href": "/sp_gene/{id}",
-      "schema": {
-        "$ref": "#"
-      },
-      "targetSchema": {
-        "type": "null"
-      }
-    },
-    {
-      "rel": "delete",
-      "title": "Delete one ore more sp_gene by query",
-      "method": "DELETE",
-      "href": "/sp_gene/{,query*}",
-      "schema": {
-        "$ref": "#"
-      },
       "targetSchema": {
         "type": "null"
       }
@@ -119,6 +104,14 @@
       "encType": "application/jsonrpc+json",
       "mediaType": "application/jsonrpc+json",
       "method": "POST",
+      "href": "/sp_gene"
+    },
+    {
+      "rel": "describedBy",
+      "title": "sp_gene Schema",
+      "encType": "application/schema+json",
+      "mediaType": "application/schema+json",
+      "method": "GET",
       "href": "/sp_gene"
     }
   ],

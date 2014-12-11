@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/hyper-schema#",
   "title": "protein_family_ref",
   "type": "object",
-  "pathStart": "/protein_family_ref",
+  "pathStart": "/protein_family_ref/",
   "links": [
     {
       "rel": "self",
@@ -18,7 +18,7 @@
       "rel": "query",
       "title": "Query protein_family_ref instances.",
       "method": "GET",
-      "href": "/protein_family_ref",
+      "href": "/protein_family_ref/",
       "template": "default-list",
       "targetSchema": {
         "type": "array",
@@ -32,7 +32,7 @@
       "title": "Create protein_family_ref(s).  Throw error if protein_family_ref already exists.",
       "encType": "application/json",
       "method": "POST",
-      "href": "/protein_family_ref",
+      "href": "/protein_family_ref/",
       "schema": {
         "oneOf": [
           {
@@ -94,21 +94,6 @@
       "title": "Delete a protein_family_ref",
       "method": "DELETE",
       "href": "/protein_family_ref/{id}",
-      "schema": {
-        "$ref": "#"
-      },
-      "targetSchema": {
-        "type": "null"
-      }
-    },
-    {
-      "rel": "delete",
-      "title": "Delete one ore more protein_family_ref by query",
-      "method": "DELETE",
-      "href": "/protein_family_ref/{,query*}",
-      "schema": {
-        "$ref": "#"
-      },
       "targetSchema": {
         "type": "null"
       }
@@ -119,6 +104,14 @@
       "encType": "application/jsonrpc+json",
       "mediaType": "application/jsonrpc+json",
       "method": "POST",
+      "href": "/protein_family_ref"
+    },
+    {
+      "rel": "describedBy",
+      "title": "protein_family_ref Schema",
+      "encType": "application/schema+json",
+      "mediaType": "application/schema+json",
+      "method": "GET",
       "href": "/protein_family_ref"
     }
   ],

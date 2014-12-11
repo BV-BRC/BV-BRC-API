@@ -4,7 +4,7 @@ var when = require("promised-io/promise").when;
 var errors = require("dme/errors");
 
 var Facet = module.exports = function(model,implementation){
-	var internal = {get:true,query:true,properties:true,links:{includedRelations: ["self","query"]}};
+	var internal = {get:true,query:true,getSchema:true,properties:true,links:{includedRelations: ["self","query","describedBy"]}};
 	if (implementation){
 		Object.keys(implementation).forEach(function(prop){ internal[prop]=implementation[prop]; });
 	}

@@ -3,8 +3,15 @@
   "id": "genome#",
   "title": "Genome",
   "type": "object",
-  "pathStart": "/genome",
+  "pathStart": "/genome/",
   "links": [
+   {
+      "rel": "describedBy",
+      "title": "genome Schema",
+      "mediaType": "application/schema+json",
+      "method": "GET",
+      "href": "/genome/"
+    },
     {
       "rel": "self",
       "title": "Get a genome instance",
@@ -19,7 +26,7 @@
       "rel": "query",
       "title": "Query genome instances.",
       "method": "GET",
-      "href": "/genome",
+      "href": "/genome/",
       "template": "default-list",
       "targetSchema": {
         "type": "array",
@@ -33,7 +40,7 @@
       "title": "Create genome(s).  Throw error if genome already exists.",
       "encType": "application/json",
       "method": "POST",
-      "href": "/genome",
+      "href": "/genome/",
       "schema": {
         "oneOf": [
           {
@@ -95,21 +102,6 @@
       "title": "Delete a genome",
       "method": "DELETE",
       "href": "/genome/{id}",
-      "schema": {
-        "$ref": "#"
-      },
-      "targetSchema": {
-        "type": "null"
-      }
-    },
-    {
-      "rel": "delete",
-      "title": "Delete one ore more genome by query",
-      "method": "DELETE",
-      "href": "/genome/{,query*}",
-      "schema": {
-        "$ref": "#"
-      },
       "targetSchema": {
         "type": "null"
       }

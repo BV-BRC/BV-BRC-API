@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/hyper-schema#",
   "title": "pathway_ref",
   "type": "object",
-  "pathStart": "/pathway_ref",
+  "pathStart": "/pathway_ref/",
   "links": [
     {
       "rel": "self",
@@ -18,7 +18,7 @@
       "rel": "query",
       "title": "Query pathway_ref instances.",
       "method": "GET",
-      "href": "/pathway_ref",
+      "href": "/pathway_ref/",
       "template": "default-list",
       "targetSchema": {
         "type": "array",
@@ -32,7 +32,7 @@
       "title": "Create pathway_ref(s).  Throw error if pathway_ref already exists.",
       "encType": "application/json",
       "method": "POST",
-      "href": "/pathway_ref",
+      "href": "/pathway_ref/",
       "schema": {
         "oneOf": [
           {
@@ -94,21 +94,6 @@
       "title": "Delete a pathway_ref",
       "method": "DELETE",
       "href": "/pathway_ref/{id}",
-      "schema": {
-        "$ref": "#"
-      },
-      "targetSchema": {
-        "type": "null"
-      }
-    },
-    {
-      "rel": "delete",
-      "title": "Delete one ore more pathway_ref by query",
-      "method": "DELETE",
-      "href": "/pathway_ref/{,query*}",
-      "schema": {
-        "$ref": "#"
-      },
       "targetSchema": {
         "type": "null"
       }
@@ -119,6 +104,14 @@
       "encType": "application/jsonrpc+json",
       "mediaType": "application/jsonrpc+json",
       "method": "POST",
+      "href": "/pathway_ref"
+    },
+    {
+      "rel": "describedBy",
+      "title": "pathway_ref Schema",
+      "encType": "application/schema+json",
+      "mediaType": "application/schema+json",
+      "method": "GET",
       "href": "/pathway_ref"
     }
   ],

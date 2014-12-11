@@ -1,7 +1,7 @@
 var nconf = require('nconf');
 
 var defaults =  {
-	"http_port": 3000,
+	"http_port": 3001,
 
 	"solr": {
 		"url": "http://localhost:8983/solr"

@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/hyper-schema#",
   "title": "pathway",
   "type": "object",
-  "pathStart": "/pathway",
+  "pathStart": "/pathway/",
   "links": [
     {
       "rel": "self",
@@ -18,7 +18,7 @@
       "rel": "query",
       "title": "Query pathway instances.",
       "method": "GET",
-      "href": "/pathway",
+      "href": "/pathway/",
       "template": "default-list",
       "targetSchema": {
         "type": "array",
@@ -32,7 +32,7 @@
       "title": "Create pathway(s).  Throw error if pathway already exists.",
       "encType": "application/json",
       "method": "POST",
-      "href": "/pathway",
+      "href": "/pathway/",
       "schema": {
         "oneOf": [
           {
@@ -94,21 +94,6 @@
       "title": "Delete a pathway",
       "method": "DELETE",
       "href": "/pathway/{id}",
-      "schema": {
-        "$ref": "#"
-      },
-      "targetSchema": {
-        "type": "null"
-      }
-    },
-    {
-      "rel": "delete",
-      "title": "Delete one ore more pathway by query",
-      "method": "DELETE",
-      "href": "/pathway/{,query*}",
-      "schema": {
-        "$ref": "#"
-      },
       "targetSchema": {
         "type": "null"
       }
@@ -119,6 +104,14 @@
       "encType": "application/jsonrpc+json",
       "mediaType": "application/jsonrpc+json",
       "method": "POST",
+      "href": "/pathway"
+    },
+    {
+      "rel": "describedBy",
+      "title": "pathway Schema",
+      "encType": "application/schema+json",
+      "mediaType": "application/schema+json",
+      "method": "GET",
       "href": "/pathway"
     }
   ],

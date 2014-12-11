@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/hyper-schema#",
   "title": "host-resp-study",
   "type": "object",
-  "pathStart": "/host_resp",
+  "pathStart": "/host_resp/",
   "links": [
     {
       "rel": "self",
@@ -18,7 +18,7 @@
       "rel": "query",
       "title": "Query host_resp instances.",
       "method": "GET",
-      "href": "/host_resp",
+      "href": "/host_resp/",
       "template": "default-list",
       "targetSchema": {
         "type": "array",
@@ -32,7 +32,7 @@
       "title": "Create host_resp(s).  Throw error if host_resp already exists.",
       "encType": "application/json",
       "method": "POST",
-      "href": "/host_resp",
+      "href": "/host_resp/",
       "schema": {
         "oneOf": [
           {
@@ -94,21 +94,6 @@
       "title": "Delete a host_resp",
       "method": "DELETE",
       "href": "/host_resp/{id}",
-      "schema": {
-        "$ref": "#"
-      },
-      "targetSchema": {
-        "type": "null"
-      }
-    },
-    {
-      "rel": "delete",
-      "title": "Delete one ore more host_resp by query",
-      "method": "DELETE",
-      "href": "/host_resp/{,query*}",
-      "schema": {
-        "$ref": "#"
-      },
       "targetSchema": {
         "type": "null"
       }
@@ -119,6 +104,14 @@
       "encType": "application/jsonrpc+json",
       "mediaType": "application/jsonrpc+json",
       "method": "POST",
+      "href": "/host_resp"
+    },
+    {
+      "rel": "describedBy",
+      "title": "host_resp Schema",
+      "encType": "application/schema+json",
+      "mediaType": "application/schema+json",
+      "method": "GET",
       "href": "/host_resp"
     }
   ],

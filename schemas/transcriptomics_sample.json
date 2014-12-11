@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/hyper-schema#",
   "title": "transcriptomics_sample",
   "type": "object",
-  "pathStart": "/transcriptomics_sample",
+  "pathStart": "/transcriptomics_sample/",
   "links": [
     {
       "rel": "self",
@@ -18,7 +18,7 @@
       "rel": "query",
       "title": "Query transcriptomics_sample instances.",
       "method": "GET",
-      "href": "/transcriptomics_sample",
+      "href": "/transcriptomics_sample/",
       "template": "default-list",
       "targetSchema": {
         "type": "array",
@@ -32,7 +32,7 @@
       "title": "Create transcriptomics_sample(s).  Throw error if transcriptomics_sample already exists.",
       "encType": "application/json",
       "method": "POST",
-      "href": "/transcriptomics_sample",
+      "href": "/transcriptomics_sample/",
       "schema": {
         "oneOf": [
           {
@@ -94,21 +94,6 @@
       "title": "Delete a transcriptomics_sample",
       "method": "DELETE",
       "href": "/transcriptomics_sample/{id}",
-      "schema": {
-        "$ref": "#"
-      },
-      "targetSchema": {
-        "type": "null"
-      }
-    },
-    {
-      "rel": "delete",
-      "title": "Delete one ore more transcriptomics_sample by query",
-      "method": "DELETE",
-      "href": "/transcriptomics_sample/{,query*}",
-      "schema": {
-        "$ref": "#"
-      },
       "targetSchema": {
         "type": "null"
       }
@@ -119,6 +104,14 @@
       "encType": "application/jsonrpc+json",
       "mediaType": "application/jsonrpc+json",
       "method": "POST",
+      "href": "/transcriptomics_sample"
+    },
+    {
+      "rel": "describedBy",
+      "title": "transcriptomics_sample Schema",
+      "encType": "application/schema+json",
+      "mediaType": "application/schema+json",
+      "method": "GET",
       "href": "/transcriptomics_sample"
     }
   ],
