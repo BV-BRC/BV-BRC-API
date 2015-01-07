@@ -17,14 +17,15 @@ var bodyParser = require("body-parser");
 var rql = require("solrjs/rql");
 var clarinet = require("clarinet");
 var Queue = require("file-queue").Queue;
-console.log("Queue Directory: ", config.get("queueDirectory"));
+var debug = require('debug')('p3api-server:indexer');
+debug("Queue Directory: ", config.get("queueDirectory"));
 
 var queue = new Queue(config.get("queueDirectory"), function(err) {
 	if (err) {
-		console.log("error: ", err);
+		debug("error: ", err);
 		return;
 	}
-	console.log("Created Queue.");
+	debug("Created Queue.");
 });
 
 router.use(httpParams);
@@ -32,12 +33,12 @@ router.use(httpParams);
 router.use(authMiddleware);
 
 router.use(function(req, res, next) {
-	console.log("req.path", req.path);
-	console.log("req content-type", req.get("content-type"));
-	console.log("accept", req.get("accept"));
-	console.log("req.url", req.url);
-	console.log('req.path', req.path);
-	console.log('req.params:', JSON.stringify(req.params));
+	debug("req.path", req.path);
+	debug("req content-type", req.get("content-type"));
+	debug("accept", req.get("accept"));
+	debug("req.url", req.url);
+	debug('req.path', req.path);
+	debug('req.params:', JSON.stringify(req.params));
 	next();
 });
 
@@ -49,23 +50,23 @@ router.post("/", [
 			previous = '',
 			buffer = {}
 
-		//console.log("Create JSONStream Obj");
+		//debug("Create JSONStream Obj");
 		var stream = clarinet.createStream()
 
 		stream.on('openobject', function(name) {
 			if (new_thing) {
-				//console.log(JSON.stringify(buffer, null, 2));
+				//debug(JSON.stringify(buffer, null, 2));
 				buffer = {};
 				new_thing = false;
 			}
 			previous = name;
 			stack.push(name);
-			//console.log('=== {', name, buffer);
+			//debug('=== {', name, buffer);
 		});
 
 		stream.on('closeobject', function() {
 			stack.pop();
-			//console.log("Obj: ", typeof buffer, JSON.stringify(buffer));
+			//debug("Obj: ", typeof buffer, JSON.stringify(buffer));
 			queue.push(buffer, function(err) {
 				if (err) throw err;
 			});
@@ -89,7 +90,7 @@ router.post("/", [
 				ac[x] = ac[x] || {};
 				return ac[x];
 			}, buffer);
-			//  console.log('=== v', value, buffer);
+			//  debug('=== v', value, buffer);
 		});
 
 		stream.on('end', function() {

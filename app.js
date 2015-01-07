@@ -91,7 +91,7 @@ app.use(function(err, req, res, next) {
     });
 });
 
-debug("Launch Indexer");
+// debug("Launch Indexer");
 //var indexer = require('child_process').fork(__dirname + "/bin/p3-index-worker");
 
 //indexer.on("message", function(msg){

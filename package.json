@@ -21,6 +21,7 @@
     "promised-io": "~0.3.4",
     "replify": "~1.2.0",
     "request": "~2.47.0",
-    "serve-favicon": "~2.1.3"
+    "serve-favicon": "~2.1.3",
+    "solrjs": "~0.6.1"
   }
 }
