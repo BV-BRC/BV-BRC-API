@@ -3,9 +3,11 @@ var debug = require('debug')('p3api-server');
 var app = require('../app');
 var conf = require('../config');
 
-debug("Launching p3api-server...");
+var port = conf.get("http_port");
 
-app.set('port', conf.get('http_port') || 3000);
+debug("Launching p3api-server on port " + port + " ...");
+
+app.set('port', port);
 
 var server = app.listen(app.get('port'), function() {
 	debug('p3api-server listening on port ' + server.address().port);
