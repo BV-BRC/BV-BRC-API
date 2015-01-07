@@ -1,9 +1,9 @@
 {
   "name": "p3api",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "private": true,
   "scripts": {
-    "start": "node ./bin/p3api-server"
+    "start": "forever start -l /opt/p3api/p3api.log ./bin/p3api-server"
   },
   "dependencies": {
     "body-parser": "^1.8.4",
