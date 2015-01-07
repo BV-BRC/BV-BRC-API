@@ -10,8 +10,6 @@ var indexer = require("./routes/indexer");
 var config = require("./config");
 var cors = require('cors');
 
-require("dme/media/");
-
 var app = module.exports =  express();
 
 debug("APP MODE: ", app.get('env'))
