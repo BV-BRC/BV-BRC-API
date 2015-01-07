@@ -5,9 +5,8 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var routes = require('./routes/index');
-var users = require('./routes/users');
-var DataModel = require('./dataModel');
+var dataTypeRouter = require("./routes/dataType");
+var indexer = require("./routes/indexer");
 var config = require("./config");
 var cors = require('cors');
 
@@ -28,6 +27,7 @@ app.set('view engine', 'ejs');
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 
 app.use(logger('dev'));
+
 app.use(function(req,res,next){
 	debug("APP MODE: ", app.get('env'));
 	req.production = (app.get('env')=='production')?true:false
@@ -42,34 +42,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use("/js",express.static(path.join(__dirname, 'public/js')));
 
-app.use([
-    function(req,res,next){
-        debug("Check Authentication Status, choose corresponding DataModel")
-        if (req.user) {
-            debug("Set DataModel to USER");
-            req.DataModel = DataModel.user;
-        }else if (req.user && req.user.isAdmin) {
-            debug("Set DataModel to ADMIN");
-            req.DataModel = DataModel.admin;
-        }else{
-            debug("Set DataModel to PUBLIC");
-            req.DataModel = DataModel.public
-        }
+var collections = config.get("collections");
 
+app.use('/indexer/', indexer);
+
+
+app.param("dataType", function(req,res,next,dataType){
+    if (collections.indexOf(dataType)!=-1){
         next();
-    },function(req,res,next){
-        if (!req.DataModel){
-            next(new Error("Invalid Root DataModel"));
-            return;
-        }
-        if(!req.DataModel.match(req)){
-            next("route");
-            return;
-        }
+	return;
+    } 
+    next("route");
+})
 
-        req.DataModel.dispatch(req,res,next);
-    }
-])
+app.use('/:dataType/', dataTypeRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -84,6 +71,7 @@ app.use(function(req, res, next) {
 // will print stacktrace
 if (app.get('env') === 'development') {
     app.use(function(err, req, res, next) {
+        debug("Dev env error handler: err status", err.status)
         res.status(err.status || 500);
         res.render('error', {
             message: err.message,
@@ -95,6 +83,7 @@ if (app.get('env') === 'development') {
 // production error handler
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
+    debug("Dev env error handler: ", " err status", err.status)
     res.status(err.status || 500);
     res.render('error', {
         message: err.message,
@@ -102,4 +91,13 @@ app.use(function(err, req, res, next) {
     });
 });
 
-require("replify")({name: "p3api", path: "./REPL"},app,{"DataModel":DataModel});
+// debug("Launch Indexer");
+//var indexer = require('child_process').fork(__dirname + "/bin/p3-index-worker");
+
+//indexer.on("message", function(msg){
+//	debug("message from child",msg);
+//});
+
+//indexer.send({type: "start"});
+
+require("replify")({name: "p3api", path: "./REPL"},app,{});

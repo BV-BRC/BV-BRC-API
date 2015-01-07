@@ -1,0 +1,145 @@
+#!/usr/bin/env node
+var config = require("../config");
+var Queue = require("file-queue").Queue;
+var defer = require('promised-io/promise').defer;
+var when = require('promised-io/promise').when;
+console.log("Queue Directory: ", config.get("queueDirectory"));
+
+var queue = new Queue(config.get("queueDirectory"), function(err) {
+        if (err) {
+                console.log("error: ", err);
+                return;
+        }
+	processQueue(queue);
+});
+
+var maxLimit = config.get("indexImportLimits");
+
+
+process.on('message', function(msg){
+	if (msg && msg.type=="start"){
+		if (timer) {
+			cancelTimeout(timer);
+			delete timer;
+		}
+
+		processQueue(queue);
+	}
+});
+var timer;
+
+var items = [];
+var itemType;
+var commitCallbacks=[];
+var rollbacks = [];
+function indexItems(){
+	var def = new defer();
+
+	console.log("Indexing Items.  Type:", itemType, " Item Count: ", items.length);
+
+	commitCallbacks.forEach(function(cb){
+		console.log("do commit")
+		cb();
+	});
+	items = [];
+	commitCallbacks=[];
+
+	rollbacks.forEach(function(cb){
+		console.log("do rollback")
+		cb();
+	});
+	
+	def.resolve(true);
+	return def.promise;
+}
+
+function processQueue(queue){
+	console.log("processQueue");
+	queue.length(function(err,length){
+		if (length < 1){
+			if (items.length>0){
+				when(indexItems(),function(){
+					setTimeout(function(){
+						processQueue(queue);
+					},0);
+				});	
+			}else if (rollbacks.length>0) {
+				rollbacks.forEach(function(cb){
+					console.log("do rollback")
+					cb();
+				});
+				setTimeout(function(){
+					processQueue(queue)
+				},10000);
+			}else{
+				setTimeout(function(){
+					processQueue(queue)
+				},10000);
+			}
+		}else{
+//			console.log("Processing " + length + " queue items");
+		
+			queue.tpop(function(err,message,commit,rollback){
+				if (err) {
+					console.log("error popping message item: ", err);
+					return;
+				}
+				if (!message || !message.metadata){
+					console.log("No Metadata for: ", message, "Discarding Message.");
+					//rollbacks.push(rollback);
+					if (commit){
+						commit();
+					}
+					processQueue(queue);
+					return;
+				}
+//				console.log("Metadata: ", message.metadata.document_type, "type:", typeof message);
+//				console.log("message: ", message.metadata);
+				if (!message.metadata || (message.metadata && !message.metadata.document_type)){
+					console.log("Ignoring Message: ", message);
+					rollbacks.push(rollback);
+					processQueue(queue);
+				}else if (!itemType || (message.metadata.document_type==itemType)){
+
+					if (!itemType){
+						itemType=message.metadata.document_type;
+					}
+
+					var data = message.data;
+					if (data._version_) { delete data._version_; }
+					if (!data.document_type){
+						data.document_type=itemType;
+					}
+					items.push(data);
+
+					var maxLimit = maxLimit[itemType]||maxLimit['default'];
+					if (items.length>=maxLimit){
+						when(indexItems(),function(){
+							commitCallbacks.push(commit);
+							setTimeout(function(){
+								processQueue(queue);
+							},0);
+						});	
+					}else{
+						processQueue(queue);
+					}
+				}else{
+					rollbacks.push(rollback);
+
+					when(indexItems(),function(){
+						commitCallbacks.push(commit);
+						setTimeout(function(){
+							processQueue(queue);
+						},0);
+					});	
+
+				}
+			});
+		}
+	});	
+};
+
+
+
+
+

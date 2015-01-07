@@ -1,0 +1,19 @@
+#!/usr/bin/env node
+var config = require("../config");
+var Queue = require("file-queue").Queue;
+console.log("Queue Directory: ", config.get("queueDirectory"));
+
+var queue = new Queue(config.get("queueDirectory"), function(err) {
+        if (err) {
+                console.log("error: ", err);
+                return;
+        }
+	queue.length(function(err,length){
+		console.log("Queue Length: " + length);
+		process.exit(0);
+	});
+	return;
+});
+
+
+
