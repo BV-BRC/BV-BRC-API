@@ -13,24 +13,30 @@ var SOLR_URL=config.get("solr").url;
 var bodyParser = require("body-parser");
 var rql = require("solrjs/rql");
 var debug = require('debug')('p3api-server:dataroute');
+var Expander= require("../ExpandingQuery");
 
 var rqlToSolr = function(req, res, next) {
 	debug("RQLQueryParser", req.queryType);
 	if (req.queryType=="rql"){
 		req.call_params[0] = req.call_params[0] || "";
-	
-		req.call_params[0] = rql(req.call_params[0]).toSolr({maxRequestLimit: 250}) 
-		req.queryType="solr";
-		debug("Converted Solr Query: ", req.call_params[0]);
+		when(Expander.ResolveQuery(req.call_params[0],{req:req,res:res}), function(q){
+			console.log("Resolved Query: ", q);
+			if (q=="()") { q = ""; }
+			req.call_params[0] = rql(q).toSolr({maxRequestLimit: 250}) 
+			console.log("Converted Solr Query: ", req.call_params[0]);
+			req.queryType="solr";
+			next();
+		});
+	}else{
+		next();
 	}
-	next();
 }
 
 var querySOLR = function(req, res, next) {
 		if (req.call_method!="query"){ next(); }
 
 		var query = req.call_params[0];
-		debug("querySOLR req.params", req.call_params[0]);
+		console.log("querySOLR req.params", req.call_params[0]);
 		var solr = new solrjs(SOLR_URL + "/" + req.call_collection);
 
 		when(solr.query(query), function(results) {
