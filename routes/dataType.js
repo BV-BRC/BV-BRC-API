@@ -40,11 +40,17 @@ var querySOLR = function(req, res, next) {
 		var solr = new solrjs(SOLR_URL + "/" + req.call_collection);
 
 		when(solr.query(query), function(results) {
-			debug("results", results);
-			res.results = results;
+			console.log("querySOLR results", results);
+			if (!results || !results.response){
+				res.results=[];
+				res.set("Content-Range", "items 0-0/0");
+			}else{
+				res.results = results;
 
-			res.set("Content-Range", "items " + (results.response.start || 0) + "-" + ((results.response.start||0)+results.response.docs.length) + "/" + results.response.numFound);
-			next();
+				res.set("Content-Range", "items " + (results.response.start || 0) + "-" + ((results.response.start||0)+results.response.docs.length) + "/" + results.response.numFound);
+			}
+
+				next();
 		})
 }
 var getSOLR = function(req, res, next) {

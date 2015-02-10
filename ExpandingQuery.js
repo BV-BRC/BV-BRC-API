@@ -10,28 +10,6 @@ var Request = require('request');
 
 var workspaceAPI = config.get("workspaceAPI");
 
-var _expansions = {
-	"GenomeGroup": function(id,opts){
-		var defer = new defer();
-		Request.post(workspaceAPI, {
-			json:true,
-			body: {id:1,method:"Workspace.get",version:"1.1", params: [{objects: [id]}]},
-			headers: {
-				"accept": "application/json",
-				"content-type": "application/json",
-				"Authorization": (opts && opts.req && opts.req.headers["Authorization"])?opts.req.headers["Authorization"]:""
-			}
-
-		},function(err, results){
-			console.log("Results: ", results);
-			if (results.result) {
-
-			}
-		});
-
-		return def.promise;
-	}
-}
 function getWorkspaceObject(id,opts) {
 	var def = new defer();
 	console.log("in getWorkspaceObject: ", id);
@@ -107,6 +85,8 @@ var LazyWalk = exports.LazyWalk = function(term,opts) {
 					}
 						if (term.name=="and" && term.args.length==1){
 							return term.args[0];
+						}else if (term.name=="and" && term.args.length==0){
+							return "";
 						}else if (term.name=="GenomeGroup") {
 							console.log("call getWorkspaceObject(): ", term.args[0]);
 							return when(getWorkspaceObject(term.args[0],opts), function(ids){
@@ -118,6 +98,18 @@ var LazyWalk = exports.LazyWalk = function(term,opts) {
 								console.log("Error Retrieving Workspace: ", err);	
 								return err;
 							})
+						}else if (term.name=="FeatureGroup") {
+							console.log("call getWorkspaceObject(): ", term.args[0]);
+							return when(getWorkspaceObject(term.args[0],opts), function(ids){
+								console.log("getWSObject: ", ids);
+								var out = "(" + ids.join(",") + ")"
+								console.log("out: ", out);
+								return out;
+							},function(err){
+								console.log("Error Retrieving Workspace: ", err);	
+								return err;
+							})
+
 						}else if (term.name=="query") {
 							var modelId=args[0];
 							var q= Query(args[1]);
