@@ -160,7 +160,9 @@ router.post("*", [
 	},
 	bodyParser.text({type:"application/rqlquery+x-www-form-urlencoded"}),
 	bodyParser.text({type:"application/solrquery+x-www-form-urlencoded"}),
+	bodyParser.urlencoded(),
 	function(req,res,next){
+		console.log("POST: ", req.body,req);
 		if (!req._body || !req.body) { next("route"); return }
 		var ctype=req.get("content-type");	
 		req.call_method="query";
@@ -171,7 +173,7 @@ router.post("*", [
 	}
 ])
 
-var maxLimit=50;
+var maxLimit=250;
 
 router.use([
 	rqlToSolr,
