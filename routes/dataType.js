@@ -160,13 +160,13 @@ router.post("*", [
 	},
 	bodyParser.text({type:"application/rqlquery+x-www-form-urlencoded"}),
 	bodyParser.text({type:"application/solrquery+x-www-form-urlencoded"}),
-	bodyParser.urlencoded(),
 	function(req,res,next){
+		req.body=decodeURIComponent(req.body);
 		console.log("POST: ", req.body,req);
 		if (!req._body || !req.body) { next("route"); return }
 		var ctype=req.get("content-type");	
 		req.call_method="query";
-		req.call_params = req.body;
+		req.call_params = [req.body];
 		req.call_collection = req.params.dataType;
 		req.queryType = (ctype=="application/solrquery+x-www-form-urlencoded")?"solr":"rql";
 		next();
@@ -182,6 +182,7 @@ router.use([
 		if (req.call_method!="query") { return next(); }
 		var limit = maxLimit;
 		var q = req.call_params[0];
+		console.log('q: ', q, req.call_params[0]);
 		var re = /(&rows=)(\d*)/;
 		var matches = q.match(re);
 
@@ -190,6 +191,7 @@ router.use([
 		}else{
 			limit=matches[2];
 		}
+		console.log("matches: ", matches, " limit: ", limit);
 		if (req.headers.range) {
 			var range = req.headers.range.match(/^items=(\d+)-(\d+)?$/);
 			if (range){
