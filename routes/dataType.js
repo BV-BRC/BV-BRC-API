@@ -68,10 +68,14 @@ var decorateQuery = function(req, res, next) {
 	req.call_params[0] = req.call_params[0] || "&q=*:*";
 
 	if (!req.user) {
-		req.call_params[0] = req.call_params[0] + "&fq=public:true"
+		if (req.call_collection !="taxonomy") {
+			req.call_params[0] = req.call_params[0] + "&fq=public:true"
+		}
 	}
 	else {
-		req.call_params[0]= req.call_params[0] + ("&fq=(public:true OR owner:" + req.user + " OR user_read:" + req.user + ")");
+		if (req.call_collection !="taxonomy") {
+			req.call_params[0]= req.call_params[0] + ("&fq=(public:true OR owner:" + req.user + " OR user_read:" + req.user + ")");
+		}
 	}
 
 	next();

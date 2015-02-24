@@ -28,17 +28,24 @@ function getWorkspaceObject(id,opts) {
 	},function(err, resObj,results){
 		if (err) {
 			console.log("Error retrieving object from workspace: ", err)
+			
 			def.reject(err);
 			return;
 		}
 		if (results.result) {
 			var R=[];
 			results.result[0].map(function(o){
-				var obj = o[1];
-				obj.id_list.forEach(function(list){
-					R = R.concat(list.ids);
+				var obj = JSON.parse(o[1]);
+				console.log("obj: ", obj );
+				console.log("obj id_list: ", obj.id_list);
+				Object.keys(obj.id_list).forEach(function(key){
+					R = R.concat(obj.id_list[key].filter(function(y) { return !!y }));
 				})						
 			});
+			if (R.length<1){
+				R.push("NOT_A_VALID_ID");	
+			}
+
 			R = R.map(encodeURIComponent);
 			console.log("R: ", R[0]);
 			def.resolve(R);
@@ -96,7 +103,7 @@ var LazyWalk = exports.LazyWalk = function(term,opts) {
 								return out;
 							},function(err){
 								console.log("Error Retrieving Workspace: ", err);	
-								return err;
+								return "(NOT_A_VALID_ID)";
 							})
 						}else if (term.name=="FeatureGroup") {
 							console.log("call getWorkspaceObject(): ", term.args[0]);
@@ -107,6 +114,7 @@ var LazyWalk = exports.LazyWalk = function(term,opts) {
 								return out;
 							},function(err){
 								console.log("Error Retrieving Workspace: ", err);	
+								return "(NOT_A_VALID_ID)";
 								return err;
 							})
 
