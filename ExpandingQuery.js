@@ -35,7 +35,7 @@ function getWorkspaceObject(id,opts) {
 		if (results.result) {
 			var R=[];
 			results.result[0].map(function(o){
-				var obj = JSON.parse(o[1]);
+				var obj = (typeof o[1]=='string')?JSON.parse(o[1]):o[1];
 				console.log("obj: ", obj );
 				console.log("obj id_list: ", obj.id_list);
 				Object.keys(obj.id_list).forEach(function(key){
