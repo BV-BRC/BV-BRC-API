@@ -20,6 +20,7 @@ var Queue = require("file-queue").Queue;
 var debug = require('debug')('p3api-server:indexer');
 debug("Queue Directory: ", config.get("queueDirectory"));
 
+/*
 var queue = new Queue(config.get("queueDirectory"), function(err) {
 	if (err) {
 		debug("error: ", err);
@@ -27,7 +28,8 @@ var queue = new Queue(config.get("queueDirectory"), function(err) {
 	}
 	debug("Created Queue.");
 });
-
+*/
+var queue;
 router.use(httpParams);
 
 router.use(authMiddleware);
