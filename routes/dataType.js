@@ -122,6 +122,11 @@ router.get("*", function(req,res,next){
 			req.queryType = "rql";
 		}
 		debug('req.queryType: ', req.queryType)
+		console.log("req.headers: ", req.headers);
+		if (req.headers && req.headers.download){
+			req.isDownload = true;
+		}
+		console.log("req.isDownload: ", req.isDownload);
 		req.call_params = [req._parsedUrl.query||""];
 		req.call_collection = req.params.dataType;
 	}else{
@@ -190,7 +195,8 @@ router.use([
 		var re = /(&rows=)(\d*)/;
 		var matches = q.match(re);
 
-		if (matches && matches[2] && (matches[2]>maxLimit)){
+
+		if (matches && matches[2] && (matches[2]>maxLimit) && (!req.isDownload)){
 			limit=maxLimit
 		}else{
 			limit=matches[2];
