@@ -66,14 +66,14 @@ var decorateQuery = function(req, res, next) {
 
 	debug("decorateQuery", req.solr_query);
 	req.call_params[0] = req.call_params[0] || "&q=*:*";
-
+	var publicFree=['taxonomy', "transcriptomics_experiment"];
 	if (!req.user) {
-		if (req.call_collection !="taxonomy") {
+		if (publicFree.indexOf(req.call_collection)<0) {
 			req.call_params[0] = req.call_params[0] + "&fq=public:true"
 		}
 	}
 	else {
-		if (req.call_collection !="taxonomy") {
+		if (publicFree.indexOf(req.call_collection)<0) {
 			req.call_params[0]= req.call_params[0] + ("&fq=(public:true OR owner:" + req.user + " OR user_read:" + req.user + ")");
 		}
 	}
