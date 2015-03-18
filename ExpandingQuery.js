@@ -70,7 +70,7 @@ var LazyWalk = exports.LazyWalk = function(term,opts) {
 	}
 
 	if (term && term instanceof Array){
-		return term.join(",");
+		return "(" + term.join(",") +")"
 	}
 	console.log("term: ", term, " type: ", typeof term);	
 	if (term && typeof term=="object") {

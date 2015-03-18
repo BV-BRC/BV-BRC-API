@@ -24,7 +24,7 @@ module.exports = function(req,res,next){
 			Object.keys(parsed).forEach(function(key){
 				if (key.match("http_")) {
 					var header = key.split("_")[1];
-					req.headers[header] = parsed[key];
+					req.headers[header] = decodeURIComponent(parsed[key]);
 					delete parsed[key];
 				}
 			});
@@ -55,6 +55,6 @@ module.exports = function(req,res,next){
 	}
 
 	debug("End http-params Middleware: ", req._parsedUrl, req._parsedUrl.query);
-	
+	console.log("Headers: ", req.headers);	
 	next();
 }
