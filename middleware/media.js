@@ -89,32 +89,42 @@ module.exports=function(req,res,next){
 		"application/vnd.openxmlformats": function(){
 			debug("Excel  handler")
 			if (req.isDownload){
-				req.set("content-disposition", "attachment; filename=patric3_query.txt");
+				req.set("content-disposition", "attachment; filename=patric3_query.xlsx");
 			}
 			var excelConf = {cols: []}
 
-			console.log("res.results: ", res.results);
+//			console.log("res.results: ", res.results);
 			if (res.results && res.results.response && res.results.response.docs) {
+				console.log("Build Excel Columns");
 				if (!fields) { 
 					fields = Object.keys(res.results.response.docs[0]);
 				}
+				console.log("fields: ", fields);
+
 				fields.forEach(function(field){
 					if (res.results.response.docs[0] && res.results.response.docs[0][field]) {
 						var fd = res.results.response.docs[0][field];
 						if (typeof fd=="number"){
-							excelConf.push({caption: field, type: "number"});
+							excelConf.cols.push({caption: field, type: "number"});
 						}else{
-							excelConf.push({caption: field, type: "string"});
+							excelConf.cols.push({caption: field, type: "string"});
 						}	
+					}else{
+						excelConf.cols.push({caption: field, type: "string"});
 					}
 				});
-				res.write(fields.join("\t") + "\n");
-				console.log("Fields: ", fields);
+
+				console.log("excelconf: ", excelConf);
 				excelConf.rows = res.results.response.docs.map(function(o){
 					var row = fields.map(function(field){
-						return o[field];	
+						if (typeof o[field] == "object") {
+							if (o[field] instanceOf Array) {
+								return o[field].join(";");
+							}
+							return JSON.stringify(o[field]);
+						}
+						return o[field] || "";	
 					});
-					console.log("row: ", row);
 					return row;
 				});
 
