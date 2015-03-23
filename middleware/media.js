@@ -118,7 +118,7 @@ module.exports=function(req,res,next){
 				excelConf.rows = res.results.response.docs.map(function(o){
 					var row = fields.map(function(field){
 						if (typeof o[field] == "object") {
-							if (o[field] instanceOf Array) {
+							if (o[field] instanceof Array) {
 								return o[field].join(";");
 							}
 							return JSON.stringify(o[field]);
