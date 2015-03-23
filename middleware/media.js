@@ -46,7 +46,7 @@ module.exports=function(req,res,next){
 			console.log("res.results: ", res.results);
 			if (res.results && res.results.response && res.results.response.docs) {
 				if (!fields) {
-					var fields = Object.keys(res.results.response.docs[0]);
+					fields = Object.keys(res.results.response.docs[0]);
 				}
 
 				res.write(fields.join(",") + "\n");
@@ -69,8 +69,8 @@ module.exports=function(req,res,next){
 			}
 			console.log("res.results: ", res.results);
 			if (res.results && res.results.response && res.results.response.docs) {
-				if (!fields) [
-					var fields = Object.keys(res.results.response.docs[0]);
+				if (!fields) { 
+					fields = Object.keys(res.results.response.docs[0]);
 				}
 				res.write(fields.join("\t") + "\n");
 				console.log("Fields: ", fields);
