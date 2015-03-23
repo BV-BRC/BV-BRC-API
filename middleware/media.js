@@ -8,20 +8,52 @@ module.exports=function(req,res,next){
 		debug("RPC Request");
 	}
 
+	var fields;
+
+	if (req.call_collection=="genome_feature"){
+		fields = ["genome_name", "accession", "seed_id", "refseq_locus_tag", "alt_locus_tag", "feature_id",
+				"annotation", "feature_type", "start", "end", "na_length", "strand", "protein_id", "aa_length", "gene", "product"
+		];
+	}else if (req.call_collection =="genome") {
+		fields = ["genome_id", "genome_name", "organism_name", "taxon_id", "genome_status",
+			"strain", "serovar", "biovar", "pathovar", "mlst", "other_typing",
+			"culture_collection", "type_strain",
+			"completion_date", "publication",
+			"bioproject_accession", "biosample_accession", "assembly_accession", "genbank_accessions",
+			"refseq_accessions",
+			"sequencing_centers", "sequencing_status", "sequencing_platform", "sequencing_depth", "assembly_method",
+			"chromosomes", "plasmids", "contigs", "sequences", "genome_length", "gc_content",
+			"patric_cds", "brc1_cds", "refseq_cds",
+			"isolation_site", "isolation_source", "isolation_comments", "collection_date",
+			"isolation_country", "geographic_location", "latitude", "longitude", "altitude", "depth", "other_environmental",
+			"host_name", "host_gender", "host_age", "host_health", "body_sample_site", "body_sample_subsite", "other_clinical",
+			"antimicrobial_resistance", "antimicrobial_resistance_evidence",
+			"gram_stain", "cell_shape", "motility", "sporulation", "temperature_range", "optimal_temperature", "salinity", "oxygen_requirement",
+			"habitat",
+			"disease", "comments", "additional_metadata"
+		]
+	}
+
+
+
 	res.format({
 		"text/csv": function(){
 			debug("text/csv handler")
 			if (req.isDownload){
 				req.set("content-disposition", "attachment; filename=patric3_query.csv");
 			}
+
 			console.log("res.results: ", res.results);
 			if (res.results && res.results.response && res.results.response.docs) {
-				var fields = Object.keys(res.results.response.docs[0]);
+				if (!fields) {
+					var fields = Object.keys(res.results.response.docs[0]);
+				}
+
 				res.write(fields.join(",") + "\n");
 				console.log("Fields: ", fields);
 				res.results.response.docs.forEach(function(o){
 					var row = fields.map(function(field){
-						return o[field];	
+						return JSON.stringify(o[field]);	
 					});
 					console.log("row: ", row);
 					res.write(row.join(",") + "\n");
@@ -37,7 +69,9 @@ module.exports=function(req,res,next){
 			}
 			console.log("res.results: ", res.results);
 			if (res.results && res.results.response && res.results.response.docs) {
-				var fields = Object.keys(res.results.response.docs[0]);
+				if (!fields) [
+					var fields = Object.keys(res.results.response.docs[0]);
+				}
 				res.write(fields.join("\t") + "\n");
 				console.log("Fields: ", fields);
 				res.results.response.docs.forEach(function(o){
