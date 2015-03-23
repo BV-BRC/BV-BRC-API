@@ -12,6 +12,7 @@
     "cors": "~2.5.0",
     "debug": "~2.0.0",
     "ejs": "~0.8.5",
+    "excel-export": "^0.4.1",
     "express": "~4.9.0",
     "file-queue": "^0.2.1",
     "fs-extra": "~0.12.0",
