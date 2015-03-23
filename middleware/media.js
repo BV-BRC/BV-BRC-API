@@ -1,4 +1,5 @@
 var debug = require('debug')('p3api-server:media');
+var nodeExcel = require('excel-export');
 module.exports=function(req,res,next){
 	var rpcTypes = ["application/jsonrpc.result+json", "application/jsonrpc+json"];
 
@@ -84,8 +85,48 @@ module.exports=function(req,res,next){
 			}
 
 			res.end();
+		},
+		"application/vnd.openxmlformats": function(){
+			debug("Excel  handler")
+			if (req.isDownload){
+				req.set("content-disposition", "attachment; filename=patric3_query.txt");
+			}
+			var excelConf = {cols: []}
+
+			console.log("res.results: ", res.results);
+			if (res.results && res.results.response && res.results.response.docs) {
+				if (!fields) { 
+					fields = Object.keys(res.results.response.docs[0]);
+				}
+				fields.forEach(function(field){
+					if (res.results.response.docs[0] && res.results.response.docs[0][field]) {
+						var fd = res.results.response.docs[0][field];
+						if (typeof fd=="number"){
+							excelConf.push({caption: field, type: "number"});
+						}else{
+							excelConf.push({caption: field, type: "string"});
+						}	
+					}
+				});
+				res.write(fields.join("\t") + "\n");
+				console.log("Fields: ", fields);
+				excelConf.rows = res.results.response.docs.map(function(o){
+					var row = fields.map(function(field){
+						return o[field];	
+					});
+					console.log("row: ", row);
+					return row;
+				});
+
+				var d = nodeExcel.execute(excelConf);
+				res.set("Content-Type", "application/vnd.openxmlformats");
+				res.end(d, "binary");	
+			}
+
+			res.end();
 	
 		},
+
 		"application/solr+json": function(){
 			debug("application/json handler")	
 			res.send(JSON.stringify(res.results));
