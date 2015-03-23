@@ -118,7 +118,9 @@ module.exports=function(req,res,next){
 					return row;
 				});
 
+				console.log("Excel Conf: ", excelConf);
 				var d = nodeExcel.execute(excelConf);
+				console.log("Node Excel Data Exported");
 				res.set("Content-Type", "application/vnd.openxmlformats");
 				res.end(d, "binary");	
 			}
