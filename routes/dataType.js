@@ -66,7 +66,7 @@ var decorateQuery = function(req, res, next) {
 
 	debug("decorateQuery", req.solr_query);
 	req.call_params[0] = req.call_params[0] || "&q=*:*";
-	var publicFree=['enzyme_class_ref', 'gene_ontology_ref', 'id_ref', 'protein_family_ref', 'misc_niaid_gsc', 'taxonomy'];
+	var publicFree=['enzyme_class_ref', 'gene_ontology_ref', 'id_ref', 'misc_niaid_gsc', 'pathway_ref', 'ppi', 'protein_family_ref', 'sp_gene_evidence', 'sp_gene_ref', 'taxonomy', 'transcriptomics_experiment', 'transcriptomics_gene', 'transcriptomics_sample'];
 	if (!req.user) {
 		if (publicFree.indexOf(req.call_collection)<0) {
 			req.call_params[0] = req.call_params[0] + "&fq=public:true"
