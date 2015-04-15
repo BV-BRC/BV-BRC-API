@@ -3,7 +3,8 @@
   "version": "0.8.1",
   "private": true,
   "scripts": {
-    "start": "forever start -l /opt/p3api/p3api.log ./bin/p3api-server"
+    "start": "forever start -l /opt/p3api/p3api.log ./bin/p3api-server",
+    "test": "intern-client config=tests/intern"
   },
   "dependencies": {
     "body-parser": "^1.8.4",
