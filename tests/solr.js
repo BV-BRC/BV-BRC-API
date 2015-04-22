@@ -8,7 +8,7 @@ define([
 	}
 
 	var basicQueries = [
-		["?q=*:*&rows=10", function(data){ assert.strictEqual(data.response.docs.length,10) }]
+		["&q=*:*&rows=10", function(data){ /*console.log("data: ", data);*/assert.strictEqual(data.response.docs.length,10) }]
 	]
 
 	var dataModel = {
@@ -55,12 +55,27 @@ define([
 		queries.forEach(function(bq){
 			var query = bq[0];
 			var handler=bq[1];
-			suite["/"+model +"/"+ query] = function(){
+			suite["GET /"+model +"/?"+ query] = function(){
 				var dfd = this.async(120000);
-				request('http://localhost:3001/' + model + '/' + query,{headers:{accept:"application/solr+json","content-type":"application/solrquery+x-www-form-urlencoded"},handleAs:"json"}).then(dfd.callback(handler),dfd.reject.bind(dfd));
+				request('http://localhost:3001/' + model + '/?' + query,{headers:{accept:"application/solr+json","content-type":"application/solrquery+x-www-form-urlencoded"},handleAs:"json"}).then(dfd.callback(handler),dfd.reject.bind(dfd));
 				return dfd;
 			}
 		});
 	});
+
+	Object.keys(dataModel).filter(function(x){return filter.indexOf(x)==-1}).forEach(function(model) {
+		var Model = dataModel[model];	
+		var queries = Model.queries?basicQueries.concat(Model.queries):basicQueries;
+		queries.forEach(function(bq){
+			var query = bq[0];
+			var handler=bq[1];
+			suite["POST /"+model +"/"+ query] = function(){
+				var dfd = this.async(120000);
+				request('http://localhost:3001/' + model + '/',{method: "POST", headers:{accept:"application/solr+json","content-type":"application/solrquery+x-www-form-urlencoded"},handleAs:"json",data:query}).then(dfd.callback(handler),dfd.reject.bind(dfd));
+				return dfd;
+			}
+		});
+	});
+
 	registerSuite(suite);	
 });

@@ -60,7 +60,7 @@ define({
 	},
 
 	// Non-functional test suite(s) to run in each browser
-	suites: [ "tests/query"], 
+	suites: [ "tests/query", "tests/solr"], 
 
 	// Functional test suite(s) to run in each browser once non-functional tests are completed
 	functionalSuites: [ /* 'myPackage/tests/functional' */ ],

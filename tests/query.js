@@ -8,14 +8,14 @@ define([
 	}
 
 	var basicQueries = [
-		["?&limit(10)", function(data){ assert.strictEqual(data.length,10) }]
+		["&limit(10)", function(data){ assert.strictEqual(data.length,10) }]
 	]
 
 	var dataModel = {
 		"genome": {
 			queries: [
-				["?eq(taxon_lineage_ids,1386)&limit(10)", function(data) { assert.strictEqual(data.length,10) }],
-				["?eq(taxon_lineage_ids,1386)&limit(1)&select(genome_id,genome_name)", function(data) { 
+				["&eq(taxon_lineage_ids,1386)&limit(10)", function(data) { assert.strictEqual(data.length,10) }],
+				["&eq(taxon_lineage_ids,1386)&limit(1)&select(genome_id,genome_name)", function(data) { 
 					assert.strictEqual(data.length>0,true, "Query returned 0 results")
 					var d = data[0];
 					assert.isDefined(d.genome_id);
@@ -23,7 +23,7 @@ define([
 					assert.isUndefined(d.kingdom);
 					assert.equal(Object.keys(d).length,2);
 				}],
-//				["?exists(genome_name)&limit(1)&select(genome_id,genome_name)", function(data) { 
+//				["&exists(genome_name)&limit(1)&select(genome_id,genome_name)", function(data) { 
 //					assert.strictEqual(data.length>0,true, "Query returned 0 results")
 //					var d = data[0];
 //					assert.isDefined(d.genome_id);
@@ -34,18 +34,18 @@ define([
 		
 			]
 		},
-//		"enzyme_class_ref": {},
-//		"gene_ontology_ref": {},
+		"enzyme_class_ref": {},
+		"gene_ontology_ref": {},
 		"genome_feature": {
 			queries: [
-				["?gt(na_length,968107)&lt(na_length,968109)&limit(10)", function(data) { 
+				["&gt(na_length,968107)&lt(na_length,968109)&limit(10)", function(data) { 
 					var d = data[0];
 					assert.equal(d.na_length,968108);
 				}],
-				["?in(feature_id,(PATRIC.992186.3.NZ_AFER01000002.source.1.968108.fwd,PATRIC.992186.3.NZ_AFER01000001.source.1.3139278.fwd,PATRIC.992186.3.NZ_AFER01000003.source.1.110310.fwd))", function(data){
+				["&in(feature_id,(PATRIC.992186.3.NZ_AFER01000002.source.1.968108.fwd,PATRIC.992186.3.NZ_AFER01000001.source.1.3139278.fwd,PATRIC.992186.3.NZ_AFER01000003.source.1.110310.fwd))", function(data){
 					assert.equal(data.length,3);
 				}],
-				["?eq(feature_id,PATRIC.992186.3.NZ_AFER01000002.source.1.968108.fwd)", function(data){
+				["&eq(feature_id,PATRIC.992186.3.NZ_AFER01000002.source.1.968108.fwd)", function(data){
 					var d = data[0];
 					assert.equal(d.feature_id,"PATRIC.992186.3.NZ_AFER01000002.source.1.968108.fwd");
 				}]
@@ -69,14 +69,14 @@ define([
 		"sp_gene_ref": {},
 		"taxonomy": {
 			queries: [
-				["?eq(taxon_name,bac)&limit(10)", function(data) { 
+				["&eq(taxon_name,bac)&limit(10)", function(data) { 
 					var re = /bac/gi;
 					data.forEach(function(d){
 						var matches = d.taxon_name.match(re);
 						assert.equal((matches && matches.length>0),true);
 					});
 				}],
-				["?eq(taxon_name,trichormus+vari)&limit(10)", function(data) { 
+				["&eq(taxon_name,trichormus+vari)&limit(10)", function(data) { 
 					var re = /trichormus\ vari/gi;
 					data.forEach(function(d){
 						var matches = d.taxon_name.match(re);
@@ -85,7 +85,7 @@ define([
 				}],
 
 
-				["?eq(lineage_ids,1165)&limit(10)", function(data) { 
+				["&eq(lineage_ids,1165)&limit(10)", function(data) { 
 					data.forEach(function(d){
 						assert.equal(d.lineage_ids.indexOf(1165)>=0, true)
 					});
@@ -102,19 +102,36 @@ define([
 		"user","collection","client", "genome_sequence","host-resp","misc_niaid_gsc",
 		"proteomics_peptide", "proteomics_protein","proteomics_experiment"
 	];
+
 	Object.keys(dataModel).filter(function(x){return filter.indexOf(x)==-1}).forEach(function(model) {
 		var Model = dataModel[model];	
 		var queries = Model.queries?basicQueries.concat(Model.queries):basicQueries;
 		queries.forEach(function(bq){
 			var query = bq[0];
 			var handler=bq[1];
-			suite["/"+model +"/"+ query] = function(){
+			suite["GET /"+model +"/?"+ query] = function(){
 				var dfd = this.async(120000);
-				request('http://localhost:3001/' + model + '/' + query,{headers:{accept:"application/json"},handleAs:"json"}).then(dfd.callback(handler),dfd.reject.bind(dfd));
+				request('http://localhost:3001/' + model + '/?' + query,{headers:{accept:"application/json"},handleAs:"json"}).then(dfd.callback(handler),dfd.reject.bind(dfd));
 				return dfd;
 			}
 		});
 	});
+
+	Object.keys(dataModel).filter(function(x){return filter.indexOf(x)==-1}).forEach(function(model) {
+		var Model = dataModel[model];	
+		var queries = Model.queries?basicQueries.concat(Model.queries):basicQueries;
+		queries.forEach(function(bq){
+			var query = bq[0];
+			var handler=bq[1];
+			suite["POST /"+model +"/"+ query] = function(){
+				var dfd = this.async(120000);
+				request('http://localhost:3001/' + model + '/',{method: "POST", headers:{accept:"application/json","content-type":"application/rqlquery+x-www-form-urlencoded"},handleAs:"json", data: query}).then(dfd.callback(handler),dfd.reject.bind(dfd));
+				return dfd;
+			}
+		});
+	});
+
+
 	/*
 	Object.keys(dataModel).filter(function(x){return filter.indexOf(x)==-1}).forEach(function(model) {
 		var Model = dataModel[model];	
