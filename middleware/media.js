@@ -38,6 +38,96 @@ module.exports=function(req,res,next){
 
 
 	res.format({
+		"application/dna+fasta": function(){
+			debug("application/dna+fasta handler")
+			if (req.isDownload){
+				req.set("content-disposition", "attachment; filename=patric_genomes.fasta");
+			}
+
+			console.log("res.results: ", res.results);
+			if (res.results && res.results.response && res.results.response.docs) {
+				res.results.response.docs.forEach(function(o){
+					var row = ">" + o.seed_id + "|"+o.feature_id+ " " + o.product + "\n" + o.na_sequence + "\n"; 
+					res.write(row);
+				});	
+			}
+
+			res.end();
+
+		},
+
+		"application/protein+fasta": function(){
+			debug("application/dna+fasta handler")
+			if (req.isDownload){
+				req.set("content-disposition", "attachment; filename=patric_proteins.fasta");
+			}
+
+			console.log("res.results: ", res.results);
+			if (res.results && res.results.response && res.results.response.docs) {
+				res.results.response.docs.forEach(function(o){
+					var row = ">" + o.seed_id + "|"+o.feature_id+ " " + o.product + "\n" + o.aa_sequence + "\n"; 
+					res.write(row);
+				});	
+			}
+
+			res.end();
+		},
+		"application/gff": function(){
+			debug("application/dna+fasta handler")
+			if (req.isDownload){
+				req.set("content-disposition", "attachment; filename=patric_proteins.fasta");
+			}
+
+			console.log("res.results: ", res.results);
+			if (res.results && res.results.response && res.results.response.docs && res.results.response.docs.length>0) {
+				res.write("##gff-version 3\n");
+				res.write("#Genome: " + res.results.response.docs[0].genome_id);
+				if (res.results.response.docs[0].product) {
+					res.write(" " + res.results.response.docs[0].product);
+				}
+				res.write("\n");
+				res.results.response.docs.forEach(function(o){
+					if (o.feature_type=="source") {
+						return;
+					}
+					res.write( "accn|" + o.accession+ "\t"+o.annotation+ "\tmisc_RNA\t" + o.start+ "\t" + o.end + "\t.\t" + o.strand+"\t0\t");
+					switch(o.annotation) {
+						case "PATRIC":
+							res.write("ID=" + o.seed_id);
+							break;
+						case "RefSeq":
+							res.write("ID=" + o.refseq_locus_tag);
+							break;
+					}	
+
+					if (o.refseq_locus_tag) {
+						res.write(";locus_tag=" + o.refseq_locus_tag);
+					}
+				
+					if (o.product) {
+						res.write(";product=" +o.product);
+					}
+
+					if (o.gene) {
+						res.write(";gene=" + o.gene);
+					}	
+					
+					if (o.go) {
+						res.write(";Ontology_term=" + o.go);
+					}
+
+					if (o.ec) {
+						res.write(";ec_number=" + o.ec.join("|"));
+					}
+						
+					res.write("\n");
+				});	
+			}
+
+			res.end();
+		},
+
+
 		"text/csv": function(){
 			debug("text/csv handler")
 			if (req.isDownload){
