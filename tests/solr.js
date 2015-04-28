@@ -25,14 +25,13 @@ define([
         "gene_ontology_ref": {},
         "genome_feature": {
             queries: [
-                ['q=*:*&rows=0&fq=feature_type:CDS+AND+annotation:PATRIC&fq={!join+from=genome_id+to=genome_id+fromIndex=genome}taxon_lineage_ids:83332&facet=true&json.facet={stat:{field:{field:figfam_id,limit:-1,allBuckets:true,facet:{genome_count:"unique(genome_id)"}}}}', function (data) {
+                ['q=*:*&rows=0&fq=feature_type:CDS+AND+annotation:PATRIC&fq={!join+from%3Dgenome_id+to%3Dgenome_id+fromIndex%3Dgenome}taxon_lineage_ids:83332&facet=true&json.facet={stat:{field:{field:figfam_id,limit:-1,allBuckets:true,facet:{genome_count:"unique(genome_id)"}}}}', function (data) {
                     assert.isDefined(data.facets.stat);
                     assert.isArray(data.facets.stat.buckets);
                     assert.isTrue((data.facets.stat.buckets.length > 20));
                 }]
             ]
         },
-
         "genome_sequence": {},
         "id_ref": {},
         "misc_niaid_gsc": {},
@@ -45,7 +44,7 @@ define([
                     assert.isArray(data.facets.stat.buckets);
                     assert.isTrue(data.facets.stat.buckets.length > 0, 'data.facets.stat.buckets is empty');
                 }],
-                ['q=annotation:PATRIC&fq={!join+from=genome_id+to=genome_id+fromIndex=genome}genome_status:(Complete+OR+WGS)+AND+taxon_lineage_ids:83332&rows=0&facet=true&json.facet={stat:{field:{field:pathway_id,limit:-1,facet:{ec_count:"unique(ec_number)",genome_count:"unique(genome_id)",genome_ec_count:"unique(genome_ec)"}}}}', function(data) {
+                ['q=annotation:PATRIC&fq={!join+from%3Dgenome_id+to%3Dgenome_id+fromIndex%3Dgenome}genome_status:(Complete+OR+WGS)+AND+taxon_lineage_ids:83332&rows=0&facet=true&json.facet={stat:{field:{field:pathway_id,limit:-1,facet:{ec_count:"unique(ec_number)",genome_count:"unique(genome_id)",genome_ec_count:"unique(genome_ec)"}}}}', function(data) {
                     assert.isArray(data.facets.stat.buckets);
                     assert.isTrue(data.facets.stat.buckets.length > 0, 'data.facets.stat.buckets is empty');
                 }]
