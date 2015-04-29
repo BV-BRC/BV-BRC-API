@@ -54,11 +54,11 @@ var querySOLR = function(req, res, next) {
 		})
 }
 var getSOLR = function(req, res, next) {
-		var solr = new solrjs(SOLR_URL + "/" + req.call_collection);
-		when(solr.get(req.call_params[0]), function(results) {
-			res.results = results;
-			next();
-		});
+	var solr = new solrjs(SOLR_URL + "/" + req.call_collection);
+	when(solr.get(req.call_params[0]), function(results) {
+		res.results = results;
+		next();
+	});
 }
 
 var decorateQuery = function(req, res, next) {
@@ -74,7 +74,7 @@ var decorateQuery = function(req, res, next) {
 	}
 	else {
 		if (publicFree.indexOf(req.call_collection)<0) {
-			req.call_params[0]= req.call_params[0] + ("&fq=(public:true OR owner:" + req.user + " OR user_read:" + req.user + ")");
+			req.call_params[0]= req.call_params[0] + ("&fq=(public:true OR owner:" + req.user + "@patricbrc.org OR user_read:" + req.user + "@patricbrc.org)");
 		}
 	}
 
