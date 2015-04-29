@@ -22,7 +22,7 @@ var rqlToSolr = function(req, res, next) {
 		when(Expander.ResolveQuery(req.call_params[0],{req:req,res:res}), function(q){
 			debug("Resolved Query: ", q);
 			if (q=="()") { q = ""; }
-			req.call_params[0] = rql(q).toSolr({maxRequestLimit: 250}) 
+			req.call_params[0] = rql(q).toSolr({maxRequestLimit: 25000}) 
 			console.log("Converted Solr Query: ", req.call_params[0]);
 			req.queryType="solr";
 			next();

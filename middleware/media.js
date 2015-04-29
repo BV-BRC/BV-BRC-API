@@ -90,7 +90,10 @@ module.exports=function(req,res,next){
 					if (o.feature_type=="source") {
 						return;
 					}
-					res.write( "accn|" + o.accession+ "\t"+o.annotation+ "\tmisc_RNA\t" + o.start+ "\t" + o.end + "\t.\t" + o.strand+"\t0\t");
+					if (o.feature_type=="misc_RNA"){
+						o.feature_type="transcript"
+					}
+					res.write( "accn|" + o.accession+ "\t"+o.annotation+ "\t" + o.feature_type + "\t" + o.start+ "\t" + o.end + "\t.\t" + o.strand+"\t0\t");
 					switch(o.annotation) {
 						case "PATRIC":
 							res.write("ID=" + o.seed_id);
