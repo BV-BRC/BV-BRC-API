@@ -170,7 +170,7 @@ router.post("*", [
 	bodyParser.text({type:"application/rqlquery+x-www-form-urlencoded"}),
 	bodyParser.text({type:"application/solrquery+x-www-form-urlencoded"}),
 	function(req,res,next){
-		req.body=decodeURIComponent(req.body);
+//		req.body=decodeURIComponent(req.body);
 		debug("POST: ", req.body,req);
 		if (!req._body || !req.body) { next("route"); return }
 		var ctype=req.get("content-type");	
