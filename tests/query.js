@@ -38,6 +38,9 @@ define([
 		"gene_ontology_ref": {},
 		"genome_feature": {
 			queries: [
+				["&eq(annotation,PATRIC)", function(data) {
+					assert.equal(data.length,25);
+				}],
 				["&gt(na_length,968107)&lt(na_length,968109)&limit(10)", function(data) { 
 					var d = data[0];
 					assert.equal(d.na_length,968108);

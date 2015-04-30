@@ -9,7 +9,7 @@ define([
 
     var basicQueries = [
         ["&q=*:*&rows=10", function (data) {
-            assert.strictEqual(data.response.docs.length, 10);
+           assert.strictEqual(data.response.docs.length, 10);
         }]
     ];
 

@@ -62,7 +62,8 @@ var LazyWalk = exports.LazyWalk = function(term,opts) {
 	var children;
 
 	if (term && (typeof term == 'string')){
-		return term;
+		console.log("TERM: ", term);
+		return encodeURIComponent(term);
 	}
 
 	if  ((term === 0) || (typeof term == "number")) {

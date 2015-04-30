@@ -22,8 +22,8 @@ var rqlToSolr = function(req, res, next) {
 		when(Expander.ResolveQuery(req.call_params[0],{req:req,res:res}), function(q){
 			debug("Resolved Query: ", q);
 			if (q=="()") { q = ""; }
-			req.call_params[0] = rql(q).toSolr({maxRequestLimit: 250}) 
-			console.log("Converted Solr Query: ", req.call_params[0]);
+			req.call_params[0] = rql(q).toSolr({maxRequestLimit: 25000, defaultLimit: 25}) 
+			debug("Converted Solr Query: ", req.call_params[0]);
 			req.queryType="solr";
 			next();
 		});
@@ -40,7 +40,7 @@ var querySOLR = function(req, res, next) {
 		var solr = new solrjs(SOLR_URL + "/" + req.call_collection);
 
 		when(solr.query(query), function(results) {
-			console.log("querySOLR results", results);
+			debug("querySOLR results", results);
 			if (!results || !results.response){
 				res.results=[];
 				res.set("Content-Range", "items 0-0/0");
@@ -49,16 +49,19 @@ var querySOLR = function(req, res, next) {
 
 				res.set("Content-Range", "items " + (results.response.start || 0) + "-" + ((results.response.start||0)+results.response.docs.length) + "/" + results.response.numFound);
 			}
-//			console.log("res headers: ", res);
+//			debug("res headers: ", res);
 			next();
+		}, function(err){
+			debug("Error Querying SOLR: ", err);
+			next(err);
 		})
 }
 var getSOLR = function(req, res, next) {
-		var solr = new solrjs(SOLR_URL + "/" + req.call_collection);
-		when(solr.get(req.call_params[0]), function(results) {
-			res.results = results;
-			next();
-		});
+	var solr = new solrjs(SOLR_URL + "/" + req.call_collection);
+	when(solr.get(req.call_params[0]), function(results) {
+		res.results = results;
+		next();
+	});
 }
 
 var decorateQuery = function(req, res, next) {
@@ -74,7 +77,7 @@ var decorateQuery = function(req, res, next) {
 	}
 	else {
 		if (publicFree.indexOf(req.call_collection)<0) {
-			req.call_params[0]= req.call_params[0] + ("&fq=(public:true OR owner:" + req.user + " OR user_read:" + req.user + ")");
+			req.call_params[0]= req.call_params[0] + ("&fq=(public:true OR owner:" + req.user + "@patricbrc.org OR user_read:" + req.user + "@patricbrc.org)");
 		}
 	}
 
@@ -160,7 +163,7 @@ router.post("*", [
 			req.call_params = req.body.params;
 			req.call_collection = req.params.dataType;
 		}else{
-			debug("JSON POST Request", JSON.stringify(req.body,null,4));
+//			debug("JSON POST Request", JSON.stringify(req.body,null,4));
 			req.call_method="post";
 			req.call_params = [req.body];
 			req.call_collection = req.params.dataType;
@@ -171,7 +174,7 @@ router.post("*", [
 	bodyParser.text({type:"application/solrquery+x-www-form-urlencoded"}),
 	function(req,res,next){
 //		req.body=decodeURIComponent(req.body);
-		debug("POST: ", req.body,req);
+//		debug("POST: ", req.body,req);
 		if (!req._body || !req.body) { next("route"); return }
 		var ctype=req.get("content-type");	
 		req.call_method="query";
@@ -182,7 +185,8 @@ router.post("*", [
 	}
 ])
 
-var maxLimit=250;
+var maxLimit=25000;
+var defaultLimit=25;
 
 router.use([
 	rqlToSolr,
@@ -191,21 +195,21 @@ router.use([
 		if (req.call_method!="query") { return next(); }
 		var limit = maxLimit;
 		var q = req.call_params[0];
-		console.log('q: ', q, req.call_params[0]);
 		var re = /(&rows=)(\d*)/;
 		var matches = q.match(re);
 
-
-		if (matches && typeof matches[2]!='undefined' && (matches[2]>maxLimit) && (!req.isDownload)){
+		if (!matches){
+			limit = defaultLimit
+		}else  if (matches && typeof matches[2]!='undefined' && (matches[2]>maxLimit) && (!req.isDownload)){
 			limit=maxLimit
 		}else{
 			limit=matches[2];
 		}
-		console.log("limit matches: ", matches, " limit: ", limit);
-		console.log("req.headers.range: ", req.headers.range);
+		//console.log("limit matches: ", matches, " limit: ", limit);
+		//console.log("req.headers.range: ", req.headers.range);
 		if (req.headers.range) {
 			var range = req.headers.range.match(/^items=(\d+)-(\d+)?$/);
-			console.log("Range: ", range);
+			//console.log("Range: ", range);
 			if (range){
 				start = range[1] || 0;
 				end = range[2] || maxLimit;
@@ -234,7 +238,7 @@ router.use([
 				req.call_params[0] = req.call_params[0] + "&start=" + queryOffset;
 			}
 		}
-		console.log("query: ", req.call_params[0]);
+		//console.log("query: ", req.call_params[0]);
 		next();
 	},
 	function(req,res,next){
@@ -250,53 +254,6 @@ router.use([
 	},
 	methodHandler,
 	media
-	// function(req,res,next){
-	// 	res.write(JSON.stringify(res.results,null,4));
-	// 	res.end();
-	// }
 ])
-
-
-
-
-// router.post("/:dataType/rpc", function(req,res,next){ 
-// 	debug("Handle RPC Calls");
-// 	next()
-// } );
-
-// router.use("/:dataType/query*", function(req,res,next){ req.action="query"; next(); } );
-
-// router.use("/:dataType/query/rql",RQLQueryParser)
-// router.use("/:dataType/query/rql",RQLQueryParser)
-
-// router.use("/:dataType/query*",[SolrQueryParser, decorateQuery]);
-// router.use("/:dataType/query*",[SolrQueryParser, decorateQuery]);
-
-// router.param(":ids", function(req, res, next, ids) {
-// 	req.params.ids = ids.split(",");
-// 	debug("router.params :ids", req.params.ids);
-// 	next();
-// })
-
-// router.get('/:dataType/get/:ids', function(req, res, next) {req.action="get"; debug("req.params: ", req.params); next()});
-
-// router.use(methodHandler);
-
-// router.get("/:dataType/query/rql",function(req,res,next){
-// 	debug("Transform RQL Queried Results Here");
-// 	next()
-// })
-// router.post("/:dataType/query/rql",function(req,res,next){
-// 	debug("Transform RQL Queried Results Here");
-// 	next()
-// })
-
-// router.use("/:dataType/*", [
-// 	function(req,res,next){
-// 		res.type("json");
-// 		res.write(JSON.stringify(res.results,null,4))
-// 		res.end();
-// 	}
-// ])
 
 module.exports = router;
