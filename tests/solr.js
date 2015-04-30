@@ -8,9 +8,9 @@ define([
     };
 
     var basicQueries = [
-//        ["&q=*:*&rows=10", function (data) {
-//           assert.strictEqual(data.response.docs.length, 10);
-//        }]
+        ["&q=*:*&rows=10", function (data) {
+           assert.strictEqual(data.response.docs.length, 10);
+        }]
     ];
 
     var dataModel = {
