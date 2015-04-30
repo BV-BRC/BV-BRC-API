@@ -22,7 +22,7 @@ var rqlToSolr = function(req, res, next) {
 		when(Expander.ResolveQuery(req.call_params[0],{req:req,res:res}), function(q){
 			debug("Resolved Query: ", q);
 			if (q=="()") { q = ""; }
-			req.call_params[0] = rql(q).toSolr({maxRequestLimit: 25000}) 
+			req.call_params[0] = rql(q).toSolr({maxRequestLimit: 25000, defaultLimit: 25}) 
 			debug("Converted Solr Query: ", req.call_params[0]);
 			req.queryType="solr";
 			next();
@@ -52,7 +52,7 @@ var querySOLR = function(req, res, next) {
 //			debug("res headers: ", res);
 			next();
 		}, function(err){
-			console.log("Error Querying SOLR: ", err);
+			debug("Error Querying SOLR: ", err);
 			next(err);
 		})
 }
@@ -186,6 +186,7 @@ router.post("*", [
 ])
 
 var maxLimit=25000;
+var defaultLimit=25;
 
 router.use([
 	rqlToSolr,
@@ -197,8 +198,9 @@ router.use([
 		var re = /(&rows=)(\d*)/;
 		var matches = q.match(re);
 
-
-		if (matches && typeof matches[2]!='undefined' && (matches[2]>maxLimit) && (!req.isDownload)){
+		if (!matches){
+			limit = defaultLimit
+		}else  if (matches && typeof matches[2]!='undefined' && (matches[2]>maxLimit) && (!req.isDownload)){
 			limit=maxLimit
 		}else{
 			limit=matches[2];
@@ -252,53 +254,6 @@ router.use([
 	},
 	methodHandler,
 	media
-	// function(req,res,next){
-	// 	res.write(JSON.stringify(res.results,null,4));
-	// 	res.end();
-	// }
 ])
-
-
-
-
-// router.post("/:dataType/rpc", function(req,res,next){ 
-// 	debug("Handle RPC Calls");
-// 	next()
-// } );
-
-// router.use("/:dataType/query*", function(req,res,next){ req.action="query"; next(); } );
-
-// router.use("/:dataType/query/rql",RQLQueryParser)
-// router.use("/:dataType/query/rql",RQLQueryParser)
-
-// router.use("/:dataType/query*",[SolrQueryParser, decorateQuery]);
-// router.use("/:dataType/query*",[SolrQueryParser, decorateQuery]);
-
-// router.param(":ids", function(req, res, next, ids) {
-// 	req.params.ids = ids.split(",");
-// 	debug("router.params :ids", req.params.ids);
-// 	next();
-// })
-
-// router.get('/:dataType/get/:ids', function(req, res, next) {req.action="get"; debug("req.params: ", req.params); next()});
-
-// router.use(methodHandler);
-
-// router.get("/:dataType/query/rql",function(req,res,next){
-// 	debug("Transform RQL Queried Results Here");
-// 	next()
-// })
-// router.post("/:dataType/query/rql",function(req,res,next){
-// 	debug("Transform RQL Queried Results Here");
-// 	next()
-// })
-
-// router.use("/:dataType/*", [
-// 	function(req,res,next){
-// 		res.type("json");
-// 		res.write(JSON.stringify(res.results,null,4))
-// 		res.end();
-// 	}
-// ])
 
 module.exports = router;
