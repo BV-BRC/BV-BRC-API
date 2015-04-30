@@ -13,6 +13,16 @@ PATRIC 3 API SERVER
 ##Running With Debugging Enabled
 	DEBUG=p3api-server ./bin/p3api-server
 
+##Testing
+Testing requires internjs to be installed (https://theintern.github.io/).  It can be installed globally like so:
+	sudo npm install intern -g
+
+Test files exist in the tests/ directory.  All of the configured tests can be run by launching the p3api server locally on port 3001 (the default port) and then running
+	npm test
+
+Individual test suites from the tests/ directory can be run by specifying them to intern-client
+	intern-client config=tests/intern suite=tests/query
+
 ###API Usage
 
 The p3api server allows for direct retrieval of objects from the data source through HTTP GET request using the unique ID for each data type (i.e., genome_id for the Genome collections) as well as querying data sources using either RQL syntax or SOLR query syntax.  Queries can be submitted as GET requests (with the query in the URL) or as POST requests with the query contained in the request body.  The latter is useful for large queries which would exceed the maximum length of URLs supported by browsers/servers.
