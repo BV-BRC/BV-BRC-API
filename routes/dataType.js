@@ -23,7 +23,7 @@ var rqlToSolr = function(req, res, next) {
 			debug("Resolved Query: ", q);
 			if (q=="()") { q = ""; }
 			req.call_params[0] = rql(q).toSolr({maxRequestLimit: 25000}) 
-			console.log("Converted Solr Query: ", req.call_params[0]);
+			debug("Converted Solr Query: ", req.call_params[0]);
 			req.queryType="solr";
 			next();
 		});
@@ -40,7 +40,7 @@ var querySOLR = function(req, res, next) {
 		var solr = new solrjs(SOLR_URL + "/" + req.call_collection);
 
 		when(solr.query(query), function(results) {
-			console.log("querySOLR results", results);
+			debug("querySOLR results", results);
 			if (!results || !results.response){
 				res.results=[];
 				res.set("Content-Range", "items 0-0/0");
@@ -49,8 +49,11 @@ var querySOLR = function(req, res, next) {
 
 				res.set("Content-Range", "items " + (results.response.start || 0) + "-" + ((results.response.start||0)+results.response.docs.length) + "/" + results.response.numFound);
 			}
-//			console.log("res headers: ", res);
+//			debug("res headers: ", res);
 			next();
+		}, function(err){
+			console.log("Error Querying SOLR: ", err);
+			next(err);
 		})
 }
 var getSOLR = function(req, res, next) {
@@ -160,7 +163,7 @@ router.post("*", [
 			req.call_params = req.body.params;
 			req.call_collection = req.params.dataType;
 		}else{
-			debug("JSON POST Request", JSON.stringify(req.body,null,4));
+//			debug("JSON POST Request", JSON.stringify(req.body,null,4));
 			req.call_method="post";
 			req.call_params = [req.body];
 			req.call_collection = req.params.dataType;
@@ -170,8 +173,8 @@ router.post("*", [
 	bodyParser.text({type:"application/rqlquery+x-www-form-urlencoded"}),
 	bodyParser.text({type:"application/solrquery+x-www-form-urlencoded"}),
 	function(req,res,next){
-		req.body=decodeURIComponent(req.body);
-		debug("POST: ", req.body,req);
+//		req.body=decodeURIComponent(req.body);
+//		debug("POST: ", req.body,req);
 		if (!req._body || !req.body) { next("route"); return }
 		var ctype=req.get("content-type");	
 		req.call_method="query";
@@ -191,7 +194,6 @@ router.use([
 		if (req.call_method!="query") { return next(); }
 		var limit = maxLimit;
 		var q = req.call_params[0];
-		console.log('q: ', q, req.call_params[0]);
 		var re = /(&rows=)(\d*)/;
 		var matches = q.match(re);
 
@@ -201,11 +203,11 @@ router.use([
 		}else{
 			limit=matches[2];
 		}
-		console.log("limit matches: ", matches, " limit: ", limit);
-		console.log("req.headers.range: ", req.headers.range);
+		//console.log("limit matches: ", matches, " limit: ", limit);
+		//console.log("req.headers.range: ", req.headers.range);
 		if (req.headers.range) {
 			var range = req.headers.range.match(/^items=(\d+)-(\d+)?$/);
-			console.log("Range: ", range);
+			//console.log("Range: ", range);
 			if (range){
 				start = range[1] || 0;
 				end = range[2] || maxLimit;
@@ -234,7 +236,7 @@ router.use([
 				req.call_params[0] = req.call_params[0] + "&start=" + queryOffset;
 			}
 		}
-		console.log("query: ", req.call_params[0]);
+		//console.log("query: ", req.call_params[0]);
 		next();
 	},
 	function(req,res,next){

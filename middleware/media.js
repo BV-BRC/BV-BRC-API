@@ -44,7 +44,7 @@ module.exports=function(req,res,next){
 				req.set("content-disposition", "attachment; filename=patric_genomes.fasta");
 			}
 
-			console.log("res.results: ", res.results);
+			//console.log("res.results: ", res.results);
 
 			if (res.results && res.results.response && res.results.response.docs) {
 				res.results.response.docs.forEach(function(o){
@@ -63,7 +63,7 @@ module.exports=function(req,res,next){
 				req.set("content-disposition", "attachment; filename=patric_proteins.fasta");
 			}
 
-			console.log("res.results: ", res.results);
+			//console.log("res.results: ", res.results);
 			if (res.results && res.results.response && res.results.response.docs) {
 				res.results.response.docs.forEach(function(o){
 					var fasta_id;
@@ -86,7 +86,7 @@ module.exports=function(req,res,next){
 				req.set("content-disposition", "attachment; filename=patric_proteins.fasta");
 			}
 
-			console.log("res.results: ", res.results);
+			//console.log("res.results: ", res.results);
 			if (res.results && res.results.response && res.results.response.docs && res.results.response.docs.length>0) {
 				res.write("##gff-version 3\n");
 				res.write("#Genome: " + res.results.response.docs[0].genome_id + "\t" + res.results.response.docs[0].genome_name);
@@ -151,19 +151,19 @@ module.exports=function(req,res,next){
 				req.set("content-disposition", "attachment; filename=patric3_query.csv");
 			}
 
-			console.log("res.results: ", res.results);
+			//console.log("res.results: ", res.results);
 			if (res.results && res.results.response && res.results.response.docs) {
 				if (!fields) {
 					fields = Object.keys(res.results.response.docs[0]);
 				}
 
 				res.write(fields.join(",") + "\n");
-				console.log("Fields: ", fields);
+				//console.log("Fields: ", fields);
 				res.results.response.docs.forEach(function(o){
 					var row = fields.map(function(field){
 						return JSON.stringify(o[field]);	
 					});
-					console.log("row: ", row);
+					//console.log("row: ", row);
 					res.write(row.join(",") + "\n");
 				});	
 			}
@@ -175,18 +175,18 @@ module.exports=function(req,res,next){
 			if (req.isDownload){
 				req.set("content-disposition", "attachment; filename=patric3_query.txt");
 			}
-			console.log("res.results: ", res.results);
+			//console.log("res.results: ", res.results);
 			if (res.results && res.results.response && res.results.response.docs) {
 				if (!fields) { 
 					fields = Object.keys(res.results.response.docs[0]);
 				}
 				res.write(fields.join("\t") + "\n");
-				console.log("Fields: ", fields);
+				//console.log("Fields: ", fields);
 				res.results.response.docs.forEach(function(o){
 					var row = fields.map(function(field){
 						return o[field];	
 					});
-					console.log("row: ", row);
+					//console.log("row: ", row);
 					res.write(row.join("\t") + "\n");
 				});	
 			}
@@ -200,13 +200,13 @@ module.exports=function(req,res,next){
 			}
 			var excelConf = {cols: []}
 
-//			console.log("res.results: ", res.results);
+//			//console.log("res.results: ", res.results);
 			if (res.results && res.results.response && res.results.response.docs) {
-				console.log("Build Excel Columns");
+				//console.log("Build Excel Columns");
 				if (!fields) { 
 					fields = Object.keys(res.results.response.docs[0]);
 				}
-				console.log("fields: ", fields);
+				//console.log("fields: ", fields);
 
 				fields.forEach(function(field){
 					if (res.results.response.docs[0] && res.results.response.docs[0][field]) {
@@ -221,7 +221,7 @@ module.exports=function(req,res,next){
 					}
 				});
 
-				console.log("excelconf: ", excelConf);
+				//console.log("excelconf: ", excelConf);
 				excelConf.rows = res.results.response.docs.map(function(o){
 					var row = fields.map(function(field){
 						if (typeof o[field] == "object") {
@@ -235,9 +235,9 @@ module.exports=function(req,res,next){
 					return row;
 				});
 
-				console.log("Excel Conf: ", excelConf);
+				//console.log("Excel Conf: ", excelConf);
 				var d = nodeExcel.execute(excelConf);
-				console.log("Node Excel Data Exported");
+				//console.log("Node Excel Data Exported");
 				res.set("Content-Type", "application/vnd.openxmlformats");
 				res.end(d, "binary");	
 			}
