@@ -39,12 +39,13 @@ module.exports=function(req,res,next){
 
 	res.format({
 		"application/dna+fasta": function(){
-			debug("application/dna+fasta handler")
+			debug("application/fna handler")
 			if (req.isDownload){
 				req.set("content-disposition", "attachment; filename=patric_genomes.fasta");
 			}
 
 			console.log("res.results: ", res.results);
+
 			if (res.results && res.results.response && res.results.response.docs) {
 				res.results.response.docs.forEach(function(o){
 					var row = ">" + o.seed_id + "|"+o.feature_id+ " " + o.product + "\n" + o.na_sequence + "\n"; 
@@ -65,7 +66,14 @@ module.exports=function(req,res,next){
 			console.log("res.results: ", res.results);
 			if (res.results && res.results.response && res.results.response.docs) {
 				res.results.response.docs.forEach(function(o){
-					var row = ">" + o.seed_id + "|"+o.feature_id+ " " + o.product + "\n" + o.aa_sequence + "\n"; 
+					var fasta_id;
+					if (o.feature_type=="source") { return; }
+					if (o.annotation == "PATRIC") {
+						fasta_id = o.seed_id + "|"+(o.refseq_locus_tag?(o.refseq_locus_tag+"|"):"") + (o.alt_locus_tag?(o.alt_locus_tag+"|"):"");
+					} else if (o.annotation == "RefSeq") {
+						fasta_id = "gi|" + o.gi + "|"+(o.refseq_locus_tag?(o.refseq_locus_tag+"|"):"") + (o.alt_locus_tag?(o.alt_locus_tag+"|"):"");
+					}
+					var row = ">" + fasta_id + "   " + o.product + "   [" + o.genome_name + " | " + o.genome_id + "]\n" + o.aa_sequence + "\n"; 
 					res.write(row);
 				});	
 			}
@@ -81,18 +89,24 @@ module.exports=function(req,res,next){
 			console.log("res.results: ", res.results);
 			if (res.results && res.results.response && res.results.response.docs && res.results.response.docs.length>0) {
 				res.write("##gff-version 3\n");
-				res.write("#Genome: " + res.results.response.docs[0].genome_id);
+				res.write("#Genome: " + res.results.response.docs[0].genome_id + "\t" + res.results.response.docs[0].genome_name);
 				if (res.results.response.docs[0].product) {
 					res.write(" " + res.results.response.docs[0].product);
 				}
 				res.write("\n");
 				res.results.response.docs.forEach(function(o){
 					if (o.feature_type=="source") {
-						return;
+						o.feature_type="region"
 					}
 					if (o.feature_type=="misc_RNA"){
 						o.feature_type="transcript"
 					}
+
+					if (o.feature_type=="region") {
+						res.write("##sequence-region\taccn" + o.accession + "\t" + o.start + "\t" + o.end + "\n");
+						return;
+					}
+
 					res.write( "accn|" + o.accession+ "\t"+o.annotation+ "\t" + o.feature_type + "\t" + o.start+ "\t" + o.end + "\t.\t" + o.strand+"\t0\t");
 					switch(o.annotation) {
 						case "PATRIC":

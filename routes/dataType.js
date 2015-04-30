@@ -182,7 +182,7 @@ router.post("*", [
 	}
 ])
 
-var maxLimit=250;
+var maxLimit=25000;
 
 router.use([
 	rqlToSolr,
