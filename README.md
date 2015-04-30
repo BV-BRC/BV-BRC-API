@@ -28,7 +28,17 @@ Individual test suites from the tests/ directory can be run by specifying them t
 
 ###API Usage
 
-The p3api server allows for direct retrieval of objects from the data source through HTTP GET request using the unique ID for each data type (i.e., genome_id for the Genome collections) as well as querying data sources using either RQL syntax or SOLR query syntax.  Queries can be submitted as GET requests (with the query in the URL) or as POST requests with the query contained in the request body.  The latter is useful for large queries which would exceed the maximum length of URLs supported by browsers/servers.
+The p3api server allows for direct retrieval of objects from the data source through HTTP GET request using the unique ID for each data type (i.e., genome_id for the Genome collections) as well as querying data sources using either RQL syntax or SOLR query syntax.  
+
+Genome Retrieval Example:
+
+	http://HOST:PORT/genome/GENOME_ID
+
+Queries can be submitted as GET requests (with the query in the URL) or as POST requests with the query contained in the request body.  The latter is useful for large queries which would exceed the maximum length of URLs supported by browsers/servers.
+
+Genome Feature Query Example:
+
+	http://HOST:PORT/genome_feature/?eq(annotation,PATRIC)&select(genome_id,genome_name,annotation)&limit(10)&http_accept=application/json
 
 Responses from queries are available in a number of formats:
 
