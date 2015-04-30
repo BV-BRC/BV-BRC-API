@@ -264,10 +264,10 @@ module.exports=function(req,res,next){
 					res.status(404);
 				}
 			} else{
-					if (!res.results){
+					if (!res.results || !res.results.doc){
 						res.status(404)
 					}else{
-						res.send(JSON.stringify(res.results));
+						res.send(JSON.stringify(res.results.doc));
 					}
 			}
 			res.end();
