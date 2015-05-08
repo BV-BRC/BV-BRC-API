@@ -26,7 +26,11 @@ var defaults =  {
 		"transcriptomics_experiment",
 		"transcriptomics_gene",
 		"transcriptomics_sample",
-		"global"
+		"model_complex_role",
+		"model_compound",
+		"model_reaction",
+		"model_template_biomass",
+		"model_template_reaction
 	],
 
 	indexImportLimits: {
