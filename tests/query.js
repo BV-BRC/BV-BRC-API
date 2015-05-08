@@ -98,7 +98,12 @@ define([
 		},
 		"transcriptomics_experiment": {},
 		"transcriptomics_gene": {},
-		"transcriptomics_sample": {}
+		"transcriptomics_sample": {},
+		"model_complex_role": {},
+		"model_compound": {},
+		"model_reaction": {},
+		"model_template_biomass": {},
+		"model_template_reaction": {},
 	}
 
 	var filter=[

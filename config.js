@@ -30,7 +30,7 @@ var defaults =  {
 		"model_compound",
 		"model_reaction",
 		"model_template_biomass",
-		"model_template_reaction
+		"model_template_reaction"
 	],
 
 	indexImportLimits: {
