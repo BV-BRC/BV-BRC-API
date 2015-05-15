@@ -39,7 +39,7 @@ module.exports=function(req,res,next){
 
 	res.format({
 		"application/dna+fasta": function(){
-			debug("application/fna handler")
+			debug("application/dna+fastahandler")
 			if (req.isDownload){
 				req.set("content-disposition", "attachment; filename=patric_genomes.fasta");
 			}
@@ -48,7 +48,13 @@ module.exports=function(req,res,next){
 
 			if (res.results && res.results.response && res.results.response.docs) {
 				res.results.response.docs.forEach(function(o){
-					var row = ">" + o.seed_id + "|"+o.feature_id+ " " + o.product + "\n" + o.na_sequence + "\n"; 
+					if (req.call_collection=="genome_feature"){
+						var row = ">" + o.seed_id + "|"+o.feature_id+ " " + o.product + "\n" + o.na_sequence + "\n"; 
+					}else if (req.call_collection="genome_sequence") {
+						var row = ">accn|" + o.accession + "   " + o.description + "   " + "["+(o.genome_name|| o.genome_id) +"]\n" + o.sequence;
+					}else{
+						throw Error("Cannot query for application/dna+fasta from this data collection");
+					}
 					res.write(row);
 				});	
 			}
