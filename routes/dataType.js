@@ -36,7 +36,7 @@ var querySOLR = function(req, res, next) {
 		if (req.call_method!="query"){ next(); }
 
 		var query = req.call_params[0];
-		debug("querySOLR req.params", req.call_params[0]);
+		debug("querySOLR() req.params", req.call_params);
 		var solr = new solrjs(SOLR_URL + "/" + req.call_collection);
 
 		when(solr.query(query), function(results) {
@@ -92,6 +92,7 @@ var methodHandler  = function(req, res, next) {
 			break;
 		case "get":
 			return getSOLR(req,res,next)
+			break;
 	}
 }
 
@@ -170,11 +171,11 @@ router.post("*", [
 		}
 		next("route");
 	},
-	bodyParser.text({type:"application/rqlquery+x-www-form-urlencoded"}),
-	bodyParser.text({type:"application/solrquery+x-www-form-urlencoded"}),
+	bodyParser.text({type:"application/rqlquery+x-www-form-urlencoded",limit:10000000}),
+	bodyParser.text({type:"application/solrquery+x-www-form-urlencoded",limit: 10000000}),
 	function(req,res,next){
 //		req.body=decodeURIComponent(req.body);
-//		debug("POST: ", req.body,req);
+		debug("SOLR QUERY POST : ", req.body,req._body);
 		if (!req._body || !req.body) { next("route"); return }
 		var ctype=req.get("content-type");	
 		req.call_method="query";
