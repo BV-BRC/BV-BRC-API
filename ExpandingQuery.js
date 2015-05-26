@@ -19,7 +19,7 @@ function getWorkspaceObject(id,opts) {
 		method: "POST",	
 		url: workspaceAPI,
 		json:true,
-		body: {id:1,method:"Workspace.get",version:"1.1", params: [{objects: [id]}]},
+		body: {id:1,method:"Workspace.get",version:"1.1", params: [{objects: [decodeURIComponent(id)]}]},
 		headers: {
 			"accept": "application/json",
 			"content-type": "application/json",
