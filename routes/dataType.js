@@ -15,6 +15,10 @@ var rql = require("solrjs/rql");
 var debug = require('debug')('p3api-server:dataroute');
 var Expander= require("../ExpandingQuery");
 
+
+
+var publicFree=['enzyme_class_ref', 'gene_ontology_ref', 'id_ref', 'misc_niaid_sgc', 'pathway_ref', 'ppi', 'protein_family_ref', 'sp_gene_evidence', 'sp_gene_ref', 'taxonomy', 'transcriptomics_experiment', 'transcriptomics_gene', 'transcriptomics_sample',"model_reaction","model_complex_role","model_compound","model_template_biomass","model_template_reaction"];
+
 var rqlToSolr = function(req, res, next) {
 	debug("RQLQueryParser", req.queryType);
 	if (req.queryType=="rql"){
@@ -40,7 +44,6 @@ var querySOLR = function(req, res, next) {
 		var solr = new solrjs(SOLR_URL + "/" + req.call_collection);
 
 		when(solr.query(query), function(results) {
-			debug("querySOLR results", results);
 			if (!results || !results.response){
 				res.results=[];
 				res.set("Content-Range", "items 0-0/0");
@@ -58,9 +61,31 @@ var querySOLR = function(req, res, next) {
 }
 var getSOLR = function(req, res, next) {
 	var solr = new solrjs(SOLR_URL + "/" + req.call_collection);
-	when(solr.get(req.call_params[0]), function(results) {
-		res.results = results;
-		next();
+	when(solr.get(req.call_params[0]), function(sresults) {
+		if (sresults) {
+			var results = sresults.doc;
+//			console.log("results: ", results);
+			console.log("results.public: ", results.public);
+			console.log("publicFree: ", (publicFree.indexOf(req._call_collection)>=0) );
+			console.log("Owner: ", results.owner, req.user);
+			console.log("user_read: ", results.user_read, (results.user_read && results.user_read.indexOf(req.user)>=0));
+
+			if (results.public || (publicFree.indexOf(req._call_collection)>=0) || (results.owner==(req.user + "@patricbrc.org")) || (results.user_read && results.user_read.indexOf(req.user + "@patricbrc.org")>=0)) {		
+				res.results = sresults;
+				console.log("Results: ", results);
+				next();
+			}else{
+				if (!req.user){
+					console.log("User not logged in, permission denied");
+					res.sendStatus(401);
+				}else{
+					console.log("User forbidden from private data");
+					res.sendStatus(403);
+				}
+			}
+		}else{
+			next();
+		} 
 	});
 }
 
@@ -69,7 +94,6 @@ var decorateQuery = function(req, res, next) {
 
 	debug("decorateQuery", req.solr_query);
 	req.call_params[0] = req.call_params[0] || "&q=*:*";
-	var publicFree=['enzyme_class_ref', 'gene_ontology_ref', 'id_ref', 'misc_niaid_sgc', 'pathway_ref', 'ppi', 'protein_family_ref', 'sp_gene_evidence', 'sp_gene_ref', 'taxonomy', 'transcriptomics_experiment', 'transcriptomics_gene', 'transcriptomics_sample',"model_reaction","model_complex_role","model_compound","model_template_biomass","model_template_reaction"];
 	if (!req.user) {
 		if (publicFree.indexOf(req.call_collection)<0) {
 			req.call_params[0] = req.call_params[0] + "&fq=public:true"
