@@ -56,7 +56,13 @@ function postDocs(docs,type){
 }
 
 function solrCommit(type){
-	return Request(config.get("solr").url + "/global/update?commit=true");
+	var def = new defer();
+
+	return Request(config.get("solr").url + "/global/update?commit=true",{},function(err,response,body){
+		if (err) { def.reject(err); return; }
+		def.resolve(true);
+	});
+	return def.promise;
 }
 
 function processQueue(queue){
