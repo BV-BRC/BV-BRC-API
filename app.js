@@ -89,13 +89,15 @@ app.use(function(err, req, res, next) {
     });
 });
 
-// debug("Launch Indexer");
-//var indexer = require('child_process').fork(__dirname + "/bin/p3-index-worker");
+ debug("Launch Indexer");
+if (config.get("enableIndexer") {
+	var indexer = require('child_process').fork(__dirname + "/bin/p3-index-worker");
 
-//indexer.on("message", function(msg){
-//	debug("message from child",msg);
-//});
+	indexer.on("message", function(msg){
+		debug("message from child",msg);
+	});
 
-//indexer.send({type: "start"});
+	indexer.send({type: "start"});
+}
 
 require("replify")({name: "p3api", path: "./REPL"},app,{});

@@ -33,6 +33,7 @@ var defaults =  {
 		"model_template_reaction"
 	],
 
+	enableIndexer: false,
 	indexImportLimits: {
 		default: 25,
 		genome_sequence: 100
