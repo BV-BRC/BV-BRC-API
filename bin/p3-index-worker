@@ -35,7 +35,7 @@ var timer;
 function postDocs(docs,type){
         var defs = [];
         var def = new defer();
-        var url = config.get("solr").url + "/"+type+"/update?wt=json&overwrite=true&commit=false";
+        var url = config.get("solr").url + "/"+type+"/update?wt=json&overwrite=false&commit=false";
         console.log("POST URL: ", url, " #docs:", docs.length);
         Request(url, {
                 json: true,
