@@ -42,7 +42,7 @@ app.use("/js",express.static(path.join(__dirname, 'public/js')));
 
 var collections = config.get("collections");
 
-app.use('/indexer/', indexer);
+app.use('/indexer/:type', indexer);
 
 
 app.param("dataType", function(req,res,next,dataType){

@@ -15,7 +15,6 @@ var queue = new Queue(config.get("queueDirectory"), function(err) {
 
 var maxLimit = config.get("indexImportLimits");
 
-
 process.on('message', function(msg){
 	if (msg && msg.type=="start"){
 		if (timer) {
@@ -84,7 +83,7 @@ function processQueue(queue){
 					console.log("error popping message item: ", err);
 					return;
 				}
-				if (!message || !message.metadata){
+				if (!message){
 					console.log("No Metadata for: ", message, "Discarding Message.");
 					//rollbacks.push(rollback);
 					if (commit){
@@ -93,47 +92,15 @@ function processQueue(queue){
 					processQueue(queue);
 					return;
 				}
-//				console.log("Metadata: ", message.metadata.document_type, "type:", typeof message);
-//				console.log("message: ", message.metadata);
-				if (!message.metadata || (message.metadata && !message.metadata.document_type)){
-					console.log("Ignoring Message: ", message);
-					rollbacks.push(rollback);
-					processQueue(queue);
-				}else if (!itemType || (message.metadata.document_type==itemType)){
 
-					if (!itemType){
-						itemType=message.metadata.document_type;
-					}
+				console.log("Index ID: ", message.id, "type: ", message.type);
+				console.log("\tUser: ", message.user);
+				console.log("Opts: ", message.options);
+				Object.keys(message.files).forEach(function(key){
+					console.log("\tFiles[" + key + "]", message.files[key]);
+				});
+				processQueue(queue);
 
-					var data = message.data;
-					if (data._version_) { delete data._version_; }
-					if (!data.document_type){
-						data.document_type=itemType;
-					}
-					items.push(data);
-
-					var maxLimit = maxLimit[itemType]||maxLimit['default'];
-					if (items.length>=maxLimit){
-						when(indexItems(),function(){
-							commitCallbacks.push(commit);
-							setTimeout(function(){
-								processQueue(queue);
-							},0);
-						});	
-					}else{
-						processQueue(queue);
-					}
-				}else{
-					rollbacks.push(rollback);
-
-					when(indexItems(),function(){
-						commitCallbacks.push(commit);
-						setTimeout(function(){
-							processQueue(queue);
-						},0);
-					});	
-
-				}
 			});
 		}
 	});	

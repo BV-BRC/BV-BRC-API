@@ -15,23 +15,34 @@ var httpParams = require("../middleware/http-params");
 var SOLR_URL = config.get("solr").url;
 var bodyParser = require("body-parser");
 var rql = require("solrjs/rql");
-var clarinet = require("clarinet");
 var Queue = require("file-queue").Queue;
 var debug = require('debug')('p3api-server:indexer');
-debug("Queue Directory: ", config.get("queueDirectory"));
+var formidable = require("formidable");
+var uuid = require("uuid");
+var fs = require("fs-extra");
+var Path = require("path");
 
-/*
-var queue = new Queue(config.get("queueDirectory"), function(err) {
-	if (err) {
-		debug("error: ", err);
+debug("Queue Directory: ", config.get("queueDirectory"));
+var qdir = config.get("queueDirectory");
+var queue;
+fs.mkdirs(Path.join(qdir,"file_data"), function(err){
+	if (err){
+		console.log("Error Creating Index Directory Structure: ", err);
 		return;
 	}
-	debug("Created Queue.");
-});
-*/
-var queue;
-router.use(httpParams);
 
+	queue = new Queue(qdir, function(err) {
+		if (err) {
+			debug("error: ", err);
+			return;
+		}
+		debug("Created Queue.");
+	});
+
+});
+
+
+router.use(httpParams);
 router.use(authMiddleware);
 
 router.use(function(req, res, next) {
@@ -45,63 +56,52 @@ router.use(function(req, res, next) {
 });
 
 router.post("/", [
-	//	bodyParser.raw({type: "application/json",limit: 90000000}),
 	function(req, res, next) {
-		var stack = [];
-		var new_thing = false,
-			previous = '',
-			buffer = {}
+		if (!req.user) {
+			res.sendStatus(401);
+			return;
+		}
 
-		//debug("Create JSONStream Obj");
-		var stream = clarinet.createStream()
+		if (!req.params || !req.params.type || (!req.params.type=="genome")){
+			res.sendStatus(406);	
+			return;
+		}
 
-		stream.on('openobject', function(name) {
-			if (new_thing) {
-				//debug(JSON.stringify(buffer, null, 2));
-				buffer = {};
-				new_thing = false;
+		if (!queue){
+			res.send("Indexing is unavailable due to a queueing error");
+			res.end(500);
+			return;
+		}
+		var form = new formidable.IncomingForm();
+		var qid=uuid.v4();
+		fs.mkdirs(Path.join(qdir,"file_data",qid), function(err) {
+			if (err) {
+				console.log("Error creating output directory for index files to be queued: ", Path.join(qdir,"file_data", qid));
+				res.end(500);
+				return;
 			}
-			previous = name;
-			stack.push(name);
-			//debug('=== {', name, buffer);
-		});
+			form.uploadDir=Path.join(qdir,"file_data",qid);
+			form.multiples=true;
+			console.log("Begin parse");	
+			form.parse(req, function(err, fields, files){
+				var d = {id: qid,type: req.params.type,user: req.user, options: fields, files: {}};
 
-		stream.on('closeobject', function() {
-			stack.pop();
-			//debug("Obj: ", typeof buffer, JSON.stringify(buffer));
-			queue.push(buffer, function(err) {
-				if (err) throw err;
+				Object.keys(files).forEach(function(type){
+					d.files[type] = files[type]
+				});
+
+				queue.push(d, function(err){
+					if (err){
+						res.error("Error Adding to queue: " + err);
+						res.end(500);
+						return;
+					}
+					res.send("Queue Index ID: " + qid + "\n");
+					res.end();
+				});
 			});
 		});
 
-		stream.on('key', function(name) {
-			previous = name;
-			stack.pop();
-			stack.push(name);
-		});
-
-		stream.on('value', function(value) {
-			if (previous === 'event') {
-				value = JSON.parse(value);
-			}
-			var expected = stack.length - 1;
-			stack.reduce(function(ac, x, i) {
-				if (i === expected) {
-					ac[x] = value;
-				}
-				ac[x] = ac[x] || {};
-				return ac[x];
-			}, buffer);
-			//  debug('=== v', value, buffer);
-		});
-
-		stream.on('end', function() {
-			 res.write("INDEX OBJECTS ACCEPTED");
-       res.end()
-		});
-
-
-		req.pipe(stream);
 	}
 ]);
 

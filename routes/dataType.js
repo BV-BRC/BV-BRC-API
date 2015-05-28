@@ -70,7 +70,7 @@ var getSOLR = function(req, res, next) {
 			console.log("Owner: ", results.owner, req.user);
 			console.log("user_read: ", results.user_read, (results.user_read && results.user_read.indexOf(req.user)>=0));
 
-			if (results.public || (publicFree.indexOf(req._call_collection)>=0) || (results.owner==(req.user + "@patricbrc.org")) || (results.user_read && results.user_read.indexOf(req.user + "@patricbrc.org")>=0)) {		
+			if (results.public || (publicFree.indexOf(req._call_collection)>=0) || (results.owner==(req.user)) || (results.user_read && results.user_read.indexOf(req.user)>=0)) {		
 				res.results = sresults;
 				console.log("Results: ", results);
 				next();
@@ -101,7 +101,7 @@ var decorateQuery = function(req, res, next) {
 	}
 	else {
 		if (publicFree.indexOf(req.call_collection)<0) {
-			req.call_params[0]= req.call_params[0] + ("&fq=(public:true OR owner:" + req.user + "@patricbrc.org OR user_read:" + req.user + "@patricbrc.org)");
+			req.call_params[0]= req.call_params[0] + ("&fq=(public:true OR owner:" + req.user +" OR user_read:" + req.user +")");
 		}
 	}
 

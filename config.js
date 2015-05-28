@@ -38,7 +38,7 @@ var defaults =  {
 		genome_sequence: 100
 	},
 
-	queueDirectory: "/tmp/p3-index-queue",
+	queueDirectory: "./index-queue-dir",
 	"solr": {
 		"url": "http://localhost:8983/solr"
 	}

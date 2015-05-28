@@ -1,6 +1,6 @@
 
 
-var userIdRegex = /un=(\w+)/
+var userIdRegex = /un=(\w+\@\w+(\.\w+))/
 
 
 var validateToken = function(token) {
