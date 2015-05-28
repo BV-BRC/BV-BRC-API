@@ -3,6 +3,9 @@ var config = require("../config");
 var Queue = require("file-queue").Queue;
 var defer = require('promised-io/promise').defer;
 var when = require('promised-io/promise').when;
+var Path = require('path');
+var fs = require("fs-extra");
+
 console.log("Queue Directory: ", config.get("queueDirectory"));
 
 var queue = new Queue(config.get("queueDirectory"), function(err) {
@@ -56,6 +59,10 @@ function processQueue(queue){
 	console.log("processQueue");
 	queue.length(function(err,length){
 		if (length < 1){
+			setTimeout(function(){
+				processQueue(queue);
+			},5000);
+			/*
 			if (items.length>0){
 				when(indexItems(),function(){
 					setTimeout(function(){
@@ -75,6 +82,7 @@ function processQueue(queue){
 					processQueue(queue)
 				},10000);
 			}
+			*/
 		}else{
 //			console.log("Processing " + length + " queue items");
 		
@@ -91,16 +99,42 @@ function processQueue(queue){
 					}
 					processQueue(queue);
 					return;
+				}else {
+					try {
+						console.log("Index ID: ", message.id, "type: ", message.type);
+						console.log("\tUser: ", message.user);
+						console.log("Opts: ", message.options);
+						var containerPaths=[];
+						Object.keys(message.files).forEach(function(key){
+							console.log("\tFiles[" + key + "]", message.files[key]);
+							var files = message.files[key];
+							if (!(files instanceof Array)) {
+								files = [files];
+							}
+							files.forEach(function(file) {
+								if (!file.path) { return; }
+								console.log("File: ", file.name );
+								console.log("PATH: ", file.path);
+								var dir = Path.dirname(file.path);
+								console.log("DIR: ", dir);
+								if (containerPaths.indexOf(dir)<0) {
+									containerPaths.push(dir);
+								}
+							});
+						});
+						console.log("Container Paths: ", containerPaths);
+
+						containerPaths.forEach(function(p){
+							console.log("Removing files from : ", p);
+							fs.removeSync(p);
+						});
+						commit();
+						processQueue(queue);
+					} catch (err){
+						console.log("Error Indexing Data: ", err);
+						rollback();
+					}
 				}
-
-				console.log("Index ID: ", message.id, "type: ", message.type);
-				console.log("\tUser: ", message.user);
-				console.log("Opts: ", message.options);
-				Object.keys(message.files).forEach(function(key){
-					console.log("\tFiles[" + key + "]", message.files[key]);
-				});
-				processQueue(queue);
-
 			});
 		}
 	});	
