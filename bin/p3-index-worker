@@ -164,7 +164,7 @@ function processQueue(queue){
 								commitDefs.push(solrCommit(col));
 							});
 							when(All(commitDefs), function(){
-								solrCommit(message.type).then(function() {
+								when(solrCommit(message.type),function() {
 									console.log("SOLR Collections to Commit: ", commitCollections);
 									containerPaths.forEach(function(p){
 										console.log("Removing files from : ", p);
