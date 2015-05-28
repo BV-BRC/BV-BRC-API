@@ -80,6 +80,7 @@ router.post("/", [
 				res.end(500);
 				return;
 			}
+			form.keepExtensions=true;
 			form.uploadDir=Path.join(qdir,"file_data",qid);
 			form.multiples=true;
 			console.log("Begin parse");	

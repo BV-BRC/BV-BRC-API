@@ -3,8 +3,10 @@ var config = require("../config");
 var Queue = require("file-queue").Queue;
 var defer = require('promised-io/promise').defer;
 var when = require('promised-io/promise').when;
+var All = require('promised-io/promise').all;
 var Path = require('path');
 var fs = require("fs-extra");
+var Request = require("request");
 
 console.log("Queue Directory: ", config.get("queueDirectory"));
 
@@ -30,29 +32,31 @@ process.on('message', function(msg){
 });
 var timer;
 
-var items = [];
-var itemType;
-var commitCallbacks=[];
-var rollbacks = [];
-function indexItems(){
-	var def = new defer();
+function postDocs(docs,type){
+        var defs = [];
+        var def = new defer();
+        var url = config.get("solr").url + "/"+type+"/update?wt=json&overwrite=true&commit=false";
+        console.log("POST URL: ", url, " #docs:", docs.length);
+        Request(url, {
+                json: true,
+                method: "POST",
+                headers: { "content-type": "application/json", "accept":"application/json" },
+                body: docs
+        }, function(err,response,body){
+                if (err || body.error){
+                        console.log("Error POSTing to : " + type +" - " + ( err||body.error.msg));
+                        def.reject(err);
+                        return;
+                }
+             //   console.log("POST RESPONSE BODY: ", JSON.stringify(body));
+                def.resolve(true);
+        });
 
-	console.log("Indexing Items.  Type:", itemType, " Item Count: ", items.length);
+        return def.promise;
+}
 
-	commitCallbacks.forEach(function(cb){
-		console.log("do commit")
-		cb();
-	});
-	items = [];
-	commitCallbacks=[];
-
-	rollbacks.forEach(function(cb){
-		console.log("do rollback")
-		cb();
-	});
-	
-	def.resolve(true);
-	return def.promise;
+function solrCommit(type){
+	return Request(config.get("solr").url + "/global/update?commit=true");
 }
 
 function processQueue(queue){
@@ -62,31 +66,11 @@ function processQueue(queue){
 			setTimeout(function(){
 				processQueue(queue);
 			},5000);
-			/*
-			if (items.length>0){
-				when(indexItems(),function(){
-					setTimeout(function(){
-						processQueue(queue);
-					},0);
-				});	
-			}else if (rollbacks.length>0) {
-				rollbacks.forEach(function(cb){
-					console.log("do rollback")
-					cb();
-				});
-				setTimeout(function(){
-					processQueue(queue)
-				},10000);
-			}else{
-				setTimeout(function(){
-					processQueue(queue)
-				},10000);
-			}
-			*/
 		}else{
 //			console.log("Processing " + length + " queue items");
 		
 			queue.tpop(function(err,message,commit,rollback){
+				var startTime=new Date();
 				if (err) {
 					console.log("error popping message item: ", err);
 					return;
@@ -105,8 +89,13 @@ function processQueue(queue){
 						console.log("\tUser: ", message.user);
 						console.log("Opts: ", message.options);
 						var containerPaths=[];
+						var fileDefs = [];
+						var commitCollections=[];
 						Object.keys(message.files).forEach(function(key){
 							console.log("\tFiles[" + key + "]", message.files[key]);
+							if (key != message.type) {
+								commitCollections.push(key);
+							}
 							var files = message.files[key];
 							if (!(files instanceof Array)) {
 								files = [files];
@@ -116,20 +105,85 @@ function processQueue(queue){
 								console.log("File: ", file.name );
 								console.log("PATH: ", file.path);
 								var dir = Path.dirname(file.path);
-								console.log("DIR: ", dir);
 								if (containerPaths.indexOf(dir)<0) {
 									containerPaths.push(dir);
 								}
+								var def = new defer();
+								fs.readJson(file.path, function(err,fileData){
+									if (err){
+										def.reject(err);
+									}
+									if (fileData && fileData.length<0) {
+										console.log("Skipping Empty Data File: ", key, file.name,message.id);
+										def.resolve(true);
+										return;
+									}	
+									console.log("Records To index for  ",key, ": ", fileData.length,file.name);
+								
+									var processingErrors=false;	
+									fileData = fileData.map(function(item){
+										if (!item.public) { item.public=false; }
+										if (!item.owner) { 
+											item.owner = message.user;
+										}else if (item.owner != message.user) {
+											if (!item.user_write || (item.user_write && (item.user_write.indexOf(message.user)<0))){
+												processingErrors="Item Owner ("+ item.owner+ ") !=  Index User (" + message.user+ ")";
+											}
+										}
+									
+										if (!item.user_read) { item.user_read = []; }
+										if (!item.user_write) { item.user_write = []; }
+
+										if (item._version_){
+											delete item._version_;
+										}
+										return item;		
+									});
+
+									if (!processingErrors) {
+										when(postDocs(fileData,key), function(results){
+											def.resolve(true);
+										}, function(err){
+											console.log("Error POSTing documents to SOLR core : ",key, err);
+											def.reject(err);
+										});
+									}else{
+										console.log("Processing Errors in ", key, processingErrors);
+										def.reject(processingErrors);
+									}
+							
+								});
+								fileDefs.push(def);
 							});
 						});
-						console.log("Container Paths: ", containerPaths);
 
-						containerPaths.forEach(function(p){
-							console.log("Removing files from : ", p);
-							fs.removeSync(p);
+						when(All(fileDefs), function(){
+							console.log("Container Paths: ", containerPaths);
+							var commitDefs=[]
+							commitCollections.forEach(function(col){
+								commitDefs.push(solrCommit(col));
+							});
+							when(All(commitDefs), function(){
+								solrCommit(message.type).then(function() {
+									console.log("SOLR Collections to Commit: ", commitCollections);
+									containerPaths.forEach(function(p){
+										console.log("Removing files from : ", p);
+										fs.removeSync(p);
+									});
+									commit();
+									processQueue(queue);
+								}, function(err){
+									console.log("Error in final type commit: ", message.type, err);
+									rollback();
+								});
+							}, function(err){
+								console.log("Error in subtype commit: ", err);
+								rollback();
+							});
+						}, function(err){
+							console.log("Error Commiting Files..do roleback", err);
+							rollback();
 						});
-						commit();
-						processQueue(queue);
 					} catch (err){
 						console.log("Error Indexing Data: ", err);
 						rollback();

@@ -30,7 +30,7 @@
         "sequencing_centers":"World Institute of Kimchi",
         "public":true,
         "sequences":41,
-        "owner":"PATRIC",
+        "owner":"anwarren@patricbrc.org",
         "temperature_range":"Mesophilic",
         "gc_content":37.76,
         "taxon_id":1245,
