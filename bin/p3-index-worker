@@ -60,6 +60,7 @@ function solrCommit(type){
 
 	return Request(config.get("solr").url + "/" + type + "/update?commit=true",{},function(err,response,body){
 		if (err) { def.reject(err); return; }
+		console.log("COMMIT " + type + " RESPONSE BODY: ", JSON.stringify(body));
 		def.resolve(true);
 	});
 	return def.promise;
