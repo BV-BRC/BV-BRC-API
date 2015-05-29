@@ -70,7 +70,7 @@ var getSOLR = function(req, res, next) {
 			console.log("Owner: ", results.owner, req.user);
 			console.log("user_read: ", results.user_read, (results.user_read && results.user_read.indexOf(req.user)>=0));
 
-			if (results.public || (publicFree.indexOf(req._call_collection)>=0) || (results.owner==(req.user)) || (results.user_read && results.user_read.indexOf(req.user)>=0)) {		
+			if (results.public || (publicFree.indexOf(req.call_collection)>=0) || (results.owner==(req.user)) || (results.user_read && results.user_read.indexOf(req.user)>=0)) {		
 				res.results = sresults;
 				console.log("Results: ", results);
 				next();
