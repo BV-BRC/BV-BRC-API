@@ -58,7 +58,7 @@ function postDocs(docs,type){
 function solrCommit(type){
 	var def = new defer();
 
-	return Request(config.get("solr").url + "/global/update?commit=true",{},function(err,response,body){
+	return Request(config.get("solr").url + "/" + type + "/update?commit=true",{},function(err,response,body){
 		if (err) { def.reject(err); return; }
 		def.resolve(true);
 	});
