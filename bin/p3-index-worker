@@ -57,16 +57,17 @@ function postDocs(docs,type){
 
 function solrCommit(type){
 	var def = new defer();
-
-	return Request(config.get("solr").url + "/global/update?commit=true",{},function(err,response,body){
+	console.log("Begin Commit for ", type);
+	Request(config.get("solr").url + "/" + type + "/update?wt=json&commit=true",{},function(err,response,body){
 		if (err) { def.reject(err); return; }
+		console.log("COMMIT " + type + " RESPONSE BODY: ", JSON.stringify(body));
 		def.resolve(true);
 	});
 	return def.promise;
 }
 
 function processQueue(queue){
-	console.log("processQueue");
+//	console.log("processQueue");
 	queue.length(function(err,length){
 		if (length < 1){
 			setTimeout(function(){
@@ -166,12 +167,13 @@ function processQueue(queue){
 						when(All(fileDefs), function(){
 							console.log("Container Paths: ", containerPaths);
 							var commitDefs=[]
+							console.log("SOLR Collections to Commit: ", commitCollections);
 							commitCollections.forEach(function(col){
 								commitDefs.push(solrCommit(col));
 							});
 							when(All(commitDefs), function(){
 								when(solrCommit(message.type),function() {
-									console.log("SOLR Collections to Commit: ", commitCollections);
+									console.log("Final Commit of ", message.type, " Complete");
 									containerPaths.forEach(function(p){
 										console.log("Removing files from : ", p);
 										fs.removeSync(p);

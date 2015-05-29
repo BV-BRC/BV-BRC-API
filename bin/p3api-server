@@ -2,12 +2,17 @@
 var debug = require('debug')('p3api-server');
 var app = require('../app');
 var conf = require('../config');
+var http = require("http");
 
 var port = conf.get("http_port");
 
 app.set('port', conf.get('http_port') || 3001);
 debug("Launching p3api-server on port " + port + " ...");
 
-var server = app.listen(app.get('port'), function() {
-	debug('p3api-server listening on port ' + server.address().port);
-});
+app.server = http.createServer(app);
+app.server.setTimeout(60 * 1000 * 8, function() { console.log("Timeout waiting for response")});
+app.server.listen(app.get("port"));
+
+//var server = app.listen(app.get('port'), function() {
+//	debug('p3api-server listening on port ' + server.address().port);
+//});

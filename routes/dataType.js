@@ -62,7 +62,7 @@ var querySOLR = function(req, res, next) {
 var getSOLR = function(req, res, next) {
 	var solr = new solrjs(SOLR_URL + "/" + req.call_collection);
 	when(solr.get(req.call_params[0]), function(sresults) {
-		if (sresults) {
+		if (sresults && sresults.doc) {
 			var results = sresults.doc;
 //			console.log("results: ", results);
 			console.log("results.public: ", results.public);
@@ -70,7 +70,7 @@ var getSOLR = function(req, res, next) {
 			console.log("Owner: ", results.owner, req.user);
 			console.log("user_read: ", results.user_read, (results.user_read && results.user_read.indexOf(req.user)>=0));
 
-			if (results.public || (publicFree.indexOf(req._call_collection)>=0) || (results.owner==(req.user)) || (results.user_read && results.user_read.indexOf(req.user)>=0)) {		
+			if (results.public || (publicFree.indexOf(req.call_collection)>=0) || (results.owner==(req.user)) || (results.user_read && results.user_read.indexOf(req.user)>=0)) {		
 				res.results = sresults;
 				console.log("Results: ", results);
 				next();
@@ -86,6 +86,8 @@ var getSOLR = function(req, res, next) {
 		}else{
 			next();
 		} 
+	},function(err){
+		console.log("Error in SOLR Get: ", err);
 	});
 }
 
