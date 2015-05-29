@@ -67,7 +67,7 @@ function solrCommit(type){
 }
 
 function processQueue(queue){
-	console.log("processQueue");
+//	console.log("processQueue");
 	queue.length(function(err,length){
 		if (length < 1){
 			setTimeout(function(){
