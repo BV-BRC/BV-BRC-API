@@ -57,7 +57,7 @@ function postDocs(docs,type){
 
 function solrCommit(type){
 	var def = new defer();
-
+	console.log("Begin Commit for ", type);
 	Request(config.get("solr").url + "/" + type + "/update?commit=true",{},function(err,response,body){
 		if (err) { def.reject(err); return; }
 		console.log("COMMIT " + type + " RESPONSE BODY: ", JSON.stringify(body));
