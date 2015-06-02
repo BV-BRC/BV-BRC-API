@@ -12,7 +12,7 @@ module.exports=function(req,res,next){
 	var fields;
 
 	if (req.call_collection=="genome_feature"){
-		fields = ["genome_name", "accession", "seed_id", "refseq_locus_tag", "alt_locus_tag", "feature_id",
+		fields = ["genome_name", "accession", "patric_id", "refseq_locus_tag", "alt_locus_tag", "feature_id",
 				"annotation", "feature_type", "start", "end", "na_length", "strand", "protein_id", "aa_length", "gene", "product"
 		];
 	}else if (req.call_collection =="genome") {
@@ -49,7 +49,7 @@ module.exports=function(req,res,next){
 			if (res.results && res.results.response && res.results.response.docs) {
 				res.results.response.docs.forEach(function(o){
 					if (req.call_collection=="genome_feature"){
-						var row = ">" + o.seed_id + "|"+o.feature_id+ " " + o.product + "\n" + o.na_sequence + "\n"; 
+						var row = ">" + o.patric_id + "|"+o.feature_id+ " " + o.product + "\n" + o.na_sequence + "\n"; 
 					}else if (req.call_collection="genome_sequence") {
 						var row = ">accn|" + o.accession + "   " + o.description + "   " + "["+(o.genome_name|| o.genome_id) +"]\n" + o.sequence;
 					}else{
@@ -75,7 +75,7 @@ module.exports=function(req,res,next){
 					var fasta_id;
 					if (o.feature_type=="source") { return; }
 					if (o.annotation == "PATRIC") {
-						fasta_id = o.seed_id + "|"+(o.refseq_locus_tag?(o.refseq_locus_tag+"|"):"") + (o.alt_locus_tag?(o.alt_locus_tag+"|"):"");
+						fasta_id = o.patric_id + "|"+(o.refseq_locus_tag?(o.refseq_locus_tag+"|"):"") + (o.alt_locus_tag?(o.alt_locus_tag+"|"):"");
 					} else if (o.annotation == "RefSeq") {
 						fasta_id = "gi|" + o.gi + "|"+(o.refseq_locus_tag?(o.refseq_locus_tag+"|"):"") + (o.alt_locus_tag?(o.alt_locus_tag+"|"):"");
 					}
@@ -116,7 +116,7 @@ module.exports=function(req,res,next){
 					res.write( "accn|" + o.accession+ "\t"+o.annotation+ "\t" + o.feature_type + "\t" + o.start+ "\t" + o.end + "\t.\t" + o.strand+"\t0\t");
 					switch(o.annotation) {
 						case "PATRIC":
-							res.write("ID=" + o.seed_id);
+							res.write("ID=" + o.patric_id);
 							break;
 						case "RefSeq":
 							res.write("ID=" + o.refseq_locus_tag);
