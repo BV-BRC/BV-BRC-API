@@ -195,7 +195,7 @@ function processQueue(queue){
 										console.log("Removing files from : ", p);
 										fs.removeSync(p);
 									});
-									console.log("Updating History: (config.get("queueDirectory"),"history",message.id));
+									console.log("Updating History: " + config.get("queueDirectory"),"history",message.id));
 									fs.readJson(Path.join(config.get("queueDirectory"),"history",message.id), function(err,data){
 										if (err) {
 											console.log("Error Reading JSON History File: ", err);
