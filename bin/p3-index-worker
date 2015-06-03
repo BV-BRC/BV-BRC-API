@@ -59,7 +59,7 @@ function postDocs(docs,type){
 
 function solrCommit(type,hard){
 	var def = new defer();
-	console.log("Begin Commit for ", type);
+	console.log("Begin " +(hard?"hard":"soft") + " Commit for ", type);
 	Request(config.get("solr").url + "/" + type + "/update?wt=json&" + (hard?"commit":"softCommit") + "=true",{},function(err,response,body){
 		if (err) { def.reject(err); return; }
 		console.log("COMMIT " + type + " RESPONSE BODY: ", JSON.stringify(body));
