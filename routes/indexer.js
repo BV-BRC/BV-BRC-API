@@ -30,13 +30,26 @@ fs.mkdirs(Path.join(qdir,"file_data"), function(err){
 		console.log("Error Creating Index Directory Structure: ", err);
 		return;
 	}
-
-	queue = new Queue(qdir, function(err) {
+	fs.mkdirs(Path.join(qdir,"history"), function(err){
 		if (err) {
-			debug("error: ", err);
+			console.log("Error Creating Index History Directory: ", err);
 			return;
 		}
-		debug("Created Queue.");
+		fs.mkdirs(Path.join(qdir,"errors"), function(err){	
+			if (err) {
+				console.log("Error Creating Index Error Directory: ", err);
+				return;
+			}
+	
+			queue = new Queue(qdir, function(err) {
+				if (err) {
+					debug("error: ", err);
+					return;
+				}
+				debug("Created Queue.");
+			});
+		});
+
 	});
 
 });
@@ -55,7 +68,18 @@ router.use(function(req, res, next) {
 	next();
 });
 
-router.post("/", [
+router.get("/:id", function(req,res,next){
+	fs.readJson(Path.join(qdir,"history",req.params.id), function(err,data){
+		if (err) {
+			return next(err);
+		}
+		res.set("content-type", "application/json");
+		res.send(JSON.stringify(data));
+		res.end();
+	});
+});
+
+router.post("/:type", [
 	function(req, res, next) {
 		if (!req.user) {
 			res.sendStatus(401);
@@ -91,15 +115,25 @@ router.post("/", [
 					d.files[type] = files[type]
 				});
 
+				
+
 				queue.push(d, function(err){
 					if (err){
 						res.error("Error Adding to queue: " + err);
 						res.end(500);
 						return;
 					}
-					res.send("Queue Index ID: " + qid + "\n");
-					res.end();
+					d.state = "queued";
+					d.queueTime = new Date();
+
+					fs.writeJson(Path.join(qdir,"history",qid), d, function(err){
+						res.set("content-type","application/json");
+						res.send(JSON.stringify({id: qid, state: queued, queueTime: d.queueTime}));
+						res.end();
+					});
 				});
+
+				
 			});
 		});
 

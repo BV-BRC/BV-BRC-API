@@ -19,6 +19,7 @@ var queue = new Queue(config.get("queueDirectory"), function(err) {
 });
 
 var maxLimit = config.get("indexImportLimits");
+var currentErrors=0;
 
 process.on('message', function(msg){
 	if (msg && msg.type=="start"){
@@ -178,23 +179,83 @@ function processQueue(queue){
 										console.log("Removing files from : ", p);
 										fs.removeSync(p);
 									});
-									commit();
-									processQueue(queue);
+									fs.readJson(Path.join(config.get("queueDirectory"),"history",message.id), function(err,data){
+										data.state="indexed",
+										data.indexCompletionTime = new Date();
+										fs.writeJson(Path.join(config.get("queueDirectory"),"history",message.id), function(err){
+											if (err) {
+												console.log("Error writing to history: ", message.id);
+											}
+											currentErrors=0;
+											commit();
+											processQueue(queue);
+										});
+									});
 								}, function(err){
-									console.log("Error in final type commit: ", message.type, err);
-									rollback();
+									fs.readJson(Path.join(config.get("queueDirectory"),"history",message.id), function(err,data){
+										data.state="error",
+										data.error = err;
+										fs.writeJson(Path.join(config.get("queueDirectory"),"history",message.id), function(err){
+											if (err) {
+												console.log("Error writing to history: ", message.id);
+											}
+											console.log("Error in final type commit: ", message.type, err);
+											rollback();
+											if (currentErrors < 3) {
+												processQueue(queue);
+											}
+										});
+									});
+
 								});
 							}, function(err){
-								console.log("Error in subtype commit: ", err);
-								rollback();
+								fs.readJson(Path.join(config.get("queueDirectory"),"history",message.id), function(err,data){
+									data.state="error",
+									data.error = err;
+									fs.writeJson(Path.join(config.get("queueDirectory"),"history",message.id), function(err){
+										if (err) {
+											console.log("Error writing to history: ", message.id);
+										}
+										console.log("Error in final type commit: ", message.type, err);
+										rollback();
+										if (currentErrors < 3) {
+											processQueue(queue);
+										}
+									});
+								});
 							});
 						}, function(err){
-							console.log("Error Commiting Files..do roleback", err);
-							rollback();
+							fs.readJson(Path.join(config.get("queueDirectory"),"history",message.id), function(err,data){
+								data.state="error",
+								data.error = err;
+								fs.writeJson(Path.join(config.get("queueDirectory"),"history",message.id), function(err){
+									if (err) {
+										console.log("Error writing to history: ", message.id);
+									}
+									console.log("Error in final type commit: ", message.type, err);
+									rollback();
+									if (currentErrors < 3) {
+										processQueue(queue);
+									}
+								});
+							});
+
 						});
 					} catch (err){
-						console.log("Error Indexing Data: ", err);
-						rollback();
+						fs.readJson(Path.join(config.get("queueDirectory"),"history",message.id), function(err,data){
+							data.state="error",
+							data.error = err;
+							fs.writeJson(Path.join(config.get("queueDirectory"),"history",message.id), function(err){
+								if (err) {
+									console.log("Error writing to history: ", message.id);
+								}
+								console.log("Error in final type commit: ", message.type, err);
+								rollback();
+								if (currentErrors < 3) {
+									processQueue(queue);
+								}
+							});
+						});
 					}
 				}
 			});
