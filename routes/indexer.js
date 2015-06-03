@@ -129,7 +129,7 @@ router.post("/:type", [
 
 					fs.writeJson(Path.join(qdir,"history",qid), d, function(err){
 						res.set("content-type","application/json");
-						res.send(JSON.stringify({id: qid, state: queued, queueTime: d.queueTime}));
+						res.send(JSON.stringify({id: qid, state: "queued", queueTime: d.queueTime}));
 						res.end();
 					});
 				});
