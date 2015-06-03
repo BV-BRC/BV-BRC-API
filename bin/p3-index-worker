@@ -195,10 +195,15 @@ function processQueue(queue){
 										console.log("Removing files from : ", p);
 										fs.removeSync(p);
 									});
+									console.log("Updating History: (config.get("queueDirectory"),"history",message.id));
 									fs.readJson(Path.join(config.get("queueDirectory"),"history",message.id), function(err,data){
+										if (err) {
+											console.log("Error Reading JSON History File: ", err);
+											data = {}
+										}
 										data.state="indexed",
 										data.indexCompletionTime = new Date();
-										fs.writeJson(Path.join(config.get("queueDirectory"),"history",message.id), function(err){
+										fs.writeJson(Path.join(config.get("queueDirectory"),"history",message.id),data, function(err){
 											if (err) {
 												console.log("Error writing to history: ", message.id);
 											}
