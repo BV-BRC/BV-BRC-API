@@ -69,6 +69,7 @@ router.use(function(req, res, next) {
 });
 
 router.get("/:id", function(req,res,next){
+	console.log("Read Data from History: ", Path.join(qdir,"history", req.params.id));
 	fs.readJson(Path.join(qdir,"history",req.params.id), function(err,data){
 		if (err) {
 			return next(err);
