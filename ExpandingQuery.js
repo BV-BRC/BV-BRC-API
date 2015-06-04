@@ -61,10 +61,14 @@ var LazyWalk = exports.LazyWalk = function(term,opts) {
 //	console.log("stringified term: ", Query(term).toString());
 	var children;
 
-	if (term && (typeof term == 'string')){
+	if (term && (typeof term == 'string')){	
 		console.log("TERM: ", term);
-		return encodeURIComponent(term);
+		return encodeURIComponent(term);	
 	}
+
+        if (typeof term == "boolean") {
+                return term?"true":"false";
+        }	
 
 	if  ((term === 0) || (typeof term == "number")) {
 		return term.toString()
