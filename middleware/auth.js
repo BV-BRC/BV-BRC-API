@@ -1,12 +1,16 @@
+var validateToken = require("p3-user/validateToken");
+var when = require("promised-io/promise").when;
 
-
+/*
 var userIdRegex = /un=(\w+\@\w+(\.\w+))/
 
 
 var validateToken = function(token) {
 	return true
 }
+*/
 
+/*
 module.exports = function(req, res, next) {
 	if (req.headers && req.headers.authorization && validateToken(req.headers.authorization)) {
 		var matches = req.headers.authorization.match(userIdRegex);
@@ -15,4 +19,26 @@ module.exports = function(req, res, next) {
 		}
 	}
 	next();
+}
+*/
+
+module.exports = function(req,res,next){
+        if (!req.isAuthenticated || (req.isAuthenticated && !req.isAuthenticated())){
+                if (req.headers && req.headers["authorization"]) {
+                        when(validateToken(req.headers["authorization"]),function(valid){
+                                if (valid) {
+                                        console.log("Valid Login: ", valid);
+					req.user = valid;
+				}
+				next();
+                        }, function(err){
+                                console.log("Invalid Token Validation");
+                                next(err);
+                        })
+                }else {
+                        next();
+                }
+        }else{
+                next();
+        }
 }
