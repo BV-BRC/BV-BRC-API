@@ -10,7 +10,7 @@ app.set('port', conf.get('http_port') || 3001);
 debug("Launching p3api-server on port " + port + " ...");
 
 app.server = http.createServer(app);
-app.server.setTimeout(60 * 1000 * 8, function() { console.log("Timeout waiting for response")});
+app.server.setTimeout(60 * 1000 * 25, function() { console.log("Timeout waiting for response")});
 app.server.listen(app.get("port"));
 
 //var server = app.listen(app.get('port'), function() {
