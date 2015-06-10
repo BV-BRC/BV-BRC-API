@@ -55,15 +55,24 @@ module.exports=function(req,res,next){
 				res.results.response.docs.forEach(function(o){
 					if (req.call_collection=="genome_feature"){
 						var row = ">" + o.patric_id + "|"+o.feature_id+ " " + o.product + "\n" + o.na_sequence + "\n"; 
+						res.write(row);
 					}else if (req.call_collection="genome_sequence") {
-						var row = ">accn|" + o.accession + "   " + o.description + "   " + "["+(o.genome_name|| o.genome_id) +"]\n" + o.sequence;
+						var row = ">accn|" + o.accession + "   " + o.description + "   " + "["+(o.genome_name|| o.genome_id) +"]\n";
+						res.write(row);
+						var i = 0;
+						while(i<o.sequence.length) {
+							if ((i+60)<o.sequence.length){
+								res.write(o.sequence.substr(i,60) + "\n");
+							}else{
+								res.write(o.sequence.substr(i) + "\n");
+							}
+							i+=60;
+						}
 					}else{
 						throw Error("Cannot query for application/dna+fasta from this data collection");
 					}
-					res.write(row);
 				});	
 			}
-
 			res.end();
 
 		},
