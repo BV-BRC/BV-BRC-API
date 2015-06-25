@@ -89,6 +89,7 @@ var getSOLR = function(req, res, next) {
 		} 
 	},function(err){
 		console.log("Error in SOLR Get: ", err);
+		next(err);
 	});
 }
 
