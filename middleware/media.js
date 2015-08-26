@@ -170,7 +170,7 @@ module.exports=function(req,res,next){
 		"text/csv": function(){
 			debug("text/csv handler")
 			if (req.isDownload){
-				res.set("content-disposition", "attachment; filename=patric3_query.csv");
+				res.set("content-disposition", 'attachment; filename="patric3_' + req.call_collection + '_query.csv"');
 			}
 
 			//console.log("res.results: ", res.results);
@@ -195,7 +195,7 @@ module.exports=function(req,res,next){
 		"text/tsv": function(){
 			debug("text/tsv handler")
 			if (req.isDownload){
-				res.set("content-disposition", "attachment; filename=patric3_query.txt");
+				res.set("content-disposition", 'attachment; filename="patric3_' + req.call_collection + '_query.txt"');
 			}
 			//console.log("res.results: ", res.results);
 			if (res.results && res.results.response && res.results.response.docs) {
@@ -219,7 +219,7 @@ module.exports=function(req,res,next){
 			debug("Excel  handler")
 			console.log("Headers: ", req.headers);
 			if (req.isDownload){
-				res.set("content-disposition", 'attachment; filename="patric3_query.xlsx"');
+				res.set("content-disposition", 'attachment; filename="patric3_' + req.call_collection + '_query.xlsx"');
 			}
 
 //			//console.log("res.results: ", res.results);
