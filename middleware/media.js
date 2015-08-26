@@ -241,6 +241,8 @@ module.exports=function(req,res,next){
 					});
 					return row;
 				});
+
+				data.unshift(fields);
 				var d = xlsx.build([{name: "patric3_query", data: data}]);
 				res.set("Content-Type", "application/vnd.openxmlformats");
 				res.end(d, "binary");	
