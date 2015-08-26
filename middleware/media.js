@@ -41,13 +41,14 @@ module.exports=function(req,res,next){
 		]
 	}
 
-
+	req.isDownload = !!(req.headers && req.headers.download);
 
 	res.format({
 		"application/dna+fasta": function(){
 			debug("application/dna+fastahandler")
+
 			if (req.isDownload){
-				req.set("content-disposition", "attachment; filename=patric_genomes.fasta");
+				res.set("content-disposition", "attachment; filename=patric_genomes.fasta");
 			}
 
 			//console.log("res.results: ", res.results);
@@ -81,7 +82,7 @@ module.exports=function(req,res,next){
 		"application/protein+fasta": function(){
 			debug("application/dna+fasta handler")
 			if (req.isDownload){
-				req.set("content-disposition", "attachment; filename=patric_proteins.fasta");
+				res.set("content-disposition", "attachment; filename=patric_proteins.fasta");
 			}
 
 			//console.log("res.results: ", res.results);
@@ -104,7 +105,7 @@ module.exports=function(req,res,next){
 		"application/gff": function(){
 			debug("application/dna+fasta handler")
 			if (req.isDownload){
-				req.set("content-disposition", "attachment; filename=patric_proteins.fasta");
+				res.set("content-disposition", "attachment; filename=patric_proteins.fasta");
 			}
 
 			//console.log("res.results: ", res.results);
@@ -169,7 +170,7 @@ module.exports=function(req,res,next){
 		"text/csv": function(){
 			debug("text/csv handler")
 			if (req.isDownload){
-				req.set("content-disposition", "attachment; filename=patric3_query.csv");
+				res.set("content-disposition", "attachment; filename=patric3_query.csv");
 			}
 
 			//console.log("res.results: ", res.results);
@@ -194,7 +195,7 @@ module.exports=function(req,res,next){
 		"text/tsv": function(){
 			debug("text/tsv handler")
 			if (req.isDownload){
-				req.set("content-disposition", "attachment; filename=patric3_query.txt");
+				res.set("content-disposition", "attachment; filename=patric3_query.txt");
 			}
 			//console.log("res.results: ", res.results);
 			if (res.results && res.results.response && res.results.response.docs) {
@@ -216,8 +217,9 @@ module.exports=function(req,res,next){
 		},
 		"application/vnd.openxmlformats": function(){
 			debug("Excel  handler")
+			console.log("Headers: ", req.headers);
 			if (req.isDownload){
-				req.set("content-disposition", "attachment; filename=patric3_query.xlsx");
+				res.set("content-disposition", 'attachment; filename="patric3_query.xlsx"');
 			}
 
 //			//console.log("res.results: ", res.results);
