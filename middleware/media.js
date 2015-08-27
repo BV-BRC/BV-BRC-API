@@ -125,7 +125,7 @@ module.exports=function(req,res,next){
 					}
 
 					if (o.feature_type=="region") {
-						res.write("##sequence-region\taccn" + o.accession + "\t" + o.start + "\t" + o.end + "\n");
+						res.write("##sequence-region\taccn|" + o.accession + "\t" + o.start + "\t" + o.end + "\n");
 						return;
 					}
 
@@ -191,7 +191,7 @@ module.exports=function(req,res,next){
 					}
 
 					if (o.feature_type=="region") {
-						res.write("##sequence-region\taccn" + o.accession + "\t" + o.start + "\t" + o.end + "\n");
+						res.write("##sequence-region\taccn|" + o.accession + "\t" + o.start + "\t" + o.end + "\n");
 						return;
 					}
 
