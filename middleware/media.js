@@ -94,7 +94,7 @@ module.exports=function(req,res,next){
 						var row = ">" + o.patric_id + "|"+o.feature_id+ " " + o.product + "\n" + o.na_sequence + "\n"; 
 						res.write(row);
 					}else if (req.call_collection="genome_sequence") {
-						var row = o.accession + "   " + o.description + "   " + "["+(o.genome_name|| o.genome_id) +"]\n";
+						var row = ">"+ o.accession + "   " + o.description + "   " + "["+(o.genome_name|| o.genome_id) +"]\n";
 						res.write(row);
 						var i = 0;
 						while(i<o.sequence.length) {
