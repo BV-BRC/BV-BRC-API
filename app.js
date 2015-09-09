@@ -1,4 +1,3 @@
-require('newrelic');
 var debug = require('debug')('p3api-server');
 var express = require('express');
 var path = require('path');
@@ -10,6 +9,10 @@ var dataTypeRouter = require("./routes/dataType");
 var indexer = require("./routes/indexer");
 var config = require("./config");
 var cors = require('cors');
+
+if (config.get("newrelic_license_key")){
+	require('newrelic');
+}
 
 var app = module.exports =  express();
 
