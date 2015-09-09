@@ -1,3 +1,4 @@
+require('newrelic');
 var debug = require('debug')('p3api-server');
 var express = require('express');
 var path = require('path');
