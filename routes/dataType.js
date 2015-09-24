@@ -65,15 +65,15 @@ var getSOLR = function(req, res, next) {
 		if (sresults && sresults.doc) {
 			var results = sresults.doc;
 //			console.log("results: ", results);
-			console.log("results.public: ", results.public);
-			console.log("publicFree: ", (publicFree.indexOf(req._call_collection)>=0) );
-			console.log("Owner: ", results.owner, req.user);
-			console.log("user_read: ", results.user_read, (results.user_read && results.user_read.indexOf(req.user)>=0));
-			console.log("req.user: ", req.user);
+//			console.log("results.public: ", results.public);
+//			console.log("publicFree: ", (publicFree.indexOf(req._call_collection)>=0) );
+//			console.log("Owner: ", results.owner, req.user);
+//			console.log("user_read: ", results.user_read, (results.user_read && results.user_read.indexOf(req.user)>=0));
+//			console.log("req.user: ", req.user);
 
 			if (results.public || (publicFree.indexOf(req.call_collection)>=0) || (results.owner==(req.user)) || (results.user_read && results.user_read.indexOf(req.user)>=0)) {		
 				res.results = sresults;
-				console.log("Results: ", results);
+//				console.log("Results: ", results);
 				next();
 			}else{
 				if (!req.user){

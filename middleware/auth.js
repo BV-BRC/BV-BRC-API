@@ -27,7 +27,7 @@ module.exports = function(req,res,next){
                 if (req.headers && req.headers["authorization"]) {
                         when(validateToken(req.headers["authorization"]),function(valid){
                                 if (valid && valid.id) {
-                                        console.log("Valid Login: ", valid);
+				//console.log("Valid Login: ", valid);
 					req.user = valid.id;
 				}
 				next();
