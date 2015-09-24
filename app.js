@@ -28,7 +28,7 @@ app.set('view engine', 'ejs');
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 
-app.use(logger('dev'));
+app.use(logger('[:date[clf]] :remote-user :method :url :status :response-time ms - :res[content-length]'));
 
 app.use(function(req,res,next){
 	debug("APP MODE: ", app.get('env'));

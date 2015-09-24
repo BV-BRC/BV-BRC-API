@@ -155,9 +155,8 @@ router.get("*", function(req,res,next){
 		}
 		debug('req.queryType: ', req.queryType)
 		debug("req.headers: ", req.headers);
-		if (req.headers && req.headers.download){
-			req.isDownload = true;
-		}
+		
+		req.isDownload = !!(req.headers && req.headers.download);
 		debug("req.isDownload: ", req.isDownload);
 		req.call_params = [req._parsedUrl.query||""];
 		req.call_collection = req.params.dataType;
