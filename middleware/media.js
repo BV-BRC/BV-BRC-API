@@ -318,7 +318,7 @@ module.exports=function(req,res,next){
 		},
 		"application/vnd.openxmlformats": function(){
 			debug("Excel  handler")
-			console.log("Headers: ", req.headers);
+//			console.log("Headers: ", req.headers);
 			if (req.isDownload){
 				res.set("content-disposition", 'attachment; filename="patric3_' + req.call_collection + '_query.xlsx"');
 			}

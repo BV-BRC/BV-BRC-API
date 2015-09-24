@@ -111,4 +111,4 @@ if (config.get("enableIndexer")) {
 	indexer.send({type: "start"});
 }
 
-require("replify")({name: "p3api", path: "./REPL"},app,{});
+//require("replify")({name: "p3api", path: "./REPL"},app,{});

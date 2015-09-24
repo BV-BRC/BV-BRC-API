@@ -1,3 +1,4 @@
+var debug = require('debug')('p3api-server-query-expander');
 var when = require("promised-io/promise").when;
 var defer = require("promised-io/promise").defer;
 var All= require("promised-io/promise").all;
@@ -12,9 +13,9 @@ var workspaceAPI = config.get("workspaceAPI");
 
 function getWorkspaceObject(id,opts) {
 	var def = new defer();
-	console.log("in getWorkspaceObject: ", id);
-	console.log("wsAPI: ", workspaceAPI);	
-	console.log("opts req headers: ", opts.req.headers);
+//	console.log("in getWorkspaceObject: ", id);
+//	console.log("wsAPI: ", workspaceAPI);	
+//	console.log("opts req headers: ", opts.req.headers);
 	Request({
 		method: "POST",	
 		url: workspaceAPI,
@@ -36,8 +37,8 @@ function getWorkspaceObject(id,opts) {
 			var R=[];
 			results.result[0].map(function(o){
 				var obj = (typeof o[1]=='string')?JSON.parse(o[1]):o[1];
-				console.log("obj: ", obj );
-				console.log("obj id_list: ", obj.id_list);
+//				console.log("obj: ", obj );
+//				console.log("obj id_list: ", obj.id_list);
 				Object.keys(obj.id_list).forEach(function(key){
 					R = R.concat(obj.id_list[key].filter(function(y) { return !!y }));
 				})						
@@ -47,7 +48,7 @@ function getWorkspaceObject(id,opts) {
 			}
 
 			R = R.map(encodeURIComponent);
-			console.log("R: ", R[0]);
+//			console.log("R: ", R[0]);
 			def.resolve(R);
 			return;
 		}
@@ -62,7 +63,7 @@ var LazyWalk = exports.LazyWalk = function(term,opts) {
 	var children;
 
 	if (term && (typeof term == 'string')){	
-		console.log("TERM: ", term);
+//		console.log("TERM: ", term);
 		return encodeURIComponent(term);	
 	}
 
@@ -75,9 +76,22 @@ var LazyWalk = exports.LazyWalk = function(term,opts) {
 	}
 
 	if (term && term instanceof Array){
-		return "(" + term.join(",") +")"
+		var out =[];
+		var defs = term.map(function(t){
+			return when(LazyWalk(t,opts), function(t){
+				out.push(t);
+			});
+		});
+	
+		return when(All(defs), function(defs){
+//			console.log("Out: ", out);
+			return "(" + out.join(",") + ")";	
+		});	
+//		console.log("LazyWalk term is instanceof Array: ", term);
+//		console.log("Return Val: (" + term.join(",") + ")");
+//		return "(" + term.join(",") +")"
 	}
-	console.log("term: ", term, " type: ", typeof term);	
+//	console.log("term: ", term, " type: ", typeof term, " args: ", term.args);	
 	if (term && typeof term=="object") {
 		if (term.name){
 			if (term.args){
@@ -91,7 +105,7 @@ var LazyWalk = exports.LazyWalk = function(term,opts) {
 						var expanded = opts.expansions[term.name].apply(this,term.args);	
 						//console.log("expanded: ", expanded);
 						return when(ResolveQuery(expanded,opts,false), function(expanded){
-							console.log("Expanded POST WALK: ", expanded);
+							debug("Expanded POST WALK: "+ expanded);
 							return expanded;
 						});
 					}
@@ -100,22 +114,22 @@ var LazyWalk = exports.LazyWalk = function(term,opts) {
 						}else if (term.name=="and" && term.args.length==0){
 							return "";
 						}else if (term.name=="GenomeGroup") {
-							console.log("call getWorkspaceObject(): ", term.args[0]);
+//							console.log("call getWorkspaceObject(): ", term.args[0]);
 							return when(getWorkspaceObject(term.args[0],opts), function(ids){
-								console.log("getWSObject: ", ids);
+								//console.log("getWSObject: ", ids);
 								var out = "(" + ids.join(",") + ")"
-								console.log("out: ", out);
+								//console.log("out: ", out);
 								return out;
 							},function(err){
 								console.log("Error Retrieving Workspace: ", err);	
 								return "(NOT_A_VALID_ID)";
 							})
 						}else if (term.name=="FeatureGroup") {
-							console.log("call getWorkspaceObject(): ", term.args[0]);
+							//console.log("call getWorkspaceObject(): ", term.args[0]);
 							return when(getWorkspaceObject(term.args[0],opts), function(ids){
-								console.log("getWSObject: ", ids);
+								//console.log("getWSObject: ", ids);
 								var out = "(" + ids.join(",") + ")"
-								console.log("out: ", out);
+								//console.log("out: ", out);
 								return out;
 							},function(err){
 								console.log("Error Retrieving Workspace: ", err);	
@@ -129,8 +143,8 @@ var LazyWalk = exports.LazyWalk = function(term,opts) {
 							//console.log("q: ", q);
 							var query = q.toString();
 							var type="public";
-							console.log("typeof query: ", typeof query);
-							console.log("Do Query ", modelId, query);
+							//console.log("typeof query: ", typeof query);
+							//console.log("Do Query ", modelId, query);
 							if (opts && opts.req &&  opts.req.user) { 
 								if (opts.req.user.isAdmin){
 									type="admin"
@@ -139,25 +153,25 @@ var LazyWalk = exports.LazyWalk = function(term,opts) {
 								}	
 							}
 	
-							console.log(" get executor for  modelId: ", modelId, "type: ", type);
+							//console.log(" get executor for  modelId: ", modelId, "type: ", type);
 							var queryFn= DME.getModelExecutor("query", modelId, type);
 							if (!queryFn) { throw new Error("Invalid Executor during LazyWalk for Query Resolver"); }
 							return when(runQuery(queryFn,query,opts), function(results){
-								console.log("runQuery results len: ",results?results.length:"None");
+								//console.log("runQuery results len: ",results?results.length:"None");
 							
-								console.log('results: ', results);	
+								//console.log('results: ', results);	
 								if (results instanceof Array) {
-									console.log("instance of array", results);
+									//console.log("instance of array", results);
 									return  "(" + results.join(',') + ")"
 								}else{
-									console.log("non-array", results);
+									//console.log("non-array", results);
 									return results;	
 								}
 							}, function(err){
-								console.log("SubQuery Error: ", err);	
+								//console.log("SubQuery Error: ", err);	
 							});	
 						}	
-						console.log("Fall through: ", term, args);	
+						//console.log("Fall through: ", term, args);	
 						return term.name + "(" + args.join(",") + ")";
 				}, function(err){
 					throw Error("Error Lazily Expanding Query: "+err);
@@ -188,7 +202,7 @@ function runQuery(queryFn, query,opts){
 			}
 			opts.req.queryCache[query]=qres;
 		}
-		console.log("qres len: ", qres.length);
+		//console.log("qres len: ", qres.length);
 		return qres;
 	});
 }
@@ -204,7 +218,7 @@ var ResolveQuery = exports.ResolveQuery = function(query,opts,clearCache) {
 	//walk the parsed query and lazily resolve any subqueries/joins	
 	return when(LazyWalk(query,opts), function(finalQuery){
 		//finalQuery will be a new string query	
-		console.log("Final Query: ", finalQuery);
+		debug("Final Query: "+ finalQuery);
 		if (opts&&opts.req.queryCache && clearCache){
 			delete opts.req.queryCache;
 		}
@@ -214,8 +228,7 @@ var ResolveQuery = exports.ResolveQuery = function(query,opts,clearCache) {
 
 var Walk = exports.Walk = function(term,expansions) {
 	if (!term) { return "" }
-	console.log("term: ", term);
-	console.log("stringified term: ", Query(term).toString());
+//	console.log("stringified term: ", Query(term).toString());
 	var children;
 
 	if (term && (typeof term == 'string')){
@@ -227,20 +240,22 @@ var Walk = exports.Walk = function(term,expansions) {
 	}
 
 	if (term && term instanceof Array){
-		return term.join(",");
+//		console.log("Term is an array: ", term);
+		return  "(" + term.join(",") + ")";
 	}
 
 	if (term && typeof term=="object") {
+//		console.log("Term is object: ", term);
 		if (term.name){
 			if (term.args && (term.args.length>0)){
 				
 				term.args = term.args.map(function(t,index){
-					console.log("Walk SubTerm: ", t, " Expansions: ", expansions);
+					//console.log("Walk SubTerm: ", t, " Expansions: ", expansions);
 					return Walk(t,expansions)
 				});
 
 				return when(All(term.args), function(args){
-					console.log("term.args resolved: ", args);
+					//console.log("term.args resolved: ", args);
 					if (term.name && expansions[name]) {
 						if (typeof expansion[name]=='function') {
 							return expansion[name].apply(args);
@@ -266,7 +281,7 @@ exports.ExpandQuery = function(query, expansions){
 	if (typeof query== "string"){
 		query= Query(query);
 	}
-		
+//	console.log("Query: ", query);	
 	//walk the parsed query and lazily resolve any subqueries/joins	
 	return when(Walk(query,expansions), function(finalQuery){
 		//finalQuery will be a new string query	

@@ -42,7 +42,10 @@ var defaults =  {
 	queueDirectory: "./index-queue-dir",
 	"solr": {
 		"url": "http://localhost:8983/solr"
-	}
+	},
+
+	"numWorkers": 0
+
 }
 
 module.exports = nconf.argv().env().file("./p3api.conf").defaults(defaults);

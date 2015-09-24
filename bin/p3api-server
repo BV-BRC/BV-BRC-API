@@ -3,16 +3,44 @@ var debug = require('debug')('p3api-server');
 var app = require('../app');
 var conf = require('../config');
 var http = require("http");
+var cluster = require("cluster");
 
-var port = conf.get("http_port");
+if (cluster.isMaster) {
+	// Start workers and listen for messages containing notifyRequest
+	var numCPUs = conf.get("numWorkers") || require('os').cpus().length;
+	debug("Launching " +  numCPUs + " p3-api Workers");
 
-app.set('port', conf.get('http_port') || 3001);
-debug("Launching p3api-server on port " + port + " ...");
+	cluster.on("fork", function(worker){
+		debug("Forked Worker: " + worker.id);
+	});
 
-app.server = http.createServer(app);
-app.server.setTimeout(60 * 1000 * 25, function() { console.log("Timeout waiting for response")});
-app.server.listen(app.get("port"));
+	cluster.on("online", function(worker){
+		debug("Worker[" + worker.id + "]", " online.");
+	});
 
-//var server = app.listen(app.get('port'), function() {
-//	debug('p3api-server listening on port ' + server.address().port);
-//});
+	cluster.on("listening", function(worker,address){
+		debug("Worker[" + worker.id + "]", " listening on " + address.address + ":" + address.port);
+
+	});
+
+	cluster.on("disconnect", function(worker){
+		debug("Worker[" + worker.id + "]", " disconnected.");
+	});
+
+	cluster.on("exit", function(worker,code,signal){
+		console.log('worker %d died (%s). restarting...',worker.process.pid,signal||code);
+		cluster.fork();
+	});
+
+	for (var i = 0; i < numCPUs; i++) {
+		var worker = cluster.fork()
+	}
+
+}else {
+	var port = conf.get("http_port");
+	app.set('port',port || 3001);
+	app.server = http.createServer(app);
+	app.server.setTimeout(60 * 1000 * 25, function() { console.log("Timeout waiting for response")});
+
+	return app.server.listen(app.get("port"));
+};

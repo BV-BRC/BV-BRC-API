@@ -55,6 +55,6 @@ module.exports = function(req,res,next){
 	}
 
 	debug("End http-params Middleware: ", req._parsedUrl, req._parsedUrl.query);
-	console.log("Headers: ", req.headers);	
+//	console.log("Headers: ", req.headers);	
 	next();
 }
