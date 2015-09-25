@@ -249,8 +249,14 @@ module.exports=function(req,res,next){
 					}
 
 					if (o.gene) {
-						res.write(";gene=" + o.gene);
-					}	
+						res.write(";name=" + o.gene);
+					}
+                    else if(o.refseq_locus_tag){
+						res.write(";name=" + o.refseq_locus_tag);
+                    }
+                    else {
+						res.write(";name=" + o.patric_id);
+                    }
 					
 					if (o.go) {
 						res.write(";Ontology_term=" + o.go);
