@@ -22,5 +22,6 @@ exports.config = {
      * production applications.
      */
     level: 'info'
-  }
+  },
+  capture_params: true
 }
