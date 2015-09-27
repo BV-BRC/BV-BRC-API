@@ -5,13 +5,17 @@ var conf = require('../config');
 var http = require("http");
 var cluster = require("cluster");
 
+var activeWorkers=0;
+
 if (cluster.isMaster) {
+	var stats = {};
 	// Start workers and listen for messages containing notifyRequest
 	var numCPUs = conf.get("numWorkers") || require('os').cpus().length;
 	debug("Launching " +  numCPUs + " p3-api Workers");
 
 	cluster.on("fork", function(worker){
 		debug("Forked Worker: " + worker.id);
+		activeWorkers++;
 	});
 
 	cluster.on("online", function(worker){
@@ -23,24 +27,89 @@ if (cluster.isMaster) {
 
 	});
 
+	function checkActiveAndClose(worker){
+		if (worker && worker.activeRequests > 0){
+			setTimeout(checkActiveAndClose(worker),5000);	
+		}
+		worker.kill()
+	}
+
 	cluster.on("disconnect", function(worker){
 		debug("Worker[" + worker.id + "]", " disconnected.");
 	});
 
 	cluster.on("exit", function(worker,code,signal){
-		console.log('worker %d died (%s). restarting...',worker.process.pid,signal||code);
-		cluster.fork();
+		console.log('worker %d died (%s)',worker.process.pid,signal||code);
+		activeWorkers--;
+		delete stats[worker.id]
+		forkWorker();
 	});
 
-	for (var i = 0; i < numCPUs; i++) {
+//	cluster.on("message", function(msg){
+//		console.log("Message From Worker: ", msg);
+//	});
+
+
+
+	var forking = {};
+	function forkWorker() {
 		var worker = cluster.fork()
+		worker.activeRequests = 0;
+		worker.totalRequests = 0;
+
+		worker.on("message", function(msg){
+			if (msg && msg.event) {
+			//	console.log("Handling Message: ", msg);
+				switch(msg.event) {
+					case "RequestStart":
+						worker.activeRequests=worker.activeRequests+1
+						worker.totalRequests=worker.totalRequests+1;
+						worker.lastRequestStart = new Date();
+//						console.log('event: ', msg.event," Worker Stats: ",worker.id, " Active: ", worker.activeRequests, " Total: ", worker.totalRequests);
+						break;
+					case "RequestComplete":
+						worker.activeRequests= worker.activeRequests-1;
+//						console.log('event: ', msg.event, " Worker Stats: ",worker.id, " Active: ", worker.activeRequests, " Total: ", worker.totalRequests);
+						break;
+				}
+
+			}
+		});
+
+		return worker;
+	}
+
+	function updateStats(worker){
+		//console.log("Update Stats for: ", worker.id);
+		stats[worker.id] = {
+			activeRequests: worker.activeRequests,
+			totalRequests: worker.totalRequests,
+			lastRequestStart: worker.lastRequestStart
+		}
+	}
+
+	function sendToWorkers(msg){
+		for (var id in cluster.workers){
+			cluster.workers[id].send(msg);
+		}	
+	}
+
+	setInterval(function(){
+		for (var id in cluster.workers){
+			updateStats(cluster.workers[id]);	
+		}	
+		sendToWorkers({type: "stats", data: stats});
+		//console.log("Worker Stats: \n", stats);	
+	},5000);
+
+	for (var i = 0; i<numCPUs;i ++) {
+		forkWorker();
 	}
 
 }else {
 	var port = conf.get("http_port");
 	app.set('port',port || 3001);
 	app.server = http.createServer(app);
-	app.server.setTimeout(60 * 1000 * 25, function() { console.log("Timeout waiting for response")});
-
+	app.server.setTimeout(60 * 1000 * 10, function() { console.log("Timeout waiting for response")});
 	return app.server.listen(app.get("port"));
 };

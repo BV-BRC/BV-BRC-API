@@ -13,6 +13,8 @@ var bodyParser = require('body-parser');
 var dataTypeRouter = require("./routes/dataType");
 var indexer = require("./routes/indexer");
 var cors = require('cors');
+var http = require("http");
+http.globalAgent.maxSockets=1024;
 
 var app = module.exports =  express();
 
@@ -27,6 +29,33 @@ app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
+
+var reqId=0;
+
+var stats=null;
+
+process.on("message", function(msg){
+	if (msg && msg.type=="stats"){
+		stats = msg.data;
+	}
+});
+
+app.use(function(req,res,next){
+	req.id=reqId++;
+
+	process.send({"event": "RequestStart", id: req.id});
+
+	res.on("close", function(){
+		console.log("Response Closed: ", req.id);
+//		process.send({"event": "RequestComplete", id: req.id});
+	});
+	res.on("finish", function(){
+//		console.log("Response Finished: ", req.id);
+		process.send({"event": "RequestComplete",id: req.id});
+	});
+
+	next();
+});
 
 app.use(logger('[:date[clf]] :remote-user :method :url :status :response-time ms - :res[content-length]'));
 
@@ -57,6 +86,20 @@ app.param("dataType", function(req,res,next,dataType){
     next("route");
 })
 
+app.use("/health", function(req,res,next){
+	res.write("OK");
+	res.end();
+});
+
+app.use("/stats", function(req,res,next){
+	if (stats){
+		res.write(JSON.stringify(stats));
+	}else{
+		res.write("{}");
+	}
+	res.end();
+});
+
 app.use("/testTimeout", function(req,res,next){
 	setTimeout(function(){
 		res.send("OK");
@@ -64,14 +107,16 @@ app.use("/testTimeout", function(req,res,next){
 	},60 * 1000 * 5 );
 });
 
-app.use('/:dataType/', dataTypeRouter);
+app.use('/:dataType/', [
+	dataTypeRouter
+]);
 
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+	var err = new Error('Not Found');
+	err.status = 404;
+	next(err);
 });
 
 // error handlers
