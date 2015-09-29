@@ -230,13 +230,15 @@ module.exports=function(req,res,next){
 						return;
 					}
 
-					res.write( "accn|" + o.accession+ "\t"+o.annotation+ "\t" + o.feature_type + "\t" + o.start+ "\t" + o.end + "\t.\t" + o.strand+"\t0\t");
+					res.write( o.accession+ "\t"+o.annotation+ "\t" + o.feature_type + "\t" + o.start+ "\t" + o.end + "\t.\t" + o.strand+"\t0\t");
 					switch(o.annotation) {
 						case "PATRIC":
 							res.write("ID=" + o.patric_id);
+						    res.write(";name=" + o.patric_id);
 							break;
 						case "RefSeq":
 							res.write("ID=" + o.refseq_locus_tag);
+						    res.write(";name=" + o.refseq_locus_tag);
 							break;
 					}	
 
@@ -247,16 +249,6 @@ module.exports=function(req,res,next){
 					if (o.product) {
 						res.write(";product=" +o.product);
 					}
-
-					if (o.gene) {
-						res.write(";name=" + o.gene);
-					}
-                    else if(o.refseq_locus_tag){
-						res.write(";name=" + o.refseq_locus_tag);
-                    }
-                    else {
-						res.write(";name=" + o.patric_id);
-                    }
 					
 					if (o.go) {
 						res.write(";Ontology_term=" + o.go);
