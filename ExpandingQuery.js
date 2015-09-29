@@ -183,7 +183,8 @@ var LazyWalk = exports.LazyWalk = function(term,opts) {
 			return "(" + term.args.join(",") + ")"	
 		}
 	}
-	throw Error("Invalid Term - " + JSON.stringify(term));
+ debug("Skipping Invalid Term: ", term);
+//	throw Error("Invalid Term - " + JSON.stringify(term));
 }
 
 var queryCache={};
@@ -232,7 +233,8 @@ var Walk = exports.Walk = function(term,expansions) {
 	var children;
 
 	if (term && (typeof term == 'string')){
-		return term;
+		return encodeURIComponent(term);
+		//return term;
 	}
 
 	if  (term && (typeof term == "number")) {
