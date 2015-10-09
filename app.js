@@ -67,7 +67,7 @@ app.use(function(req,res,next){
 
 app.use(cookieParser());
 
-app.use(cors({origin: true, methods: ["GET,PUT,POST,PUT,DELETE"], allowHeaders: ["range","accept","x-range","content-type", "authorization"],exposedHeaders: ['Content-Range', 'X-Content-Range'], credential: true, maxAge: 8200}));
+app.use(cors({origin: true, methods: ["GET,PUT,POST,PUT,DELETE"], allowHeaders: ["range","accept","x-range","content-type", "authorization"],exposedHeaders: ['facet_counts','x-facet-count','Content-Range', 'X-Content-Range'], credential: true, maxAge: 8200}));
 
 app.use(express.static(path.join(__dirname, 'public')));
 

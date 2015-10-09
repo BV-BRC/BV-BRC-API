@@ -23,6 +23,7 @@ var rqlToSolr = function(req, res, next) {
 	debug("RQLQueryParser", req.queryType);
 	if (req.queryType=="rql"){
 		req.call_params[0] = req.call_params[0] || "";
+		//debug("Orig Query: ", req.call_params[0]);
 		when(Expander.ResolveQuery(req.call_params[0],{req:req,res:res}), function(q){
 			debug("Resolved Query: ", q);
 			if (q=="()") { q = ""; }
@@ -157,7 +158,7 @@ router.get("*", function(req,res,next){
 		debug("req.headers: ", req.headers);
 		
 		req.isDownload = !!(req.headers && req.headers.download);
-		debug("req.isDownload: ", req.isDownload);
+		//console.log("req.isDownload: ", req.isDownload);
 		req.call_params = [req._parsedUrl.query||""];
 		req.call_collection = req.params.dataType;
 	}else{
@@ -225,12 +226,18 @@ router.use([
 		var q = req.call_params[0];
 		var re = /(&rows=)(\d*)/;
 		var matches = q.match(re);
-
+		//console.log("MATCHES: ", matches);
 		if (!matches){
-			limit = defaultLimit
+			//console.log("!matches && isDownload: ", req.isDownload);
+			limit = defaultLimit;
+		} else if (req.isDownload) {
+			//console.log("Using Download Limit");
+			limit = maxLimit;
 		}else  if (matches && typeof matches[2]!='undefined' && (matches[2]>maxLimit) && (!req.isDownload)){
+			//console.log("!isDownload ... set limit to: ", maxLimit);
 			limit=maxLimit
 		}else{
+			//console.log("use specified limit: ", matches[2]);
 			limit=matches[2];
 		}
 		//console.log("limit matches: ", matches, " limit: ", limit);
