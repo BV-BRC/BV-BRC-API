@@ -50,10 +50,9 @@ var querySOLR = function(req, res, next) {
 				res.set("Content-Range", "items 0-0/0");
 			}else{
 				res.results = results;
-
 				res.set("Content-Range", "items " + (results.response.start || 0) + "-" + ((results.response.start||0)+results.response.docs.length) + "/" + results.response.numFound);
 			}
-//			debug("res headers: ", res);
+			//console.log("res headers: ", res);
 			next();
 		}, function(err){
 			debug("Error Querying SOLR: ", err);
@@ -203,13 +202,13 @@ router.post("*", [
 	bodyParser.text({type:"application/solrquery+x-www-form-urlencoded",limit: 10000000}),
 	function(req,res,next){
 //		req.body=decodeURIComponent(req.body);
-		debug("SOLR QUERY POST : ", req.body,req._body);
-		if (!req._body || !req.body) { next("route"); return }
+//		if (!req._body || !req.body) { console.log(" No body to QUERY POST"); req.body="?keyword(*)"; } // next("route"); return }
 		var ctype=req.get("content-type");	
 		req.call_method="query";
-		req.call_params = [req.body];
+		req.call_params = req.body?[req.body]:[]; 
 		req.call_collection = req.params.dataType;
 		req.queryType = (ctype=="application/solrquery+x-www-form-urlencoded")?"solr":"rql";
+
 		next();
 	}
 ])
@@ -240,8 +239,6 @@ router.use([
 			//console.log("use specified limit: ", matches[2]);
 			limit=matches[2];
 		}
-		//console.log("limit matches: ", matches, " limit: ", limit);
-		//console.log("req.headers.range: ", req.headers.range);
 		if (req.headers.range) {
 			var range = req.headers.range.match(/^items=(\d+)-(\d+)?$/);
 			//console.log("Range: ", range);
@@ -273,13 +270,13 @@ router.use([
 				req.call_params[0] = req.call_params[0] + "&start=" + queryOffset;
 			}
 		}
-		//console.log("query: ", req.call_params[0]);
+
+		
 		next();
 	},
 	function(req,res,next){
 		if (!req.call_method || !req.call_collection) { return next("route"); }
 		debug("req.call_method: ", req.call_method);
-		debug('req.call_params: ', req.call_params);
 		debug('req.call_collection: ', req.call_collection);
 
 		if (req.call_method=="query"){
