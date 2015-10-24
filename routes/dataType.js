@@ -5,10 +5,15 @@ var when = require("promised-io/promise").when;
 var config = require("../config");
 var SolrQueryParser = require("../middleware/SolrQueryParser");
 var RQLQueryParser = require("../middleware/RQLQueryParser");
+var DecorateQuery = require("../middleware/DecorateQuery");
+var PublicDataTypes = require("../middleware/PublicDataTypes");
 var authMiddleware = require("../middleware/auth");
+var Limiter = require("../middleware/Limiter");
+
+var APIMethodHandler = require("../middleware/APIMethodHandler");
+var httpParams = require("../middleware/http-params");
 var solrjs = require("solrjs");
 var media = require("../middleware/media");
-var httpParams = require("../middleware/http-params");
 var SOLR_URL=config.get("solr").url;
 var bodyParser = require("body-parser");
 var rql = require("solrjs/rql");
@@ -16,127 +21,21 @@ var debug = require('debug')('p3api-server:dataroute');
 var Expander= require("../ExpandingQuery");
 
 
-
-var publicFree=['enzyme_class_ref', 'gene_ontology_ref', 'id_ref', 'misc_niaid_sgc', 'pathway_ref', 'ppi', 'protein_family_ref', 'sp_gene_evidence', 'sp_gene_ref', 'taxonomy', 'transcriptomics_experiment', 'transcriptomics_gene', 'transcriptomics_sample',"model_reaction","model_complex_role","model_compound","model_template_biomass","model_template_reaction"];
-
-var rqlToSolr = function(req, res, next) {
-	debug("RQLQueryParser", req.queryType);
-	if (req.queryType=="rql"){
-		req.call_params[0] = req.call_params[0] || "";
-		//debug("Orig Query: ", req.call_params[0]);
-		when(Expander.ResolveQuery(req.call_params[0],{req:req,res:res}), function(q){
-			debug("Resolved Query: ", q);
-			if (q=="()") { q = ""; }
-			req.call_params[0] = rql(q).toSolr({maxRequestLimit: 25000, defaultLimit: 25}) 
-			debug("Converted Solr Query: ", req.call_params[0]);
-			req.queryType="solr";
-			next();
-		});
-	}else{
-		next();
-	}
-}
-
-var querySOLR = function(req, res, next) {
-		if (req.call_method!="query"){ next(); }
-
-		var query = req.call_params[0];
-		debug("querySOLR() req.params", req.call_params);
-		var solr = new solrjs(SOLR_URL + "/" + req.call_collection);
-
-		when(solr.query(query), function(results) {
-			if (!results || !results.response){
-				res.results=[];
-				res.set("Content-Range", "items 0-0/0");
-			}else{
-				res.results = results;
-				res.set("Content-Range", "items " + (results.response.start || 0) + "-" + ((results.response.start||0)+results.response.docs.length) + "/" + results.response.numFound);
-			}
-			//console.log("res headers: ", res);
-			next();
-		}, function(err){
-			debug("Error Querying SOLR: ", err);
-			next(err);
-		})
-}
-var getSOLR = function(req, res, next) {
-	var solr = new solrjs(SOLR_URL + "/" + req.call_collection);
-	when(solr.get(req.call_params[0]), function(sresults) {
-		if (sresults && sresults.doc) {
-			var results = sresults.doc;
-//			console.log("results: ", results);
-//			console.log("results.public: ", results.public);
-//			console.log("publicFree: ", (publicFree.indexOf(req._call_collection)>=0) );
-//			console.log("Owner: ", results.owner, req.user);
-//			console.log("user_read: ", results.user_read, (results.user_read && results.user_read.indexOf(req.user)>=0));
-//			console.log("req.user: ", req.user);
-
-			if (results.public || (publicFree.indexOf(req.call_collection)>=0) || (results.owner==(req.user)) || (results.user_read && results.user_read.indexOf(req.user)>=0)) {		
-				res.results = sresults;
-//				console.log("Results: ", results);
-				next();
-			}else{
-				if (!req.user){
-					console.log("User not logged in, permission denied");
-					res.sendStatus(401);
-				}else{
-					console.log("User forbidden from private data");
-					res.sendStatus(403);
-				}
-			}
-		}else{
-			next();
-		} 
-	},function(err){
-		console.log("Error in SOLR Get: ", err);
-		next(err);
-	});
-}
-
-var decorateQuery = function(req, res, next) {
-	if (req.call_method !="query"){ return next(); }
-
-	debug("decorateQuery", req.solr_query);
-	req.call_params[0] = req.call_params[0] || "&q=*:*";
-	if (!req.user) {
-		if (publicFree.indexOf(req.call_collection)<0) {
-			req.call_params[0] = req.call_params[0] + "&fq=public:true"
-		}
-	}
-	else {
-		if (publicFree.indexOf(req.call_collection)<0) {
-			req.call_params[0]= req.call_params[0] + ("&fq=(public:true OR owner:" + req.user +" OR user_read:" + req.user +")");
-		}
-	}
-
-	next();
-}
-
-var methodHandler  = function(req, res, next) {
-	debug("MethodHandler", req.call_method, req.call_params);
-	switch(req.call_method) {
-		case "query": 
-			return querySOLR(req,res,next);
-			break;
-		case "get":
-			return getSOLR(req,res,next)
-			break;
-	}
-}
-
 router.use(httpParams);
 
 router.use(authMiddleware);
 
-router.use(function(req,res,next){
-	debug("req.path", req.path);
-	debug("req content-type", req.get("content-type"));
-	debug("accept", req.get("accept"));
-	debug("req.url", req.url);
-	debug('req.path', req.path);
-	debug('req.params:', JSON.stringify(req.params));
-	next();
-});
+router.use(PublicDataTypes);
+
+// router.use(function(req,res,next){
+// 	debug("req.path", req.path);
+// 	debug("req content-type", req.get("content-type"));
+// 	debug("accept", req.get("accept"));
+// 	debug("req.url", req.url);
+// 	debug('req.path', req.path);
+// 	debug('req.params:', JSON.stringify(req.params));
+// 	next();
+// });
 
 
 router.get("*", function(req,res,next){
@@ -213,67 +112,12 @@ router.post("*", [
 	}
 ])
 
-var maxLimit=25000;
-var defaultLimit=25;
+
 
 router.use([
-	rqlToSolr,
-	decorateQuery,
-	function(req,res,next){
-		if (req.call_method!="query") { return next(); }
-		var limit = maxLimit;
-		var q = req.call_params[0];
-		var re = /(&rows=)(\d*)/;
-		var matches = q.match(re);
-		//console.log("MATCHES: ", matches);
-		if (!matches){
-			//console.log("!matches && isDownload: ", req.isDownload);
-			limit = defaultLimit;
-		} else if (req.isDownload) {
-			//console.log("Using Download Limit");
-			limit = maxLimit;
-		}else  if (matches && typeof matches[2]!='undefined' && (matches[2]>maxLimit) && (!req.isDownload)){
-			//console.log("!isDownload ... set limit to: ", maxLimit);
-			limit=maxLimit
-		}else{
-			//console.log("use specified limit: ", matches[2]);
-			limit=matches[2];
-		}
-		if (req.headers.range) {
-			var range = req.headers.range.match(/^items=(\d+)-(\d+)?$/);
-			//console.log("Range: ", range);
-			if (range){
-				start = range[1] || 0;
-				end = range[2] || maxLimit;
-				var l = end - start;
-				if (l>maxLimit){
-					limit=maxLimit;
-				}else{
-					limit=l;
-				}
-
-				var queryOffset=start;
-			}
-		}
-
-
-		if (matches){
-			req.call_params[0]= q.replace(matches[0],"&rows="+limit);
-		}else{
-			req.call_params[0] = req.call_params[0] + "&rows=" + limit;
-		}
-
-		if (queryOffset) {
-			re = /(&start=)(\d+)/;
-			var offsetMatches = q.match(re);
-			if (!offsetMatches){
-				req.call_params[0] = req.call_params[0] + "&start=" + queryOffset;
-			}
-		}
-
-		
-		next();
-	},
+	RQLQueryParser,
+	DecorateQuery,
+	Limiter,
 	function(req,res,next){
 		if (!req.call_method || !req.call_collection) { return next("route"); }
 		debug("req.call_method: ", req.call_method);
@@ -284,7 +128,7 @@ router.use([
 		}
 		next();
 	},
-	methodHandler,
+	APIMethodHandler,
 	media
 ])
 

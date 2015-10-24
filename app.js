@@ -11,6 +11,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var dataTypeRouter = require("./routes/dataType");
+var jbrowseRouter = require("./routes/JBrowse");
 var indexer = require("./routes/indexer");
 var cors = require('cors');
 var http = require("http");
@@ -106,6 +107,10 @@ app.use("/testTimeout", function(req,res,next){
 		res.end();
 	},60 * 1000 * 5 );
 });
+
+app.use("/jbrowse/",[
+	jbrowseRouter
+])
 
 app.use('/:dataType/', [
 	dataTypeRouter

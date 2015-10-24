@@ -39,6 +39,8 @@ var defaults =  {
 		genome_sequence: 100
 	},
 
+	jbrowseAPIRoot: "http://localhost:3001/jbrowse",
+
 	queueDirectory: "./index-queue-dir",
 	"solr": {
 		"url": "http://localhost:8983/solr"
