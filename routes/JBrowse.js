@@ -144,9 +144,9 @@ router.get("/genome/:id/features/:feature_id",[
 		var annotation = req.query.annotation || req.params.annotation || "PATRIC"
 		req.call_collection = "genome_feature";
 		req.call_method = "query";
-		var st = "and(lt(start,"+start+"),gt(end,"+start+"))"
-		var en = "and(lt(start,"+end+"),gt(end,"+end+"))"
-		req.call_params = ["and(eq(genome_id," + req.params.id + "),eq(accession," +req.params.feature_id + "),eq(annotation," + annotation + "),or(" +st+"," + en + "))"];
+		var st = "and(gt(start,"+start+"),lt(start,"+end+"))"
+		var en = "and(gt(end,"+start+"),lt(end,"+end+"))"
+		req.call_params = ["and(eq(genome_id," + req.params.id + "),eq(accession," +req.params.feature_id + "),eq(annotation," + annotation + "),or(" +st+"," + en + "),ne(feature_type,source))"];
 		req.queryType = "rql";
 		console.log("CALL_PARAMS: ", req.call_params);
 		next();
