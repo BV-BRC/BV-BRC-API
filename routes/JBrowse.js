@@ -151,7 +151,7 @@ router.get("/genome/:id/features/:feature_id",[
 			req.call_collection = "genome_sequence";
 			req.call_params = ["and(eq(genome_id," + req.params.id + "),eq(accession," +req.params.feature_id + "))"];
 		}else{
-			req.call_params = ["and(eq(genome_id," + req.params.id + "),eq(accession," +req.params.feature_id + "),eq(annotation," + annotation + "),or(" +st+"," + en + "," + over + "))"]; //,ne(feature_type,source))"];
+			req.call_params = ["and(eq(genome_id," + req.params.id + "),eq(accession," +req.params.feature_id + "),eq(annotation," + annotation + "),or(" +st+"," + en + "," + over + "),ne(feature_type,source))"];
 		}
 		req.queryType = "rql";
 		console.log("CALL_PARAMS: ", req.call_params);
