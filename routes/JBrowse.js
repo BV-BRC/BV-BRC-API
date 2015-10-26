@@ -146,7 +146,13 @@ router.get("/genome/:id/features/:feature_id",[
 		req.call_method = "query";
 		var st = "and(gt(start,"+start+"),lt(start,"+end+"))"
 		var en = "and(gt(end,"+start+"),lt(end,"+end+"))"
-		req.call_params = ["and(eq(genome_id," + req.params.id + "),eq(accession," +req.params.feature_id + "),eq(annotation," + annotation + "),or(" +st+"," + en + "),ne(feature_type,source))"];
+		var over = "and(lt(start," + start + "),gt(end," + end + "))";
+		if (req.query && req.query["reference_sequences_only"]){
+			req.call_collection = "genome_sequence";
+			req.call_params = ["and(eq(genome_id," + req.params.id + "),eq(accession," +req.params.feature_id + "))"];
+		}else{
+			req.call_params = ["and(eq(genome_id," + req.params.id + "),eq(accession," +req.params.feature_id + "),eq(annotation," + annotation + "),or(" +st+"," + en + "," + over + "))"]; //,ne(feature_type,source))"];
+		}
 		req.queryType = "rql";
 		console.log("CALL_PARAMS: ", req.call_params);
 		next();
@@ -155,6 +161,31 @@ router.get("/genome/:id/features/:feature_id",[
 	DecorateQuery,
 	Limiter,
 	APIMethodHandler,
+	function(req,res,next){
+		if (req.call_collection=="genome_sequence"){
+			if (res.results && res.results.response && res.results.response.docs){
+				var refseqs = res.results.response.docs.map(function(d){
+					return {
+						length: d.length,
+						name: d.accession,
+						accn: d.accession,
+						type: "reference",
+						score: d.gc_content,
+						sid: d.genome_id,
+						start: 0,
+						end: d.length,
+						seq: d.sequence,
+						seqChunkSize: d.length
+					}
+				})
+				res.json({features: refseqs});
+				res.end();
+			}
+
+		}else{
+			next();
+		}
+	},
 	function(req,res,next){
 		console.log("res.results: ", res.results)
 		if (res.results && res.results.response && res.results.response.docs){
