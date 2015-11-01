@@ -1,5 +1,12 @@
 var debug = require('debug')('p3api-server:media');
 var xlsx = require('node-xlsx');
+var fs = require("fs-extra");
+var config = require("../config");
+var Path=require("path");
+var Deferred = require("promised-io/promise").defer;
+var when = require("promised-io/promise").when;
+
+var treeDir = config.get("treeDirectory");
 
 module.exports=function(req,res,next){
 	var rpcTypes = ["application/jsonrpc.result+json", "application/jsonrpc+json"];
@@ -78,8 +85,47 @@ module.exports=function(req,res,next){
 			res.end();
 
 		},
+		"application/newick": function(){
+
+			function checkForFiles(list){
+				var def = new Deferred();
+				var id = list.pop();
+				var file = Path.join(treeDir,id + ".newick");
+				fs.exists(file, function(exists){
+					if (exists){
+						def.resolve(file);
+					}else{
+						if (!list || list.length<1){
+							def.reject("Newick Not Found");
+						}else{
+							when(checkForFiles(list),function(f){
+								def.resolve(f);
+							});
+						}
+					}
+				})
+				return def.promise;
+			}
+
+			if (req.call_collection=="taxonomy" && req.call_method=="get"){
+				if (res.results && res.results.doc){
+					var lids = res.results.doc.lineage_ids;
+					when(checkForFiles(lids), function(file){
+						console.log("FOUND FILE: ", file)
+						fs.createReadStream(file).pipe(res);
+					}, function(err){
+						throw Error("Unable to Locate Newick File: ", err)
+					})
+					
+				}else{
+					console.log("Invalid Resposponse: ", res.results);
+				}
+			}else{
+				throw Error("Cannot retrieve newick formatted data from this source");
+			}			
+		},
 		
-        "application/sralign+dna+fasta": function(){
+		"application/sralign+dna+fasta": function(){
 			debug("application/id+dna+fastahandler")
 
 			if (req.isDownload){
