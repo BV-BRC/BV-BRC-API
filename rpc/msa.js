@@ -18,7 +18,7 @@ function runQuery(query,opts){
 		url: distributeURL + "genome_feature/",
 		headers: {
 			"content-type": "application/rqlquery+x-www-form-urlencoded",
-			accept: "application/protein_mini+fasta"
+			accept: "application/json"
 		},
 		body: query
 	}, function(err,r,body){
@@ -28,10 +28,31 @@ function runQuery(query,opts){
 			return def.reject(err);
 		}
 
+		if (body && typeof body=="string"){
+			body = JSON.parse(body)
+		}
 		def.resolve(body);
 	});
 
 	return def.promise;
+}
+
+function buildFasta(sequences,opts){
+	var fasta=[];
+	//build faa with stripped name so gblocks doesn't complain.
+	sequences.forEach(function(o){
+		var fasta_id;
+		if (o.feature_type=="source") { return; }
+		if (o.annotation == "PATRIC") {
+			fasta_id = o.patric_id;
+		} else if (o.annotation == "RefSeq") {
+			fasta_id = "gi|" + o.gi;
+		}
+		var row = ">" + fasta_id + " [" + o.genome_id + "]\n" + o.aa_sequence + "\n"; 
+		fasta.push(row)
+	})
+
+	return fasta.join("");
 }
 
 function runMuscle(sequences,opts){
@@ -40,7 +61,7 @@ function runMuscle(sequences,opts){
 	var errorClosed;
 
 	debug("Run Aligner");
-	var child = ChildProcess.spawn("muscle",["-fasta", "-maxiters","2"],{
+	var child = ChildProcess.spawn("muscle",["-fasta","-maxhours","0.03"],{
 		stdio: [
 			'pipe',
 			'pipe', // pipe child's stdout to parent
@@ -124,28 +145,28 @@ function runGBlocks(input,opts){
 						}
 
 
-						var locusList=[];
-						// console.log("data: ", data);
+						// var locusList=[];
+						// // console.log("data: ", data);
+						var empty = false;
 
 						var lines = data.split("\n");
-						lines.forEach(function(line){
+						var empty = (!lines.some(function(line){
 							line=line.trim();
-							console.log("Line: ", line)
-		
-							if (!line || line.length==0) { return; };
-							if (line == ">undefined") { return; };
+							if (!line || line.length==0) { return false; };
+							if (line == ">undefined") { return false };
 
-							if (line.charAt(0)==">"){
-								locusList.push(line.substr(1))
-							}else{
-								empty = false;
-							}
-						})
+							if (line.charAt(0)==">"){ return false; }
 
-						fs.readFile(tempName,"utf8", function(err,rawData){
-							def.resolve(rawData);
-						});
+							return true;
+						}))
 
+						if (!empty) {
+							def.resolve(data);
+						}else{
+							fs.readFile(tempName,"utf8", function(err,rawData){
+								def.resolve(rawData);
+							});
+						}
 						// console.log("locusList: ", locusList);
 						// def.resolve(locusList.join("\n"));
 					});
@@ -209,7 +230,7 @@ module.exports = {
 	requireAuthentication: false,
 	validate: function(params,req,res){
 		//validate parameters here 
-		return true;
+		return params && params[0] && params[0].length>1;
 	},
 	execute: function(params,req,res){
 		var def = new defer()
@@ -219,19 +240,31 @@ module.exports = {
 
 
 		when(runQuery(query,opts), function(sequences){
-			when(runMuscle(sequences,opts), function(alignment){
-				when(runGBlocks(alignment,opts), function(gblocksOut){
-					when(runFastTree(gblocksOut,opts),function(results){
-						def.resolve("The Result")
+			when(buildFasta(sequences,opts), function(fasta){
+				when(runMuscle(fasta,opts), function(alignment){
+					when(runGBlocks(alignment,opts), function(gblocksOut){
+						when(runFastTree(gblocksOut,opts),function(fastTree){
+							var map = {}
+							sequences.forEach(function(seq){
+								map[seq.genome_id] = seq.genome_name
+							})
+
+							def.resolve({
+								map: map,
+								alignment: alignment,
+								// gblocks: gblocksOut,
+								tree: fastTree
+							})
+						}, function(err){
+							def.reject("Unable to Complete FastTree: " + err);
+						});
 					}, function(err){
-						def.reject("Unable to Complete FastTree: " + err);
-					});
+						def.reject("Unable to Complete GBLocks for Alignment: " + err);
+					})
 				}, function(err){
-					def.reject("Unable to Complete GBLocks for Alignment: " + err);
+					def.reject("Unable to Complete Alignement: " + err);
 				})
-			}, function(err){
-				def.reject("Unable to Complete Alignement: " + err);
-			})
+			});
 		}, function(err){
 			def.reject("Unable To Retreive Feature Data for MSA: " + err);
 		})
