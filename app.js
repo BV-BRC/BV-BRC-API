@@ -11,6 +11,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var dataTypeRouter = require("./routes/dataType");
+var rpcHandler = require("./routes/rpcHandler");
 var jbrowseRouter = require("./routes/JBrowse");
 var indexer = require("./routes/indexer");
 var cors = require('cors');
@@ -78,6 +79,7 @@ var collections = config.get("collections");
 
 app.use('/indexer', indexer);
 
+app.post("/", rpcHandler);
 
 app.param("dataType", function(req,res,next,dataType){
     if (collections.indexOf(dataType)!=-1){

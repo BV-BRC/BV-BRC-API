@@ -39,6 +39,8 @@ var defaults =  {
 		genome_sequence: 100
 	},
 
+	distributeURL: "http://localhost:3001/",
+
 	jbrowseAPIRoot: "http://localhost:3001/jbrowse",
 
 	treeDirectory: "./trees",

@@ -85,6 +85,42 @@ module.exports=function(req,res,next){
 			res.end();
 
 		},
+
+		"application/dna_mini+fasta": function(){
+			debug("application/dna+fastahandler")
+
+			if (req.isDownload){
+				res.set("content-disposition", "attachment; filename=patric_genomes.fasta");
+			}
+
+			//console.log("res.results: ", res.results);
+
+			if (res.results && res.results.response && res.results.response.docs) {
+				res.results.response.docs.forEach(function(o){
+					if (req.call_collection=="genome_feature"){
+						var row = ">" + o.patric_id + "\n" + o.na_sequence + "\n"; 
+						res.write(row);
+					}else if (req.call_collection="genome_sequence") {
+						var row = ">accn|" + o.accession + "   " + o.description + "   " + "["+(o.genome_name|| o.genome_id) +"]\n";
+						res.write(row);
+						var i = 0;
+						while(i<o.sequence.length) {
+							if ((i+60)<o.sequence.length){
+								res.write(o.sequence.substr(i,60) + "\n");
+							}else{
+								res.write(o.sequence.substr(i) + "\n");
+							}
+							i+=60;
+						}
+					}else{
+						throw Error("Cannot query for application/dna+fasta from this data collection");
+					}
+				});	
+			}
+			res.end();
+
+		},
+
 		"application/newick": function(){
 
 			function checkForFiles(list){
@@ -152,7 +188,7 @@ module.exports=function(req,res,next){
 							i+=60;
 						}
 					}else{
-						throw Error("Cannot query for application/dna+fasta from this data collection");
+						throw Error("Cannot query for application/protein+fasta from this data collection");
 					}
 				});	
 			}
@@ -161,7 +197,7 @@ module.exports=function(req,res,next){
 		},
 
 		"application/protein+fasta": function(){
-			debug("application/dna+fasta handler")
+			debug("application/prtein+fasta handler")
 			if (req.isDownload){
 				res.set("content-disposition", "attachment; filename=patric_proteins.fasta");
 			}
@@ -183,6 +219,31 @@ module.exports=function(req,res,next){
 
 			res.end();
 		},
+
+		"application/protein_mini+fasta": function(){
+			debug("application/prtein+fasta handler")
+			if (req.isDownload){
+				res.set("content-disposition", "attachment; filename=patric_proteins.fasta");
+			}
+
+			//console.log("res.results: ", res.results);
+			if (res.results && res.results.response && res.results.response.docs) {
+				res.results.response.docs.forEach(function(o){
+					var fasta_id;
+					if (o.feature_type=="source") { return; }
+					if (o.annotation == "PATRIC") {
+						fasta_id = o.patric_id + "|"+(o.refseq_locus_tag?(o.refseq_locus_tag+"|"):"") + (o.alt_locus_tag?(o.alt_locus_tag+"|"):"");
+					} else if (o.annotation == "RefSeq") {
+						fasta_id = "gi|" + o.gi + "|"+(o.refseq_locus_tag?(o.refseq_locus_tag+"|"):"") + (o.alt_locus_tag?(o.alt_locus_tag+"|"):"");
+					}
+					var row = ">" + (fasta_id+ "   " + o.product + "   [" + o.genome_name + " | " + o.genome_id + "]").substr(0,25) +" \n" + o.aa_sequence + "\n"; 
+					res.write(row);
+				});	
+			}
+
+			res.end();
+		},
+
 		"application/gff": function(){
 			debug("application/gff handler")
 			if (req.isDownload){
