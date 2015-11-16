@@ -103,7 +103,7 @@ function runGBlocks(input,opts){
 	var errorClosed;
 	var tempName = Temp.path({suffix: '.aga'});
 
-	console.log("GBlocks Temp File Input: ", tempName)
+	// console.log("GBlocks Temp File Input: ", tempName)
 
 	fs.outputFile(tempName,input,function(err){
 		if (err) { def.reject(err); return; }
@@ -130,7 +130,7 @@ function runGBlocks(input,opts){
 			debug("GBlocks Process closed.", code);
 			if (!errorClosed) {
 
-				console.log("Read File: ", tempName + "-gb");
+				// console.log("Read File: ", tempName + "-gb");
 				fs.exists(tempName + "-gb", function(exists){
 					if (!exists){
 						def.reject("Gblocks Output Does Not Exist");
@@ -188,7 +188,7 @@ function runFastTree(input,opts){
 
 	var tempName = Temp.path({suffix: '.aga-gb'});
 
-	console.log("GBlocks Temp File Input: ", tempName)
+	// console.log("GBlocks Temp File Input: ", tempName)
 
 	fs.outputFile(tempName,input,function(err){
 		var child = ChildProcess.spawn("FastTree_LG",["-gamma","-nosupport",tempName],{
@@ -234,7 +234,7 @@ module.exports = {
 	},
 	execute: function(params,req,res){
 		var def = new defer()
-		console.log("Execute MSA: ", params)
+		// console.log("Execute MSA: ", params)
 		var query = params[0];
 		var opts = {req: req, user: req.user}
 

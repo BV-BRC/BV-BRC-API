@@ -66,7 +66,7 @@ module.exports = [
 		if (res.error){
 			out.error = res.error.toString();
 		}else{
-			out.results = res.results;
+			out.result = res.results;
 		}
 		console.log("OUTPUT : ", out)
 		res.write(JSON.stringify(out));
