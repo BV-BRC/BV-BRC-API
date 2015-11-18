@@ -93,6 +93,7 @@ module.exports=function(req,res,next){
 				var def = new Deferred();
 				var id = list.pop();
 				var file = Path.join(treeDir,id + ".newick");
+				debug("Look for newick: ", file);
 				fs.exists(file, function(exists){
 					if (exists){
 						def.resolve(file);
@@ -102,6 +103,8 @@ module.exports=function(req,res,next){
 						}else{
 							when(checkForFiles(list),function(f){
 								def.resolve(f);
+							}, function(err){
+								def.reject(err);
 							});
 						}
 					}
@@ -112,18 +115,21 @@ module.exports=function(req,res,next){
 			if (req.call_collection=="taxonomy" && req.call_method=="get"){
 				if (res.results && res.results.doc){
 					var lids = res.results.doc.lineage_ids;
+					console.log("lineage: ", lids);
 					when(checkForFiles(lids), function(file){
 						console.log("FOUND FILE: ", file)
 						fs.createReadStream(file).pipe(res);
 					}, function(err){
-						throw Error("Unable to Locate Newick File: ", err)
+						next(err);
+						return;
+						//throw Error("Unable to Locate Newick File: ", err)
 					})
 					
 				}else{
 					console.log("Invalid Resposponse: ", res.results);
 				}
 			}else{
-				throw Error("Cannot retrieve newick formatted data from this source");
+				next(new Error("Cannot retrieve newick formatted data from this source"));
 			}			
 		},
 		
