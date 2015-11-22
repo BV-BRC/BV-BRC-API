@@ -11,6 +11,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var dataTypeRouter = require("./routes/dataType");
+var contentRouter = require("./routes/content");
 var rpcHandler = require("./routes/rpcHandler");
 var jbrowseRouter = require("./routes/JBrowse");
 var indexer = require("./routes/indexer");
@@ -81,14 +82,6 @@ app.use('/indexer', indexer);
 
 app.post("/", rpcHandler);
 
-app.param("dataType", function(req,res,next,dataType){
-    if (collections.indexOf(dataType)!=-1){
-        next();
-	return;
-    } 
-    next("route");
-})
-
 app.use("/health", function(req,res,next){
 	res.write("OK");
 	res.end();
@@ -103,16 +96,28 @@ app.use("/stats", function(req,res,next){
 	res.end();
 });
 
-app.use("/testTimeout", function(req,res,next){
-	setTimeout(function(){
-		res.send("OK");
-		res.end();
-	},60 * 1000 * 5 );
-});
+app.use("/content", [
+	contentRouter
+])
+
+// app.use("/testTimeout", function(req,res,next){
+// 	setTimeout(function(){
+// 		res.send("OK");
+// 		res.end();
+// 	},60 * 1000 * 5 );
+// });
 
 app.use("/jbrowse/",[
 	jbrowseRouter
 ])
+
+app.param("dataType", function(req,res,next,dataType){
+    if (collections.indexOf(dataType)!=-1){
+        next();
+		return;
+    } 
+    next("route");
+})
 
 app.use('/:dataType/', [
 	dataTypeRouter

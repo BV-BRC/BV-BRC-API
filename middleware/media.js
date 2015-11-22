@@ -414,12 +414,15 @@ module.exports=function(req,res,next){
 
 		"application/json": function(){
 			debug("application/json handler")	
+			console.log("RESULTS RESULTS: ", res.results);
 			if (req.call_method=="query"){
 				if (res.results && res.results.response && res.results.facet_counts){
 					res.set("facet_counts", JSON.stringify(res.results.facet_counts));
 				}
 				if (res.results && res.results.response && res.results.response.docs){
 					res.send(JSON.stringify(res.results.response.docs));
+				}else if (res.results && res.results.grouped){
+						res.send(JSON.stringify(res.results.grouped))
 				}else{
 					res.status(404);
 				}

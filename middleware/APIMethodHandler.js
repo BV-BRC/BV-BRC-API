@@ -15,12 +15,18 @@ var querySOLR = function(req, res, next) {
 		debug("querySOLR() query: ", query);
 
 		when(solr.query(query), function(results) {
-			if (!results || !results.response){
+			// console.log("APIMethodHandler solr.query results: ", results)
+			if (!results){
 				res.results=[];
 				res.set("Content-Range", "items 0-0/0");
-			}else{
+			}else if (results.response){
 				res.results = results;
 				res.set("Content-Range", "items " + (results.response.start || 0) + "-" + ((results.response.start||0)+results.response.docs.length) + "/" + results.response.numFound);
+			}else if (results.grouped){
+				res.results=results;
+			}else{
+				res.results=[];
+				res.set("Content-Range", "items 0-0/0");
 			}
 			//console.log("res headers: ", res);
 			next();

@@ -25,7 +25,7 @@ function generateRefSeqs(req,res,next){
 }
 
 function generateTrackList(req,res,next){
-	console.log("Generate Track List: ", req.params.id);
+	//console.log("Generate Track List: ", req.params.id);
 	return JSON.stringify({
 		"tracks": [
 			{
@@ -51,7 +51,7 @@ function generateTrackList(req,res,next){
 					annotation: "PATRIC"
 				},
 				"style": {
-					"label": "function( feature ) { console.log('RETURN PATRIC_ID: ', feature.get('patric_id'),feature); return feature.get('patric_id'); }"
+					"label": "function( feature ) { /*console.log('RETURN PATRIC_ID: ', feature.get('patric_id'),feature); */return feature.get('patric_id'); }"
 				},
 				"hooks": {
 					"modify": "function(track, feature, div) { div.style.padding='4px'; div.style.backgroundColor = ['#17487d','#5190d5','#c7daf1'][feature.get('phase')];}"
@@ -138,7 +138,7 @@ router.get("/genome/:id/stats/regionFeatureDensities/:feature_id",[
 
 router.get("/genome/:id/features/:feature_id",[
 	function(req,res,next){
-		console.log("req.params: ", req.params, "req.query: ", req.query);
+		//console.log("req.params: ", req.params, "req.query: ", req.query);
 		var start = req.query.start || req.params.start;
 		var end = req.query.end || req.params.end;
 		var annotation = req.query.annotation || req.params.annotation || "PATRIC"
@@ -154,7 +154,7 @@ router.get("/genome/:id/features/:feature_id",[
 			req.call_params = ["and(eq(genome_id," + req.params.id + "),eq(accession," +req.params.feature_id + "),eq(annotation," + annotation + "),or(" +st+"," + en + "," + over + "),ne(feature_type,source))"];
 		}
 		req.queryType = "rql";
-		console.log("CALL_PARAMS: ", req.call_params);
+		//console.log("CALL_PARAMS: ", req.call_params);
 		next();
 	},
 	RQLQueryParser,
@@ -187,7 +187,7 @@ router.get("/genome/:id/features/:feature_id",[
 		}
 	},
 	function(req,res,next){
-		console.log("res.results: ", res.results)
+		//console.log("res.results: ", res.results)
 		if (res.results && res.results.response && res.results.response.docs){
 			var features = res.results.response.docs.map(function(d){
 					d.seq= d.na_sequence;
@@ -198,7 +198,7 @@ router.get("/genome/:id/features/:feature_id",[
 					d.phase=(d.feature_type=="CDS")?0:((d.feature_type=="RNA")?1:2);
 					return d;
 			})
-			console.log("FEATURES: ", features)
+			//console.log("FEATURES: ", features)
 			res.json({features: features});
 			res.end();
 		}
@@ -218,7 +218,7 @@ router.get("/genome/:id/refseqs", [
 	Limiter,
 	APIMethodHandler,
 	function(req,res,next){
-		console.log("Res.results: ", res.results);
+		//console.log("Res.results: ", res.results);
 		if (res.results && res.results.response && res.results.response.docs){
 			var refseqs = res.results.response.docs.map(function(d){
 				return {

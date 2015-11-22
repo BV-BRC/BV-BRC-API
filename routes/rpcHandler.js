@@ -60,7 +60,7 @@ module.exports = [
 	},
 
 	function(req,res,next){
-		console.log("res.results: ", res.results)
+		//console.log("res.results: ", res.results)
 		var out = {}
 		out.id = req.body.id || 0;
 		if (res.error){
@@ -68,7 +68,7 @@ module.exports = [
 		}else{
 			out.result = res.results;
 		}
-		console.log("OUTPUT : ", out)
+		//console.log("OUTPUT : ", out)
 		res.write(JSON.stringify(out));
 		res.end();
 	}

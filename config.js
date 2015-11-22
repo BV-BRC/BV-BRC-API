@@ -44,6 +44,7 @@ var defaults =  {
 	jbrowseAPIRoot: "http://localhost:3001/jbrowse",
 
 	treeDirectory: "./trees",
+	contentDirectory: "./content",
 
 	queueDirectory: "./index-queue-dir",
 	"solr": {
