@@ -9,6 +9,7 @@ var defaults =  {
 		"genome",
 		"genome_feature",
 		"genome_sequence",
+		"genome_amr",
 		"host_resp",
 		"id_ref",
 		"misc_niaid_sgc",

@@ -73,7 +73,7 @@ function processQueue(queue){
 	queue.length(function(err,length){
 		if (length < 1){
 			if (!completedHardCommit) {
-				var cores = ["genome_feature","genome","sp_gene","pathway","genome_sequence"];
+				var cores = ["genome_feature","genome","sp_gene","pathway","genome_sequence","taxonomy","genome_amr"];
 				console.log("Queue Emptied, Performing Hard Commits");
 				var defs = cores.map(function(name){
 					return solrCommit(name,true);
