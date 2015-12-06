@@ -115,9 +115,9 @@ module.exports=function(req,res,next){
 			if (req.call_collection=="taxonomy" && req.call_method=="get"){
 				if (res.results && res.results.doc){
 					var lids = res.results.doc.lineage_ids;
-					console.log("lineage: ", lids);
+					//console.log("lineage: ", lids);
 					when(checkForFiles(lids), function(file){
-						console.log("FOUND FILE: ", file)
+						//console.log("FOUND FILE: ", file)
 						fs.createReadStream(file).pipe(res);
 					}, function(err){
 						next(err);
@@ -414,7 +414,7 @@ module.exports=function(req,res,next){
 
 		"application/json": function(){
 			debug("application/json handler")	
-			console.log("RESULTS RESULTS: ", res.results);
+			//console.log("RESULTS RESULTS: ", res.results);
 			if (req.call_method=="query"){
 				if (res.results && res.results.response && res.results.facet_counts){
 					res.set("facet_counts", JSON.stringify(res.results.facet_counts));
