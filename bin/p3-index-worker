@@ -22,6 +22,11 @@ var maxLimit = config.get("indexImportLimits");
 var currentErrors=0;
 var completedHardCommit=false;
 
+
+//var publicFree=['enzyme_class_ref', 'gene_ontology_ref', 'id_ref', 'misc_niaid_sgc', 'pathway_ref', 'ppi', 'protein_family_ref', 'sp_gene_evidence', 'sp_gene_ref', 'taxonomy', 'transcriptomics_experiment', 'transcriptomics_gene', 'transcriptomics_sample',"model_reaction","model_complex_role","model_compound","model_template_biomass","model_template_reaction"];
+
+var publicFree=["taxonomy"];
+
 process.on('message', function(msg){
 	if (msg && msg.type=="start"){
 		if (timer) {
@@ -145,24 +150,28 @@ function processQueue(queue){
 									console.log("Records To index for  ",key, ": ", fileData.length,file.name);
 								
 									var processingErrors=false;	
-									fileData = fileData.map(function(item){
-										if (!item.public) { item.public=false; }
-										if (!item.owner) { 
-											item.owner = message.user;
-										}else if (item.owner != message.user) {
-											if (!item.user_write || (item.user_write && (item.user_write.indexOf(message.user)<0))){
-												processingErrors="Item Owner ("+ item.owner+ ") !=  Index User (" + message.user+ ")";
-											}
-										}
 									
-										if (!item.user_read) { item.user_read = []; }
-										if (!item.user_write) { item.user_write = []; }
+									if(publicFree.indexOf(key)<0){
 
-										if (item._version_){
-											delete item._version_;
-										}
-										return item;		
-									});
+										fileData = fileData.map(function(item){
+											if (!item.public) { item.public=false; }
+											if (!item.owner) { 
+												item.owner = message.user;
+											}else if (item.owner != message.user) {
+												if (!item.user_write || (item.user_write && (item.user_write.indexOf(message.user)<0))){
+													processingErrors="Item Owner ("+ item.owner+ ") !=  Index User (" + message.user+ ")";
+												}
+											}
+										
+											if (!item.user_read) { item.user_read = []; }
+											if (!item.user_write) { item.user_write = []; }
+	
+											if (item._version_){
+												delete item._version_;
+											}
+											return item;		
+										});
+									}
 
 									if (!processingErrors) {
 										when(postDocs(fileData,key), function(results){
