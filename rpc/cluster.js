@@ -8,34 +8,37 @@ var distributeURL = config.get("distributeURL");
 var Temp = require('temp');
 var fs = require('fs-extra');
 
-function uploadInputFile(params, opts){
-
-}
-
-function runCluster(input, opts){
+function runCluster(data, config, opts){
 	var def = new defer();
 	//var d = [];
 	var errorClosed;
 
 	debug("Run Cluster");
 
-	//Temp.track(); // automatically delete
-	var tempPath = "/var/folders/tf/x6l7prmx6hjgrtzdp2l_r4980000gp/T/";
-	var tempName = Temp.path({prefix: 'cluster.'});
+	var tempFileInput = Temp.path({prefix: 'cluster.', suffix: '.input'});
+	var tempFileBase = tempFileInput.replace(".input", "");
+	var tempFileOutput = tempFileBase + '.cdt';
+	var tempFilePath = tempFileBase.split("cluster.")[0];
 
-	debug("Cluster Temp File Input: ", tempName);
+	debug("Cluster Temp File Input: ", tempFileInput, 'at', tempFilePath);
 
-	fs.outputFile(tempName, input, function(err){
+	fs.outputFile(tempFileInput, data, function(err){
+		if(err){
+			def.reject("Unable to write input data to", tempFileInput);
+			return;
+		}
+
 		var child = ChildProcess.spawn("cluster",
-			["-f", "cluster_input.txt", "-u", tempName, "-g", 1, "-e", 2, "-m", 'a'],
+			["-f", tempFileInput, "-u", tempFileBase,
+				"-g", config.g || 1, "-e", config.e || 2, "-m", config.m || 'a'],
 			{
-				cwd: tempPath,
+				cwd: tempFilePath,
 				stdio: [
 					'pipe',
 					'pipe',
 					'pipe'
 				]
-		});
+			});
 
 		//child.stdout.on("data", function(data){
 		//	debug("Cluster Output Data: ", data.toString());
@@ -57,10 +60,10 @@ function runCluster(input, opts){
 			if(!errorClosed){
 
 				// read result file and return
-				fs.readFile(tempName + '.cdt', "utf8", function(err, data){
+				fs.readFile(tempFileOutput, "utf8", function(err, data){
 
-					if (err){
-						def.reject("Unable to read " + tempName + '.cdt');
+					if(err){
+						def.reject("Unable to read " + tempFileOutput);
 						return;
 					}
 
@@ -71,7 +74,7 @@ function runCluster(input, opts){
 
 					lines.forEach(function(line){
 						line = line.trim();
-						if (!line || line.length == 0) return;
+						if(!line || line.length == 0) return;
 
 						var tabs = line.split('\t');
 						if(count == 0){
@@ -89,6 +92,12 @@ function runCluster(input, opts){
 
 					output.rows = rows;
 
+					// remove all related files
+					fs.remove(tempFileBase + '.*', function(err){
+						if(err) return debug(err);
+
+						debug('success removed temp files: ', tempFileBase + ".*");
+					});
 					def.resolve(output);
 				});
 			}
@@ -102,23 +111,22 @@ module.exports = {
 	requireAuthentication: false,
 	validate: function(params, req, res){
 		//validate parameters here
-		return params && params[0] && params[0].input !== undefined;
+		return params && params[0];
 	},
 	execute: function(params, req, res){
 		var def = new defer();
-		debug("Execute Cluster: ", params);
-		var query = params[0];
+
+		var data = params[0];
+		var config = params[1];
 		var opts = {req: req, user: req.user};
 
-		//when(uploadInputFile(params, opts), function(cluster){
-			when(runCluster(query, opts), function(result){
+		when(runCluster(data, config, opts), function(result){
 
-				def.resolve(result);
+			def.resolve(result);
 
-			}, function(err){
-				def.reject("Unable to Complete Cluster: " + err);
-			});
-		//});
+		}, function(err){
+			def.reject("Unable to Complete Cluster: " + err);
+		});
 
 		return def.promise;
 	}
