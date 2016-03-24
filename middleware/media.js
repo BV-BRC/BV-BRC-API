@@ -24,30 +24,34 @@ module.exports=function(req,res,next){
 
 	var fields;
 
-	if (req.call_collection=="genome_feature"){
-		fields = ["genome_name", "accession", "patric_id", "refseq_locus_tag", "alt_locus_tag", "feature_id",
-				"annotation", "feature_type", "start", "end", "na_length", "strand", "protein_id", "aa_length", "gene", "product"
-		];
-	}else if (req.call_collection =="genome") {
-		fields = ["genome_id", "genome_name", "organism_name", "taxon_id", "genome_status",
-			"strain", "serovar", "biovar", "pathovar", "mlst", "other_typing",
-			"culture_collection", "type_strain",
-			"completion_date", "publication",
-			"bioproject_accession", "biosample_accession", "assembly_accession", "genbank_accessions",
-			"refseq_accessions",
-			"sequencing_centers", "sequencing_status", "sequencing_platform", "sequencing_depth", "assembly_method",
-			"chromosomes", "plasmids", "contigs", "sequences", "genome_length", "gc_content",
-			"patric_cds", "brc1_cds", "refseq_cds",
-			"isolation_site", "isolation_source", "isolation_comments", "collection_date",
-			"isolation_country", "geographic_location", "latitude", "longitude", "altitude", "depth", "other_environmental",
-			"host_name", "host_gender", "host_age", "host_health", "body_sample_site", "body_sample_subsite", "other_clinical",
-			"antimicrobial_resistance", "antimicrobial_resistance_evidence",
-			"gram_stain", "cell_shape", "motility", "sporulation", "temperature_range", "optimal_temperature", "salinity", "oxygen_requirement",
-			"habitat",
-			"disease", "comments", "additional_metadata"
-		]
-	}
+	if (req.fieldSelection){
+		fields = req.fieldSelection;
+	}else{
 
+		if (req.call_collection=="genome_feature"){
+			fields = ["genome_name", "accession", "patric_id", "refseq_locus_tag", "alt_locus_tag", "feature_id",
+					"annotation", "feature_type", "start", "end", "na_length", "strand", "protein_id", "aa_length", "gene", "product"
+			];
+		}else if (req.call_collection =="genome") {
+			fields = ["genome_id", "genome_name", "organism_name", "taxon_id", "genome_status",
+				"strain", "serovar", "biovar", "pathovar", "mlst", "other_typing",
+				"culture_collection", "type_strain",
+				"completion_date", "publication",
+				"bioproject_accession", "biosample_accession", "assembly_accession", "genbank_accessions",
+				"refseq_accessions",
+				"sequencing_centers", "sequencing_status", "sequencing_platform", "sequencing_depth", "assembly_method",
+				"chromosomes", "plasmids", "contigs", "sequences", "genome_length", "gc_content",
+				"patric_cds", "brc1_cds", "refseq_cds",
+				"isolation_site", "isolation_source", "isolation_comments", "collection_date",
+				"isolation_country", "geographic_location", "latitude", "longitude", "altitude", "depth", "other_environmental",
+				"host_name", "host_gender", "host_age", "host_health", "body_sample_site", "body_sample_subsite", "other_clinical",
+				"antimicrobial_resistance", "antimicrobial_resistance_evidence",
+				"gram_stain", "cell_shape", "motility", "sporulation", "temperature_range", "optimal_temperature", "salinity", "oxygen_requirement",
+				"habitat",
+				"disease", "comments", "additional_metadata"
+			]
+		}
+	}
 	req.isDownload = !!(req.headers && req.headers.download);
 
 	res.format({

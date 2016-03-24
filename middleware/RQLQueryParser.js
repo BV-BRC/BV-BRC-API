@@ -11,8 +11,9 @@ module.exports = function(req, res, next) {
 		when(Expander.ResolveQuery(req.call_params[0],{req:req,res:res}), function(q){
 			debug("Resolved Query: ", q);
 			if (q=="()") { q = ""; }
-			req.call_params[0] = rql(q).toSolr({maxRequestLimit: 25000, defaultLimit: 25}) 
-			debug("Converted Solr Query: ", req.call_params[0]);
+			var rq = rql(q);
+			req.call_params[0] = rq.toSolr({maxRequestLimit: 25000, defaultLimit: 25}) 
+			//debug("Converted Solr Query: ", req.call_params[0]);
 			req.queryType="solr";
 			next();
 		});

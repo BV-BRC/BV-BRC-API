@@ -6,6 +6,7 @@ var config = require("../config");
 var SolrQueryParser = require("../middleware/SolrQueryParser");
 var RQLQueryParser = require("../middleware/RQLQueryParser");
 var DecorateQuery = require("../middleware/DecorateQuery");
+var ExtractCustomFields = require("../middleware/ExtractCustomFields");
 var PublicDataTypes = require("../middleware/PublicDataTypes");
 var authMiddleware = require("../middleware/auth");
 var Limiter = require("../middleware/Limiter");
@@ -129,6 +130,7 @@ router.use([
 		next();
 	},
 	APIMethodHandler,
+	ExtractCustomFields,
 	media
 ])
 
