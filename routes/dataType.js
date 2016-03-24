@@ -46,7 +46,7 @@ router.get("*", function(req,res,next){
 
 		debug("ctype: ", ctype);
 
-		if (!ctype){ ctype = req.headers['content-type'] = "applicaton/x-www-form-urlencoded"}
+		if (!ctype){ ctype = req.headers['content-type'] = "application/x-www-form-urlencoded"}
 
 		if (ctype == "application/solrquery+x-www-form-urlencoded"){
 			req.queryType = "solr";
