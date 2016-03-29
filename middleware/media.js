@@ -67,7 +67,15 @@ module.exports=function(req,res,next){
 			if (res.results && res.results.response && res.results.response.docs) {
 				res.results.response.docs.forEach(function(o){
 					if (req.call_collection=="genome_feature"){
-						var row = ">" + o.patric_id + "|"+o.feature_id+ " " + o.product + "\n" + o.na_sequence + "\n"; 
+						var fasta_id;
+	                                        if (o.annotation == "PATRIC") {
+							fasta_id = o.patric_id + "|"+(o.refseq_locus_tag?(o.refseq_locus_tag+"|"):"") + (o.alt_locus_tag?(o.alt_locus_tag+"|"):"");
+	                                        } else if (o.annotation == "RefSeq") {
+        	                                        fasta_id = "gi|" + o.gi + "|"+(o.refseq_locus_tag?(o.refseq_locus_tag+"|"):"") + (o.alt_locus_tag?(o.alt_locus_tag+"|"):"");
+               					}else{
+							console.log("Unknown Annotation Type: ", o.annotation);
+						}
+	                                        var row = ">" + fasta_id + "   " + o.product + "   [" + o.genome_name + " | " + o.genome_id + "]\n" + o.na_sequence + "\n";
 						res.write(row);
 					}else if (req.call_collection="genome_sequence") {
 						var row = ">accn|" + o.accession + "   " + o.description + "   " + "["+(o.genome_name||"") + " | " +   (o.genome_id||"") +"]\n";
