@@ -5,8 +5,27 @@ var config = require("../config");
 var Path=require("path");
 var Deferred = require("promised-io/promise").defer;
 var when = require("promised-io/promise").when;
-
 var treeDir = config.get("treeDirectory");
+
+
+var wrap = function(str,linelen){
+	if (str.length <= linelen ){
+		return str;
+	}
+	var out=[];
+	var cur=0;
+	while (cur < str.length){
+		if (cur+linelen>str.length){
+			out.push(str.slice(cur,str.length-1));
+			cur = str.length;
+		}else{
+			out.push(str.slice(cur, cur + linelen))
+			cur = cur + linelen + 1;
+		}
+	}	
+	return out.join("\n");	
+
+}
 
 module.exports=function(req,res,next){
 	var rpcTypes = ["application/jsonrpc.result+json", "application/jsonrpc+json"];
@@ -75,20 +94,13 @@ module.exports=function(req,res,next){
                					}else{
 							console.log("Unknown Annotation Type: ", o.annotation);
 						}
-	                                        var row = ">" + fasta_id + "   " + o.product + "   [" + o.genome_name + " | " + o.genome_id + "]\n" + o.na_sequence + "\n";
+	                                        var row = ">" + fasta_id + "   " + o.product + "   [" + o.genome_name + " | " + o.genome_id + "]\n";
+						row = row + wrap(o.na_sequence,60) + "\n";
 						res.write(row);
 					}else if (req.call_collection="genome_sequence") {
 						var row = ">accn|" + o.accession + "   " + o.description + "   " + "["+(o.genome_name||"") + " | " +   (o.genome_id||"") +"]\n";
 						res.write(row);
-						var i = 0;
-						while(i<o.sequence.length) {
-							if ((i+60)<o.sequence.length){
-								res.write(o.sequence.substr(i,60) + "\n");
-							}else{
-								res.write(o.sequence.substr(i) + "\n");
-							}
-							i+=60;
-						}
+						res.write(wrap(o.sequence,60) + "\n");
 					}else{
 						throw Error("Cannot query for application/dna+fasta from this data collection");
 					}
@@ -157,20 +169,13 @@ module.exports=function(req,res,next){
 			if (res.results && res.results.response && res.results.response.docs) {
 				res.results.response.docs.forEach(function(o){
 					if (req.call_collection=="genome_feature"){
-						var row = ">" + o.patric_id + "|"+o.feature_id+ " " + o.product + "\n" + o.na_sequence + "\n"; 
+						var row = ">" + o.patric_id + "|"+o.feature_id+ " " + o.product; 
+						row = row + wrap(o.na_sequence,60) + "\n";
 						res.write(row);
 					}else if (req.call_collection="genome_sequence") {
 						var row = ">"+ o.accession + "   " + o.description + "   " + "["+(o.genome_name|| o.genome_id) +"]\n";
 						res.write(row);
-						var i = 0;
-						while(i<o.sequence.length) {
-							if ((i+60)<o.sequence.length){
-								res.write(o.sequence.substr(i,60) + "\n");
-							}else{
-								res.write(o.sequence.substr(i) + "\n");
-							}
-							i+=60;
-						}
+						res.write(wrap(o.sequence,60) + "\n");
 					}else{
 						throw Error("Cannot query for application/protein+fasta from this data collection");
 					}
@@ -196,8 +201,9 @@ module.exports=function(req,res,next){
 					} else if (o.annotation == "RefSeq") {
 						fasta_id = "gi|" + o.gi + "|"+(o.refseq_locus_tag?(o.refseq_locus_tag+"|"):"") + (o.alt_locus_tag?(o.alt_locus_tag+"|"):"");
 					}
-					var row = ">" + fasta_id + "   " + o.product + "   [" + o.genome_name + " | " + o.genome_id + "]\n" + o.aa_sequence + "\n"; 
+					var row = ">" + fasta_id + "   " + o.product + "   [" + o.genome_name + " | " + o.genome_id + "]\n";
 					res.write(row);
+					res.write(wrap(o.aa_sequence,60) + "\n");
 				});	
 			}
 

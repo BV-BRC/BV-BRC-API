@@ -76,8 +76,8 @@ router.get("*", function(req,res,next){
 
 
 router.post("*", [
-	bodyParser.json({type:["application/jsonrpc+json"]}),
-	bodyParser.json({type:["application/json"]}),
+	bodyParser.json({type:["application/jsonrpc+json"], limit: "10mb"}),
+	bodyParser.json({type:["application/json"], limit: "10mb"}),
 	function(req,res,next){
 		debug("json req._body", req._body);
 		if (!req._body || !req.body) { next(); return }
@@ -98,8 +98,8 @@ router.post("*", [
 		}
 		next("route");
 	},
-	bodyParser.text({type:"application/rqlquery+x-www-form-urlencoded",limit:10000000}),
-	bodyParser.text({type:"application/solrquery+x-www-form-urlencoded",limit: 10000000}),
+	bodyParser.text({type:"application/rqlquery+x-www-form-urlencoded",limit:"10mb"}),
+	bodyParser.text({type:"application/solrquery+x-www-form-urlencoded",limit: "10mb"}),
 	function(req,res,next){
 //		req.body=decodeURIComponent(req.body);
 //		if (!req._body || !req.body) { console.log(" No body to QUERY POST"); req.body="?keyword(*)"; } // next("route"); return }
