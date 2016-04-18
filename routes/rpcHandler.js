@@ -4,8 +4,8 @@ var when = require('promised-io/promise').when;
 var debug = require('debug')('p3api-server:rpcHandler');
 
 module.exports = [
-	bodyParser.json({type:["application/jsonrpc+json"]}),
-	bodyParser.json({type:["application/json"]}),
+	bodyParser.json({type:["application/jsonrpc+json"], limit: "10mb"}),
+	bodyParser.json({type:["application/json"], limit: "10mb"}),
 	function(req,res,next){
 		debug("RPC HANDLER: ", req.body);
 		if (!req.body) { next(); return }
