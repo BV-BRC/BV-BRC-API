@@ -33,13 +33,16 @@ function processProteinFamily(pfState, options){
 		body: q
 	}, function(error, res, body){
 
+		if (error){
+			return def.reject(error);
+		}
+
 		var response = JSON.parse(body);
 		// debug("q1 response: ", typeof(response));
 
 		if(response.facets.count == 0){
 			// data is not available
-			def.reject("data is not available");
-			return;
+			return def.reject("data is not available");
 		}
 		var familyStat = response.facets.stat.buckets;
 
@@ -68,6 +71,10 @@ function processProteinFamily(pfState, options){
 			body: q
 		}, function(error, resp, body){
 
+			if (error){
+				return def.reject(error);
+			}
+
 			response = JSON.parse(body);
 			// debug("q2 body: ", response);
 			request.post({
@@ -83,6 +90,10 @@ function processProteinFamily(pfState, options){
 					rows: 1000000
 				}
 			}, function(error, resp, body){
+
+				if (error){
+					return def.reject(error);
+				}
 
 				var res = JSON.parse(body);
 				// debug("q3 body: ", res);
