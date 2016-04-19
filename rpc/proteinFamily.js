@@ -2,6 +2,8 @@ var defer = require("promised-io/promise").defer;
 var when = require('promised-io/promise').when;
 var debug = require('debug')('p3api-server:ProteinFamily');
 var request = require('request');
+var config = require("../config");
+var distributeURL = config.get("distributeURL");
 
 function processProteinFamily(pfState, options){
 	var def = new defer();
@@ -23,7 +25,7 @@ function processProteinFamily(pfState, options){
 	}).join("&");
 
 	request.post({
-		url: options.apiServer + '/genome_feature/',
+		url: distributeURL + 'genome_feature/',
 		headers: {
 			'Accept': "application/solr+json",
 			'Content-Type': "application/solrquery+x-www-form-urlencoded",
@@ -61,7 +63,7 @@ function processProteinFamily(pfState, options){
 
 		// console.log("Do Second Request to /genome_feature/");
 		request.post({
-			url: options.apiServer + '/genome_feature/',
+			url: distributeURL + 'genome_feature/',
 			headers: {
 				'Accept': "application/solr+json",
 				'Content-Type': "application/solrquery+x-www-form-urlencoded",
@@ -78,7 +80,7 @@ function processProteinFamily(pfState, options){
 			response = JSON.parse(body);
 			// debug("q2 body: ", response);
 			request.post({
-				url: options.apiServer + '/protein_family_ref/',
+				url: distributeURL + 'protein_family_ref/',
 				headers: {
 					'Accept': "application/solr+json",
 					'Content-Type': "application/solrquery+x-www-form-urlencoded",
