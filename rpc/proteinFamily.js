@@ -35,7 +35,7 @@ function processProteinFamily(pfState, options){
 		body: q
 	}, function(error, res, body){
 
-		if (error){
+		if(error){
 			return def.reject(error);
 		}
 
@@ -73,7 +73,7 @@ function processProteinFamily(pfState, options){
 			body: q
 		}, function(error, resp, body){
 
-			if (error){
+			if(error){
 				return def.reject(error);
 			}
 
@@ -82,18 +82,18 @@ function processProteinFamily(pfState, options){
 			request.post({
 				url: distributeURL + 'protein_family_ref/',
 				headers: {
-					'Accept': "application/solr+json",
+					'Accept': "application/json",
 					'Content-Type': "application/solrquery+x-www-form-urlencoded",
 					'X-Requested-With': null,
 					'Authorization': options.token || ""
 				},
 				form: {
 					q: 'family_type:' + familyType + ' AND family_id:(' + familyIdList.join(' OR ') + ')',
-					rows: 1000000
+					rows: familyIdList.length
 				}
 			}, function(error, resp, body){
 
-				if (error){
+				if(error){
 					return def.reject(error);
 				}
 
@@ -150,7 +150,7 @@ function processProteinFamily(pfState, options){
 				});
 
 				var familyRefHash = {};
-				res.response.docs.forEach(function(el){
+				res.forEach(function(el){
 					if(!(el.family_id in familyRefHash)){
 						familyRefHash[el.family_id] = el.family_product;
 					}
