@@ -44,7 +44,7 @@ function processProteinFamily(pfState, options){
 
 		if(response.facets.count == 0){
 			// data is not available
-			return def.reject("data is not available");
+			return def.resolve([]);
 		}
 		var familyStat = response.facets.stat.buckets;
 
