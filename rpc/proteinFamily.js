@@ -29,7 +29,6 @@ function processProteinFamily(pfState, options){
 		headers: {
 			'Accept': "application/solr+json",
 			'Content-Type': "application/solrquery+x-www-form-urlencoded",
-			'X-Requested-With': null,
 			'Authorization': options.token || ""
 		},
 		body: q
@@ -67,7 +66,6 @@ function processProteinFamily(pfState, options){
 			headers: {
 				'Accept': "application/solr+json",
 				'Content-Type': "application/solrquery+x-www-form-urlencoded",
-				'X-Requested-With': null,
 				'Authorization': options.token || ""
 			},
 			body: q
@@ -84,13 +82,9 @@ function processProteinFamily(pfState, options){
 				headers: {
 					'Accept': "application/json",
 					'Content-Type': "application/solrquery+x-www-form-urlencoded",
-					'X-Requested-With': null,
 					'Authorization': options.token || ""
 				},
-				form: {
-					q: 'family_type:' + familyType + ' AND family_id:(' + familyIdList.join(' OR ') + ')',
-					rows: familyIdList.length
-				}
+				body: 'q=family_type:' + familyType + ' AND family_id:(' + familyIdList.join(' OR ') + ')&rows=' + familyIdList.length
 			}, function(error, resp, body){
 
 				if(error){
