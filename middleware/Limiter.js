@@ -8,12 +8,10 @@ module.exports = function(req,res,next){
 	var re = /(&rows=)(\d*)/;
 	var gre = /&group=true/	
 	var grematches = q.match(gre);
-
+	var matches = q.match(re);
 	if (grematches || req.isDownload){
 		limit=99999999;
 	}else{
-
-		var matches = q.match(re);
 		//console.log("MATCHES: ", matches);
 		if (!matches){
 			//console.log("!matches && isDownload: ", req.isDownload);
