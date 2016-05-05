@@ -9,6 +9,7 @@ var treeDir = config.get("treeDirectory");
 
 
 var wrap = function(str,linelen){
+	if (!str){ str = "" }
 	if (str.length <= linelen ){
 		return str;
 	}
