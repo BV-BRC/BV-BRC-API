@@ -52,7 +52,11 @@ var defaults =  {
 		"url": "http://localhost:8983/solr"
 	},
 
-	"numWorkers": 0
+	"numWorkers": 0,
+
+	"cache": {
+		"directory": "/tmp/p3api_cache"
+	}
 
 }
 

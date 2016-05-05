@@ -17,17 +17,13 @@ var querySOLR = function(req, res, next) {
 			// console.log("APIMethodHandler solr.query results: ", results)
 			if (!results){
 				res.results=[];
-				res.set("Content-Range", "items 0-0/0");
 			}else if (results.response){
 				res.results = results;
-				res.set("Content-Range", "items " + (results.response.start || 0) + "-" + ((results.response.start||0)+results.response.docs.length) + "/" + results.response.numFound);
 			}else if (results.grouped){
 				res.results=results;
 			}else{
 				res.results=[];
-				res.set("Content-Range", "items 0-0/0");
 			}
-			//console.log("res headers: ", res);
 			next();
 		}, function(err){
 			debug("Error Querying SOLR: ", err);
@@ -63,7 +59,15 @@ var getSOLR = function(req, res, next) {
 }
 
 module.exports = function(req,res,next){
+
+	if (req.cacheHit && res.results){
+		next();
+		return;
+	}
+	console.log("API Method MIDDLEWARE");
 	var def;			
+
+
 	res.queryStart = new Date();
 	//console.log("query START: ",res.queryStart);
 	switch(req.call_method) {

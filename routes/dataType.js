@@ -10,8 +10,9 @@ var ExtractCustomFields = require("../middleware/ExtractCustomFields");
 var PublicDataTypes = require("../middleware/PublicDataTypes");
 var authMiddleware = require("../middleware/auth");
 var Limiter = require("../middleware/Limiter");
-
+var ContentRange = require("../middleware/content-range");
 var APIMethodHandler = require("../middleware/APIMethodHandler");
+var cacheMiddleware = require("../middleware/cache");
 var httpParams = require("../middleware/http-params");
 var solrjs = require("solrjs");
 var media = require("../middleware/media");
@@ -23,6 +24,8 @@ var Expander= require("../ExpandingQuery");
 
 
 router.use(httpParams);
+
+
 
 router.use(authMiddleware);
 
@@ -114,7 +117,6 @@ router.post("*", [
 ])
 
 
-
 router.use([
 	RQLQueryParser,
 	DecorateQuery,
@@ -129,8 +131,9 @@ router.use([
 		}
 		next();
 	},
-	APIMethodHandler,
+	[cacheMiddleware.get,APIMethodHandler,cacheMiddleware.put],
 	ExtractCustomFields,
+	ContentRange,
 	media
 ])
 

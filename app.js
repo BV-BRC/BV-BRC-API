@@ -17,9 +17,14 @@ var jbrowseRouter = require("./routes/JBrowse");
 var indexer = require("./routes/indexer");
 var cors = require('cors');
 var http = require("http");
+
 http.globalAgent.maxSockets=1024;
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 var app = module.exports =  express();
+
+app.enable("etag");
+app.set('etag', "strong");
 
 debug("APP MODE: ", app.get('env'))
 
@@ -38,10 +43,17 @@ var reqId=0;
 var stats=null;
 
 logger.token("qtime", function(req,res) {
-	if (!res.formatStart || ! res.queryStart){
-		return "NA";
+	var from="QUERY ";
+	if (req.cacheHit){
+		from = "CACHE ";
 	}
-	return res.formatStart.valueOf() - res.queryStart.valueOf();
+
+
+	if (!res.formatStart || ! res.queryStart){
+		return "";
+	}
+
+	return from + (res.formatStart.valueOf() - res.queryStart.valueOf());
 });
 
 process.on("message", function(msg){
@@ -77,7 +89,7 @@ app.use(function(req,res,next){
 
 app.use(cookieParser());
 
-app.use(cors({origin: true, methods: ["GET,PUT,POST,PUT,DELETE"], allowHeaders: ["range","accept","x-range","content-type", "authorization"],exposedHeaders: ['facet_counts','x-facet-count','Content-Range', 'X-Content-Range'], credential: true, maxAge: 8200}));
+app.use(cors({origin: true, methods: ["GET,PUT,POST,PUT,DELETE"], allowHeaders: ["if-none-match","range","accept","x-range","content-type", "authorization"],exposedHeaders: ['facet_counts','x-facet-count','Content-Range', 'X-Content-Range',"ETag"], credential: true, maxAge: 8200}));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
