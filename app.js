@@ -37,6 +37,13 @@ var reqId=0;
 
 var stats=null;
 
+logger.token("qtime", function(req,res) {
+	if (!res.formatStart || ! res.queryStart){
+		return "NA";
+	}
+	return res.formatStart.valueOf() - res.queryStart.valueOf();
+});
+
 process.on("message", function(msg){
 	if (msg && msg.type=="stats"){
 		stats = msg.data;
@@ -60,7 +67,7 @@ app.use(function(req,res,next){
 	next();
 });
 
-app.use(logger('[:date[clf]] :remote-user :method :url :status :response-time ms - :res[content-length]'));
+app.use(logger('[:date[clf]] :remote-user :method :url :status :response-time [:qtime] ms - :res[content-length]'));
 
 app.use(function(req,res,next){
 	debug("APP MODE: ", app.get('env'));

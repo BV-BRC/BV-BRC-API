@@ -13,7 +13,6 @@ var querySOLR = function(req, res, next) {
 		debug("querySOLR() req.params", req.call_params);
 		var solr = new solrjs(SOLR_URL + "/" + req.call_collection);
 		debug("querySOLR() query: ", query);
-
 		when(solr.query(query), function(results) {
 			// console.log("APIMethodHandler solr.query results: ", results)
 			if (!results){
@@ -64,6 +63,9 @@ var getSOLR = function(req, res, next) {
 }
 
 module.exports = function(req,res,next){
+	var def;			
+	res.queryStart = new Date();
+	//console.log("query START: ",res.queryStart);
 	switch(req.call_method) {
 		case "query": 
 			return querySOLR(req,res,next);

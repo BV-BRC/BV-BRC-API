@@ -28,8 +28,10 @@ var wrap = function(str,linelen){
 }
 
 module.exports=function(req,res,next){
-	var rpcTypes = ["application/jsonrpc.result+json", "application/jsonrpc+json"];
 
+	res.formatStart= new Date();
+
+	var rpcTypes = ["application/jsonrpc.result+json", "application/jsonrpc+json"];
 
 	res.header("Cache-Control", "no-cache, no-store, must-revalidate");
 	res.header("Pragma", "no-cache");
@@ -432,6 +434,8 @@ module.exports=function(req,res,next){
 
 		"application/json": function(){
 			debug("application/json handler")	
+			//var start = new Date();
+			//console.log("START JSON SERIALIZATION: ", start, start.valueOf());
 			//console.log("RESULTS RESULTS: ", res.results);
 			if (req.call_method=="query"){
 				if (res.results && res.results.response && res.results.facet_counts){
@@ -451,6 +455,8 @@ module.exports=function(req,res,next){
 						res.send(JSON.stringify(res.results.doc));
 					}
 			}
+			//var end = new Date();	
+			//console.log("SERIALIZE JSON END: ", end, end.valueOf());
 			res.end();
 		}
 	})
