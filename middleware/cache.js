@@ -6,7 +6,8 @@ var when = require("promised-io/promise").when;
 
 module.exports.get = function(req, res, next) {
 	var key=[req.call_method,req.call_collection,req.queryType,req.call_params[0]];
-	
+	if (req.call_method=="stream"){ return next(); }
+
 	req.cacheKey = md5(key.join());
 	debug("Cache Req User: ", req.user);
 

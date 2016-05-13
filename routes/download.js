@@ -9,10 +9,9 @@ var DecorateQuery = require("../middleware/DecorateQuery");
 var ExtractCustomFields = require("../middleware/ExtractCustomFields");
 var PublicDataTypes = require("../middleware/PublicDataTypes");
 var authMiddleware = require("../middleware/auth");
-var streamingHandler = require("../middleware/stream");
-var Limiter = require("../middleware/Limiter");
+var Limiter = require("../middleware/DownloadLimiter");
 var ContentRange = require("../middleware/content-range");
-var APIMethodHandler = require("../middleware/APIMethodHandler");
+var APIMethodHandler = require("../middleware/DownloadAPIMethodHandler");
 var cacheMiddleware = require("../middleware/cache");
 var httpParams = require("../middleware/http-params");
 var solrjs = require("solrjs");
@@ -132,8 +131,7 @@ router.use([
 		}
 		next();
 	},
-	streamingHandler.checkIfStreaming,
-	[cacheMiddleware.get,APIMethodHandler,cacheMiddleware.put],
+	APIMethodHandler,
 	ExtractCustomFields,
 	ContentRange,
 	media

@@ -5,24 +5,6 @@ var SOLR_URL=config.get("solr").url;
 var debug = require('debug')('p3api-server:APIMethodHandler');
 var when = require("promised-io/promise").when;
 
-var streamQuery = function(req, res, next) {
-		if (req.call_method!="stream"){ next(); }
-
-
-		var query = req.call_params[0];
-		debug("querySOLR() req.params", req.call_params);
-		var solr = new solrjs(SOLR_URL + "/" + req.call_collection);
-		debug("querySOLR() query: ", query);
-		when(solr.stream(query), function(results) {
-			console.log("APIMethodHandler solr.streamQuery results: ", results)
-			res.results = results;
-			next();
-		}, function(err){
-			debug("Error StreamingQuery SOLR: ", err);
-			next(err);
-		})
-}
-
 var querySOLR = function(req, res, next) {
 		if (req.call_method!="query"){ next(); }
 
@@ -94,9 +76,6 @@ module.exports = function(req,res,next){
 			break;
 		case "get":
 			return getSOLR(req,res,next)
-			break;
-		case "stream":
-			return streamQuery(req,res,next)
 			break;
 	}
 }

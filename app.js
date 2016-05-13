@@ -11,6 +11,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var dataTypeRouter = require("./routes/dataType");
+//var downloadRouter = require("./routes/download");
 var contentRouter = require("./routes/content");
 var rpcHandler = require("./routes/rpcHandler");
 var jbrowseRouter = require("./routes/JBrowse");
@@ -138,6 +139,11 @@ app.param("dataType", function(req,res,next,dataType){
     next("route");
 })
 
+/*
+app.use('/download/:dataType/',[
+	downloadRouter
+]);
+*/
 app.use('/:dataType/', [
 	dataTypeRouter
 ]);

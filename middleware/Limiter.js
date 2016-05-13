@@ -1,6 +1,6 @@
 var maxLimit=25000;
 var defaultLimit=25;
-
+var downloadLimit=2500000
 module.exports = function(req,res,next){
 	if (req.call_method!="query") { return next(); }
 	var limit = maxLimit;
@@ -9,16 +9,15 @@ module.exports = function(req,res,next){
 	var gre = /&group=true/	
 	var grematches = q.match(gre);
 	var matches = q.match(re);
-	if (grematches || req.isDownload){
+	if (grematches){
 		limit=99999999;
 	}else{
 		//console.log("MATCHES: ", matches);
 		if (!matches){
 			//console.log("!matches && isDownload: ", req.isDownload);
 			limit = defaultLimit;
-		} else if (req.isDownload) {
-			//console.log("Using Download Limit");
-			limit = maxLimit;
+		} else if (matches && typeof matches[2]!='undefined' && (matches[2] > downloadLimit) &&req.isDownload){
+			limit=downloadLimit;
 		}else  if (matches && typeof matches[2]!='undefined' && (matches[2]>maxLimit) && (!req.isDownload)){
 			//console.log("!isDownload ... set limit to: ", maxLimit);
 			limit=maxLimit

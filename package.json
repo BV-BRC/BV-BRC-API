@@ -13,6 +13,7 @@
     "cors": "~2.5.0",
     "debug": "~2.0.0",
     "ejs": "~0.8.5",
+    "event-stream": "^3.3.2",
     "express": "~4.9.0",
     "file-queue": "^0.2.1",
     "formidable": "^1.0.17",
