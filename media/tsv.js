@@ -16,7 +16,6 @@ module.exports = {
 		if (req.call_method=="stream"){
 			when(res.results, function(results){
 				var docCount=0;
-				res.write("[");
 				var head;
 				results.stream.pipe(es.mapSync(function(data){
 			            if (!head){
@@ -26,7 +25,9 @@ module.exports = {
 		                    if (!fields && docCount<1) {
 								fields = Object.keys(data);
 							}
-
+							if (docCount<1){
+								res.write(fields.join("\t") + "\n")
+							}
 		                   	var row = fields.map(function(field){
 								return JSON.stringify(data[field]);	
 							});
@@ -42,6 +43,7 @@ module.exports = {
 				if (!fields) {
 					fields = Object.keys(res.results.response.docs[0]);
 				}
+				res.write(fields.join("\t") + "\n")
 				res.results.response.docs.forEach(function(o){
 					var row = fields.map(function(field){
 						return JSON.stringify(o[field]);	
