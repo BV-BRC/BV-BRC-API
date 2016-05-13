@@ -46,7 +46,7 @@ var defaults =  {
 
 	treeDirectory: "./trees",
 	contentDirectory: "./content",
-
+	publicGenomeDir: "/genomes",
 	queueDirectory: "./index-queue-dir",
 	"solr": {
 		"url": "http://localhost:8983/solr"
