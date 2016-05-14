@@ -44,7 +44,7 @@ router.get("*", [
 ]);
 
 router.post("*", [
-	bodyParser.urlencoded(),
+	bodyParser.urlencoded({extended:true}),
 	function(req,res,next){
 		console.log("req.body: ", req.body);
 

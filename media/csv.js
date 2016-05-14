@@ -6,18 +6,20 @@ module.exports = {
 	contentType: "text/csv",
 	serialize: function(req,res,next){
 		debug("application/csv handler")
+		debug("Method: ", req.call_method);
 
 		var fields = req.fieldSelection;
 
 		if (req.isDownload){
-			res.set("content-disposition", 'attachment; filename="patric3_' + req.call_collection + '_query.csv"');
+			res.attachment('patric3_' + req.call_collection + '_query.csv');
+			//res.set("content-disposition", 'attachment; filename="patric3_' + req.call_collection + '_query.csv"');
 		}
 
 
 		if (req.call_method=="stream"){
 			when(res.results, function(results){
 				var docCount=0;
-
+				console.log("Handle Stream")
 				var head;
 				results.stream.pipe(es.mapSync(function(data){
 			            if (!head){
@@ -45,6 +47,7 @@ module.exports = {
 			    })
 			});
 		} else if (req.call_method=="query"){
+			console.log("query response: ", res.results)
 			if (res.results && res.results.response && res.results.response.docs) {
 				if (!fields) {
 					fields = Object.keys(res.results.response.docs[0]);
@@ -57,6 +60,7 @@ module.exports = {
 					//console.log("row: ", row);
 					res.write(row.join(",") + "\n");
 				});
+				res.end();
 			}
 		} else{
 			next(new Error("Unable to serialize request to csv"))

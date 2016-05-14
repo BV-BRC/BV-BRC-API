@@ -5,12 +5,13 @@ var es = require("event-stream");
 module.exports = {
 	contentType: "text/tsv",
 	serialize: function(req,res,next){
-		debug("application/csv handler")
-
+		debug("application/tsv handler")
+		debug("Method: ", req.call_method);
 		var fields = req.fieldSelection;
 
 		if (req.isDownload){
-			res.set("content-disposition", 'attachment; filename="patric3_' + req.call_collection + '_query.txt"');
+			res.attachment('patric3_' + req.call_collection + '_query.txt')
+			// res.set("content-disposition", 'attachment; filename="patric3_' + req.call_collection + '_query.txt"');
 		}
 
 		if (req.call_method=="stream"){
@@ -39,6 +40,7 @@ module.exports = {
 			    })
 			});
 		} else if (req.call_method=="query"){
+			console.log('res.results: ', res.results);
 			if (res.results && res.results.response && res.results.response.docs) {
 				if (!fields) {
 					fields = Object.keys(res.results.response.docs[0]);
@@ -51,6 +53,7 @@ module.exports = {
 					//console.log("row: ", row);
 					res.write(row.join("\t") + "\n");
 				});
+				res.end();
 			}
 		} else{
 			next(new Error("Unable to serialize request to csv"))

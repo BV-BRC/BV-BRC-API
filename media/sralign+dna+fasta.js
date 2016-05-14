@@ -42,7 +42,8 @@ module.exports = {
 		debug("application/sralign+dna+fasta")
 
 		if (req.isDownload){
-			res.set("content-disposition", "attachment; filename=patric_genomes.fasta");
+			res.attachment('patric3_' + req.call_collection + '.fasta');
+			// res.set("content-disposition", "attachment; filename=patric_genomes.fasta");
 		}
 
 		if (req.call_method=="stream"){

@@ -4,10 +4,12 @@ var xlsx = require('node-xlsx');
 module.exports = {
 	contentType: "application/vnd.openxmlformats",
 	serialize: function(req,res,next){
-			debug("Excel  handler")
+			debug("Excel  handler. download: ", req.isDownload);
 //			console.log("Headers: ", req.headers);
 			if (req.isDownload){
-				res.set("content-disposition", 'attachment; filename="patric3_' + req.call_collection + '_query.xlsx"');
+				debug("EXCEL SET ATTACHMENT: ", 'patric3_' + req.call_collection + '_query.xlsx')
+				res.attachment('patric3_' + req.call_collection + '_query.xlsx');
+				// res.set("content-disposition", 'attachment; filename="patric3_' + req.call_collection + '_query.xlsx"');
 			}
 
 			res.set("Content-Type", "application/vnd.openxmlformats");

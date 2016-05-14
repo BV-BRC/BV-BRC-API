@@ -22,7 +22,7 @@ var bodyParser = require("body-parser");
 var rql = require("solrjs/rql");
 var debug = require('debug')('p3api-server:dataroute');
 var Expander= require("../ExpandingQuery");
-
+var querystring = require('querystring');
 
 router.use(httpParams);
 
@@ -102,9 +102,31 @@ router.post("*", [
 		}
 		next("route");
 	},
+
+	bodyParser.text({type:"application/x-www-form-urlencoded",limit:"10mb"}),
+	function(req,res,next){
+		debug("x-www-form-url-encoded check", body);
+		req.call_method="query";
+		req.call_collection = req.params.dataType;
+		var body = querystring.parse(req.body);
+		console.log("BODY: ", body);
+		if (body.rql){
+			req.call_params = [decodeURIComponent(body.rql)]
+			req.queryType="rql";
+		}else if (body.solr){
+			req.call_params=[decodeURIComponent(body.sorl)];
+			req.queryType="solr";
+		}else{
+			return next();
+		}
+		console.log("CALL_PARAMS: ", req.call_params);
+		next("route");
+	},
+
 	bodyParser.text({type:"application/rqlquery+x-www-form-urlencoded",limit:"10mb"}),
 	bodyParser.text({type:"application/solrquery+x-www-form-urlencoded",limit: "10mb"}),
 	function(req,res,next){
+		console.log("Handle Form Body")
 //		req.body=decodeURIComponent(req.body);
 //		if (!req._body || !req.body) { console.log(" No body to QUERY POST"); req.body="?keyword(*)"; } // next("route"); return }
 		var ctype=req.get("content-type");	
