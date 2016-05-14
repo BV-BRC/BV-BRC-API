@@ -33,6 +33,10 @@ router.get("*", [
 			req.query = query.query || query.q;
 		}
 
+		if (query.archiveType ){
+			req.archiveType = query.archiveType;
+		}
+
 		req.sourceDataType = req.params.dataType;
 
 		next();
@@ -54,6 +58,13 @@ router.post("*", [
 		if (req.body.query || req.body.q){
 			req.query = req.body.query || req.body.q;
 		}
+
+
+
+		if (req.body.archiveType ){
+			req.archiveType = req.body.archiveType;
+		}
+
 
 		req.sourceDataType = req.params.dataType;
 		next();
@@ -82,6 +93,9 @@ router.use([
 		if (!req.bundleTypes || req.bundleTypes.length<1){
 			return next (new Error("Missing Bundled Types"));
 		}
+
+		if (req.archiveType){}
+
 		next();
 	},
 	function(req,res,next){
@@ -106,18 +120,26 @@ router.use([
 		var archOpts = {}
 		var type;
 
-		switch(req.headers.accept){
-			case "application/x-tar":
-				type="tar";
-				archOpts.gzip=true;
-				res.attachment('PATRIC_Export.tgz');
-				break;
-			case "application/x-zip":
-			default: 
-				type="zip"
-   			    res.attachment('PATRIC_Export.zip');
-
+		if (req.archiveType){
+			type = req.archiveType;
+		}else{
+			switch(req.headers.accept){
+				case "application/x-tar":
+					type="tar";
+					break;
+				case "application/x-zip":
+				default: 
+					type="zip"
+			}
 		}
+
+		if (type=="tar"){
+			archOpts.gzip=true;
+			res.attachment('PATRIC_Export.tgz');
+		}else if (type=="zip"){
+			 res.attachment('PATRIC_Export.zip');
+		}
+
 
 		archive = archiver.create(type,archOpts);
 		archive.pipe(res);

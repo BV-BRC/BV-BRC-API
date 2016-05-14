@@ -50,6 +50,9 @@ module.exports = function(req,res,next){
 
 	when(runQuery(q,{token: req.headers.authorization||""}), function(genomes){
 		console.log("DISTR Results: ", genomes)
+		if (!genomes || genomes.length<0){
+			return next("route");
+		}
 		var bulkMap = genomes.map(function(genome){
 			var map={}
 			if (genome.public){
@@ -58,7 +61,7 @@ module.exports = function(req,res,next){
 				map.dest = genome.genome_id;
 				map.src = [];
 				req.bundleTypes.forEach(function(bt){
-					map.src.push(genome.genome_id + "." + bt);
+					map.src.push(genome.genome_id + bt);
 				})
 			}else{
 				return false
