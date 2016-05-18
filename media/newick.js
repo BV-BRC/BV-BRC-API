@@ -5,6 +5,7 @@ var es = require("event-stream");
 var treeDir = config.get("treeDirectory");
 var Deferred = require("promised-io/promise").defer;
 var Path = require("path");
+var fs = require("fs-extra");
 
 function checkForFiles(list){
 	var def = new Deferred();
