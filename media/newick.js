@@ -3,6 +3,7 @@ var when = require("promised-io/promise").when;
 var config = require("../config");
 var es = require("event-stream");
 var treeDir = config.get("treeDirectory");
+var Deferred = require("promised-io/promise").defer;
 
 function checkForFiles(list){
 	var def = new Deferred();
