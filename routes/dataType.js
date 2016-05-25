@@ -42,6 +42,12 @@ router.use(PublicDataTypes);
 // 	next();
 // });
 
+router.use(function(req,res,next){
+	req.isDownload = !!(req.headers && req.headers.download);
+
+	console.log("REQ IS DOWNLOAD: ", req.isDownload);
+	next();
+});
 
 router.get("*", function(req,res,next){
 	if (req.path=="/"){
@@ -60,8 +66,6 @@ router.get("*", function(req,res,next){
 		debug('req.queryType: ', req.queryType)
 		debug("req.headers: ", req.headers);
 		
-		req.isDownload = !!(req.headers && req.headers.download);
-		//console.log("req.isDownload: ", req.isDownload);
 		req.call_params = [req._parsedUrl.query||""];
 		req.call_collection = req.params.dataType;
 	}else{

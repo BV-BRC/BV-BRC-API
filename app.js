@@ -12,6 +12,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var dataTypeRouter = require("./routes/dataType");
 var downloadRouter = require("./routes/download");
+var multiQueryRouter = require("./routes/multiQuery");
 var contentRouter = require("./routes/content");
 var rpcHandler = require("./routes/rpcHandler");
 var jbrowseRouter = require("./routes/JBrowse");
@@ -129,6 +130,10 @@ app.use("/content", [
 
 app.use("/jbrowse/",[
 	jbrowseRouter
+])
+
+app.use("/query",[
+	multiQueryRouter
 ])
 
 app.param("dataType", function(req,res,next,dataType){
