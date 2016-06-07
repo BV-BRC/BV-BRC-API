@@ -44,7 +44,7 @@ function buildFasta(sequences,opts){
 		var fasta_id;
 		if (o.feature_type=="source") { return; }
 		if (o.annotation == "PATRIC") {
-			fasta_id = o.patric_id;
+			fasta_id = o.feature_id;
 		} else if (o.annotation == "RefSeq") {
 			fasta_id = "gi|" + o.gi;
 		}
@@ -246,7 +246,7 @@ module.exports = {
 						when(runFastTree(gblocksOut,opts),function(fastTree){
 							var map = {}
 							sequences.forEach(function(seq){
-								map[seq.genome_id] = seq.genome_name
+								map[seq.feature_id] = {"genome_name":seq.genome_name, "feature_id":seq.feature_id, "genome_id":seq.genome_id, "patric_id":seq.patric_id};
 							})
 
 							def.resolve({
