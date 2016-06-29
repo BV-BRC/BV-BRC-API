@@ -90,8 +90,11 @@ function generateTrackList(req,res,next){
 				"maxExportSpan": 10000000,
 				"region_stats": true
 			}
-			
 		],
+		"names" : {
+			"url" : "names/",
+			"type" : "Hash"
+		},
 		"formatVersion": 1
 	})
 
