@@ -55,6 +55,7 @@ var defaults =  {
 	"numWorkers": 0,
 
 	"cache": {
+		"enabled": false,
 		"directory": "/tmp/p3api_cache"
 	}
 
