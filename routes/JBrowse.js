@@ -37,7 +37,8 @@ function generateTrackList(req,res,next){
 				"label": "ReferenceSequence",
 				"chunkSize": 20000,
 				"maxExportSpan": 10000000,
-				"region_stats": true
+				"region_stats": false,
+				"pinned": true
 			}
 			,{
 				"type": "JBrowse/View/Track/HTMLFeatures",
@@ -62,7 +63,7 @@ function generateTrackList(req,res,next){
 				},
 				"maxExportFeatures": 10000,
 				"maxExportSpan": 10000000,
-				"region_stats": true
+				"region_stats":false 
 			}
 			, {
 				"type": "FeatureTrack",
@@ -88,7 +89,7 @@ function generateTrackList(req,res,next){
 				},
 				"maxExportFeatures": 10000,
 				"maxExportSpan": 10000000,
-				"region_stats": true
+				"region_stats":false 
 			}
 		],
 		"names" : {
