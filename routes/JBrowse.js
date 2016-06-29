@@ -30,11 +30,11 @@ function generateTrackList(req,res,next){
 		"tracks": [
 			{
 				"type": "SequenceTrack",
-			    "storeClass": "JBrowse/Store/SeqFeature/REST",
-			    "baseUrl":    apiRoot + "/genome/" + req.params.id,
+				"storeClass": "JBrowse/Store/SeqFeature/REST",
+				"baseUrl":    apiRoot + "/genome/" + req.params.id,
 				// "urlTemplate": apiRoot + "/sequence/{refseq}",
 				"key": "Reference sequence",
-				"label": "DNA",
+				"label": "ReferenceSequence",
 				"chunkSize": 20000,
 				"maxExportSpan": 10000000,
 				"region_stats": true
@@ -43,8 +43,8 @@ function generateTrackList(req,res,next){
 				"type": "JBrowse/View/Track/HTMLFeatures",
 				// "urlTemplate": apiRoot + "/genome/" +req.params.id + "/{refseq}?annotation=PATRIC",
 				// "storeClass": "JBrowse/Store/SeqFeature/NCList",
-			    "storeClass": "JBrowse/Store/SeqFeature/REST",
-			    "baseUrl":    apiRoot + "/genome/" + req.params.id,
+				"storeClass": "JBrowse/Store/SeqFeature/REST",
+				"baseUrl":    apiRoot + "/genome/" + req.params.id,
 				"key": "PATRIC Annotation",
 				"label": "PATRICGenes",
 				"query": {
@@ -93,7 +93,7 @@ function generateTrackList(req,res,next){
 		],
 		"names" : {
 			"url" : "names/",
-			"type" : "Hash"
+			"type" : "REST"
 		},
 		"formatVersion": 1
 	})
