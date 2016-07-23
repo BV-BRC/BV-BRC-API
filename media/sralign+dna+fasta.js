@@ -4,10 +4,10 @@ var es = require("event-stream");
 var wrap = require("../util/linewrap");
 
 function serializeRow(type,o){
-	if (req.call_collection=="genome_feature"){
+	if (type=="genome_feature"){
 		var row = ">" + o.patric_id + "|"+o.feature_id+ " " + o.product; 
 		return row + wrap(o.na_sequence,60) + "\n";
-	}else if (req.call_collection="genome_sequence") {
+	}else if (type=="genome_sequence") {
 		var row = ">"+ o.accession + "   " + o.description + "   " + "["+(o.genome_name|| o.genome_id) +"]\n";
 		return row + wrap(o.sequence,60) + "\n";
 	}else{
