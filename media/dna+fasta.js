@@ -18,7 +18,7 @@ function serializeRow(type,o){
 		row = row + wrap(o.na_sequence,60) + "\n";
 		return row;
 
-	}else if (req.call_collection="genome_sequence") {
+	}else if (type=="genome_sequence") {
 		row = ">accn|" + o.accession + "   " + o.description + "   " + "["+(o.genome_name||"") + " | " +   (o.genome_id||"") +"]\n";
 		row = row + wrap(o.sequence,60) + "\n";
 		return row;
