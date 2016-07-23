@@ -1,26 +1,8 @@
 var debug = require("debug")("media");
 var when = require("promised-io/promise").when;
 var es = require("event-stream");
+var wrap = require("../util/linewrap");
 
-var wrap = function(str,linelen){
-	if (!str){ str = "" }
-	if (str.length <= linelen ){
-		return str;
-	}
-	var out=[];
-	var cur=0;
-	while (cur < str.length){
-		if (cur+linelen>str.length){
-			out.push(str.slice(cur,str.length-1));
-			cur = str.length;
-		}else{
-			out.push(str.slice(cur, cur + linelen))
-			cur = cur + linelen + 1;
-		}
-	}	
-	return out.join("\n");	
-
-}
 
 function serializeRow(type,o){
 	var row=[]
