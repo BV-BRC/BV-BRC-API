@@ -3,8 +3,10 @@ var Cache = require("../cache");
 var conf = require("../config");
 var md5 = require("md5");
 var when = require("promised-io/promise").when;
+var enableCache = conf.get("cache").enable;
 
 module.exports.get = function(req, res, next) {
+	if (!enableCache) { return next(); }
 	var key=[req.call_method,req.call_collection,req.queryType,req.call_params[0]];
 	if (req.call_method=="stream"){ return next(); }
 
