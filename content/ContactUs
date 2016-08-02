@@ -1,3 +1,55 @@
-<div>
-	Contact Us Form
+<h2 class="entry-title">
+		<a href="http://enews.patricbrc.org/contact-us/"
+			title="Permalink to Contact Us"
+			rel="bookmark">Contact Us </a>
+				</h2>
+	
+		
+			<div class="entry-summary">
+	<!-- ?php the_excerpt(); ? --->
+		<table width="100%" align="right">
+<tbody>
+<tr>
+<td width="70%">
+<div class="portlet-content-center">
+<div id="about_patric_content">
+<div style="float: left; width: 65%;">
+<hr />
+<p>If you have questions about or would like assistance using the PATRIC website, please contact us at <a href="mailto:help@patricbrc.org">help@patricbrc.org</a>. We appreciate your interest and will respond within two business days to your inquiry.</p>
+<hr />
+<h3><em><strong>Principal Investigator</strong></em></h3>
+<p>Rick Stevens</p>
+<hr />
+<h3><em><strong>Project Manager</strong></em></h3>
+<p>Ron Kenyon</p>
+<hr />
+<h3><em><strong>Email address</strong></em></h3>
+<p><a href="mailto:help@patricbrc.org">help@patricbrc.org</a></p>
 </div>
+</div>
+</div>
+</td>
+<td align="left" valign="top" width="30%">
+<div style="float: right;">
+<div class="searchtool-wrapper">
+<div class="searchtool">
+<div class="searchtool-inside">
+<hr />
+<h3><em><strong>Submit Feedback</strong></em></h3>
+<p>To ensure the highest quality data and associated tools we encourage you to submit feedback. Feel free to provide suggestions for improvement as well as to point out any errors that we may have missed.</p>
+<p>&nbsp;</p>
+</div>
+<p>&nbsp;</p>
+<p class="button"><a href="mailto:help@patricbrc.org?subject=PATRIC%20Feedback">Submit Feedback</a></p>
+<p>&nbsp;</p>
+</div>
+<p>&nbsp;</p>
+</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+			
+	</div>
+

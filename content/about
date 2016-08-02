@@ -1,3 +1,36 @@
-<div>
-	About PATRIC
+<h2 class="entry-title">
+		<a href="http://enews.patricbrc.org/what-is-patric/"
+			title="Permalink to What is PATRIC?"
+			rel="bookmark">What is PATRIC? </a>
+				</h2>
+	
+		
+			<div class="entry-summary">
+	<!-- ?php the_excerpt(); ? --->
+		<hr />
+<div id="about_patric_content">
+<h3><em><strong><em>What is PATRIC?</em></strong></em></h3>
+<p>PATRIC is the <strong><em>Bacterial Bioinformatics Resource Center</em></strong>, an information system designed to support the biomedical research community’s work on bacterial infectious diseases via integration of vital pathogen information with rich data and analysis tools.  PATRIC sharpens and hones the scope of available bacterial phylogenomic data from numerous sources specifically for the bacterial research community, in order to save biologists time and effort when conducting comparative analyses.  The freely available PATRIC platform provides an interface for biologists to discover data and information and conduct comprehensive comparative genomics and other analyses in a one-stop shop.  PATRIC is a NIH/NIAID-funded project of The University of Chicago with subcontract to the Biocomplexity Institute of Virginia Tech.</p>
+<h3><em><strong><em>What PATRIC Offers:</em></strong></em></h3>
+<ul>
+<li><span style="text-decoration: underline;">Consistent Annotation</span> across all sequenced bacterial species from GenBank and other sources via RAST the most widely used and highly cited automated microbial annotation system.  Annotate your bacterial genome for free in less than 24 hours.</li>
+<li><span style="text-decoration: underline;">A Wealth of Associated, Descriptive Genome Metadata</span> parsed from a variety of sources in over 60 fields such as, isolation source, geographic location, year of isolation, and the host and/or environment from which the sample was collected.</li>
+<li><span style="text-decoration: underline;">Data Integration</span> across sources, data types, molecular entities, and organisms.  Data types include genomics, transcriptomics, protein-protein interactions, 3D protein structures, sequence typing data, and metadata, and are summarized and organized at various taxon, genome, and gene levels.</li>
+<li><span style="text-decoration: underline;">Various Search Tools</span> help you easily find data and genomes of interest including single specific genomes, whole genome sets within certain taxa, sets of genomes that share common metadata, and even closely related sets of genomes based on phylogeny.</li>
+<li><span style="text-decoration: underline;">Upload Your Own Data</span> and analyze it privately and securely with PATRIC analysis tools by itself or against public datasets.</li>
+<li><span style="text-decoration: underline;">Freely Available Data and Analysis Results</span>, presented in tabular, graphic, and downloadable formats.</li>
+<li><span style="text-decoration: underline;">A Personal Workspace</span> to permanently save groups of genomic data, gene associations, and uploaded private data.  Both private and public data can be analyzed together using a suite of tools to perform comparative genomic or transcriptomic analysis.  Customize PATRIC preferences to streamline searches and data browsing.</li>
+</ul>
+<h3><strong><em>PATRIC Tools and Comparative Analyses</em></strong></h3>
+<p><a href="http://enews.patricbrc.org/wp-content/uploads/2011/11/Comarative-Analyses.png"><img class="wp-image-3523 alignnone" src="http://enews.patricbrc.org/wp-content/uploads/2011/11/Comarative-Analyses-970x1024.png" alt="Comarative Analyses" width="658" height="694" /></a></p>
+<p><span style="text-decoration: underline;"><a href="http://enews.patricbrc.org/wp-content/uploads/2013/12/PATRIC_Final_Pamphlet.pdf" onclick="__gaTracker('send', 'event', 'download', 'http://enews.patricbrc.org/wp-content/uploads/2013/12/PATRIC_Final_Pamphlet.pdf');">Download this information in a PATRIC brochure</a></span></p>
+<p><a href="http://enews.patricbrc.org/data-release-policy/">PATRIC Data Release Policy</a></p>
+<p>The PATRIC team is committed to supporting and growing the bacterial research communities.   To help us identify your specific bioinformatic needs, please take a moment to fill out our short <a href="https://survey.vt.edu/survey/entry.jsp?id=1285273366861" onclick="__gaTracker('send', 'event', 'outbound-article', 'https://survey.vt.edu/survey/entry.jsp?id=1285273366861', 'PATRIC survey');">PATRIC survey</a>.   Your participation is greatly appreciated.</p>
+<h3><strong><em>About the Computation Institute</em></strong></h3>
+<p>The <a href="https://www.ci.uchicago.edu/" onclick="__gaTracker('send', 'event', 'outbound-article', 'https://www.ci.uchicago.edu/', 'Computation Institute');" target="_blank">Computation Institute</a> (CI), a joint initiative between The University of Chicago and Argonne National Laboratory, advances science through innovative computational approaches. The CI is both an intellectual nexus and resource center for those building and applying computational platforms for science. As an intellectual nexus, it brings together researchers from different disciplines with common interests in advancing the state-of-the-art in computing and its applications. As a resource center, it provides expert assistance to scholars whose work requires the most advanced computational methods. The CI’s research has increasingly broad impact as advanced computational and informatics approaches are becoming critical to future research breakthroughs in almost every scientific discipline. The CI is home to over 100 researchers and staff, including more than 70 fellows from University of Chicago faculty and Argonne scientists that have active collaborations with over 50 prestigious academic and research institutions across the globe. Current research is targeted at solving complex system-level problems in bioinformatics, biomedicine, neuroscience, genomics, metagenomics, energy and climate, astronomy and astrophysics, computational economics, and molecular engineering.</p>
+<h3><strong><em>About the Biocomplexity Institute of Virginia Tech</em></strong></h3>
+<p>The <a href="http://bi.vt.edu/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://bi.vt.edu/', 'Biocomplexity Institute of Virginia Tech');">Biocomplexity Institute of Virginia Tech</a> (BIVT) is a world-class research institute dedicated to the study of information biology. Housed in state-of-the-art facilities on Virginia Tech’s Blacksburg campus and National Capital Region Research Center, the institute broadly integrates disciplines – from molecular science to policy analysis – to address pressing challenges to human health, habitat, and well-being. VBIT uses an information biology approach to predict, explain, and visualize the behavior of massively interacting systems. Where conceptual and technological constraints once forced researchers to examine living systems one small slice at a time, we can now find complex connections ranging from the basic building blocks of life to public policy. BIVT is at the forefront of this scientific evolution, applying a deeply contextual approach to answer some of the most pressing challenges to human health, habitat, and well-being. Our <a href="http://bi.vt.edu/research" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://bi.vt.edu/research', 'research');">research</a> is interdisciplinary to its core, integrating methods from the life, cognitive, and social sciences, as well environmental studies and infrastructural development. The institute guides emergency response to epidemics, makes urban infrastructure more sustainable, and accelerates the discovery of treatments for chronic diseases.</p>
 </div>
+			
+	</div>
+
