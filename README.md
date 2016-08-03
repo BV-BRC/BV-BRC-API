@@ -56,10 +56,9 @@ The response format is determined by passing in the desired type in the HTTP Acc
 The following operators are available for RQL Queries:
 
 - eq(FIELD,VALUE) : Equals
+- ne(FIELD,VALUE) : Not Equals
 - gt(FIELD,VALUE) : Greater than
 - lt(FIELD,VALUE) : Less than
-- gte(FIELD,VALUE) : Greater than or equal to
-- lte(FIELD,VALUE) : Less than or equal to
 - keyword(VALUE) : Text search (the specific fields that will be searched depends on the data sources' configuration)
 - in(FIELD,(VALUE1,VALUE2,VALUE3)) : Returns objects whose FIELD contains any of the provided values
 - and(EXPRESSION,EXPRESSION,...) : ANDs two or more expressions together
