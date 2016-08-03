@@ -246,7 +246,12 @@ module.exports = {
 						when(runFastTree(gblocksOut,opts),function(fastTree){
 							var map = {}
 							sequences.forEach(function(seq){
-								map[seq.feature_id] = {"genome_name":seq.genome_name, "feature_id":seq.feature_id, "genome_id":seq.genome_id, "patric_id":seq.patric_id};
+								map[seq.feature_id] = {
+                                    "genome_name":seq.genome_name,
+                                    "feature_id":seq.feature_id,
+                                    "genome_id":seq.genome_id,
+                                    "patric_id":seq.patric_id,
+                                    "aa_length":seq.aa_length};
 							})
 
 							def.resolve({
