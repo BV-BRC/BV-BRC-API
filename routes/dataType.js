@@ -84,8 +84,8 @@ router.get("*", function(req,res,next){
 
 
 router.post("*", [
-	bodyParser.json({type:["application/jsonrpc+json"], limit: "10mb"}),
-	bodyParser.json({type:["application/json"], limit: "10mb"}),
+	bodyParser.json({type:["application/jsonrpc+json"], limit: "30mb"}),
+	bodyParser.json({type:["application/json"], limit: "30mb"}),
 	function(req,res,next){
 		debug("json req._body", req._body);
 		if (!req._body || !req.body) { next(); return }
@@ -107,7 +107,7 @@ router.post("*", [
 		next("route");
 	},
 
-	bodyParser.text({type:"application/x-www-form-urlencoded",limit:"10mb"}),
+	bodyParser.text({type:"application/x-www-form-urlencoded",limit:"30mb"}),
 	function(req,res,next){
 		debug("x-www-form-url-encoded check", body);
 		req.call_method="query";
@@ -127,8 +127,8 @@ router.post("*", [
 		next("route");
 	},
 
-	bodyParser.text({type:"application/rqlquery+x-www-form-urlencoded",limit:"10mb"}),
-	bodyParser.text({type:"application/solrquery+x-www-form-urlencoded",limit: "10mb"}),
+	bodyParser.text({type:"application/rqlquery+x-www-form-urlencoded",limit:"30mb"}),
+	bodyParser.text({type:"application/solrquery+x-www-form-urlencoded",limit: "30mb"}),
 	function(req,res,next){
 		console.log("Handle Form Body")
 //		req.body=decodeURIComponent(req.body);
