@@ -1,3 +1,5 @@
+<div style="padding:10px;">
+<h2>PATRIC Publications</h2>
 <div class="entry-summary">
 	<!-- ?php the_excerpt(); ? --->
 		<p style="text-align: center;" align="center"><strong>2016</strong></p>
@@ -74,5 +76,6 @@
 <p>Snyder E.E., N. Kampanya, J. Lu, E.K. Nordberg, H.R. Karur, M. Shukla, J. Soneja, Y. Tian, T. Xue, H. Yoo, F. Zhang, C. Dharmanolla, N.V. Dongre, J.J. Gillespie, J. Hamelius, M. Hance, K.I. Huntington, D. Jukneliene, J. Koziski, L. Mackasmiel, S.P. Mane, V. Nguyen, A. Purkayastha, J. Shallom, G. Yu, Y. Guo, J. Gabbard, D. Hix, A.F. Azad, S.C. Baker, S.M. Boyle, Y. Khudyakov, X.J. Meng, C. Rupprecht, J. Vinje, O.R. Crasta, M.J. Czar, A. Dickerman, J.D. Eckart, R. Kenyon, R. Will, J.C. Setubal and B.W. Sobral (2007). “<strong>PATRIC: the VBI PathoSystems Resource Integration Center</strong>.” <span style="text-decoration: underline;">Nucleic Acids Res</span> 35(1). doi: <a href="http://dx.crossref.org/10.1093%2Fnar%2Fgkl858" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://dx.crossref.org/10.1093%2Fnar%2Fgkl858', '10.1093/nar/gkl858');" target="_blank">10.1093/nar/gkl858</a>. PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/17142235" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ncbi.nlm.nih.gov/pubmed/17142235', '17142235');">17142235</a>. PMCID: <a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1669763/?tool=pubmed" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1669763/?tool=pubmed', 'PMC1669763');" target="_blank">PMC1669763</a>.</p>
 <p>Yu, G.X., E.E. Snyder, S.M. Boyle, O.R. Crasta, M. Czar, S.P. Mane, A. Purkayastha, B. Sobral and J.C. Setubal (2007). “<strong>A versatile computational pipeline for bacterial genome annotation improvement and comparative analysis, with <em>Brucella</em> as a use case</strong>.” <span style="text-decoration: underline;">Nucleic Acids Res</span> 35(12): p. 3953-62.  doi: <a href="http://dx.doi.org/10.1093%2Fnar%2Fgkm377" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://dx.doi.org/10.1093%2Fnar%2Fgkm377', '10.1093/nar/gkm377');">10.1093/nar/gkm377</a> PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/17553834" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ncbi.nlm.nih.gov/pubmed/17553834', '17553834');">17553834</a> PMCID:  <a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1919506/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1919506/', 'PMC1919506');" target="_blank">PMC1919506</a></p>
 			
-	</div>
+</div>
+</div>
 

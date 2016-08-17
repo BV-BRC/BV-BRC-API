@@ -1,3 +1,5 @@
+<div style="padding:10px">
+<h2>Related Sites</h2>
 <div class="entry-summary">
 	<!-- ?php the_excerpt(); ? --->
 		<div id="about_patric_content">
@@ -43,6 +45,6 @@ Human viral pathogens</p>
 <h4><em><strong>Other</strong></em></h4>
 <p><a href="http://kbase.us/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://kbase.us/', 'Department of Energy Systems Biology Knowledgebase (KBase)');" target="_blank">Department of Energy Systems Biology Knowledgebase (KBase)</a>
 </div>
-			
+</div>			
 	</div>
 
