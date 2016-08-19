@@ -1,0 +1,113 @@
+<div class="container main-container dlp">
+	<section class="main">
+		<!-- Section: Data -->
+		<div class="data-tab" id="tab1">
+			<h3>PATRIC Data is Linked to Associated Biochemical Pathways</h3>
+				<div class="large"><p>Our analysis tools and interactive visualizations allow users to highlight regions of genome loss or conservation and ultimately look for changes within the context of functional pathways. Pathways of interest can be identified using the <a href="http://enews.patricbrc.org/faqs/comparative-pathway-tool-faqs/" >Comparative Pathway Tool</a> and then analyzed individually, or in selected sets, via the Comparative Pathway Heatmap and KEGG Map.</p>
+				</div>
+			<div class="data-box collapse-bottom" id="dlp-pathways-conservation-header">
+				<h3 class="ribbon-title">Pathway Conservation in Pathogenic Bacteria</h3>
+				<p class="desc" style="margin:0">The graph below shows conservation of metabolic pathways across percentage of total genomes in each pathogenic genus.</p>
+			</div><!-- /data-box -->
+			<div class="far4x" id="dlp-pathways-conservation">
+				<div class="chart-wrapper">
+				<!-- This nav structure drives interactivity on the bar chart. -->
+					<nav>
+						<span class="label">Scale</span>
+						<ul class="scale">
+							<li class="real active">Real Values</li>
+							<li class="normalize">Normalize</li>
+						</ul>
+						<span class="label">Order by</span>
+						<ul class="sort">
+							<li class="index active">Genus</li>
+							<li class="conserved">Conserved</li>
+						</ul>
+					</nav>
+					<!-- This is the div where the chart is actually drawn. -->
+					<div class="chart"></div>
+					<!-- The bar chart looks for this legend. There"s some SVG in here for the circles. -->
+					<p class="legend">
+						Pathway Conservation Across %Genomes:
+						<svg height="24" width="24">
+							<circle class="bar1-sample" cx="12" cy="12" r="12"></circle>
+						</svg>
+						<span class="bar1-label">80 ~ 100 %</span>
+						<svg height="24" width="24">
+							<circle class="bar2-sample" cx="12" cy="12" r="12"></circle>
+						</svg>
+						<span class="bar2-label">60 ~ 80 %</span>
+						<svg height="24" width="24">
+							<circle class="bar3-sample" cx="12" cy="12" r="12"></circle>
+						</svg>
+						<span class="bar3-label">40 ~ 60 %</span>
+						<svg height="24" width="24">
+							<circle class="bar4-sample" cx="12" cy="12" r="12"></circle>
+						</svg>
+						<span class="bar4-label">20 ~ 40 %</span>
+						<svg height="24" width="24">
+							<circle class="bar5-sample" cx="12" cy="12" r="12"></circle>
+						</svg>
+						<span class="bar5-label">&lt; 20 %</span>
+					</p>
+				</div><!-- / chart-wrapper -->
+			</div>
+
+			<div class="data-box popular-box tabbed hover-tabs no-underline-links">
+				<h3 class="ribbon-title">Select Genomes</h3>
+				<div class="group"><!--
+				<%
+					JSONArray popularItems = (JSONArray) popular.get("popularList");
+					// list of genome-tabs
+					for(int popCt = 0; popCt < popularItems.size(); popCt++)
+					{
+						JSONObject pop = (JSONObject)popularItems.get(popCt);
+						out.println("<div class='genome-data right half group' id='genome-tab" + (popCt+1) + "'>");
+						JSONArray popularData = (JSONArray)pop.get("popularData");
+						String link = pop.get("link").toString();
+							//list of properties
+							out.println("<div class='far'><h3>Summary of Top 10 Pathways:</h3>");
+							out.println("<table class='basic no-decoration far2x'>");
+							out.println("<tr><th scope='column'>EC numbers</th><th scope='column'>Genes</th><th scope='column'>Pathway Name</th></tr>");
+							for(int i = 0; i < popularData.size(); i++)
+							{
+								JSONObject item = (JSONObject)popularData.get(i);
+								out.println("<tr>");
+								out.println("<td class='center-text'><a href='" + item.get("ec_link") + "'>" + item.get("ec_count") + "</a></td>");
+								out.println("<td class='center-text'><a href='" + item.get("gene_link") +"'>" + item.get("gene_count") + "</a></td>");
+								out.println("<td><a href='" + item.get("name_link") + "'>" + item.get("name") + "</a></td>");
+								out.println("</tr>");
+							}
+							out.println("</table>");
+							out.println("<a class='double-arrow-link' href='" + link + "'>View All Pathways in This Genome</a>");
+							out.println("</div>");
+							
+						out.println("</div>");
+					}
+					// list of genomes
+					out.println("<ul class='no-decoration genome-list tab-headers third'>");
+					for(int nameCt = 0; nameCt < popularItems.size(); nameCt++)
+					{
+						JSONObject name = (JSONObject)popularItems.get(nameCt);
+						out.println("<li><a data-genome-href='" + name.get("link") + "' class='genome-link' href='#genome-tab" + (nameCt+1) + "'>" + name.get("popularName") + "</a>");
+						out.println("<div class='arrow'></div></li>");
+					}
+					out.println("</ul>");
+				%>-->
+				</div>
+			</div>
+		</div>
+
+		<!-- Section: Tools -->
+
+		<!-- Section: Process -->
+		<div class="data-tab" id="tab3">
+			<div class="data-box">
+				<h3 class="ribbon-title">How Do We Process and Clean Up Our Data?</h3>
+					<img alt="How Do We Process and Clean Up Our Data?" src="http://enews.patricbrc.org/wp-content/uploads/2013/11/final_pathways.jpg" />
+			</div>
+		</div>
+
+		<!-- Section: Download -->
+	</section>
+</div>

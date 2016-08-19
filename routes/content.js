@@ -13,9 +13,9 @@ router.use(httpParams);
 
 var contentFolder = config.get("contentDirectory");
 
-router.get("/:page", function(req,res,next){
-	console.log("PARAMS : ", req.params.page);    
-	var f = Path.join(contentFolder,req.params.page)
+router.get("*", function(req,res,next){
+	console.log("PARAMS : ", req.params[0]);
+	var f = Path.join(contentFolder,req.params[0])
 	fs.exists(f, function(exists){
 		if (!exists) { return next("route"); }
 

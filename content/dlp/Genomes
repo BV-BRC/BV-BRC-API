@@ -1,0 +1,172 @@
+<div class="container main-container dlp">
+	<section class="main">
+		<!-- Section: Data -->
+		<div class="data-tab" id="tab1">
+			<h3>PATRIC Offers Tens of Thousands of Assembled Bacterial Genomes Sequences</h3>
+
+				<div class="large"><p>Genomes are received on a regular basis from a multitude of sources (GenBank, RefSeq, Collaborator Request, etc.). Our signature PATRIC annotation is generated via the RAST (Rapid Annotation Subsystems Technologies) Pipeline, resulting in a consistently annotated set of genomes in which meaningful comparisons can be made within and across taxonomic boundaries. We also maintain the original annotations from GenBank to allow users to explore and compare annotation differences. In addition, we automatically gather, parse, and curate over 60 various associated metadata attributes, such as isolation source, geographic location, and host. Find out how to search for genomes of interest in our <a href="http://enews.patricbrc.org/faqs/genome-finder-faqs/">Genome Finder FAQs</a>.</p></div>
+
+			<div class="group">
+			<!-- Genome status chart (stacked bar) -->
+				<div class="col span-8 append-1">
+					<div class="data-box" id="dlp-genomes-genomeStatus-header">
+						<h3 class="ribbon-title"><!-- Genome Status Title --></h3>
+						<div id="dlp-genomes-genomeStatus">
+							<div class="chart"></div>
+						</div><!-- / genomeStatus -->
+					</div><!-- data-box -->
+				</div><!-- / span-8 -->
+				<!-- Number of genomes (Two-value line chart ) -->
+				<div class="col span-13 append-1">
+					<div class="data-box" id="dlp-genomes-numberGenomes-header">
+						<h3 class="ribbon-title"><!-- Genome Number Title --></h3>
+						<div id="dlp-genomes-numberGenomes">
+							<div class="chart"></div>
+						</div><!-- / numberGenomes -->
+					</div><!-- / data-box -->
+				</div><!-- / span-13 -->
+				<!-- Three tabs with a vertical bar chart. -->
+				<div class="col span-13 last">
+					<div class="tabbed" id="dlp-genomes-chart">
+					<!-- Tab controls are identified seperately. -->
+						<ul class="tab-headers no-decoration inline no-underline-links">
+							<li><a href="#dlp-genomes-chart-tab1">Tab Title 1</a></li>
+							<li><a href="#dlp-genomes-chart-tab2">Tab Title 2</a></li>
+						</ul>
+					<!-- First tab contents -->
+						<div class="data-box" id="dlp-genomes-chart-tab1">
+							<p class="desc">Very brief sentence</p>
+								<div class="top-5">
+									<div class="chart"></div>
+								</div><!-- / top-5 -->
+						</div><!-- / data-box -->
+					<!-- Second tab contents -->
+						<div class="data-box" id="dlp-genomes-chart-tab2">
+							<p class="desc">Very brief sentence</p>
+							<div class="top-5">
+								<div class="chart"></div>
+							</div><!-- / top-5 -->
+						</div><!-- / data-box -->
+					<!-- Third tab contents -->
+					</div><!-- / tabbed -->
+				</div><!-- / span-13 -->
+			</div><!-- / group -->
+			<!--<%
+			JSONObject popular = (JSONObject)jsonData.get("popularGenomes");
+			%> -->
+			<div class="data-box popular-box tabbed hover-tabs no-underline-links">
+				<h3 class="ribbon-title">Select Genomes></h3>
+				<div class="group"><!--
+					<%
+						JSONArray popularItems = (JSONArray) popular.get("popularList");
+						for(int popCt = 0; popCt < popularItems.size(); popCt++)
+						{
+							JSONObject pop = (JSONObject)popularItems.get(popCt);
+							out.println("<div class='genome-data right half group' id='genome-tab" + (popCt+1) + "'>");
+							// metadata
+							JSONObject meta = (JSONObject)pop.get("metadata");
+							//out.println("<div class='far2x'>");
+							out.println("<table class='no-decoration basic far2x'>");
+							out.println("<tr>");
+								out.println("<th class='italic' width='25%' scope='row'>Genome Status: </th><td width='25%'>&nbsp;" + meta.get("genome_status") + "</td>");
+								out.println("<th class='italic' width='25%' scope='row'>Isolation Country: </th><td width='25%'>&nbsp;" + meta.get("isolation_country") + "</td>");
+							out.println("</tr>");
+							
+							out.println("<tr>");
+								out.println("<th class='italic' scope='row'>Genomic Sequences: </th><td> ");
+								if (meta.get("chromosomes") != null && !meta.get("chromosomes").toString().equals("0")) {
+									if (meta.get("chromosomes").toString().equals("1")) {
+										out.println(meta.get("chromosomes") + " Chromosome");
+									} else {
+										out.println(meta.get("chromosomes") + " Chromosomes");
+									}
+								}
+								if (meta.get("plasmids") != null && !meta.get("plasmids").toString().equals("0")) {
+									if (meta.get("plasmids").toString().equals("1")) {
+										out.println("<br/>" + meta.get("plasmids") + " Plasmid");
+									} else {
+										out.println("<br/>" + meta.get("plasmids") + " Plasmids");
+									}
+								}
+								if (meta.get("contigs") != null && !meta.get("contigs").toString().equals("0")) {
+									if (meta.get("contigs").toString().equals("1")) {
+										out.println("<br/>" + meta.get("contigs" + " Contig"));
+									} else {
+										out.println("<br/>" + meta.get("contigs") + " Contigs");
+									}
+								}
+								out.println("</td>");
+								out.println("<th class='italic' scope='row'>Host Name: </th><td>&nbsp;" + meta.get("host_name") + "</td>");
+							out.println("</tr>");
+							
+							out.println("<tr>");
+								out.println("<th class='italic' scope='row'>Genome Length: </th><td>&nbsp;" + meta.get("genome_length") + " bp</td>");
+								out.println("<th class='italic' scope='row'>Disease: </th><td>&nbsp;" + meta.get("disease") + "</td>");
+							out.println("</tr>");
+							
+							out.println("<tr>");
+								out.println("<th class='italic' scope='row'>Completion Date: </th><td>&nbsp;" + meta.get("completion_date") + "</td>");
+								out.println("<th class='italic' scope='row'>Collection Date: </th><td>&nbsp;" + meta.get("collection_date") + "</td>");
+							out.println("</tr>");
+
+							out.println("</table>");
+							//out.println("</div>");
+							// data type summary
+							JSONArray popularData = (JSONArray)pop.get("popularData");
+							out.println("	<div class='column'>");
+							for (int left = 0; left < popularData.size(); left=left+2)
+							{
+								JSONObject leftitem = (JSONObject)popularData.get(left);
+								out.println("<a class='genome-data-item clear' href='" + leftitem.get("link") + "'>");
+								out.println("<div class='genome-data-icon left' style='background-image: url(" + leftitem.get("picture") + ")'></div>");
+								out.println("<h3 class='down2x close highlight-e'>" + leftitem.get("data") + "</h3>");
+								out.println("<p class='small'>" + leftitem.get("description") + "</p>");
+								out.println("</a>");
+							}
+							out.println("	</div>");
+							out.println("	<div class='column'>");
+							for (int right = 1; right < popularData.size(); right=right+2)
+							{
+								JSONObject rightitem = (JSONObject)popularData.get(right);
+								out.println("<a class='genome-data-item clear' href='" + rightitem.get("link") + "'>");
+								out.println("<div class='genome-data-icon left' style='background-image: url(" + rightitem.get("picture") + ")'></div>");
+								out.println("<h3 class='down2x close highlight-e'>" + rightitem.get("data") + "</h3>");
+								out.println("<p class='small'>" + rightitem.get("description") + "</p>");
+								out.println("</a>");
+							}
+							out.println("	</div>");
+							out.println("<div class='clear'></div>");
+							
+							// links to
+							out.println("<p><a class='double-arrow-link' href='" + pop.get("gb_link") + "'>View This Genome in Genome Browser</a></p><br/>");
+							out.println("</div>"); 	
+						}
+						out.println("<ul class='no-decoration genome-list tab-headers third'>");
+						for(int nameCt = 0; nameCt < popularItems.size(); nameCt++)
+						{
+							JSONObject name = (JSONObject)popularItems.get(nameCt);
+							out.println("<li>");
+							out.println("<a data-genome-href='" + name.get("link") + "' class='genome-link' href='#genome-tab" + (nameCt+1) + "'>" + name.get("popularName") + "</a>");
+							out.println("<div class='arrow'></div>");
+							out.println("</li>");
+						}
+						out.println("</ul>");
+					%>-->
+				</div><!-- / group -->
+				<p class='down'><a class="double-arrow-link" href="GenomeList?cType=taxon&cId=2&dataSource=&displayMode=&pk=&kw=">View All PATRIC Genomes</a></p>
+			</div>
+		</div>
+
+		<!-- Section: Tools -->
+
+		<!-- Section: Process -->
+		<div class="data-tab" id="tab3">
+			<div class="data-box">
+				<h3 class="ribbon-title">How Do We Process and Clean Up Our Data?</h3>
+					<img alt="How Do We Process and Clean Up Our Data?" src="http://enews.patricbrc.org/wp-content/uploads/2013/11/final_genomes1.jpg" />
+			</div>
+		</div>
+
+		<!-- Section: Download -->
+	</section>
+</div>

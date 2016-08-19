@@ -1,0 +1,589 @@
+{
+    "featuredExperiment": {
+        "data": [
+            {
+                "title": "Characterization of the GbdR regulon in Pseudomonas aeruginosa",
+                "pmid": "24097953",
+                "link": "SingleExperiment?cType=taxon&cId=2&eid=1223795",
+                "accession": "GSE49759",
+                "organism": "Pseudomonas aeruginosa"
+            },
+            {
+                "title": "Transcriptional profiles of Campylobacter jejuni NCTC 11168 to 0.125mg/L erythromycin treatment",
+                "pmid": "23767761",
+                "link": "SingleExperiment?cType=taxon&cId=2&eid=1201089",
+                "accession": "GSE43024",
+                "organism": "Campylobacter jejuni"
+            },
+            {
+                "title": "Transcriptional profiles of Campylobacter jejuni NCTC 11168 to 4mg/L erythromycin treatment",
+                "pmid": "23767761",
+                "link": "SingleExperiment?cType=taxon&cId=2&eid=1224258",
+                "accession": "GSE43023",
+                "organism": "Campylobacter jejuni"
+            }
+        ]
+    },
+    "popularGenomes": {
+        "popularTitle": "Select Genomes",
+        "popularList": [
+            {
+                "link": "ExperimentList?cType=genome&cId=83332.12&kw=",
+                "GeneModifications": {
+                    "title": "Gene Modifications",
+                    "data": [
+                        {
+                            "value": 4,
+                            "label": "dosR"
+                        },
+                        {
+                            "value": 2,
+                            "label": "dosS"
+                        },
+                        {
+                            "value": 2,
+                            "label": "dosT"
+                        },
+                        {
+                            "value": 1,
+                            "label": "Bif1"
+                        },
+                        {
+                            "value": 1,
+                            "label": "H37Ra"
+                        }
+                    ]
+                },
+                "ExperimentConditions": {
+                    "title": "Experiment Conditions",
+                    "data": [
+                        {
+                            "value": 22,
+                            "label": "mutant vs wild type"
+                        },
+                        {
+                            "value": 6,
+                            "label": "mutant"
+                        },
+                        {
+                            "value": 4,
+                            "label": "strain comparison"
+                        },
+                        {
+                            "value": 3,
+                            "label": "SDS"
+                        },
+                        {
+                            "value": 3,
+                            "label": "diamide"
+                        }
+                    ]
+                },
+                "popularName": "Mycobacterium tuberculosis H37Rv"
+            },
+            {
+                "link": "ExperimentList?cType=genome&cId=511145.12&kw=",
+                "GeneModifications": {
+                    "title": "Gene Modifications",
+                    "data": [
+                        {
+                            "value": 9,
+                            "label": "rpoS"
+                        },
+                        {
+                            "value": 4,
+                            "label": "crp"
+                        },
+                        {
+                            "value": 4,
+                            "label": "luxS"
+                        },
+                        {
+                            "value": 3,
+                            "label": "arcA"
+                        },
+                        {
+                            "value": 3,
+                            "label": "dam"
+                        }
+                    ]
+                },
+                "ExperimentConditions": {
+                    "title": "Experiment Conditions",
+                    "data": [
+                        {
+                            "value": 60,
+                            "label": "mutant vs wild type"
+                        },
+                        {
+                            "value": 33,
+                            "label": "mutant"
+                        },
+                        {
+                            "value": 10,
+                            "label": "overexpression"
+                        },
+                        {
+                            "value": 10,
+                            "label": "strain comparison"
+                        },
+                        {
+                            "value": 10,
+                            "label": "time point"
+                        }
+                    ]
+                },
+                "popularName": "Escherichia coli str. K-12 substr. MG1655"
+            },
+            {
+                "link": "ExperimentList?cType=genome&cId=99287.12&kw=",
+                "GeneModifications": {
+                    "title": "Gene Modifications",
+                    "data": [
+                        {
+                            "value": 2,
+                            "label": "cheA"
+                        },
+                        {
+                            "value": 2,
+                            "label": "cheB"
+                        },
+                        {
+                            "value": 2,
+                            "label": "cheY"
+                        },
+                        {
+                            "value": 2,
+                            "label": "cheZ"
+                        },
+                        {
+                            "value": 2,
+                            "label": "hfq"
+                        }
+                    ]
+                },
+                "ExperimentConditions": {
+                    "title": "Experiment Conditions",
+                    "data": [
+                        {
+                            "value": 25,
+                            "label": "mutant vs wild type"
+                        },
+                        {
+                            "value": 3,
+                            "label": "in vivo"
+                        },
+                        {
+                            "value": 3,
+                            "label": "time point"
+                        },
+                        {
+                            "value": 2,
+                            "label": "H2O2"
+                        },
+                        {
+                            "value": 2,
+                            "label": "Mitomycin C"
+                        }
+                    ]
+                },
+                "popularName": "Salmonella enterica subsp. enterica serovar Typhimurium str. LT2"
+            },
+            {
+                "link": "ExperimentList?cType=genome&cId=208964.12&kw=",
+                "GeneModifications": {
+                    "title": "Gene Modifications",
+                    "data": [
+                        {
+                            "value": 2,
+                            "label": "anr"
+                        },
+                        {
+                            "value": 1,
+                            "label": "PA0149"
+                        },
+                        {
+                            "value": 1,
+                            "label": "PA0675"
+                        },
+                        {
+                            "value": 1,
+                            "label": "PA2050"
+                        },
+                        {
+                            "value": 1,
+                            "label": "PA2093"
+                        }
+                    ]
+                },
+                "ExperimentConditions": {
+                    "title": "Experiment Conditions",
+                    "data": [
+                        {
+                            "value": 10,
+                            "label": "mutant vs wild type"
+                        },
+                        {
+                            "value": 6,
+                            "label": "mutant vs wildtype"
+                        },
+                        {
+                            "value": 5,
+                            "label": "strain comparison"
+                        },
+                        {
+                            "value": 4,
+                            "label": "mutant"
+                        },
+                        {
+                            "value": 4,
+                            "label": "time point"
+                        }
+                    ]
+                },
+                "popularName": "Pseudomonas aeruginosa PAO1"
+            },
+            {
+                "link": "ExperimentList?cType=genome&cId=214092.21&kw=",
+                "GeneModifications": {
+                    "title": "Gene Modifications",
+                    "data": [
+                        {
+                            "value": 2,
+                            "label": "ompR"
+                        },
+                        {
+                            "value": 1,
+                            "label": "LPP"
+                        },
+                        {
+                            "value": 1,
+                            "label": "fur"
+                        },
+                        {
+                            "value": 1,
+                            "label": "hfq"
+                        },
+                        {
+                            "value": 1,
+                            "label": "oxyR"
+                        }
+                    ]
+                },
+                "ExperimentConditions": {
+                    "title": "Experiment Conditions",
+                    "data": [
+                        {
+                            "value": 4,
+                            "label": "mutant vs wild type"
+                        },
+                        {
+                            "value": 3,
+                            "label": "temperature"
+                        },
+                        {
+                            "value": 1,
+                            "label": "H2O2"
+                        },
+                        {
+                            "value": 1,
+                            "label": "Mg2"
+                        },
+                        {
+                            "value": 1,
+                            "label": "chloramphenicol"
+                        }
+                    ]
+                },
+                "popularName": "Yersinia pestis CO92"
+            },
+            {
+                "link": "ExperimentList?cType=genome&cId=169963.11&kw=",
+                "GeneModifications": {
+                    "title": "Gene Modifications",
+                    "data": [
+                        {
+                            "value": 3,
+                            "label": "prfA"
+                        },
+                        {
+                            "value": 3,
+                            "label": "sigB"
+                        },
+                        {
+                            "value": 1,
+                            "label": "Hpr KP"
+                        },
+                        {
+                            "value": 1,
+                            "label": "LhrA"
+                        },
+                        {
+                            "value": 1,
+                            "label": "LiaRLM"
+                        }
+                    ]
+                },
+                "ExperimentConditions": {
+                    "title": "Experiment Conditions",
+                    "data": [
+                        {
+                            "value": 16,
+                            "label": "mutant vs wild type"
+                        },
+                        {
+                            "value": 4,
+                            "label": "growth media"
+                        },
+                        {
+                            "value": 3,
+                            "label": "mutant"
+                        },
+                        {
+                            "value": 3,
+                            "label": "pH"
+                        },
+                        {
+                            "value": 3,
+                            "label": "temperature"
+                        }
+                    ]
+                },
+                "popularName": "Listeria monocytogenes EGD-e"
+            },
+            {
+                "link": "ExperimentList?cType=genome&cId=158879.11&kw=",
+                "GeneModifications": {
+                    "title": "Gene Modifications",
+                    "data": [
+                        {
+                            "value": 1,
+                            "label": "SACOL2645"
+                        },
+                        {
+                            "value": 1,
+                            "label": "arg"
+                        },
+                        {
+                            "value": 1,
+                            "label": "ccpA"
+                        },
+                        {
+                            "value": 1,
+                            "label": "lexA"
+                        },
+                        {
+                            "value": 1,
+                            "label": "pknB"
+                        }
+                    ]
+                },
+                "ExperimentConditions": {
+                    "title": "Experiment Conditions",
+                    "data": [
+                        {
+                            "value": 6,
+                            "label": "mutant vs wild type"
+                        },
+                        {
+                            "value": 5,
+                            "label": "strain comparison"
+                        },
+                        {
+                            "value": 1,
+                            "label": "CCCP"
+                        },
+                        {
+                            "value": 1,
+                            "label": "CPV"
+                        },
+                        {
+                            "value": 1,
+                            "label": "Cathelicidin LL-37"
+                        }
+                    ]
+                },
+                "popularName": "Staphylococcus aureus subsp. aureus N315"
+            },
+            {
+                "link": "ExperimentList?cType=genome&cId=373153.27&kw=",
+                "GeneModifications": {
+                    "title": "Gene Modifications",
+                    "data": [
+                        {
+                            "value": 4,
+                            "label": "ccpA"
+                        },
+                        {
+                            "value": 1,
+                            "label": "ahrC"
+                        },
+                        {
+                            "value": 1,
+                            "label": "argR1"
+                        },
+                        {
+                            "value": 1,
+                            "label": "argR1-ahrC"
+                        },
+                        {
+                            "value": 1,
+                            "label": "celR"
+                        }
+                    ]
+                },
+                "ExperimentConditions": {
+                    "title": "Experiment Conditions",
+                    "data": [
+                        {
+                            "value": 13,
+                            "label": "mutant vs wild type"
+                        },
+                        {
+                            "value": 1,
+                            "label": "LL37"
+                        },
+                        {
+                            "value": 1,
+                            "label": "arginine"
+                        },
+                        {
+                            "value": 1,
+                            "label": "bacitracin"
+                        },
+                        {
+                            "value": 1,
+                            "label": "copper"
+                        }
+                    ]
+                },
+                "popularName": "Streptococcus pneumoniae D39"
+            },
+            {
+                "link": "ExperimentList?cType=genome&cId=224914.11&kw=",
+                "GeneModifications": {
+                    "title": "Gene Modifications",
+                    "data": [
+                        {
+                            "value": 2,
+                            "label": "vjbR"
+                        },
+                        {
+                            "value": 1,
+                            "label": "babR"
+                        },
+                        {
+                            "value": 1,
+                            "label": "blxR"
+                        },
+                        {
+                            "value": 1,
+                            "label": "mucR"
+                        },
+                        {
+                            "value": 1,
+                            "label": "prlR"
+                        }
+                    ]
+                },
+                "ExperimentConditions": {
+                    "title": "Experiment Conditions",
+                    "data": [
+                        {
+                            "value": 5,
+                            "label": "mutant vs wild type"
+                        },
+                        {
+                            "value": 1,
+                            "label": "C12-HSL"
+                        },
+                        {
+                            "value": 1,
+                            "label": "growth phase"
+                        }
+                    ]
+                },
+                "popularName": "Brucella melitensis bv. 1 str. 16M"
+            },
+            {
+                "link": "ExperimentList?cType=genome&cId=85962.8&kw=",
+                "GeneModifications": {
+                    "title": "Gene Modifications",
+                    "data": [
+                        {
+                            "value": 1,
+                            "label": "ArsRS"
+                        },
+                        {
+                            "value": 1,
+                            "label": "HP0244"
+                        },
+                        {
+                            "value": 1,
+                            "label": "HP0518"
+                        },
+                        {
+                            "value": 1,
+                            "label": "HP1021"
+                        },
+                        {
+                            "value": 1,
+                            "label": "HopZ"
+                        }
+                    ]
+                },
+                "ExperimentConditions": {
+                    "title": "Experiment Conditions",
+                    "data": [
+                        {
+                            "value": 6,
+                            "label": "mutant vs wild type"
+                        },
+                        {
+                            "value": 4,
+                            "label": "time point"
+                        },
+                        {
+                            "value": 1,
+                            "label": "Cipro"
+                        },
+                        {
+                            "value": 1,
+                            "label": "ex vivo (cell line)"
+                        },
+                        {
+                            "value": 1,
+                            "label": "gentamycin"
+                        }
+                    ]
+                },
+                "popularName": "Helicobacter pylori 26695"
+            }
+        ]
+    },
+    "topSpecies": {
+        "title": "TOP 5 Species with Transcriptomics Data",
+        "data": [
+            {
+                "value": 216,
+                "label": "Escherichia coli"
+            },
+            {
+                "value": 63,
+                "label": "Pseudomonas aeruginosa"
+            },
+            {
+                "value": 48,
+                "label": "Salmonella enterica"
+            },
+            {
+                "value": 45,
+                "label": "Mycobacterium tuberculosis"
+            },
+            {
+                "value": 36,
+                "label": "Listeria monocytogenes"
+            }
+        ]
+    }
+}

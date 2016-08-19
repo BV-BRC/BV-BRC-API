@@ -1,0 +1,168 @@
+<div class="container main-container dlp">
+    <section class="main">
+        <!-- Section: Data -->
+        <div class="data-tab" id="tab1">
+            <div class='large'><p>Genomic Features are defined segments of a genome. Most often features will code for proteins or RNAs, however some correspond to pseudogenes or repeat regions. We currently support over 40 <a href=\"http://enews.patricbrc.org/patrics-genomic-feature-types/\">Genomic Feature Types</a>. Learn how to find and use PATRIC Feature Tables in our <a href=\"http://enews.patricbrc.org/faqs/feature-table-faqs/\">Feature Table FAQs</a>.</p></div>
+
+            <div class="data-box" id="dlp-features-data">
+                <h3 class="ribbon-title">What do we mean by ...</h3>
+                <br/>
+                <div class="data-box">
+                    <h4>Genome Annotation:</h4>
+                    <p>Genome annotation refers to the systematic analysis of a genome to identify all protein and RNA coding genes
+                        and characterize their functions. PATRIC supports genome annotations from multiple sources, including:</p>
+                    <ul>
+                        <li>Original annotations from GenBank / RefSeq</li>
+                        <li>Consistent annotation across all bacterial genomes using RAST</li>
+                    </ul>
+                </div>
+                <div class="data-box">
+                    <h4>Genomic Features:</h4>
+                    <p>Genomic Features refer to defined segments of a genome, which often code for proteins and RNAs. Common feature types include:</p>
+                    <ul>
+                        <li>Gene</li>
+                        <li>CDS</li>
+                        <li>rRNA</li>
+                        <li>tRNA</li>
+                        <li>Misc RNA</li>
+                        <li>Pseudogene</li>
+                    </ul>
+                </div>
+                <div class="data-box">
+                    <h4>Functional Properties:</h4>
+                    <p>Functional properties refer to the description and ontological terms used to characterize protein functions.
+                        Common functional properties assigned to proteins include:</p>
+                    <ul>
+                        <li>Gene name</li>
+                        <li>Function</li>
+                        <li>GO terms</li>
+                        <li>EC numbers</li>
+                        <li>Metabolic pathways</li>
+                    </ul>
+                </div>
+                <div class="data-box">
+                    <h4>Specialty Genes:</h4>
+                    <p>Specialty genes refer to the genes possessing properties that are of special interest to the infectious disease researchers.
+                        Classes of specialty genes include:</p>
+                    <ul>
+                        <li>Virulence factors</li>
+                        <li>Antibiotic resistant genes</li>
+                        <li>Secreted proteins</li>
+                        <li>Essential genes</li>
+                        <li>Drug and vaccine targets</li>
+                        <li>Human homologs</li>
+                    </ul>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <!-- popular genomes -->
+            <div class="data-box popular-box tabbed hover-tabs no-underline-links">
+                <h3 class="ribbon-title">Select Genomes</h3>
+                <div class="group">
+                    <!--
+                    <%
+                    JSONArray popularItems = (JSONArray) popular.get("popularList");
+                    // list of genome-tabs
+                    for(int popCt = 0; popCt < popularItems.size(); popCt++)
+                    {
+                    JSONObject pop = (JSONObject)popularItems.get(popCt);
+                    out.println("<div class='genome-data right two-third group' id='genome-tab" + (popCt+1) + "' style='width:563px;'>");
+                    JSONArray featureTypes = (JSONArray)pop.get("featureTypes");
+                    JSONArray proteinSummary = (JSONArray)pop.get("proteinSummary");
+                    JSONArray specialtyGenes = (JSONArray)pop.get("specialtyGenes");
+                    JSONArray popularLinks = (JSONArray)pop.get("links");
+
+                    //list of properties
+                    out.println("<div class='far2x'>");
+                        // feature types
+                        out.println("<div class='left'><h3>Features:</h3>");
+                            for(int i = 0; i < featureTypes.size(); i++)
+                            {
+                            JSONObject item = (JSONObject)featureTypes.get(i);
+
+                            out.println("<a class='left right-align-text' style='width:50px; padding-right:10px' href='" + item.get("link") + "'>");
+                                out.println("<span class='highlight-e' style='font-size:14px'>" + item.get("data") + "</span>");
+                                out.println("</a>");
+
+                            out.println("<span class='left small' style='padding-top:5px'>" + item.get("description") + "</span>");
+                            out.println("<div class='clear'></div>");
+                            }
+                            out.println("</div>");
+
+                        // protein summary
+                        out.println("<div class='left left-align-text' style='margin:0 18px'><h3>Proteins by Attributes:</h3>");
+                            for(int i = 0; i < proteinSummary.size(); i++)
+                            {
+                            JSONObject item = (JSONObject)proteinSummary.get(i);
+
+                            out.println("<a class='left right-align-text' style='width:50px; padding-right:10px' href='" + item.get("link") + "'>");
+                                out.println("<span class='highlight-e' style='font-size:14px'>" + item.get("data") + "</span>");
+                                out.println("</a>");
+
+                            out.println("<span class='left small' style='padding-top:5px'>" + item.get("description") + "</span>");
+                            out.println("<div class='clear'></div>");
+                            }
+                            out.println("</div>");
+
+                        // specialty genes
+                        out.println("<div class='left left-align-text'><h3>Specialty Genes:</h3>");
+                            for(int i = 0; i < specialtyGenes.size(); i++)
+                            {
+                            JSONObject item = (JSONObject)specialtyGenes.get(i);
+
+                            out.println("<a class='left right-align-text' style='width:50px; padding-right:10px' href='" + item.get("link") + "'>");
+                                out.println("<span class='highlight-e' style='font-size:14px'>" + item.get("data") + "</span>");
+                                out.println("</a>");
+
+                            out.println("<span class='left small' style='padding-top:5px'>" + item.get("description") + "</span>");
+                            out.println("<div class='clear'></div>");
+                            }
+                            out.println("</div>");
+
+                        out.println("<div class='clear'></div>");
+                        out.println("</div>");
+
+                    // list of linkouts
+                    out.println("<h3>Explore Genomic Features in </h3>");
+                    for(int i = 0; i < popularLinks.size(); i++)
+                    {
+                    JSONObject item = (JSONObject)popularLinks.get(i);
+                    String margin = null;
+                    String align = null;
+                    if ((i % 2) == 0) {
+                    align = "left";
+                    margin = "";
+                    } else {
+                    align = "right";
+                    margin = "margin-right:100px;";
+                    }
+                    out.println("<a class='double-arrow-link " + align + "' style='" + margin +"' href=\"" + item.get("link") + "\">"+ item.get("name") + "</a>");
+                    if ((i % 2) == 1) {
+                    out.println("<br/>");
+                    }
+                    }
+                    out.println("</div>");
+                    }
+                    // list of genomes
+                    out.println("<ul class='no-decoration genome-list tab-headers third'>");
+                    for(int nameCt = 0; nameCt < popularItems.size(); nameCt++)
+                    {
+                    JSONObject name = (JSONObject)popularItems.get(nameCt);
+                    out.println("<li><a data-genome-href='" + name.get("link") + "' class='genome-link' href='#genome-tab" + (nameCt+1) + "'>" + name.get("popularName") + "</a>");
+                        //out.println("<div class='arrow'></div></li>");
+                    }
+                    out.println("</ul>");
+                    %>-->
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Process -->
+        <div class="data-tab" id="tab3">
+            <div class="data-box">
+                <h3 class="ribbon-title">How Do We Process and Clean Up Our Data?</h3>
+                <img alt="How Do We Process and Clean Up Our Data?" src="http://enews.patricbrc.org/wp-content/uploads/2013/11/final_features.jpg" />
+            </div>
+        </div>
+    </section>
+</div>
