@@ -51,109 +51,12 @@
 					</div><!-- / tabbed -->
 				</div><!-- / span-13 -->
 			</div><!-- / group -->
-			<!--<%
-			JSONObject popular = (JSONObject)jsonData.get("popularGenomes");
-			%> -->
-			<div class="data-box popular-box tabbed hover-tabs no-underline-links">
-				<h3 class="ribbon-title">Select Genomes></h3>
-				<div class="group"><!--
-					<%
-						JSONArray popularItems = (JSONArray) popular.get("popularList");
-						for(int popCt = 0; popCt < popularItems.size(); popCt++)
-						{
-							JSONObject pop = (JSONObject)popularItems.get(popCt);
-							out.println("<div class='genome-data right half group' id='genome-tab" + (popCt+1) + "'>");
-							// metadata
-							JSONObject meta = (JSONObject)pop.get("metadata");
-							//out.println("<div class='far2x'>");
-							out.println("<table class='no-decoration basic far2x'>");
-							out.println("<tr>");
-								out.println("<th class='italic' width='25%' scope='row'>Genome Status: </th><td width='25%'>&nbsp;" + meta.get("genome_status") + "</td>");
-								out.println("<th class='italic' width='25%' scope='row'>Isolation Country: </th><td width='25%'>&nbsp;" + meta.get("isolation_country") + "</td>");
-							out.println("</tr>");
-							
-							out.println("<tr>");
-								out.println("<th class='italic' scope='row'>Genomic Sequences: </th><td> ");
-								if (meta.get("chromosomes") != null && !meta.get("chromosomes").toString().equals("0")) {
-									if (meta.get("chromosomes").toString().equals("1")) {
-										out.println(meta.get("chromosomes") + " Chromosome");
-									} else {
-										out.println(meta.get("chromosomes") + " Chromosomes");
-									}
-								}
-								if (meta.get("plasmids") != null && !meta.get("plasmids").toString().equals("0")) {
-									if (meta.get("plasmids").toString().equals("1")) {
-										out.println("<br/>" + meta.get("plasmids") + " Plasmid");
-									} else {
-										out.println("<br/>" + meta.get("plasmids") + " Plasmids");
-									}
-								}
-								if (meta.get("contigs") != null && !meta.get("contigs").toString().equals("0")) {
-									if (meta.get("contigs").toString().equals("1")) {
-										out.println("<br/>" + meta.get("contigs" + " Contig"));
-									} else {
-										out.println("<br/>" + meta.get("contigs") + " Contigs");
-									}
-								}
-								out.println("</td>");
-								out.println("<th class='italic' scope='row'>Host Name: </th><td>&nbsp;" + meta.get("host_name") + "</td>");
-							out.println("</tr>");
-							
-							out.println("<tr>");
-								out.println("<th class='italic' scope='row'>Genome Length: </th><td>&nbsp;" + meta.get("genome_length") + " bp</td>");
-								out.println("<th class='italic' scope='row'>Disease: </th><td>&nbsp;" + meta.get("disease") + "</td>");
-							out.println("</tr>");
-							
-							out.println("<tr>");
-								out.println("<th class='italic' scope='row'>Completion Date: </th><td>&nbsp;" + meta.get("completion_date") + "</td>");
-								out.println("<th class='italic' scope='row'>Collection Date: </th><td>&nbsp;" + meta.get("collection_date") + "</td>");
-							out.println("</tr>");
 
-							out.println("</table>");
-							//out.println("</div>");
-							// data type summary
-							JSONArray popularData = (JSONArray)pop.get("popularData");
-							out.println("	<div class='column'>");
-							for (int left = 0; left < popularData.size(); left=left+2)
-							{
-								JSONObject leftitem = (JSONObject)popularData.get(left);
-								out.println("<a class='genome-data-item clear' href='" + leftitem.get("link") + "'>");
-								out.println("<div class='genome-data-icon left' style='background-image: url(" + leftitem.get("picture") + ")'></div>");
-								out.println("<h3 class='down2x close highlight-e'>" + leftitem.get("data") + "</h3>");
-								out.println("<p class='small'>" + leftitem.get("description") + "</p>");
-								out.println("</a>");
-							}
-							out.println("	</div>");
-							out.println("	<div class='column'>");
-							for (int right = 1; right < popularData.size(); right=right+2)
-							{
-								JSONObject rightitem = (JSONObject)popularData.get(right);
-								out.println("<a class='genome-data-item clear' href='" + rightitem.get("link") + "'>");
-								out.println("<div class='genome-data-icon left' style='background-image: url(" + rightitem.get("picture") + ")'></div>");
-								out.println("<h3 class='down2x close highlight-e'>" + rightitem.get("data") + "</h3>");
-								out.println("<p class='small'>" + rightitem.get("description") + "</p>");
-								out.println("</a>");
-							}
-							out.println("	</div>");
-							out.println("<div class='clear'></div>");
-							
-							// links to
-							out.println("<p><a class='double-arrow-link' href='" + pop.get("gb_link") + "'>View This Genome in Genome Browser</a></p><br/>");
-							out.println("</div>"); 	
-						}
-						out.println("<ul class='no-decoration genome-list tab-headers third'>");
-						for(int nameCt = 0; nameCt < popularItems.size(); nameCt++)
-						{
-							JSONObject name = (JSONObject)popularItems.get(nameCt);
-							out.println("<li>");
-							out.println("<a data-genome-href='" + name.get("link") + "' class='genome-link' href='#genome-tab" + (nameCt+1) + "'>" + name.get("popularName") + "</a>");
-							out.println("<div class='arrow'></div>");
-							out.println("</li>");
-						}
-						out.println("</ul>");
-					%>-->
-				</div><!-- / group -->
-				<p class='down'><a class="double-arrow-link" href="GenomeList?cType=taxon&cId=2&dataSource=&displayMode=&pk=&kw=">View All PATRIC Genomes</a></p>
+			<div class="data-box popular-box tabbed hover-tabs no-underline-links">
+				<h3 class="ribbon-title">Select Genomes</h3>
+				<div class="group">
+				</div>
+				<p class='down'><a class="double-arrow-link" href="/view/Taxonomy/2#view_tab=genomes">View All PATRIC Genomes</a></p>
 			</div>
 		</div>
 

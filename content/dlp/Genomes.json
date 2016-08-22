@@ -114,34 +114,26 @@
         "popularTitle": "Select Genomes",
         "popularList": [
             {
-                "popularData": [
-                    {
-                        "picture": "/patric/images/icon-popular-feature.png",
-                        "description": "Features",
-                        "link": "FeatureTable?cType=genome&cId=83332.12&featuretype=&annotation=PATRIC&filtertype=",
+                "dataType": {
+                    "features": {
+                        "link": "/view/Genome/83332.12#view_tab=features",
                         "data": 4367
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-pathway.png",
-                        "description": "Pathways",
-                        "link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=&pClass=&ecN=",
+                    "pathways": {
+                        "link": "/view/Genome/83332.12#view_tab=pathways",
                         "data": 141
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-experiment.png",
-                        "description": "Transcriptomic Experiments",
-                        "link": "ExperimentList?cType=genome&cId=83332.12&kw=",
+                    "experiments": {
+                        "link": "/view/Genome/83332.12#view_tab=transcriptomics",
                         "data": 47
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-proteinfamily.png",
-                        "description": "Protein Families",
-                        "link": "FIGfam?cType=genome&cId=83332.12&dm=result&bm=",
+                    "proteinfamily": {
+                        "link": "/view/Genome/83332.12#view_tab=proteinFamilies",
                         "data": 4290
                     }
-                ],
-                "gb_link": "GenomeBrowser?cType=genome&cId=83332.12&loc=0..10000&tracks=",
-                "link": "Genome?cType=genome&cId=83332.12",
+                },
+                "gb_link": "/view/Genome/83332.12#view_tab=browser",
+                "link": "/view/Genome/83332.12",
                 "metadata": {
                     "genome_status": "Complete",
                     "chromosomes": 1,
@@ -157,34 +149,26 @@
                 "popularName": "Mycobacterium tuberculosis H37Rv"
             },
             {
-                "popularData": [
-                    {
-                        "picture": "/patric/images/icon-popular-feature.png",
-                        "description": "Features",
-                        "link": "FeatureTable?cType=genome&cId=511145.12&featuretype=&annotation=PATRIC&filtertype=",
+                "dataType": {
+                    "features": {
+                        "link": "/view/Genome/511145.12#view_tab=features",
                         "data": 4549
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-pathway.png",
-                        "description": "Pathways",
-                        "link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=&pClass=&ecN=",
+                    "pathways": {
+                        "link": "/view/Genome/511145.12#view_tab=pathways",
                         "data": 136
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-experiment.png",
-                        "description": "Transcriptomic Experiments",
-                        "link": "ExperimentList?cType=genome&cId=511145.12&kw=",
+                    "experiments": {
+                        "link": "/view/Genome/511145.12#view_tab=transcriptomics",
                         "data": 208
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-proteinfamily.png",
-                        "description": "Protein Families",
-                        "link": "FIGfam?cType=genome&cId=511145.12&dm=result&bm=",
+                    "proteinfamily": {
+                        "link": "/view/Genome/511145.12#view_tab=proteinFamilies",
                         "data": 4413
                     }
-                ],
-                "gb_link": "GenomeBrowser?cType=genome&cId=511145.12&loc=0..10000&tracks=",
-                "link": "Genome?cType=genome&cId=511145.12",
+                },
+                "gb_link": "/view/Genome/511145.12#view_tab=browser",
+                "link": "/view/Genome/511145.12",
                 "metadata": {
                     "genome_status": "Complete",
                     "chromosomes": 1,
@@ -200,34 +184,26 @@
                 "popularName": "Escherichia coli str. K-12 substr. MG1655"
             },
             {
-                "popularData": [
-                    {
-                        "picture": "/patric/images/icon-popular-feature.png",
-                        "description": "Features",
-                        "link": "FeatureTable?cType=genome&cId=99287.12&featuretype=&annotation=PATRIC&filtertype=",
+                "dataType": {
+                    "features": {
+                        "link": "/view/Genome/99287.12#view_tab=features",
                         "data": 4972
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-pathway.png",
-                        "description": "Pathways",
-                        "link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=&pClass=&ecN=",
+                    "pathways": {
+                        "link": "/view/Genome/99287.12#view_tab=pathways",
                         "data": 136
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-experiment.png",
-                        "description": "Transcriptomic Experiments",
-                        "link": "ExperimentList?cType=genome&cId=99287.12&kw=",
+                    "experiments": {
+                        "link": "/view/Genome/99287.12#view_tab=transcriptomics",
                         "data": 48
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-proteinfamily.png",
-                        "description": "Protein Families",
-                        "link": "FIGfam?cType=genome&cId=99287.12&dm=result&bm=",
+                    "proteinfamily": {
+                        "link": "/view/Genome/99287.12#view_tab=proteinFamilies",
                         "data": 4910
                     }
-                ],
-                "gb_link": "GenomeBrowser?cType=genome&cId=99287.12&loc=0..10000&tracks=",
-                "link": "Genome?cType=genome&cId=99287.12",
+                },
+                "gb_link": "/view/Genome/99287.12#view_tab=browser",
+                "link": "/view/Genome/99287.12",
                 "metadata": {
                     "genome_status": "Complete",
                     "chromosomes": 1,
@@ -243,34 +219,26 @@
                 "popularName": "Salmonella enterica subsp. enterica serovar Typhimurium str. LT2"
             },
             {
-                "popularData": [
-                    {
-                        "picture": "/patric/images/icon-popular-feature.png",
-                        "description": "Features",
-                        "link": "FeatureTable?cType=genome&cId=198215.6&featuretype=&annotation=PATRIC&filtertype=",
+                "dataType": {
+                    "features": {
+                        "link": "/view/Genome/198215.6#view_tab=features",
                         "data": 5131
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-pathway.png",
-                        "description": "Pathways",
-                        "link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=&pClass=&ecN=",
+                    "pathways": {
+                        "link": "/view/Genome/198215.6#view_tab=pathways",
                         "data": 134
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-experiment.png",
-                        "description": "Transcriptomic Experiments",
-                        "link": "ExperimentList?cType=genome&cId=198215.6&kw=",
+                    "experiments": {
+                        "link": "/view/Genome/198215.6#view_tab=transcriptomics",
                         "data": 2
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-proteinfamily.png",
-                        "description": "Protein Families",
-                        "link": "FIGfam?cType=genome&cId=198215.6&dm=result&bm=",
+                    "proteinfamily": {
+                        "link": "/view/Genome/198215.6#view_tab=proteinFamilies",
                         "data": 4959
                     }
-                ],
-                "gb_link": "GenomeBrowser?cType=genome&cId=198215.6&loc=0..10000&tracks=",
-                "link": "Genome?cType=genome&cId=198215.6",
+                },
+                "gb_link": "/view/Genome/198215.6#view_tab=browser",
+                "link": "/view/Genome/198215.6",
                 "metadata": {
                     "genome_status": "Complete",
                     "chromosomes": 1,
@@ -286,34 +254,26 @@
                 "popularName": "Shigella flexneri 2a str. 2457T"
             },
             {
-                "popularData": [
-                    {
-                        "picture": "/patric/images/icon-popular-feature.png",
-                        "description": "Features",
-                        "link": "FeatureTable?cType=genome&cId=214092.21&featuretype=&annotation=PATRIC&filtertype=",
+                "dataType": {
+                    "features": {
+                        "link": "/view/Genome/214092.21#view_tab=features",
                         "data": 4666
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-pathway.png",
-                        "description": "Pathways",
-                        "link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=&pClass=&ecN=",
+                    "pathways": {
+                        "link": "/view/Genome/214092.21#view_tab=pathways",
                         "data": 134
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-experiment.png",
-                        "description": "Transcriptomic Experiments",
-                        "link": "ExperimentList?cType=genome&cId=214092.21&kw=",
+                    "experiments": {
+                        "link": "/view/Genome/214092.21#view_tab=transcriptomics",
                         "data": 6
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-proteinfamily.png",
-                        "description": "Protein Families",
-                        "link": "FIGfam?cType=genome&cId=214092.21&dm=result&bm=",
+                    "proteinfamily": {
+                        "link": "/view/Genome/214092.21#view_tab=proteinFamilies",
                         "data": 4513
                     }
-                ],
-                "gb_link": "GenomeBrowser?cType=genome&cId=214092.21&loc=0..10000&tracks=",
-                "link": "Genome?cType=genome&cId=214092.21",
+                },
+                "gb_link": "/view/Genome/214092.21#view_tab=browser",
+                "link": "/view/Genome/214092.21",
                 "metadata": {
                     "genome_status": "Complete",
                     "chromosomes": 1,
@@ -329,34 +289,26 @@
                 "popularName": "Yersinia pestis CO92"
             },
             {
-                "popularData": [
-                    {
-                        "picture": "/patric/images/icon-popular-feature.png",
-                        "description": "Features",
-                        "link": "FeatureTable?cType=genome&cId=169963.11&featuretype=&annotation=PATRIC&filtertype=",
+                "dataType": {
+                    "features": {
+                        "link": "/view/Genome/169963.11#view_tab=features",
                         "data": 2927
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-pathway.png",
-                        "description": "Pathways",
-                        "link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=&pClass=&ecN=",
+                    "pathways": {
+                        "link": "/view/Genome/169963.11#view_tab=pathways",
                         "data": 127
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-experiment.png",
-                        "description": "Transcriptomic Experiments",
-                        "link": "ExperimentList?cType=genome&cId=169963.11&kw=",
+                    "experiments": {
+                        "link": "/view/Genome/169963.11#view_tab=transcriptomics",
                         "data": 34
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-proteinfamily.png",
-                        "description": "Protein Families",
-                        "link": "FIGfam?cType=genome&cId=169963.11&dm=result&bm=",
+                    "proteinfamily": {
+                        "link": "/view/Genome/169963.11#view_tab=proteinFamilies",
                         "data": 2906
                     }
-                ],
-                "gb_link": "GenomeBrowser?cType=genome&cId=169963.11&loc=0..10000&tracks=",
-                "link": "Genome?cType=genome&cId=169963.11",
+                },
+                "gb_link": "/view/Genome/169963.11#view_tab=browser",
+                "link": "/view/Genome/169963.11",
                 "metadata": {
                     "genome_status": "Complete",
                     "chromosomes": 1,
@@ -372,34 +324,26 @@
                 "popularName": "Listeria monocytogenes EGD-e"
             },
             {
-                "popularData": [
-                    {
-                        "picture": "/patric/images/icon-popular-feature.png",
-                        "description": "Features",
-                        "link": "FeatureTable?cType=genome&cId=158879.11&featuretype=&annotation=PATRIC&filtertype=",
+                "dataType": {
+                    "features": {
+                        "link": "/view/Genome/158879.11#view_tab=features",
                         "data": 2734
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-pathway.png",
-                        "description": "Pathways",
-                        "link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=&pClass=&ecN=",
+                    "pathways": {
+                        "link": "/view/Genome/158879.11#view_tab=pathways",
                         "data": 132
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-experiment.png",
-                        "description": "Transcriptomic Experiments",
-                        "link": "ExperimentList?cType=genome&cId=158879.11&kw=",
+                    "experiments": {
+                        "link": "/view/Genome/158879.11#view_tab=transcriptomics",
                         "data": 18
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-proteinfamily.png",
-                        "description": "Protein Families",
-                        "link": "FIGfam?cType=genome&cId=158879.11&dm=result&bm=",
+                    "proteinfamily": {
+                        "link": "/view/Genome/158879.11#view_tab=proteinFamilies",
                         "data": 2700
                     }
-                ],
-                "gb_link": "GenomeBrowser?cType=genome&cId=158879.11&loc=0..10000&tracks=",
-                "link": "Genome?cType=genome&cId=158879.11",
+                },
+                "gb_link": "/view/Genome/158879.11#view_tab=browser",
+                "link": "/view/Genome/158879.11",
                 "metadata": {
                     "genome_status": "Complete",
                     "chromosomes": 1,
@@ -415,34 +359,26 @@
                 "popularName": "Staphylococcus aureus subsp. aureus N315"
             },
             {
-                "popularData": [
-                    {
-                        "picture": "/patric/images/icon-popular-feature.png",
-                        "description": "Features",
-                        "link": "FeatureTable?cType=genome&cId=373153.27&featuretype=&annotation=PATRIC&filtertype=",
+                "dataType": {
+                    "features": {
+                        "link": "/view/Genome/373153.27#view_tab=features",
                         "data": 2205
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-pathway.png",
-                        "description": "Pathways",
-                        "link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=&pClass=&ecN=",
+                    "pathways": {
+                        "link": "/view/Genome/373153.27#view_tab=pathways",
                         "data": 124
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-experiment.png",
-                        "description": "Transcriptomic Experiments",
-                        "link": "ExperimentList?cType=genome&cId=373153.27&kw=",
+                    "experiments": {
+                        "link": "/view/Genome/373153.27#view_tab=transcriptomics",
                         "data": 16
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-proteinfamily.png",
-                        "description": "Protein Families",
-                        "link": "FIGfam?cType=genome&cId=373153.27&dm=result&bm=",
+                    "proteinfamily": {
+                        "link": "/view/Genome/373153.27#view_tab=proteinFamilies",
                         "data": 2159
                     }
-                ],
-                "gb_link": "GenomeBrowser?cType=genome&cId=373153.27&loc=0..10000&tracks=",
-                "link": "Genome?cType=genome&cId=373153.27",
+                },
+                "gb_link": "/view/Genome/373153.27#view_tab=browser",
+                "link": "/view/Genome/373153.27",
                 "metadata": {
                     "genome_status": "Complete",
                     "chromosomes": 1,
@@ -458,34 +394,26 @@
                 "popularName": "Streptococcus pneumoniae D39"
             },
             {
-                "popularData": [
-                    {
-                        "picture": "/patric/images/icon-popular-feature.png",
-                        "description": "Features",
-                        "link": "FeatureTable?cType=genome&cId=224914.11&featuretype=&annotation=PATRIC&filtertype=",
+                "dataType": {
+                    "features": {
+                        "link": "/view/Genome/224914.11#view_tab=features",
                         "data": 3499
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-pathway.png",
-                        "description": "Pathways",
-                        "link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=&pClass=&ecN=",
+                    "pathways": {
+                        "link": "/view/Genome/224914.11#view_tab=pathways",
                         "data": 138
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-experiment.png",
-                        "description": "Transcriptomic Experiments",
-                        "link": "ExperimentList?cType=genome&cId=224914.11&kw=",
+                    "experiments": {
+                        "link": "/view/Genome/224914.11#view_tab=transcriptomics",
                         "data": 6
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-proteinfamily.png",
-                        "description": "Protein Families",
-                        "link": "FIGfam?cType=genome&cId=224914.11&dm=result&bm=",
+                    "proteinfamily": {
+                        "link": "/view/Genome/224914.11#view_tab=proteinFamilies",
                         "data": 3445
                     }
-                ],
-                "gb_link": "GenomeBrowser?cType=genome&cId=224914.11&loc=0..10000&tracks=",
-                "link": "Genome?cType=genome&cId=224914.11",
+                },
+                "gb_link": "/view/Genome/224914.11#view_tab=browser",
+                "link": "/view/Genome/224914.11",
                 "metadata": {
                     "genome_status": "Complete",
                     "chromosomes": 2,
@@ -501,34 +429,26 @@
                 "popularName": "Brucella melitensis bv. 1 str. 16M"
             },
             {
-                "popularData": [
-                    {
-                        "picture": "/patric/images/icon-popular-feature.png",
-                        "description": "Features",
-                        "link": "FeatureTable?cType=genome&cId=85962.8&featuretype=&annotation=PATRIC&filtertype=",
+                "dataType": {
+                    "features": {
+                        "link": "/view/Genome/85962.8#view_tab=features",
                         "data": 1674
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-pathway.png",
-                        "description": "Pathways",
-                        "link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=&pClass=&ecN=",
+                    "pathways": {
+                        "link": "/view/Genome/85962.8#view_tab=pathways",
                         "data": 117
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-experiment.png",
-                        "description": "Transcriptomic Experiments",
-                        "link": "ExperimentList?cType=genome&cId=85962.8&kw=",
+                    "experiments": {
+                        "link": "/view/Genome/85962.8#view_tab=transcriptomics",
                         "data": 10
                     },
-                    {
-                        "picture": "/patric/images/icon-popular-proteinfamily.png",
-                        "description": "Protein Families",
-                        "link": "FIGfam?cType=genome&cId=85962.8&dm=result&bm=",
+                    "proteinfamily": {
+                        "link": "/view/Genome/85962.8#view_tab=proteinFamilies",
                         "data": 1624
                     }
-                ],
-                "gb_link": "GenomeBrowser?cType=genome&cId=85962.8&loc=0..10000&tracks=",
-                "link": "Genome?cType=genome&cId=85962.8",
+                },
+                "gb_link": "/view/Genome/85962.8#view_tab=browser",
+                "link": "/view/Genome/85962.8",
                 "metadata": {
                     "genome_status": "Complete",
                     "chromosomes": 1,
