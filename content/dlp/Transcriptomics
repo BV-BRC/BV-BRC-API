@@ -2,12 +2,6 @@
     <h2>Transcriptomics</h2>
 	<section class="main">
 		<!-- Section: Data -->
-		<!--
-			JSONObject topSpecies = (JSONObject)jsonData.get("topSpecies");
-			JSONObject featuredExperiment = (JSONObject)jsonData.get("featuredExperiment");
-			JSONArray experiments = (JSONArray)featuredExperiment.get("data");
-			JSONObject jsonTopline = (JSONObject)jsonData.get("data"); 
-		-->
 		<div class="data-tab" id="tab1">
 			<h3>View and Compare Curated Microarray Datasets from Repositories and Other Sources</h3>
 				<div class="large"><p>Our manual curation includes a review of the experiment description and the related publication to understand experimental design; combines data from replicates; and creates pair-wise comparisons or contrasts as described in the publication to identify differential gene expression, data normalization and log-transformation. Available analyses consist of a suite of integrated tools to explore, visualize and compare a large number of published transcriptomics datasets. PATRIC also allows researchers to upload and analyze their own gene expression data in their private workspace and compare it to existing data. Learn more in our <a href="http://enews.patricbrc.org/faqs/transcriptomics-faqs/">Transcriptomics FAQs</a>.<b></b></p>
@@ -17,54 +11,13 @@
 				<div class="chart"></div>
 			</div>
 			<div class="data-box right" style="width:410px; line-height: 1.6em">
-				<h3 class="ribbon-title">Featured Experiments</h3><!--
-				<% for (Object obj: experiments) { 
-					JSONObject exp = (JSONObject) obj;
-				%>
-				<div class="far">
-					<img src="/patric/images/global_experiment.png" alt="Experiment" style="float: left; padding: 3px 3px 0px 3px;">
-					<div style="margin-left: 60px">
-						<a href="<%=exp.get("link")%>"><%=exp.get("title") %></a>
-						<br/><span style="color: #C60;"><%=exp.get("organism")%></span>
-						<br/><span>Accession: <%=exp.get("accession") %></span>
-						<% if (exp.get("pmid") != "") { %>
-							, &nbsp; <span>PubMed: <a class="arrow-slate-e" href="http://www.ncbi.nlm.nih.gov/pubmed/<%=exp.get("pmid") %>" target="_blank"><%=exp.get("pmid") %></a></span>
-						<% } %>
-					</div>
-				</div>
-				<% } %>-->
+				<h3 class="ribbon-title">Featured Experiments</h3>
 			</div>
 			<div class="clear"></div>
 
 			<div class="data-box popular-box tabbed hover-tabs no-underline-links">
 				<h3 class="ribbon-title">Select Genomes</h3>
-				<div class="group"><!--
-				<%
-					JSONArray popularItems = (JSONArray) popular.get("popularList");
-					String linkout = ((JSONObject) popularItems.get(0)).get("link").toString(); // initial link
-					// list of genome-tabs
-					for(int popCt = 0; popCt < popularItems.size(); popCt++)
-					{
-						out.println("<div id='genome-tab" + (popCt+1) + "' style='display:none'></div>");
-					}
-					
-					out.println("<div class='genome-data right half'>");
-					out.println("	<div id='dlp-transcriptomics-top-mutants'><span class='bold'>Top 5 Gene Modifications</span><div class='chart'></div></div>");
-					out.println("	<div id='dlp-transcriptomics-top-conditions'><span class='bold'>Top 5 Experiment Conditions</span><div class='chart'></div></div>");
-					out.println("	<p><a class='double-arrow-link' id='dlp-transcriptomics-linkout' href='" + linkout + "'>View All Experiment for This Genome</a></p>");
-					// View All Experiments for this genome
-					out.println("</div>");
-					
-					// list of genomes
-					out.println("<ul class='no-decoration genome-list tab-headers third'>");
-					for(int nameCt = 0; nameCt < popularItems.size(); nameCt++)
-					{
-						JSONObject name = (JSONObject)popularItems.get(nameCt);
-						out.println("<li><a onmouseover='topGeneModifications.updateChart("+(nameCt)+");topExperimentConditions.updateChart("+(nameCt)+");updateLinkout(\""+ name.get("link") + "\")' data-genome-href='" + name.get("link") + "' class='genome-link' href='#genome-tab" + (nameCt+1) + "'>" + name.get("popularName") + "</a>");
-						out.println("<div class='arrow'></div></li>");
-					}
-					out.println("</ul>");
-				%>-->
+				<div class="group">
 				</div>
  				<p class="down"><a class="double-arrow-link" href="/view/Taxonomy/2#view_tab=transcriptomics">View All Experiments in PATRIC</a></p>
 			</div>

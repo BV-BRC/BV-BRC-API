@@ -209,1013 +209,1013 @@
             {
                 "popularData": [
                     {
-                        "y": 12424,
-                        "x": "10%"
+                        "count": 12424,
+                        "label": "10%"
                     },
                     {
-                        "y": 1331,
-                        "x": "20%"
+                        "count": 1331,
+                        "label": "20%"
                     },
                     {
-                        "y": 824,
-                        "x": "30%"
+                        "count": 824,
+                        "label": "30%"
                     },
                     {
-                        "y": 598,
-                        "x": "40%"
+                        "count": 598,
+                        "label": "40%"
                     },
                     {
-                        "y": 1059,
-                        "x": "50%"
+                        "count": 1059,
+                        "label": "50%"
                     },
                     {
-                        "y": 338,
-                        "x": "60%"
+                        "count": 338,
+                        "label": "60%"
                     },
                     {
-                        "y": 171,
-                        "x": "70%"
+                        "count": 171,
+                        "label": "70%"
                     },
                     {
-                        "y": 200,
-                        "x": "80%"
+                        "count": 200,
+                        "label": "80%"
                     },
                     {
-                        "y": 285,
-                        "x": "90%"
+                        "count": 285,
+                        "label": "90%"
                     },
                     {
-                        "y": 1227,
-                        "x": "100%"
+                        "count": 1227,
+                        "label": "100%"
                     }
                 ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=1386&dm=result&bm=&pk=",
+                "link": "/view/Genome/1386#view_tab=proteinFamilies",
                 "popularName": "Bacillus"
             },
             {
                 "popularData": [
                     {
-                        "y": 527,
-                        "x": "10%"
+                        "count": 527,
+                        "label": "10%"
                     },
                     {
-                        "y": 65,
-                        "x": "20%"
+                        "count": 65,
+                        "label": "20%"
                     },
                     {
-                        "y": 86,
-                        "x": "30%"
+                        "count": 86,
+                        "label": "30%"
                     },
                     {
-                        "y": 35,
-                        "x": "40%"
+                        "count": 35,
+                        "label": "40%"
                     },
                     {
-                        "y": 47,
-                        "x": "50%"
+                        "count": 47,
+                        "label": "50%"
                     },
                     {
-                        "y": 40,
-                        "x": "60%"
+                        "count": 40,
+                        "label": "60%"
                     },
                     {
-                        "y": 45,
-                        "x": "70%"
+                        "count": 45,
+                        "label": "70%"
                     },
                     {
-                        "y": 82,
-                        "x": "80%"
+                        "count": 82,
+                        "label": "80%"
                     },
                     {
-                        "y": 38,
-                        "x": "90%"
+                        "count": 38,
+                        "label": "90%"
                     },
                     {
-                        "y": 805,
-                        "x": "100%"
+                        "count": 805,
+                        "label": "100%"
                     }
                 ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=773&dm=result&bm=&pk=",
+                "link": "/view/Genome/773#view_tab=proteinFamilies",
                 "popularName": "Bartonella"
             },
             {
                 "popularData": [
                     {
-                        "y": 38,
-                        "x": "10%"
+                        "count": 38,
+                        "label": "10%"
                     },
                     {
-                        "y": 26,
-                        "x": "20%"
+                        "count": 26,
+                        "label": "20%"
                     },
                     {
-                        "y": 70,
-                        "x": "30%"
+                        "count": 70,
+                        "label": "30%"
                     },
                     {
-                        "y": 59,
-                        "x": "40%"
+                        "count": 59,
+                        "label": "40%"
                     },
                     {
-                        "y": 13,
-                        "x": "50%"
+                        "count": 13,
+                        "label": "50%"
                     },
                     {
-                        "y": 11,
-                        "x": "60%"
+                        "count": 11,
+                        "label": "60%"
                     },
                     {
-                        "y": 14,
-                        "x": "70%"
+                        "count": 14,
+                        "label": "70%"
                     },
                     {
-                        "y": 10,
-                        "x": "80%"
+                        "count": 10,
+                        "label": "80%"
                     },
                     {
-                        "y": 26,
-                        "x": "90%"
+                        "count": 26,
+                        "label": "90%"
                     },
                     {
-                        "y": 707,
-                        "x": "100%"
+                        "count": 707,
+                        "label": "100%"
                     }
                 ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=138&dm=result&bm=&pk=",
+                "link": "/view/Genome/138#view_tab=proteinFamilies",
                 "popularName": "Borrelia"
             },
             {
                 "popularData": [
                     {
-                        "y": 816,
-                        "x": "10%"
+                        "count": 816,
+                        "label": "10%"
                     },
                     {
-                        "y": 164,
-                        "x": "20%"
+                        "count": 164,
+                        "label": "20%"
                     },
                     {
-                        "y": 49,
-                        "x": "30%"
+                        "count": 49,
+                        "label": "30%"
                     },
                     {
-                        "y": 53,
-                        "x": "40%"
+                        "count": 53,
+                        "label": "40%"
                     },
                     {
-                        "y": 38,
-                        "x": "50%"
+                        "count": 38,
+                        "label": "50%"
                     },
                     {
-                        "y": 73,
-                        "x": "60%"
+                        "count": 73,
+                        "label": "60%"
                     },
                     {
-                        "y": 43,
-                        "x": "70%"
+                        "count": 43,
+                        "label": "70%"
                     },
                     {
-                        "y": 80,
-                        "x": "80%"
+                        "count": 80,
+                        "label": "80%"
                     },
                     {
-                        "y": 167,
-                        "x": "90%"
+                        "count": 167,
+                        "label": "90%"
                     },
                     {
-                        "y": 2288,
-                        "x": "100%"
+                        "count": 2288,
+                        "label": "100%"
                     }
                 ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=234&dm=result&bm=&pk=",
+                "link": "/view/Genome/234#view_tab=proteinFamilies",
                 "popularName": "Brucella"
             },
             {
                 "popularData": [
                     {
-                        "y": 7264,
-                        "x": "10%"
+                        "count": 7264,
+                        "label": "10%"
                     },
                     {
-                        "y": 970,
-                        "x": "20%"
+                        "count": 970,
+                        "label": "20%"
                     },
                     {
-                        "y": 759,
-                        "x": "30%"
+                        "count": 759,
+                        "label": "30%"
                     },
                     {
-                        "y": 920,
-                        "x": "40%"
+                        "count": 920,
+                        "label": "40%"
                     },
                     {
-                        "y": 550,
-                        "x": "50%"
+                        "count": 550,
+                        "label": "50%"
                     },
                     {
-                        "y": 361,
-                        "x": "60%"
+                        "count": 361,
+                        "label": "60%"
                     },
                     {
-                        "y": 154,
-                        "x": "70%"
+                        "count": 154,
+                        "label": "70%"
                     },
                     {
-                        "y": 124,
-                        "x": "80%"
+                        "count": 124,
+                        "label": "80%"
                     },
                     {
-                        "y": 163,
-                        "x": "90%"
+                        "count": 163,
+                        "label": "90%"
                     },
                     {
-                        "y": 2314,
-                        "x": "100%"
+                        "count": 2314,
+                        "label": "100%"
                     }
                 ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=32008&dm=result&bm=&pk=",
+                "link": "/view/Genome/32008#view_tab=proteinFamilies",
                 "popularName": "Burkholderia"
             },
             {
                 "popularData": [
                     {
-                        "y": 3765,
-                        "x": "10%"
+                        "count": 3765,
+                        "label": "10%"
                     },
                     {
-                        "y": 170,
-                        "x": "20%"
+                        "count": 170,
+                        "label": "20%"
                     },
                     {
-                        "y": 141,
-                        "x": "30%"
+                        "count": 141,
+                        "label": "30%"
                     },
                     {
-                        "y": 46,
-                        "x": "40%"
+                        "count": 46,
+                        "label": "40%"
                     },
                     {
-                        "y": 112,
-                        "x": "50%"
+                        "count": 112,
+                        "label": "50%"
                     },
                     {
-                        "y": 57,
-                        "x": "60%"
+                        "count": 57,
+                        "label": "60%"
                     },
                     {
-                        "y": 22,
-                        "x": "70%"
+                        "count": 22,
+                        "label": "70%"
                     },
                     {
-                        "y": 28,
-                        "x": "80%"
+                        "count": 28,
+                        "label": "80%"
                     },
                     {
-                        "y": 47,
-                        "x": "90%"
+                        "count": 47,
+                        "label": "90%"
                     },
                     {
-                        "y": 1142,
-                        "x": "100%"
+                        "count": 1142,
+                        "label": "100%"
                     }
                 ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=194&dm=result&bm=&pk=",
+                "link": "/view/Genome/194#view_tab=proteinFamilies",
                 "popularName": "Campylobacter"
             },
             {
                 "popularData": [
                     {
-                        "y": 7041,
-                        "x": "10%"
+                        "count": 7041,
+                        "label": "10%"
                     },
                     {
-                        "y": 33,
-                        "x": "20%"
+                        "count": 33,
+                        "label": "20%"
                     },
                     {
-                        "y": 146,
-                        "x": "30%"
+                        "count": 146,
+                        "label": "30%"
                     },
                     {
-                        "y": 96,
-                        "x": "40%"
+                        "count": 96,
+                        "label": "40%"
                     },
                     {
-                        "y": 28,
-                        "x": "50%"
+                        "count": 28,
+                        "label": "50%"
                     },
                     {
-                        "y": 48,
-                        "x": "60%"
+                        "count": 48,
+                        "label": "60%"
                     },
                     {
-                        "y": 92,
-                        "x": "70%"
+                        "count": 92,
+                        "label": "70%"
                     },
                     {
-                        "y": 17,
-                        "x": "80%"
+                        "count": 17,
+                        "label": "80%"
                     },
                     {
-                        "y": 16,
-                        "x": "90%"
+                        "count": 16,
+                        "label": "90%"
                     },
                     {
-                        "y": 664,
-                        "x": "100%"
+                        "count": 664,
+                        "label": "100%"
                     }
                 ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=810&dm=result&bm=&pk=",
+                "link": "/view/Genome/810#view_tab=proteinFamilies",
                 "popularName": "Chlamydia"
             },
             {
                 "popularData": [
                     {
-                        "y": 11257,
-                        "x": "10%"
+                        "count": 11257,
+                        "label": "10%"
                     },
                     {
-                        "y": 928,
-                        "x": "20%"
+                        "count": 928,
+                        "label": "20%"
                     },
                     {
-                        "y": 748,
-                        "x": "30%"
+                        "count": 748,
+                        "label": "30%"
                     },
                     {
-                        "y": 428,
-                        "x": "40%"
+                        "count": 428,
+                        "label": "40%"
                     },
                     {
-                        "y": 260,
-                        "x": "50%"
+                        "count": 260,
+                        "label": "50%"
                     },
                     {
-                        "y": 232,
-                        "x": "60%"
+                        "count": 232,
+                        "label": "60%"
                     },
                     {
-                        "y": 216,
-                        "x": "70%"
+                        "count": 216,
+                        "label": "70%"
                     },
                     {
-                        "y": 268,
-                        "x": "80%"
+                        "count": 268,
+                        "label": "80%"
                     },
                     {
-                        "y": 263,
-                        "x": "90%"
+                        "count": 263,
+                        "label": "90%"
                     },
                     {
-                        "y": 380,
-                        "x": "100%"
+                        "count": 380,
+                        "label": "100%"
                     }
                 ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=1485&dm=result&bm=&pk=",
+                "link": "/view/Genome/1485#view_tab=proteinFamilies",
                 "popularName": "Clostridium"
             },
             {
                 "popularData": [
                     {
-                        "y": 294,
-                        "x": "10%"
+                        "count": 294,
+                        "label": "10%"
                     },
                     {
-                        "y": 56,
-                        "x": "20%"
+                        "count": 56,
+                        "label": "20%"
                     },
                     {
-                        "y": 57,
-                        "x": "30%"
+                        "count": 57,
+                        "label": "30%"
                     },
                     {
-                        "y": 54,
-                        "x": "40%"
+                        "count": 54,
+                        "label": "40%"
                     },
                     {
-                        "y": 58,
-                        "x": "50%"
+                        "count": 58,
+                        "label": "50%"
                     },
                     {
-                        "y": 24,
-                        "x": "60%"
+                        "count": 24,
+                        "label": "60%"
                     },
                     {
-                        "y": 65,
-                        "x": "70%"
+                        "count": 65,
+                        "label": "70%"
                     },
                     {
-                        "y": 65,
-                        "x": "80%"
+                        "count": 65,
+                        "label": "80%"
                     },
                     {
-                        "y": 160,
-                        "x": "90%"
+                        "count": 160,
+                        "label": "90%"
                     },
                     {
-                        "y": 1269,
-                        "x": "100%"
+                        "count": 1269,
+                        "label": "100%"
                     }
                 ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=776&dm=result&bm=&pk=",
+                "link": "/view/Genome/776#view_tab=proteinFamilies",
                 "popularName": "Coxiella"
             },
             {
                 "popularData": [
                     {
-                        "y": 31,
-                        "x": "10%"
+                        "count": 31,
+                        "label": "10%"
                     },
                     {
-                        "y": 31,
-                        "x": "20%"
+                        "count": 31,
+                        "label": "20%"
                     },
                     {
-                        "y": 67,
-                        "x": "30%"
+                        "count": 67,
+                        "label": "30%"
                     },
                     {
-                        "y": 24,
-                        "x": "40%"
+                        "count": 24,
+                        "label": "40%"
                     },
                     {
-                        "y": 18,
-                        "x": "50%"
+                        "count": 18,
+                        "label": "50%"
                     },
                     {
-                        "y": 9,
-                        "x": "60%"
+                        "count": 9,
+                        "label": "60%"
                     },
                     {
-                        "y": 16,
-                        "x": "70%"
+                        "count": 16,
+                        "label": "70%"
                     },
                     {
-                        "y": 18,
-                        "x": "80%"
+                        "count": 18,
+                        "label": "80%"
                     },
                     {
-                        "y": 14,
-                        "x": "90%"
+                        "count": 14,
+                        "label": "90%"
                     },
                     {
-                        "y": 663,
-                        "x": "100%"
+                        "count": 663,
+                        "label": "100%"
                     }
                 ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=943&dm=result&bm=&pk=",
+                "link": "/view/Genome/943#view_tab=proteinFamilies",
                 "popularName": "Ehrlichia"
             },
             {
                 "popularData": [
                     {
-                        "y": 10501,
-                        "x": "10%"
+                        "count": 10501,
+                        "label": "10%"
                     },
                     {
-                        "y": 853,
-                        "x": "20%"
+                        "count": 853,
+                        "label": "20%"
                     },
                     {
-                        "y": 520,
-                        "x": "30%"
+                        "count": 520,
+                        "label": "30%"
                     },
                     {
-                        "y": 276,
-                        "x": "40%"
+                        "count": 276,
+                        "label": "40%"
                     },
                     {
-                        "y": 256,
-                        "x": "50%"
+                        "count": 256,
+                        "label": "50%"
                     },
                     {
-                        "y": 185,
-                        "x": "60%"
+                        "count": 185,
+                        "label": "60%"
                     },
                     {
-                        "y": 225,
-                        "x": "70%"
+                        "count": 225,
+                        "label": "70%"
                     },
                     {
-                        "y": 276,
-                        "x": "80%"
+                        "count": 276,
+                        "label": "80%"
                     },
                     {
-                        "y": 148,
-                        "x": "90%"
+                        "count": 148,
+                        "label": "90%"
                     },
                     {
-                        "y": 2800,
-                        "x": "100%"
+                        "count": 2800,
+                        "label": "100%"
                     }
                 ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=561&dm=result&bm=&pk=",
+                "link": "/view/Genome/561#view_tab=proteinFamilies",
                 "popularName": "Escherichia"
             },
             {
                 "popularData": [
                     {
-                        "y": 365,
-                        "x": "10%"
+                        "count": 365,
+                        "label": "10%"
                     },
                     {
-                        "y": 239,
-                        "x": "20%"
+                        "count": 239,
+                        "label": "20%"
                     },
                     {
-                        "y": 60,
-                        "x": "30%"
+                        "count": 60,
+                        "label": "30%"
                     },
                     {
-                        "y": 76,
-                        "x": "40%"
+                        "count": 76,
+                        "label": "40%"
                     },
                     {
-                        "y": 21,
-                        "x": "50%"
+                        "count": 21,
+                        "label": "50%"
                     },
                     {
-                        "y": 37,
-                        "x": "60%"
+                        "count": 37,
+                        "label": "60%"
                     },
                     {
-                        "y": 74,
-                        "x": "70%"
+                        "count": 74,
+                        "label": "70%"
                     },
                     {
-                        "y": 112,
-                        "x": "80%"
+                        "count": 112,
+                        "label": "80%"
                     },
                     {
-                        "y": 149,
-                        "x": "90%"
+                        "count": 149,
+                        "label": "90%"
                     },
                     {
-                        "y": 1136,
-                        "x": "100%"
+                        "count": 1136,
+                        "label": "100%"
                     }
                 ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=262&dm=result&bm=&pk=",
+                "link": "/view/Genome/262#view_tab=proteinFamilies",
                 "popularName": "Francisella"
             },
             {
                 "popularData": [
                     {
-                        "y": 2078,
-                        "x": "10%"
+                        "count": 2078,
+                        "label": "10%"
                     },
                     {
-                        "y": 175,
-                        "x": "20%"
+                        "count": 175,
+                        "label": "20%"
                     },
                     {
-                        "y": 88,
-                        "x": "30%"
+                        "count": 88,
+                        "label": "30%"
                     },
                     {
-                        "y": 71,
-                        "x": "40%"
+                        "count": 71,
+                        "label": "40%"
                     },
                     {
-                        "y": 54,
-                        "x": "50%"
+                        "count": 54,
+                        "label": "50%"
                     },
                     {
-                        "y": 35,
-                        "x": "60%"
+                        "count": 35,
+                        "label": "60%"
                     },
                     {
-                        "y": 31,
-                        "x": "70%"
+                        "count": 31,
+                        "label": "70%"
                     },
                     {
-                        "y": 51,
-                        "x": "80%"
+                        "count": 51,
+                        "label": "80%"
                     },
                     {
-                        "y": 48,
-                        "x": "90%"
+                        "count": 48,
+                        "label": "90%"
                     },
                     {
-                        "y": 948,
-                        "x": "100%"
+                        "count": 948,
+                        "label": "100%"
                     }
                 ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=209&dm=result&bm=&pk=",
+                "link": "/view/Genome/209#view_tab=proteinFamilies",
                 "popularName": "Helicobacter"
             },
             {
                 "popularData": [
                     {
-                        "y": 2868,
-                        "x": "10%"
+                        "count": 2868,
+                        "label": "10%"
                     },
                     {
-                        "y": 210,
-                        "x": "20%"
+                        "count": 210,
+                        "label": "20%"
                     },
                     {
-                        "y": 121,
-                        "x": "30%"
+                        "count": 121,
+                        "label": "30%"
                     },
                     {
-                        "y": 116,
-                        "x": "40%"
+                        "count": 116,
+                        "label": "40%"
                     },
                     {
-                        "y": 84,
-                        "x": "50%"
+                        "count": 84,
+                        "label": "50%"
                     },
                     {
-                        "y": 57,
-                        "x": "60%"
+                        "count": 57,
+                        "label": "60%"
                     },
                     {
-                        "y": 48,
-                        "x": "70%"
+                        "count": 48,
+                        "label": "70%"
                     },
                     {
-                        "y": 49,
-                        "x": "80%"
+                        "count": 49,
+                        "label": "80%"
                     },
                     {
-                        "y": 71,
-                        "x": "90%"
+                        "count": 71,
+                        "label": "90%"
                     },
                     {
-                        "y": 2012,
-                        "x": "100%"
+                        "count": 2012,
+                        "label": "100%"
                     }
                 ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=1637&dm=result&bm=&pk=",
+                "link": "/view/Genome/1637#view_tab=proteinFamilies",
                 "popularName": "Listeria"
             },
             {
                 "popularData": [
                     {
-                        "y": 19432,
-                        "x": "10%"
+                        "count": 19432,
+                        "label": "10%"
                     },
                     {
-                        "y": 94,
-                        "x": "20%"
+                        "count": 94,
+                        "label": "20%"
                     },
                     {
-                        "y": 101,
-                        "x": "30%"
+                        "count": 101,
+                        "label": "30%"
                     },
                     {
-                        "y": 51,
-                        "x": "40%"
+                        "count": 51,
+                        "label": "40%"
                     },
                     {
-                        "y": 60,
-                        "x": "50%"
+                        "count": 60,
+                        "label": "50%"
                     },
                     {
-                        "y": 55,
-                        "x": "60%"
+                        "count": 55,
+                        "label": "60%"
                     },
                     {
-                        "y": 82,
-                        "x": "70%"
+                        "count": 82,
+                        "label": "70%"
                     },
                     {
-                        "y": 93,
-                        "x": "80%"
+                        "count": 93,
+                        "label": "80%"
                     },
                     {
-                        "y": 296,
-                        "x": "90%"
+                        "count": 296,
+                        "label": "90%"
                     },
                     {
-                        "y": 2589,
-                        "x": "100%"
+                        "count": 2589,
+                        "label": "100%"
                     }
                 ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=1763&dm=result&bm=&pk=",
+                "link": "/view/Genome/1763#view_tab=proteinFamilies",
                 "popularName": "Mycobacterium"
             },
             {
                 "popularData": [
                     {
-                        "y": 418,
-                        "x": "10%"
+                        "count": 418,
+                        "label": "10%"
                     },
                     {
-                        "y": 207,
-                        "x": "20%"
+                        "count": 207,
+                        "label": "20%"
                     },
                     {
-                        "y": 149,
-                        "x": "30%"
+                        "count": 149,
+                        "label": "30%"
                     },
                     {
-                        "y": 139,
-                        "x": "40%"
+                        "count": 139,
+                        "label": "40%"
                     },
                     {
-                        "y": 122,
-                        "x": "50%"
+                        "count": 122,
+                        "label": "50%"
                     },
                     {
-                        "y": 101,
-                        "x": "60%"
+                        "count": 101,
+                        "label": "60%"
                     },
                     {
-                        "y": 46,
-                        "x": "70%"
+                        "count": 46,
+                        "label": "70%"
                     },
                     {
-                        "y": 77,
-                        "x": "80%"
+                        "count": 77,
+                        "label": "80%"
                     },
                     {
-                        "y": 31,
-                        "x": "90%"
+                        "count": 31,
+                        "label": "90%"
                     },
                     {
-                        "y": 652,
-                        "x": "100%"
+                        "count": 652,
+                        "label": "100%"
                     }
                 ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=780&dm=result&bm=&pk=",
+                "link": "/view/Genome/780#view_tab=proteinFamilies",
                 "popularName": "Rickettsia"
             },
             {
                 "popularData": [
                     {
-                        "y": 5399,
-                        "x": "10%"
+                        "count": 5399,
+                        "label": "10%"
                     },
                     {
-                        "y": 466,
-                        "x": "20%"
+                        "count": 466,
+                        "label": "20%"
                     },
                     {
-                        "y": 154,
-                        "x": "30%"
+                        "count": 154,
+                        "label": "30%"
                     },
                     {
-                        "y": 136,
-                        "x": "40%"
+                        "count": 136,
+                        "label": "40%"
                     },
                     {
-                        "y": 316,
-                        "x": "50%"
+                        "count": 316,
+                        "label": "50%"
                     },
                     {
-                        "y": 171,
-                        "x": "60%"
+                        "count": 171,
+                        "label": "60%"
                     },
                     {
-                        "y": 98,
-                        "x": "70%"
+                        "count": 98,
+                        "label": "70%"
                     },
                     {
-                        "y": 118,
-                        "x": "80%"
+                        "count": 118,
+                        "label": "80%"
                     },
                     {
-                        "y": 217,
-                        "x": "90%"
+                        "count": 217,
+                        "label": "90%"
                     },
                     {
-                        "y": 3144,
-                        "x": "100%"
+                        "count": 3144,
+                        "label": "100%"
                     }
                 ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=590&dm=result&bm=&pk=",
+                "link": "/view/Genome/590#view_tab=proteinFamilies",
                 "popularName": "Salmonella"
             },
             {
                 "popularData": [
                     {
-                        "y": 6079,
-                        "x": "10%"
+                        "count": 6079,
+                        "label": "10%"
                     },
                     {
-                        "y": 418,
-                        "x": "20%"
+                        "count": 418,
+                        "label": "20%"
                     },
                     {
-                        "y": 195,
-                        "x": "30%"
+                        "count": 195,
+                        "label": "30%"
                     },
                     {
-                        "y": 87,
-                        "x": "40%"
+                        "count": 87,
+                        "label": "40%"
                     },
                     {
-                        "y": 73,
-                        "x": "50%"
+                        "count": 73,
+                        "label": "50%"
                     },
                     {
-                        "y": 71,
-                        "x": "60%"
+                        "count": 71,
+                        "label": "60%"
                     },
                     {
-                        "y": 98,
-                        "x": "70%"
+                        "count": 98,
+                        "label": "70%"
                     },
                     {
-                        "y": 378,
-                        "x": "80%"
+                        "count": 378,
+                        "label": "80%"
                     },
                     {
-                        "y": 201,
-                        "x": "90%"
+                        "count": 201,
+                        "label": "90%"
                     },
                     {
-                        "y": 2935,
-                        "x": "100%"
+                        "count": 2935,
+                        "label": "100%"
                     }
                 ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=620&dm=result&bm=&pk=",
+                "link": "/view/Genome/620#view_tab=proteinFamilies",
                 "popularName": "Shigella"
             },
             {
                 "popularData": [
                     {
-                        "y": 14052,
-                        "x": "10%"
+                        "count": 14052,
+                        "label": "10%"
                     },
                     {
-                        "y": 161,
-                        "x": "20%"
+                        "count": 161,
+                        "label": "20%"
                     },
                     {
-                        "y": 128,
-                        "x": "30%"
+                        "count": 128,
+                        "label": "30%"
                     },
                     {
-                        "y": 68,
-                        "x": "40%"
+                        "count": 68,
+                        "label": "40%"
                     },
                     {
-                        "y": 49,
-                        "x": "50%"
+                        "count": 49,
+                        "label": "50%"
                     },
                     {
-                        "y": 66,
-                        "x": "60%"
+                        "count": 66,
+                        "label": "60%"
                     },
                     {
-                        "y": 83,
-                        "x": "70%"
+                        "count": 83,
+                        "label": "70%"
                     },
                     {
-                        "y": 90,
-                        "x": "80%"
+                        "count": 90,
+                        "label": "80%"
                     },
                     {
-                        "y": 111,
-                        "x": "90%"
+                        "count": 111,
+                        "label": "90%"
                     },
                     {
-                        "y": 1832,
-                        "x": "100%"
+                        "count": 1832,
+                        "label": "100%"
                     }
                 ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=1279&dm=result&bm=&pk=",
+                "link": "/view/Genome/1279#view_tab=proteinFamilies",
                 "popularName": "Staphylococcus"
             },
             {
                 "popularData": [
                     {
-                        "y": 19037,
-                        "x": "10%"
+                        "count": 19037,
+                        "label": "10%"
                     },
                     {
-                        "y": 432,
-                        "x": "20%"
+                        "count": 432,
+                        "label": "20%"
                     },
                     {
-                        "y": 197,
-                        "x": "30%"
+                        "count": 197,
+                        "label": "30%"
                     },
                     {
-                        "y": 123,
-                        "x": "40%"
+                        "count": 123,
+                        "label": "40%"
                     },
                     {
-                        "y": 101,
-                        "x": "50%"
+                        "count": 101,
+                        "label": "50%"
                     },
                     {
-                        "y": 69,
-                        "x": "60%"
+                        "count": 69,
+                        "label": "60%"
                     },
                     {
-                        "y": 103,
-                        "x": "70%"
+                        "count": 103,
+                        "label": "70%"
                     },
                     {
-                        "y": 256,
-                        "x": "80%"
+                        "count": 256,
+                        "label": "80%"
                     },
                     {
-                        "y": 179,
-                        "x": "90%"
+                        "count": 179,
+                        "label": "90%"
                     },
                     {
-                        "y": 862,
-                        "x": "100%"
+                        "count": 862,
+                        "label": "100%"
                     }
                 ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=1301&dm=result&bm=&pk=",
+                "link": "/view/Genome/1301#view_tab=proteinFamilies",
                 "popularName": "Streptococcus"
             },
             {
                 "popularData": [
                     {
-                        "y": 7281,
-                        "x": "10%"
+                        "count": 7281,
+                        "label": "10%"
                     },
                     {
-                        "y": 419,
-                        "x": "20%"
+                        "count": 419,
+                        "label": "20%"
                     },
                     {
-                        "y": 377,
-                        "x": "30%"
+                        "count": 377,
+                        "label": "30%"
                     },
                     {
-                        "y": 554,
-                        "x": "40%"
+                        "count": 554,
+                        "label": "40%"
                     },
                     {
-                        "y": 568,
-                        "x": "50%"
+                        "count": 568,
+                        "label": "50%"
                     },
                     {
-                        "y": 397,
-                        "x": "60%"
+                        "count": 397,
+                        "label": "60%"
                     },
                     {
-                        "y": 95,
-                        "x": "70%"
+                        "count": 95,
+                        "label": "70%"
                     },
                     {
-                        "y": 64,
-                        "x": "80%"
+                        "count": 64,
+                        "label": "80%"
                     },
                     {
-                        "y": 160,
-                        "x": "90%"
+                        "count": 160,
+                        "label": "90%"
                     },
                     {
-                        "y": 2029,
-                        "x": "100%"
+                        "count": 2029,
+                        "label": "100%"
                     }
                 ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=662&dm=result&bm=&pk=",
+                "link": "/view/Genome/662#view_tab=proteinFamilies",
                 "popularName": "Vibrio"
             },
             {
                 "popularData": [
                     {
-                        "y": 2839,
-                        "x": "10%"
+                        "count": 2839,
+                        "label": "10%"
                     },
                     {
-                        "y": 357,
-                        "x": "20%"
+                        "count": 357,
+                        "label": "20%"
                     },
                     {
-                        "y": 259,
-                        "x": "30%"
+                        "count": 259,
+                        "label": "30%"
                     },
                     {
-                        "y": 473,
-                        "x": "40%"
+                        "count": 473,
+                        "label": "40%"
                     },
                     {
-                        "y": 269,
-                        "x": "50%"
+                        "count": 269,
+                        "label": "50%"
                     },
                     {
-                        "y": 445,
-                        "x": "60%"
+                        "count": 445,
+                        "label": "60%"
                     },
                     {
-                        "y": 188,
-                        "x": "70%"
+                        "count": 188,
+                        "label": "70%"
                     },
                     {
-                        "y": 101,
-                        "x": "80%"
+                        "count": 101,
+                        "label": "80%"
                     },
                     {
-                        "y": 147,
-                        "x": "90%"
+                        "count": 147,
+                        "label": "90%"
                     },
                     {
-                        "y": 2215,
-                        "x": "100%"
+                        "count": 2215,
+                        "label": "100%"
                     }
                 ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=629&dm=result&bm=&pk=",
+                "link": "/view/Genome/629#view_tab=proteinFamilies",
                 "popularName": "Yersinia"
             }
         ]

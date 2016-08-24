@@ -4,21 +4,21 @@
             {
                 "title": "Characterization of the GbdR regulon in Pseudomonas aeruginosa",
                 "pmid": "24097953",
-                "link": "SingleExperiment?cType=taxon&cId=2&eid=1223795",
+                "link": "/view/Experiment/1223795",
                 "accession": "GSE49759",
                 "organism": "Pseudomonas aeruginosa"
             },
             {
                 "title": "Transcriptional profiles of Campylobacter jejuni NCTC 11168 to 0.125mg/L erythromycin treatment",
                 "pmid": "23767761",
-                "link": "SingleExperiment?cType=taxon&cId=2&eid=1201089",
+                "link": "/view/Experiment/1201089",
                 "accession": "GSE43024",
                 "organism": "Campylobacter jejuni"
             },
             {
                 "title": "Transcriptional profiles of Campylobacter jejuni NCTC 11168 to 4mg/L erythromycin treatment",
                 "pmid": "23767761",
-                "link": "SingleExperiment?cType=taxon&cId=2&eid=1224258",
+                "link": "/view/Experiment/1224258",
                 "accession": "GSE43023",
                 "organism": "Campylobacter jejuni"
             }
@@ -28,7 +28,7 @@
         "popularTitle": "Select Genomes",
         "popularList": [
             {
-                "link": "ExperimentList?cType=genome&cId=83332.12&kw=",
+                "link": "/view/Genome/83332.12#view_tab=transcriptomics",
                 "GeneModifications": {
                     "title": "Gene Modifications",
                     "data": [
@@ -82,7 +82,7 @@
                 "popularName": "Mycobacterium tuberculosis H37Rv"
             },
             {
-                "link": "ExperimentList?cType=genome&cId=511145.12&kw=",
+                "link": "/view/Genome/511145.12#view_tab=transcriptomics",
                 "GeneModifications": {
                     "title": "Gene Modifications",
                     "data": [
@@ -136,7 +136,7 @@
                 "popularName": "Escherichia coli str. K-12 substr. MG1655"
             },
             {
-                "link": "ExperimentList?cType=genome&cId=99287.12&kw=",
+                "link": "/view/Genome/99287.12#view_tab=transcriptomics",
                 "GeneModifications": {
                     "title": "Gene Modifications",
                     "data": [
@@ -190,7 +190,7 @@
                 "popularName": "Salmonella enterica subsp. enterica serovar Typhimurium str. LT2"
             },
             {
-                "link": "ExperimentList?cType=genome&cId=208964.12&kw=",
+                "link": "/view/Genome/208964.12#view_tab=transcriptomics",
                 "GeneModifications": {
                     "title": "Gene Modifications",
                     "data": [
@@ -244,7 +244,7 @@
                 "popularName": "Pseudomonas aeruginosa PAO1"
             },
             {
-                "link": "ExperimentList?cType=genome&cId=214092.21&kw=",
+                "link": "/view/Genome/214092.21#view_tab=transcriptomics",
                 "GeneModifications": {
                     "title": "Gene Modifications",
                     "data": [
@@ -298,7 +298,7 @@
                 "popularName": "Yersinia pestis CO92"
             },
             {
-                "link": "ExperimentList?cType=genome&cId=169963.11&kw=",
+                "link": "/view/Genome/169963.11#view_tab=transcriptomics",
                 "GeneModifications": {
                     "title": "Gene Modifications",
                     "data": [
@@ -352,7 +352,7 @@
                 "popularName": "Listeria monocytogenes EGD-e"
             },
             {
-                "link": "ExperimentList?cType=genome&cId=158879.11&kw=",
+                "link": "/view/Genome/158879.11#view_tab=transcriptomics",
                 "GeneModifications": {
                     "title": "Gene Modifications",
                     "data": [
@@ -406,7 +406,7 @@
                 "popularName": "Staphylococcus aureus subsp. aureus N315"
             },
             {
-                "link": "ExperimentList?cType=genome&cId=373153.27&kw=",
+                "link": "/view/Genome/373153.27#view_tab=transcriptomics",
                 "GeneModifications": {
                     "title": "Gene Modifications",
                     "data": [
@@ -460,7 +460,7 @@
                 "popularName": "Streptococcus pneumoniae D39"
             },
             {
-                "link": "ExperimentList?cType=genome&cId=224914.11&kw=",
+                "link": "/view/Genome/224914.11#view_tab=transcriptomics",
                 "GeneModifications": {
                     "title": "Gene Modifications",
                     "data": [
@@ -506,7 +506,7 @@
                 "popularName": "Brucella melitensis bv. 1 str. 16M"
             },
             {
-                "link": "ExperimentList?cType=genome&cId=85962.8&kw=",
+                "link": "/view/Genome/85962.8#view_tab=transcriptomics",
                 "GeneModifications": {
                     "title": "Gene Modifications",
                     "data": [
