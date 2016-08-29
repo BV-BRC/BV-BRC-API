@@ -10,7 +10,7 @@
 				<h3 class="ribbon-title">TOP 5 Species with Transcriptomics Data</h3>
 				<div class="chart"></div>
 			</div>
-			<div class="data-box right" style="width:410px; line-height: 1.6em">
+			<div class="data-box right" id="dlp-transcriptomics-featured-experiments">
 				<h3 class="ribbon-title">Featured Experiments</h3>
 			</div>
 			<div class="clear"></div>

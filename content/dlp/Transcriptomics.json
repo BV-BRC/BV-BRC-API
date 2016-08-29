@@ -33,23 +33,23 @@
                     "title": "Gene Modifications",
                     "data": [
                         {
-                            "value": 4,
+                            "count": 4,
                             "label": "dosR"
                         },
                         {
-                            "value": 2,
+                            "count": 2,
                             "label": "dosS"
                         },
                         {
-                            "value": 2,
+                            "count": 2,
                             "label": "dosT"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "Bif1"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "H37Ra"
                         }
                     ]
@@ -58,23 +58,23 @@
                     "title": "Experiment Conditions",
                     "data": [
                         {
-                            "value": 22,
+                            "count": 22,
                             "label": "mutant vs wild type"
                         },
                         {
-                            "value": 6,
+                            "count": 6,
                             "label": "mutant"
                         },
                         {
-                            "value": 4,
+                            "count": 4,
                             "label": "strain comparison"
                         },
                         {
-                            "value": 3,
+                            "count": 3,
                             "label": "SDS"
                         },
                         {
-                            "value": 3,
+                            "count": 3,
                             "label": "diamide"
                         }
                     ]
@@ -87,23 +87,23 @@
                     "title": "Gene Modifications",
                     "data": [
                         {
-                            "value": 9,
+                            "count": 9,
                             "label": "rpoS"
                         },
                         {
-                            "value": 4,
+                            "count": 4,
                             "label": "crp"
                         },
                         {
-                            "value": 4,
+                            "count": 4,
                             "label": "luxS"
                         },
                         {
-                            "value": 3,
+                            "count": 3,
                             "label": "arcA"
                         },
                         {
-                            "value": 3,
+                            "count": 3,
                             "label": "dam"
                         }
                     ]
@@ -112,23 +112,23 @@
                     "title": "Experiment Conditions",
                     "data": [
                         {
-                            "value": 60,
+                            "count": 60,
                             "label": "mutant vs wild type"
                         },
                         {
-                            "value": 33,
+                            "count": 33,
                             "label": "mutant"
                         },
                         {
-                            "value": 10,
+                            "count": 10,
                             "label": "overexpression"
                         },
                         {
-                            "value": 10,
+                            "count": 10,
                             "label": "strain comparison"
                         },
                         {
-                            "value": 10,
+                            "count": 10,
                             "label": "time point"
                         }
                     ]
@@ -141,23 +141,23 @@
                     "title": "Gene Modifications",
                     "data": [
                         {
-                            "value": 2,
+                            "count": 2,
                             "label": "cheA"
                         },
                         {
-                            "value": 2,
+                            "count": 2,
                             "label": "cheB"
                         },
                         {
-                            "value": 2,
+                            "count": 2,
                             "label": "cheY"
                         },
                         {
-                            "value": 2,
+                            "count": 2,
                             "label": "cheZ"
                         },
                         {
-                            "value": 2,
+                            "count": 2,
                             "label": "hfq"
                         }
                     ]
@@ -166,23 +166,23 @@
                     "title": "Experiment Conditions",
                     "data": [
                         {
-                            "value": 25,
+                            "count": 25,
                             "label": "mutant vs wild type"
                         },
                         {
-                            "value": 3,
+                            "count": 3,
                             "label": "in vivo"
                         },
                         {
-                            "value": 3,
+                            "count": 3,
                             "label": "time point"
                         },
                         {
-                            "value": 2,
+                            "count": 2,
                             "label": "H2O2"
                         },
                         {
-                            "value": 2,
+                            "count": 2,
                             "label": "Mitomycin C"
                         }
                     ]
@@ -195,23 +195,23 @@
                     "title": "Gene Modifications",
                     "data": [
                         {
-                            "value": 2,
+                            "count": 2,
                             "label": "anr"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "PA0149"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "PA0675"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "PA2050"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "PA2093"
                         }
                     ]
@@ -220,23 +220,23 @@
                     "title": "Experiment Conditions",
                     "data": [
                         {
-                            "value": 10,
+                            "count": 10,
                             "label": "mutant vs wild type"
                         },
                         {
-                            "value": 6,
+                            "count": 6,
                             "label": "mutant vs wildtype"
                         },
                         {
-                            "value": 5,
+                            "count": 5,
                             "label": "strain comparison"
                         },
                         {
-                            "value": 4,
+                            "count": 4,
                             "label": "mutant"
                         },
                         {
-                            "value": 4,
+                            "count": 4,
                             "label": "time point"
                         }
                     ]
@@ -249,23 +249,23 @@
                     "title": "Gene Modifications",
                     "data": [
                         {
-                            "value": 2,
+                            "count": 2,
                             "label": "ompR"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "LPP"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "fur"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "hfq"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "oxyR"
                         }
                     ]
@@ -274,23 +274,23 @@
                     "title": "Experiment Conditions",
                     "data": [
                         {
-                            "value": 4,
+                            "count": 4,
                             "label": "mutant vs wild type"
                         },
                         {
-                            "value": 3,
+                            "count": 3,
                             "label": "temperature"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "H2O2"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "Mg2"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "chloramphenicol"
                         }
                     ]
@@ -303,23 +303,23 @@
                     "title": "Gene Modifications",
                     "data": [
                         {
-                            "value": 3,
+                            "count": 3,
                             "label": "prfA"
                         },
                         {
-                            "value": 3,
+                            "count": 3,
                             "label": "sigB"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "Hpr KP"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "LhrA"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "LiaRLM"
                         }
                     ]
@@ -328,23 +328,23 @@
                     "title": "Experiment Conditions",
                     "data": [
                         {
-                            "value": 16,
+                            "count": 16,
                             "label": "mutant vs wild type"
                         },
                         {
-                            "value": 4,
+                            "count": 4,
                             "label": "growth media"
                         },
                         {
-                            "value": 3,
+                            "count": 3,
                             "label": "mutant"
                         },
                         {
-                            "value": 3,
+                            "count": 3,
                             "label": "pH"
                         },
                         {
-                            "value": 3,
+                            "count": 3,
                             "label": "temperature"
                         }
                     ]
@@ -357,23 +357,23 @@
                     "title": "Gene Modifications",
                     "data": [
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "SACOL2645"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "arg"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "ccpA"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "lexA"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "pknB"
                         }
                     ]
@@ -382,23 +382,23 @@
                     "title": "Experiment Conditions",
                     "data": [
                         {
-                            "value": 6,
+                            "count": 6,
                             "label": "mutant vs wild type"
                         },
                         {
-                            "value": 5,
+                            "count": 5,
                             "label": "strain comparison"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "CCCP"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "CPV"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "Cathelicidin LL-37"
                         }
                     ]
@@ -411,23 +411,23 @@
                     "title": "Gene Modifications",
                     "data": [
                         {
-                            "value": 4,
+                            "count": 4,
                             "label": "ccpA"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "ahrC"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "argR1"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "argR1-ahrC"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "celR"
                         }
                     ]
@@ -436,23 +436,23 @@
                     "title": "Experiment Conditions",
                     "data": [
                         {
-                            "value": 13,
+                            "count": 13,
                             "label": "mutant vs wild type"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "LL37"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "arginine"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "bacitracin"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "copper"
                         }
                     ]
@@ -465,23 +465,23 @@
                     "title": "Gene Modifications",
                     "data": [
                         {
-                            "value": 2,
+                            "count": 2,
                             "label": "vjbR"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "babR"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "blxR"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "mucR"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "prlR"
                         }
                     ]
@@ -490,15 +490,15 @@
                     "title": "Experiment Conditions",
                     "data": [
                         {
-                            "value": 5,
+                            "count": 5,
                             "label": "mutant vs wild type"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "C12-HSL"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "growth phase"
                         }
                     ]
@@ -511,23 +511,23 @@
                     "title": "Gene Modifications",
                     "data": [
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "ArsRS"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "HP0244"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "HP0518"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "HP1021"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "HopZ"
                         }
                     ]
@@ -536,23 +536,23 @@
                     "title": "Experiment Conditions",
                     "data": [
                         {
-                            "value": 6,
+                            "count": 6,
                             "label": "mutant vs wild type"
                         },
                         {
-                            "value": 4,
+                            "count": 4,
                             "label": "time point"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "Cipro"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "ex vivo (cell line)"
                         },
                         {
-                            "value": 1,
+                            "count": 1,
                             "label": "gentamycin"
                         }
                     ]
@@ -565,23 +565,23 @@
         "title": "TOP 5 Species with Transcriptomics Data",
         "data": [
             {
-                "value": 216,
+                "count": 216,
                 "label": "Escherichia coli"
             },
             {
-                "value": 63,
+                "count": 63,
                 "label": "Pseudomonas aeruginosa"
             },
             {
-                "value": 48,
+                "count": 48,
                 "label": "Salmonella enterica"
             },
             {
-                "value": 45,
+                "count": 45,
                 "label": "Mycobacterium tuberculosis"
             },
             {
-                "value": 36,
+                "count": 36,
                 "label": "Listeria monocytogenes"
             }
         ]
