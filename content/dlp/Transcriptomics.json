@@ -4,21 +4,21 @@
             {
                 "title": "Characterization of the GbdR regulon in Pseudomonas aeruginosa",
                 "pmid": "24097953",
-                "link": "/view/Experiment/1223795",
+                "link": "/view/ExperimentComparison/1223795",
                 "accession": "GSE49759",
                 "organism": "Pseudomonas aeruginosa"
             },
             {
                 "title": "Transcriptional profiles of Campylobacter jejuni NCTC 11168 to 0.125mg/L erythromycin treatment",
                 "pmid": "23767761",
-                "link": "/view/Experiment/1201089",
+                "link": "/view/ExperimentComparison/1201089",
                 "accession": "GSE43024",
                 "organism": "Campylobacter jejuni"
             },
             {
                 "title": "Transcriptional profiles of Campylobacter jejuni NCTC 11168 to 4mg/L erythromycin treatment",
                 "pmid": "23767761",
-                "link": "/view/Experiment/1224258",
+                "link": "/view/ExperimentComparison/1224258",
                 "accession": "GSE43023",
                 "organism": "Campylobacter jejuni"
             }
