@@ -1,8 +1,11 @@
+<div style="width:80%;margin:auto">
+<h2 class="entry-title">
+       Scientific Collaborations 
+</h2>
 <div class="entry-summary">
 	<!-- ?php the_excerpt(); ? --->
 		<p>&nbsp;</p>
-<h3><strong><em>Scientific Collaborations</em></strong></h3>
-<p>Click <a href="http://enews.patricbrc.org/patric-publications/">here</a> for a list of PATRIC joint publications with other Scientific Collaborators.</p>
+<p>Click <a href="/content/patric-publications">here</a> for a list of PATRIC joint publications with other Scientific Collaborators.</p>
 <hr />
 <h3><strong><em>Acknowledgements</em></strong></h3>
 <p>&nbsp;</p>
@@ -61,7 +64,7 @@
 <p><a href="http://www.ebi.ac.uk/Tools/msa/muscle/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ebi.ac.uk/Tools/msa/muscle/', 'MUSCLE (Multiple Sequence Comparison by Log- Expectation)');" target="_blank">MUSCLE (Multiple Sequence Comparison by Log- Expectation)</a></p>
 <p><a href="http://www.orthomcl.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.orthomcl.org/', 'OrthoMCL');" target="_blank">OrthoMCL</a></p>
 <hr />
-<p><a href="http://enews.patricbrc.org/data-release-policy/">PATRIC Data Release Policy</a></p>
+<p><a href="/content/data-release-policy">PATRIC Data Release Policy</a></p>
 			
 	</div>
-
+</div>

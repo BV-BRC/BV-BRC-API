@@ -1,3 +1,7 @@
+<div style="width:80%;margin:auto">
+<h2 class="entry-title">
+ 	NIAID Antimicrobial Resistance Sequencing Projects 
+</h2>
 <div class="entry-summary">
 	<!-- ?php the_excerpt(); ? --->
 		<p><b>NIAID Antimicrobial Resistance Sequencing Projects<br>
@@ -61,3 +65,4 @@
 </table>
 			
 	</div>
+</div>

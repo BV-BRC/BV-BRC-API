@@ -1,3 +1,7 @@
+<div style="width:80%;margin:auto">
+<h2 class="entry-title">
+	Center For Systems Biology of Enteropathogens Sysbep     
+</h2>
 <div class="entry-summary">
 	<!-- ?php the_excerpt(); ? --->
 		<p><strong><img class="aligncenter  wp-image-2728" title="SysBEP" alt="" src="/public/patric/images/SysBEP-1024x179.png" width="747" height="131"><a href="http://www.sysbep.org" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.sysbep.org', 'Systems Biology for EnteroPathogens');" target="_blank">Systems Biology for EnteroPathogens</a>&nbsp;</strong>uses a systems biology approach involving the use of iterative and complementary computational and experimental “omics” methodologies to analyze, identify, quantify, model, and ultimately predict the overall molecular processes involved in the pathogenesis of&nbsp;<em>Salmonella</em>&nbsp;and&nbsp;<em>Yersinia</em>&nbsp;species in macrophages.</p>
@@ -179,3 +183,5 @@
 </ul>
 			
 	</div>
+</div>
+

@@ -1,3 +1,7 @@
+<div style="width:80%;margin:auto">
+<h2 class="entry-title">
+        Flute Data Set 1
+</h2>
 <div class="entry-summary">
 	<!-- ?php the_excerpt(); ? --->
 		<h3><strong>High-Resolution Phenotypic Profiling Defines Genes Essential for Mycobacterial Growth and Cholesterol Catabolism</strong></h3>
@@ -324,3 +328,4 @@ Uploaded/Deposited by: Thomas Ioerger, Texas A&amp;M University</p>
 </div>
 			
 	</div>
+</div>

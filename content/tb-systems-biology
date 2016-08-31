@@ -1,3 +1,7 @@
+<div style="width:80%;margin:auto">
+<h2 class="entry-title">
+	TB Systems Biology 
+</h2>
 <div class="entry-summary">
 	<!-- ?php the_excerpt(); ? --->
 		<p style="text-align: center;"><img class="aligncenter  wp-image-2699" title="Tb SysBio" alt="" src="/public/patric/tb-systems-biology.png" width="738" height="213"></p>
@@ -1010,3 +1014,4 @@
 </table>
 			
 	</div>
+</div>

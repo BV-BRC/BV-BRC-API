@@ -1,3 +1,6 @@
+<div style="width:80%;margin:auto">
+<h2 class="entry-title">
+	GUNK Experiement 2
 <div class="entry-summary">
 	<!-- ?php the_excerpt(); ? --->
 		<p><strong>Host-Microbe Protein Interactions during Bacterial Infection</strong></p>
@@ -13,3 +16,4 @@ Uploaded/Deposited by: Devon Schweppe, University of Washington</p>
 <p><a href="http://enews.patricbrc.org/wp-content/uploads/2016/03/mmc4.xlsx">Table S3</a> – All Crosslinked Peptide/Site Relationships Identified for Ab5075-Alone Dataset</p>
 			
 	</div>
+</div>

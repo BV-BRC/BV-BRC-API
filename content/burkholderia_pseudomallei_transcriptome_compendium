@@ -1,3 +1,7 @@
+<div style="width:80%;margin:auto">
+<h2 class="entry-title">
+	Burkholderia Pseudomallei Transcriptome Compendium 
+</h2>      
 <div class="entry-summary">
 	<!-- ?php the_excerpt(); ? --->
 		<p>&nbsp;</p>
@@ -18,3 +22,4 @@
 <p><a href="http://enews.patricbrc.org/wp-content/uploads/2013/02/Network-predicted-heat-shocked-proteins.xlsx">&nbsp;</a></p>
 			
 	</div>
+</div>

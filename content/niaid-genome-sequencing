@@ -1,3 +1,7 @@
+<div style="width:80%;margin:auto">
+<h2 class="entry-title">
+	NIAID Genomic Sequencing 
+</h2>
 <div class="entry-summary">
 	<!-- ?php the_excerpt(); ? --->
 		<p><b>The Genomic Centers for Infectious Diseases (GSCID)</b></p>
@@ -16,3 +20,4 @@
 <p>Several of the projects conducted by the GCIDs have a focus on antimicrobial resistance (AMR). &nbsp; A <a title="NIAID Antimicrobial Resistance Sequencing Projects" href="http://enews.patricbrc.org/niaid-antimicrobial-resistance-sequencing-projects/">consolidated list</a> of these projects is available at PATRIC.</p>
 			
 	</div>
+</div>

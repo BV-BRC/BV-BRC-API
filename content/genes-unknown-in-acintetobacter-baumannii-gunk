@@ -1,3 +1,7 @@
+<div style="width:80%;margin:auto">
+<h2 class="entry-title">
+	Genes Unknown in Acintetobacter Baumannii - GUNK
+</h2>
 <div class="entry-summary">
 	<!-- ?php the_excerpt(); ? --->
 		<p><a href="/public/patric/images/GUNK-logo.png"><img class="aligncenter size-full wp-image-4947" src="/public/patric/images/GUNK-logo.png" alt="GUNK logo" width="503" height="126"></a></p>
@@ -22,3 +26,4 @@
 <p>The increasing emergence of antibiotic-resistant bacterial pathogens represents a serious risk to human health and the entire health care system. Many currently circulating strains of <em>Acinetobacter baumannii</em> exhibit resistance to multiple antibiotics. A key limitation in combating <em>A.&nbsp;baumannii</em> is that our understanding of the molecular mechanisms underlying the pathogenesis of <em>A.&nbsp;baumannii</em> is lacking. To identify potential virulence determinants of a contemporary multidrug-resistant isolate of <em>A.&nbsp;baumannii</em>, we used transposon insertion sequencing (TnSeq) of strain AB5075. A collection of 250,000 <em>A.&nbsp;baumannii</em> transposon mutants was analyzed for growth within <em>Galleria mellonella</em> larvae, an insect-based infection model. The screen identified 300 genes that were specifically required for survival and/or growth of <em>A.&nbsp;baumannii</em> inside <em>G.&nbsp;mellonella</em> larvae. These genes encompass both known, established virulence factors and several novel genes. Among these were more than 30 transcription factors required for growth in <em>G.&nbsp;mellonella</em>. A subset of the transcription factors was also found to be required for resistance to antibiotics and environmental stress. This work thus establishes a novel connection between virulence and resistance to both antibiotics and environmental stress in <em>A.&nbsp;baumannii</em>.</p>
 			
 	</div>
+</div>

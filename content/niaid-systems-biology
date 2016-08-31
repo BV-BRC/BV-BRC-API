@@ -1,3 +1,7 @@
+<div style="width:80%;margin:auto">
+<h2 class="entry-title">
+	NIAID Systems Biology 
+</h2>
 <div class="entry-summary">
 	<!-- ?php the_excerpt(); ? --->
 		<p>The NIAID Systems Biology for Infectious Diseases Research Program develops and validates predictive models of infectious disease initiation, progression, and outcomes.&nbsp;These models are derived from the study of the architecture and dynamics of systems-wide host/pathogen molecular interaction networks during infection, using integrated datasets generated from a combination of “omics” technologies. The research findings will provide a deeper understanding of the overall complexity of the biological, biochemical, and biophysical molecular processes within microbial organisms as well as their interaction with the host.&nbsp;The programs provide data and reagents that result from the research conducted and provide training for the broader infectious disease scientific community to promote the use of the systems biology approach.</p>
@@ -31,3 +35,4 @@
 <p>&nbsp;</p>
 			
 	</div>
+</div>

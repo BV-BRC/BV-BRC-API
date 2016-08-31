@@ -1,3 +1,7 @@
+<div style="width:80%;margin:auto">
+<h2 class="entry-title">
+        omics4TB
+</h2>
 <div class="entry-summary">
 	<!-- ?php the_excerpt(); ? --->
 		<p>&nbsp;</p>
@@ -29,3 +33,4 @@
 <p>Data sets and additional information can be found on these pages: <a href="/content/omics4tb-chip-seq-experiments">ChIP-Seq</a>, <a href="/content/omics4tb-tfoe-expression-experiments">Expression Data</a>, <a href="http://networks.systemsbiology.net/mtb/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://networks.systemsbiology.net/mtb/', 'Network Model');">Network Model</a>.</p>
 			
 	</div>
+</div>

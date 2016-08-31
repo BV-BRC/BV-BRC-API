@@ -1,3 +1,7 @@
+<div style="width:80%;margin:auto">
+<h2 class="entry-title">
+	GUNK Experiment 1
+</h2>
 <div class="entry-summary">
 	<!-- ?php the_excerpt(); ? --->
 		<p><strong>Resources for Genetic and Genomic Analysis of Emerging Pathogen Acinetobacter baumannii</strong></p>
@@ -42,3 +46,4 @@ Uploaded/Deposited by: Larry Gallagher, University of Washington</p>
 </ul>
 			
 	</div>
+</div>

@@ -1,3 +1,7 @@
+<div style="width:80%;margin:auto">
+<h2 class="entry-title">
+	TB-ARC Antibiotic Resistance Catalog
+</h2>
 <div class="entry-summary">
 	<!-- ?php the_excerpt(); ? --->
 		<p>&nbsp;</p>
@@ -38,3 +42,4 @@
 <p><a href="/public/patric/images/snps_jbrowse_2.png"><img class="alignnone size-medium wp-image-4136" src="/public/patric/images/snps_jbrowse_2-300x187.png" alt="snps_jbrowse_2" width="300" height="187"></a></p>
 			
 	</div>
+</div>

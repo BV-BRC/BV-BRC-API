@@ -1,3 +1,7 @@
+<div style="width:80%;margin:auto">
+<h2 class="entry-title">
+        FLUTE Experiment 2
+</h2>
 <div class="entry-summary">
 	<!-- ?php the_excerpt(); ? --->
 		<h3><strong>Peptidoglycan synthesis in Mycobacterium tuberculosis is organized into networks with varying drug susceptibility</strong></h3>
@@ -408,3 +412,4 @@ DeJesus, M.A., Ambadipudi, C., Baker, R., Sassetti, C., and Ioerger,&nbsp;T.R. (
 <div></div>
 			
 	</div>
+</div>

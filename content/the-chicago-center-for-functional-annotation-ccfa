@@ -1,3 +1,7 @@
+<div style="width:80%;margin:auto">
+<h2 class="entry-title">
+	The Chicago Center for Functional Annotation (CCFA)	
+</h2>
 <div class="entry-summary">
 	<!-- ?php the_excerpt(); ? --->
 		<h2 class="featured-subtitle"></h2>
@@ -22,3 +26,4 @@
 </ul>
 			
 	</div>
+</div>
