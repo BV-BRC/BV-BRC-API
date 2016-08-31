@@ -1,227 +1,25 @@
 {
-    "FIGfams": {
-        "chart_desc": "The graph below summarizes conservation of protein families across all the genomes in each pathogenic genus.",
-        "data": [
-            {
-                "total": 18457,
-                "pathogen": "Bacillus",
-                "accessory": 17445,
-                "functional": 7765,
-                "hypothetical": 10692,
-                "genomes": 1159,
-                "core": 1012
-            },
-            {
-                "total": 1770,
-                "pathogen": "Bartonella",
-                "accessory": 982,
-                "functional": 1563,
-                "hypothetical": 207,
-                "genomes": 83,
-                "core": 788
-            },
-            {
-                "total": 974,
-                "pathogen": "Borrelia",
-                "accessory": 283,
-                "functional": 645,
-                "hypothetical": 329,
-                "genomes": 24,
-                "core": 691
-            },
-            {
-                "total": 3771,
-                "pathogen": "Brucella",
-                "accessory": 1599,
-                "functional": 2618,
-                "hypothetical": 1153,
-                "genomes": 515,
-                "core": 2172
-            },
-            {
-                "total": 13579,
-                "pathogen": "Burkholderia",
-                "accessory": 11571,
-                "functional": 5713,
-                "hypothetical": 7866,
-                "genomes": 1193,
-                "core": 2008
-            },
-            {
-                "total": 5530,
-                "pathogen": "Campylobacter",
-                "accessory": 4477,
-                "functional": 3704,
-                "hypothetical": 1826,
-                "genomes": 1522,
-                "core": 1053
-            },
-            {
-                "total": 8181,
-                "pathogen": "Chlamydia",
-                "accessory": 7572,
-                "functional": 5409,
-                "hypothetical": 2772,
-                "genomes": 241,
-                "core": 609
-            },
-            {
-                "total": 14980,
-                "pathogen": "Clostridium",
-                "accessory": 14736,
-                "functional": 6620,
-                "hypothetical": 8360,
-                "genomes": 487,
-                "core": 244
-            },
-            {
-                "total": 2102,
-                "pathogen": "Coxiella",
-                "accessory": 1552,
-                "functional": 1391,
-                "hypothetical": 711,
-                "genomes": 28,
-                "core": 550
-            },
-            {
-                "total": 891,
-                "pathogen": "Ehrlichia",
-                "accessory": 329,
-                "functional": 712,
-                "hypothetical": 179,
-                "genomes": 18,
-                "core": 562
-            },
-            {
-                "total": 16040,
-                "pathogen": "Escherichia",
-                "accessory": 13351,
-                "functional": 8917,
-                "hypothetical": 7123,
-                "genomes": 4702,
-                "core": 2689
-            },
-            {
-                "total": 2269,
-                "pathogen": "Francisella",
-                "accessory": 1219,
-                "functional": 1643,
-                "hypothetical": 626,
-                "genomes": 119,
-                "core": 1050
-            },
-            {
-                "total": 3579,
-                "pathogen": "Helicobacter",
-                "accessory": 2870,
-                "functional": 1947,
-                "hypothetical": 1632,
-                "genomes": 636,
-                "core": 709
-            },
-            {
-                "total": 5636,
-                "pathogen": "Listeria",
-                "accessory": 3720,
-                "functional": 3524,
-                "hypothetical": 2112,
-                "genomes": 775,
-                "core": 1916
-            },
-            {
-                "total": 22853,
-                "pathogen": "Mycobacterium",
-                "accessory": 21188,
-                "functional": 11869,
-                "hypothetical": 10984,
-                "genomes": 8464,
-                "core": 1665
-            },
-            {
-                "total": 1942,
-                "pathogen": "Rickettsia",
-                "accessory": 1328,
-                "functional": 981,
-                "hypothetical": 961,
-                "genomes": 87,
-                "core": 614
-            },
-            {
-                "total": 10219,
-                "pathogen": "Salmonella",
-                "accessory": 7210,
-                "functional": 6803,
-                "hypothetical": 3416,
-                "genomes": 4827,
-                "core": 3009
-            },
-            {
-                "total": 10535,
-                "pathogen": "Shigella",
-                "accessory": 7975,
-                "functional": 7229,
-                "hypothetical": 3306,
-                "genomes": 785,
-                "core": 2560
-            },
-            {
-                "total": 16640,
-                "pathogen": "Staphylococcus",
-                "accessory": 15102,
-                "functional": 10500,
-                "hypothetical": 6140,
-                "genomes": 9210,
-                "core": 1538
-            },
-            {
-                "total": 21359,
-                "pathogen": "Streptococcus",
-                "accessory": 20598,
-                "functional": 10480,
-                "hypothetical": 10879,
-                "genomes": 10387,
-                "core": 761
-            },
-            {
-                "total": 11944,
-                "pathogen": "Vibrio",
-                "accessory": 10105,
-                "functional": 6420,
-                "hypothetical": 5524,
-                "genomes": 1414,
-                "core": 1839
-            },
-            {
-                "total": 7293,
-                "pathogen": "Yersinia",
-                "accessory": 5201,
-                "functional": 5114,
-                "hypothetical": 2179,
-                "genomes": 590,
-                "core": 2092
-            }
-        ],
-        "chart_title": "Protein Family Conservation in Pathogenic Bacteria"
-    },
     "popularGenomes": {
         "popularTitle": "Popular Genera",
         "popularList": [
             {
+                "popularName": "Bacillus",
+                "link": "/view/Taxonomy/1386#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "count": 12424,
+                        "count": 12438,
                         "label": "10%"
                     },
                     {
-                        "count": 1331,
+                        "count": 1329,
                         "label": "20%"
                     },
                     {
-                        "count": 824,
+                        "count": 811,
                         "label": "30%"
                     },
                     {
-                        "count": 598,
+                        "count": 609,
                         "label": "40%"
                     },
                     {
@@ -229,30 +27,30 @@
                         "label": "50%"
                     },
                     {
-                        "count": 338,
+                        "count": 339,
                         "label": "60%"
                     },
                     {
-                        "count": 171,
+                        "count": 170,
                         "label": "70%"
                     },
                     {
-                        "count": 200,
+                        "count": 199,
                         "label": "80%"
                     },
                     {
-                        "count": 285,
+                        "count": 279,
                         "label": "90%"
                     },
                     {
-                        "count": 1227,
+                        "count": 1231,
                         "label": "100%"
                     }
-                ],
-                "link": "/view/Genome/1386#view_tab=proteinFamilies",
-                "popularName": "Bacillus"
+                ]
             },
             {
+                "popularName": "Bartonella",
+                "link": "/view/Taxonomy/773#view_tab=proteinFamilies",
                 "popularData": [
                     {
                         "count": 527,
@@ -294,11 +92,11 @@
                         "count": 805,
                         "label": "100%"
                     }
-                ],
-                "link": "/view/Genome/773#view_tab=proteinFamilies",
-                "popularName": "Bartonella"
+                ]
             },
             {
+                "popularName": "Borrelia",
+                "link": "/view/Taxonomy/138#view_tab=proteinFamilies",
                 "popularData": [
                     {
                         "count": 38,
@@ -340,84 +138,84 @@
                         "count": 707,
                         "label": "100%"
                     }
-                ],
-                "link": "/view/Genome/138#view_tab=proteinFamilies",
-                "popularName": "Borrelia"
+                ]
             },
             {
+                "popularName": "Brucella",
+                "link": "/view/Taxonomy/234#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "count": 816,
+                        "count": 813,
                         "label": "10%"
                     },
                     {
-                        "count": 164,
+                        "count": 162,
                         "label": "20%"
-                    },
-                    {
-                        "count": 49,
-                        "label": "30%"
                     },
                     {
                         "count": 53,
-                        "label": "40%"
-                    },
-                    {
-                        "count": 38,
-                        "label": "50%"
-                    },
-                    {
-                        "count": 73,
-                        "label": "60%"
-                    },
-                    {
-                        "count": 43,
-                        "label": "70%"
-                    },
-                    {
-                        "count": 80,
-                        "label": "80%"
-                    },
-                    {
-                        "count": 167,
-                        "label": "90%"
-                    },
-                    {
-                        "count": 2288,
-                        "label": "100%"
-                    }
-                ],
-                "link": "/view/Genome/234#view_tab=proteinFamilies",
-                "popularName": "Brucella"
-            },
-            {
-                "popularData": [
-                    {
-                        "count": 7264,
-                        "label": "10%"
-                    },
-                    {
-                        "count": 970,
-                        "label": "20%"
-                    },
-                    {
-                        "count": 759,
                         "label": "30%"
                     },
                     {
-                        "count": 920,
+                        "count": 43,
                         "label": "40%"
                     },
                     {
-                        "count": 550,
+                        "count": 49,
                         "label": "50%"
                     },
                     {
-                        "count": 361,
+                        "count": 74,
                         "label": "60%"
                     },
                     {
-                        "count": 154,
+                        "count": 44,
+                        "label": "70%"
+                    },
+                    {
+                        "count": 82,
+                        "label": "80%"
+                    },
+                    {
+                        "count": 168,
+                        "label": "90%"
+                    },
+                    {
+                        "count": 2283,
+                        "label": "100%"
+                    }
+                ]
+            },
+            {
+                "popularName": "Burkholderia",
+                "link": "/view/Taxonomy/32008#view_tab=proteinFamilies",
+                "popularData": [
+                    {
+                        "count": 7263,
+                        "label": "10%"
+                    },
+                    {
+                        "count": 975,
+                        "label": "20%"
+                    },
+                    {
+                        "count": 760,
+                        "label": "30%"
+                    },
+                    {
+                        "count": 918,
+                        "label": "40%"
+                    },
+                    {
+                        "count": 549,
+                        "label": "50%"
+                    },
+                    {
+                        "count": 363,
+                        "label": "60%"
+                    },
+                    {
+                        "count": 152,
                         "label": "70%"
                     },
                     {
@@ -432,18 +230,18 @@
                         "count": 2314,
                         "label": "100%"
                     }
-                ],
-                "link": "/view/Genome/32008#view_tab=proteinFamilies",
-                "popularName": "Burkholderia"
+                ]
             },
             {
+                "popularName": "Campylobacter",
+                "link": "/view/Taxonomy/194#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "count": 3765,
+                        "count": 3763,
                         "label": "10%"
                     },
                     {
-                        "count": 170,
+                        "count": 176,
                         "label": "20%"
                     },
                     {
@@ -455,11 +253,11 @@
                         "label": "40%"
                     },
                     {
-                        "count": 112,
+                        "count": 119,
                         "label": "50%"
                     },
                     {
-                        "count": 57,
+                        "count": 49,
                         "label": "60%"
                     },
                     {
@@ -467,22 +265,22 @@
                         "label": "70%"
                     },
                     {
-                        "count": 28,
+                        "count": 27,
                         "label": "80%"
                     },
                     {
-                        "count": 47,
+                        "count": 53,
                         "label": "90%"
                     },
                     {
-                        "count": 1142,
+                        "count": 1135,
                         "label": "100%"
                     }
-                ],
-                "link": "/view/Genome/194#view_tab=proteinFamilies",
-                "popularName": "Campylobacter"
+                ]
             },
             {
+                "popularName": "Chlamydia",
+                "link": "/view/Taxonomy/810#view_tab=proteinFamilies",
                 "popularData": [
                     {
                         "count": 7041,
@@ -524,26 +322,26 @@
                         "count": 664,
                         "label": "100%"
                     }
-                ],
-                "link": "/view/Genome/810#view_tab=proteinFamilies",
-                "popularName": "Chlamydia"
+                ]
             },
             {
+                "popularName": "Clostridium",
+                "link": "/view/Taxonomy/1485#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "count": 11257,
+                        "count": 11489,
                         "label": "10%"
                     },
                     {
-                        "count": 928,
+                        "count": 916,
                         "label": "20%"
                     },
                     {
-                        "count": 748,
+                        "count": 763,
                         "label": "30%"
                     },
                     {
-                        "count": 428,
+                        "count": 416,
                         "label": "40%"
                     },
                     {
@@ -551,30 +349,30 @@
                         "label": "50%"
                     },
                     {
-                        "count": 232,
+                        "count": 227,
                         "label": "60%"
                     },
                     {
-                        "count": 216,
+                        "count": 227,
                         "label": "70%"
                     },
                     {
-                        "count": 268,
+                        "count": 256,
                         "label": "80%"
                     },
                     {
-                        "count": 263,
+                        "count": 247,
                         "label": "90%"
                     },
                     {
-                        "count": 380,
+                        "count": 384,
                         "label": "100%"
                     }
-                ],
-                "link": "/view/Genome/1485#view_tab=proteinFamilies",
-                "popularName": "Clostridium"
+                ]
             },
             {
+                "popularName": "Coxiella",
+                "link": "/view/Taxonomy/776#view_tab=proteinFamilies",
                 "popularData": [
                     {
                         "count": 294,
@@ -616,11 +414,11 @@
                         "count": 1269,
                         "label": "100%"
                     }
-                ],
-                "link": "/view/Genome/776#view_tab=proteinFamilies",
-                "popularName": "Coxiella"
+                ]
             },
             {
+                "popularName": "Ehrlichia",
+                "link": "/view/Taxonomy/943#view_tab=proteinFamilies",
                 "popularData": [
                     {
                         "count": 31,
@@ -662,14 +460,14 @@
                         "count": 663,
                         "label": "100%"
                     }
-                ],
-                "link": "/view/Genome/943#view_tab=proteinFamilies",
-                "popularName": "Ehrlichia"
+                ]
             },
             {
+                "popularName": "Escherichia",
+                "link": "/view/Taxonomy/561#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "count": 10501,
+                        "count": 10499,
                         "label": "10%"
                     },
                     {
@@ -677,11 +475,11 @@
                         "label": "20%"
                     },
                     {
-                        "count": 520,
+                        "count": 522,
                         "label": "30%"
                     },
                     {
-                        "count": 276,
+                        "count": 278,
                         "label": "40%"
                     },
                     {
@@ -689,37 +487,37 @@
                         "label": "50%"
                     },
                     {
-                        "count": 185,
+                        "count": 184,
                         "label": "60%"
                     },
                     {
-                        "count": 225,
+                        "count": 222,
                         "label": "70%"
                     },
                     {
-                        "count": 276,
+                        "count": 282,
                         "label": "80%"
                     },
                     {
-                        "count": 148,
+                        "count": 147,
                         "label": "90%"
                     },
                     {
                         "count": 2800,
                         "label": "100%"
                     }
-                ],
-                "link": "/view/Genome/561#view_tab=proteinFamilies",
-                "popularName": "Escherichia"
+                ]
             },
             {
+                "popularName": "Francisella",
+                "link": "/view/Taxonomy/262#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "count": 365,
+                        "count": 369,
                         "label": "10%"
                     },
                     {
-                        "count": 239,
+                        "count": 236,
                         "label": "20%"
                     },
                     {
@@ -727,45 +525,45 @@
                         "label": "30%"
                     },
                     {
-                        "count": 76,
+                        "count": 73,
                         "label": "40%"
                     },
                     {
-                        "count": 21,
+                        "count": 26,
                         "label": "50%"
                     },
                     {
-                        "count": 37,
+                        "count": 29,
                         "label": "60%"
                     },
                     {
-                        "count": 74,
+                        "count": 77,
                         "label": "70%"
                     },
                     {
-                        "count": 112,
+                        "count": 97,
                         "label": "80%"
                     },
                     {
-                        "count": 149,
+                        "count": 150,
                         "label": "90%"
                     },
                     {
-                        "count": 1136,
+                        "count": 1152,
                         "label": "100%"
                     }
-                ],
-                "link": "/view/Genome/262#view_tab=proteinFamilies",
-                "popularName": "Francisella"
+                ]
             },
             {
+                "popularName": "Helicobacter",
+                "link": "/view/Taxonomy/209#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "count": 2078,
+                        "count": 2096,
                         "label": "10%"
                     },
                     {
-                        "count": 175,
+                        "count": 172,
                         "label": "20%"
                     },
                     {
@@ -773,11 +571,11 @@
                         "label": "30%"
                     },
                     {
-                        "count": 71,
+                        "count": 73,
                         "label": "40%"
                     },
                     {
-                        "count": 54,
+                        "count": 53,
                         "label": "50%"
                     },
                     {
@@ -785,53 +583,7 @@
                         "label": "60%"
                     },
                     {
-                        "count": 31,
-                        "label": "70%"
-                    },
-                    {
-                        "count": 51,
-                        "label": "80%"
-                    },
-                    {
-                        "count": 48,
-                        "label": "90%"
-                    },
-                    {
-                        "count": 948,
-                        "label": "100%"
-                    }
-                ],
-                "link": "/view/Genome/209#view_tab=proteinFamilies",
-                "popularName": "Helicobacter"
-            },
-            {
-                "popularData": [
-                    {
-                        "count": 2868,
-                        "label": "10%"
-                    },
-                    {
-                        "count": 210,
-                        "label": "20%"
-                    },
-                    {
-                        "count": 121,
-                        "label": "30%"
-                    },
-                    {
-                        "count": 116,
-                        "label": "40%"
-                    },
-                    {
-                        "count": 84,
-                        "label": "50%"
-                    },
-                    {
-                        "count": 57,
-                        "label": "60%"
-                    },
-                    {
-                        "count": 48,
+                        "count": 35,
                         "label": "70%"
                     },
                     {
@@ -839,21 +591,67 @@
                         "label": "80%"
                     },
                     {
-                        "count": 71,
+                        "count": 97,
                         "label": "90%"
                     },
                     {
-                        "count": 2012,
+                        "count": 896,
                         "label": "100%"
                     }
-                ],
-                "link": "/view/Genome/1637#view_tab=proteinFamilies",
-                "popularName": "Listeria"
+                ]
             },
             {
+                "popularName": "Listeria",
+                "link": "/view/Taxonomy/1637#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "count": 19432,
+                        "count": 2867,
+                        "label": "10%"
+                    },
+                    {
+                        "count": 208,
+                        "label": "20%"
+                    },
+                    {
+                        "count": 123,
+                        "label": "30%"
+                    },
+                    {
+                        "count": 106,
+                        "label": "40%"
+                    },
+                    {
+                        "count": 95,
+                        "label": "50%"
+                    },
+                    {
+                        "count": 61,
+                        "label": "60%"
+                    },
+                    {
+                        "count": 44,
+                        "label": "70%"
+                    },
+                    {
+                        "count": 49,
+                        "label": "80%"
+                    },
+                    {
+                        "count": 70,
+                        "label": "90%"
+                    },
+                    {
+                        "count": 2013,
+                        "label": "100%"
+                    }
+                ]
+            },
+            {
+                "popularName": "Mycobacterium",
+                "link": "/view/Taxonomy/1763#view_tab=proteinFamilies",
+                "popularData": [
+                    {
+                        "count": 19433,
                         "label": "10%"
                     },
                     {
@@ -885,18 +683,18 @@
                         "label": "80%"
                     },
                     {
-                        "count": 296,
+                        "count": 302,
                         "label": "90%"
                     },
                     {
-                        "count": 2589,
+                        "count": 2583,
                         "label": "100%"
                     }
-                ],
-                "link": "/view/Genome/1763#view_tab=proteinFamilies",
-                "popularName": "Mycobacterium"
+                ]
             },
             {
+                "popularName": "Rickettsia",
+                "link": "/view/Taxonomy/780#view_tab=proteinFamilies",
                 "popularData": [
                     {
                         "count": 418,
@@ -938,18 +736,18 @@
                         "count": 652,
                         "label": "100%"
                     }
-                ],
-                "link": "/view/Genome/780#view_tab=proteinFamilies",
-                "popularName": "Rickettsia"
+                ]
             },
             {
+                "popularName": "Salmonella",
+                "link": "/view/Taxonomy/590#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "count": 5399,
+                        "count": 5402,
                         "label": "10%"
                     },
                     {
-                        "count": 466,
+                        "count": 465,
                         "label": "20%"
                     },
                     {
@@ -957,15 +755,15 @@
                         "label": "30%"
                     },
                     {
-                        "count": 136,
+                        "count": 137,
                         "label": "40%"
                     },
                     {
-                        "count": 316,
+                        "count": 318,
                         "label": "50%"
                     },
                     {
-                        "count": 171,
+                        "count": 169,
                         "label": "60%"
                     },
                     {
@@ -973,71 +771,71 @@
                         "label": "70%"
                     },
                     {
-                        "count": 118,
+                        "count": 120,
                         "label": "80%"
                     },
                     {
-                        "count": 217,
+                        "count": 216,
                         "label": "90%"
                     },
                     {
                         "count": 3144,
                         "label": "100%"
                     }
-                ],
-                "link": "/view/Genome/590#view_tab=proteinFamilies",
-                "popularName": "Salmonella"
+                ]
             },
             {
+                "popularName": "Shigella",
+                "link": "/view/Taxonomy/620#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "count": 6079,
+                        "count": 6098,
                         "label": "10%"
                     },
                     {
-                        "count": 418,
+                        "count": 445,
                         "label": "20%"
                     },
                     {
-                        "count": 195,
+                        "count": 179,
                         "label": "30%"
                     },
                     {
-                        "count": 87,
+                        "count": 74,
                         "label": "40%"
                     },
                     {
-                        "count": 73,
+                        "count": 74,
                         "label": "50%"
                     },
                     {
-                        "count": 71,
+                        "count": 77,
                         "label": "60%"
                     },
                     {
-                        "count": 98,
+                        "count": 78,
                         "label": "70%"
                     },
                     {
-                        "count": 378,
+                        "count": 365,
                         "label": "80%"
                     },
                     {
-                        "count": 201,
+                        "count": 215,
                         "label": "90%"
                     },
                     {
-                        "count": 2935,
+                        "count": 2947,
                         "label": "100%"
                     }
-                ],
-                "link": "/view/Genome/620#view_tab=proteinFamilies",
-                "popularName": "Shigella"
+                ]
             },
             {
+                "popularName": "Staphylococcus",
+                "link": "/view/Taxonomy/1279#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "count": 14052,
+                        "count": 14054,
                         "label": "10%"
                     },
                     {
@@ -1076,30 +874,30 @@
                         "count": 1832,
                         "label": "100%"
                     }
-                ],
-                "link": "/view/Genome/1279#view_tab=proteinFamilies",
-                "popularName": "Staphylococcus"
+                ]
             },
             {
+                "popularName": "Streptococcus",
+                "link": "/view/Taxonomy/1301#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "count": 19037,
+                        "count": 19038,
                         "label": "10%"
                     },
                     {
-                        "count": 432,
+                        "count": 433,
                         "label": "20%"
                     },
                     {
-                        "count": 197,
+                        "count": 201,
                         "label": "30%"
                     },
                     {
-                        "count": 123,
+                        "count": 126,
                         "label": "40%"
                     },
                     {
-                        "count": 101,
+                        "count": 98,
                         "label": "50%"
                     },
                     {
@@ -1107,53 +905,53 @@
                         "label": "60%"
                     },
                     {
-                        "count": 103,
+                        "count": 110,
                         "label": "70%"
                     },
                     {
-                        "count": 256,
+                        "count": 251,
                         "label": "80%"
                     },
                     {
-                        "count": 179,
+                        "count": 181,
                         "label": "90%"
                     },
                     {
-                        "count": 862,
+                        "count": 858,
                         "label": "100%"
                     }
-                ],
-                "link": "/view/Genome/1301#view_tab=proteinFamilies",
-                "popularName": "Streptococcus"
+                ]
             },
             {
+                "popularName": "Vibrio",
+                "link": "/view/Taxonomy/662#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "count": 7281,
+                        "count": 7369,
                         "label": "10%"
                     },
                     {
-                        "count": 419,
+                        "count": 426,
                         "label": "20%"
                     },
                     {
-                        "count": 377,
+                        "count": 380,
                         "label": "30%"
                     },
                     {
-                        "count": 554,
+                        "count": 553,
                         "label": "40%"
                     },
                     {
-                        "count": 568,
+                        "count": 564,
                         "label": "50%"
                     },
                     {
-                        "count": 397,
+                        "count": 384,
                         "label": "60%"
                     },
                     {
-                        "count": 95,
+                        "count": 108,
                         "label": "70%"
                     },
                     {
@@ -1161,18 +959,18 @@
                         "label": "80%"
                     },
                     {
-                        "count": 160,
+                        "count": 164,
                         "label": "90%"
                     },
                     {
-                        "count": 2029,
+                        "count": 2025,
                         "label": "100%"
                     }
-                ],
-                "link": "/view/Genome/662#view_tab=proteinFamilies",
-                "popularName": "Vibrio"
+                ]
             },
             {
+                "popularName": "Yersinia",
+                "link": "/view/Taxonomy/629#view_tab=proteinFamilies",
                 "popularData": [
                     {
                         "count": 2839,
@@ -1214,10 +1012,212 @@
                         "count": 2215,
                         "label": "100%"
                     }
-                ],
-                "link": "/view/Genome/629#view_tab=proteinFamilies",
-                "popularName": "Yersinia"
+                ]
             }
         ]
+    },
+    "FIGfams": {
+        "data": [
+            {
+                "genomes": 1183,
+                "core": 1016,
+                "total": 18464,
+                "functional": 7765,
+                "hypothetical": 10699,
+                "pathogen": "Bacillus",
+                "accessory": 17448
+            },
+            {
+                "genomes": 83,
+                "core": 788,
+                "total": 1770,
+                "functional": 1563,
+                "hypothetical": 207,
+                "pathogen": "Bartonella",
+                "accessory": 982
+            },
+            {
+                "genomes": 24,
+                "core": 691,
+                "total": 974,
+                "functional": 645,
+                "hypothetical": 329,
+                "pathogen": "Borrelia",
+                "accessory": 283
+            },
+            {
+                "genomes": 519,
+                "core": 2171,
+                "total": 3771,
+                "functional": 2618,
+                "hypothetical": 1153,
+                "pathogen": "Brucella",
+                "accessory": 1600
+            },
+            {
+                "genomes": 1195,
+                "core": 2008,
+                "total": 13581,
+                "functional": 5713,
+                "hypothetical": 7868,
+                "pathogen": "Burkholderia",
+                "accessory": 11573
+            },
+            {
+                "genomes": 1544,
+                "core": 979,
+                "total": 5531,
+                "functional": 3705,
+                "hypothetical": 1826,
+                "pathogen": "Campylobacter",
+                "accessory": 4552
+            },
+            {
+                "genomes": 241,
+                "core": 609,
+                "total": 8181,
+                "functional": 5409,
+                "hypothetical": 2772,
+                "pathogen": "Chlamydia",
+                "accessory": 7572
+            },
+            {
+                "genomes": 503,
+                "core": 246,
+                "total": 15185,
+                "functional": 6649,
+                "hypothetical": 8536,
+                "pathogen": "Clostridium",
+                "accessory": 14939
+            },
+            {
+                "genomes": 28,
+                "core": 550,
+                "total": 2102,
+                "functional": 1391,
+                "hypothetical": 711,
+                "pathogen": "Coxiella",
+                "accessory": 1552
+            },
+            {
+                "genomes": 18,
+                "core": 562,
+                "total": 891,
+                "functional": 712,
+                "hypothetical": 179,
+                "pathogen": "Ehrlichia",
+                "accessory": 329
+            },
+            {
+                "genomes": 4734,
+                "core": 2690,
+                "total": 16043,
+                "functional": 8918,
+                "hypothetical": 7125,
+                "pathogen": "Escherichia",
+                "accessory": 13353
+            },
+            {
+                "genomes": 122,
+                "core": 1065,
+                "total": 2269,
+                "functional": 1643,
+                "hypothetical": 626,
+                "pathogen": "Francisella",
+                "accessory": 1204
+            },
+            {
+                "genomes": 644,
+                "core": 688,
+                "total": 3594,
+                "functional": 1957,
+                "hypothetical": 1637,
+                "pathogen": "Helicobacter",
+                "accessory": 2906
+            },
+            {
+                "genomes": 782,
+                "core": 1922,
+                "total": 5636,
+                "functional": 3524,
+                "hypothetical": 2112,
+                "pathogen": "Listeria",
+                "accessory": 3714
+            },
+            {
+                "genomes": 8467,
+                "core": 1664,
+                "total": 22854,
+                "functional": 11869,
+                "hypothetical": 10985,
+                "pathogen": "Mycobacterium",
+                "accessory": 21190
+            },
+            {
+                "genomes": 87,
+                "core": 614,
+                "total": 1942,
+                "functional": 981,
+                "hypothetical": 961,
+                "pathogen": "Rickettsia",
+                "accessory": 1328
+            },
+            {
+                "genomes": 4843,
+                "core": 3009,
+                "total": 10223,
+                "functional": 6806,
+                "hypothetical": 3417,
+                "pathogen": "Salmonella",
+                "accessory": 7214
+            },
+            {
+                "genomes": 823,
+                "core": 2589,
+                "total": 10552,
+                "functional": 7235,
+                "hypothetical": 3317,
+                "pathogen": "Shigella",
+                "accessory": 7963
+            },
+            {
+                "genomes": 9222,
+                "core": 1537,
+                "total": 16642,
+                "functional": 10501,
+                "hypothetical": 6141,
+                "pathogen": "Staphylococcus",
+                "accessory": 15105
+            },
+            {
+                "genomes": 10451,
+                "core": 761,
+                "total": 21365,
+                "functional": 10482,
+                "hypothetical": 10883,
+                "pathogen": "Streptococcus",
+                "accessory": 20604
+            },
+            {
+                "genomes": 1433,
+                "core": 1837,
+                "total": 12037,
+                "functional": 6491,
+                "hypothetical": 5546,
+                "pathogen": "Vibrio",
+                "accessory": 10200
+            },
+            {
+                "genomes": 590,
+                "core": 2092,
+                "total": 7293,
+                "functional": 5114,
+                "hypothetical": 2179,
+                "pathogen": "Yersinia",
+                "accessory": 5201
+            }
+        ],
+        "chart_title": "Protein Family Conservation in Pathogenic Bacteria",
+        "chart_desc": "The graph below summarizes conservation of protein families across all the genomes in each pathogenic genus."
     }
 }

@@ -3,654 +3,654 @@
         "popularTitle": "Select Genomes",
         "popularList": [
             {
+                "popularName": "Mycobacterium tuberculosis H37Rv",
+                "link": "/view/Genome/83332.12",
+                "links": [
+                    {
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/83332.12#view_tab=browser"
+                    },
+                    {
+                        "name": "Feature Table",
+                        "link": "/view/Genome/83332.12#view_tab=features"
+                    },
+                    {
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/83332.12#view_tab=proteinFamilies"
+                    },
+                    {
+                        "name": "Pathway",
+                        "link": "/view/Genome/83332.12#view_tab=pathways"
+                    },
+                    {
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/83332.12#view_tab=transcriptomics"
+                    }
+                ],
                 "specialtyGenes": [
                     {
-                        "description": "Antibiotic Resistance: ARDB",
+                        "data": 2,
                         "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 2
+                        "description": "Antibiotic Resistance: ARDB"
                     },
                     {
-                        "description": "Antibiotic Resistance: CARD",
+                        "data": 11,
                         "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 11
+                        "description": "Antibiotic Resistance: CARD"
                     },
                     {
-                        "description": "Drug Target: DrugBank",
+                        "data": 76,
                         "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
-                        "data": 76
+                        "description": "Drug Target: DrugBank"
                     },
                     {
-                        "description": "Drug Target: TTD",
+                        "data": 33,
                         "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,TTD)",
-                        "data": 33
+                        "description": "Drug Target: TTD"
                     },
                     {
-                        "description": "Human Homolog: Human",
+                        "data": 34,
                         "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,Human)",
-                        "data": 34
+                        "description": "Human Homolog: Human"
                     },
                     {
-                        "description": "Virulence Factor: PATRIC_VF",
-                        "link": "/view/Genome/83332.12&#view_tab=transcriptomicssource:PATRIC_VF",
-                        "data": 473
+                        "data": 473,
+                        "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,PATRIC_VF)",
+                        "description": "Virulence Factor: PATRIC_VF"
                     },
                     {
-                        "description": "Virulence Factor: VFDB",
+                        "data": 88,
                         "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,VFDB)",
-                        "data": 88
+                        "description": "Virulence Factor: VFDB"
                     },
                     {
-                        "description": "Virulence Factor: Victors",
+                        "data": 271,
                         "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,Victors)",
-                        "data": 271
+                        "description": "Virulence Factor: Victors"
                     }
-                ],
-                "link": "Genome?cType=genome&cId=83332.12",
-                "links": [
-                    {
-                        "link": "/view/Genome/83332.12#view_tab=browser",
-                        "name": "Genome Browser"
-                    },
-                    {
-                        "link": "/view/Genome/83332.12#view_tab=features",
-                        "name": "Feature Table"
-                    },
-                    {
-                        "link": "/view/Genome/83332.12#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
-                    },
-                    {
-                        "link": "/view/Genome/83332.12#view_tab=pathways",
-                        "name": "Pathway"
-                    },
-                    {
-                        "link": "/view/Genome/83332.12&#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
-                    }
-                ],
-                "popularName": "Mycobacterium tuberculosis H37Rv"
+                ]
             },
             {
+                "popularName": "Escherichia coli str. K-12 substr. MG1655",
+                "link": "/view/Genome/511145.12",
+                "links": [
+                    {
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/511145.12#view_tab=browser"
+                    },
+                    {
+                        "name": "Feature Table",
+                        "link": "/view/Genome/511145.12#view_tab=features"
+                    },
+                    {
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/511145.12#view_tab=proteinFamilies"
+                    },
+                    {
+                        "name": "Pathway",
+                        "link": "/view/Genome/511145.12#view_tab=pathways"
+                    },
+                    {
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/511145.12#view_tab=transcriptomics"
+                    }
+                ],
                 "specialtyGenes": [
                     {
-                        "description": "Antibiotic Resistance: ARDB",
+                        "data": 24,
                         "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 24
+                        "description": "Antibiotic Resistance: ARDB"
                     },
                     {
-                        "description": "Antibiotic Resistance: CARD",
+                        "data": 57,
                         "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 57
+                        "description": "Antibiotic Resistance: CARD"
                     },
                     {
-                        "description": "Drug Target: DrugBank",
+                        "data": 388,
                         "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
-                        "data": 388
+                        "description": "Drug Target: DrugBank"
                     },
                     {
-                        "description": "Drug Target: TTD",
+                        "data": 86,
                         "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,TTD)",
-                        "data": 86
+                        "description": "Drug Target: TTD"
                     },
                     {
-                        "description": "Human Homolog: Human",
+                        "data": 55,
                         "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,Human)",
-                        "data": 55
+                        "description": "Human Homolog: Human"
                     },
                     {
-                        "description": "Virulence Factor: PATRIC_VF",
-                        "link": "/view/Genome/511145.12&#view_tab=transcriptomicssource:PATRIC_VF",
-                        "data": 218
+                        "data": 218,
+                        "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,PATRIC_VF)",
+                        "description": "Virulence Factor: PATRIC_VF"
                     },
                     {
-                        "description": "Virulence Factor: VFDB",
+                        "data": 123,
                         "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,VFDB)",
-                        "data": 123
+                        "description": "Virulence Factor: VFDB"
                     },
                     {
-                        "description": "Virulence Factor: Victors",
+                        "data": 245,
                         "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,Victors)",
-                        "data": 245
+                        "description": "Virulence Factor: Victors"
                     }
-                ],
-                "link": "Genome?cType=genome&cId=511145.12",
-                "links": [
-                    {
-                        "link": "/view/Genome/511145.12#view_tab=browser",
-                        "name": "Genome Browser"
-                    },
-                    {
-                        "link": "/view/Genome/511145.12#view_tab=features",
-                        "name": "Feature Table"
-                    },
-                    {
-                        "link": "/view/Genome/511145.12#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
-                    },
-                    {
-                        "link": "/view/Genome/511145.12#view_tab=pathways",
-                        "name": "Pathway"
-                    },
-                    {
-                        "link": "/view/Genome/511145.12&#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
-                    }
-                ],
-                "popularName": "Escherichia coli str. K-12 substr. MG1655"
+                ]
             },
             {
+                "popularName": "Salmonella enterica subsp. enterica serovar Typhimurium str. LT2",
+                "link": "/view/Genome/99287.12",
+                "links": [
+                    {
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/99287.12#view_tab=browser"
+                    },
+                    {
+                        "name": "Feature Table",
+                        "link": "/view/Genome/99287.12#view_tab=features"
+                    },
+                    {
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/99287.12#view_tab=proteinFamilies"
+                    },
+                    {
+                        "name": "Pathway",
+                        "link": "/view/Genome/99287.12#view_tab=pathways"
+                    },
+                    {
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/99287.12#view_tab=transcriptomics"
+                    }
+                ],
                 "specialtyGenes": [
                     {
-                        "description": "Antibiotic Resistance: ARDB",
+                        "data": 18,
                         "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 18
+                        "description": "Antibiotic Resistance: ARDB"
                     },
                     {
-                        "description": "Antibiotic Resistance: CARD",
+                        "data": 51,
                         "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 51
+                        "description": "Antibiotic Resistance: CARD"
                     },
                     {
-                        "description": "Drug Target: DrugBank",
+                        "data": 356,
                         "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
-                        "data": 356
+                        "description": "Drug Target: DrugBank"
                     },
                     {
-                        "description": "Drug Target: TTD",
+                        "data": 80,
                         "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,TTD)",
-                        "data": 80
+                        "description": "Drug Target: TTD"
                     },
                     {
-                        "description": "Human Homolog: Human",
+                        "data": 56,
                         "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,Human)",
-                        "data": 56
+                        "description": "Human Homolog: Human"
                     },
                     {
-                        "description": "Virulence Factor: PATRIC_VF",
-                        "link": "/view/Genome/99287.12&#view_tab=transcriptomicssource:PATRIC_VF",
-                        "data": 343
+                        "data": 343,
+                        "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,PATRIC_VF)",
+                        "description": "Virulence Factor: PATRIC_VF"
                     },
                     {
-                        "description": "Virulence Factor: VFDB",
+                        "data": 198,
                         "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,VFDB)",
-                        "data": 198
+                        "description": "Virulence Factor: VFDB"
                     },
                     {
-                        "description": "Virulence Factor: Victors",
+                        "data": 355,
                         "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,Victors)",
-                        "data": 355
+                        "description": "Virulence Factor: Victors"
                     }
-                ],
-                "link": "Genome?cType=genome&cId=99287.12",
-                "links": [
-                    {
-                        "link": "/view/Genome/99287.12#view_tab=browser",
-                        "name": "Genome Browser"
-                    },
-                    {
-                        "link": "/view/Genome/99287.12#view_tab=features",
-                        "name": "Feature Table"
-                    },
-                    {
-                        "link": "/view/Genome/99287.12#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
-                    },
-                    {
-                        "link": "/view/Genome/99287.12#view_tab=pathways",
-                        "name": "Pathway"
-                    },
-                    {
-                        "link": "/view/Genome/99287.12&#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
-                    }
-                ],
-                "popularName": "Salmonella enterica subsp. enterica serovar Typhimurium str. LT2"
+                ]
             },
             {
+                "popularName": "Shigella flexneri 2a str. 2457T",
+                "link": "/view/Genome/198215.6",
+                "links": [
+                    {
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/198215.6#view_tab=browser"
+                    },
+                    {
+                        "name": "Feature Table",
+                        "link": "/view/Genome/198215.6#view_tab=features"
+                    },
+                    {
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/198215.6#view_tab=proteinFamilies"
+                    },
+                    {
+                        "name": "Pathway",
+                        "link": "/view/Genome/198215.6#view_tab=pathways"
+                    },
+                    {
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/198215.6#view_tab=transcriptomics"
+                    }
+                ],
                 "specialtyGenes": [
                     {
-                        "description": "Antibiotic Resistance: ARDB",
+                        "data": 25,
                         "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 25
+                        "description": "Antibiotic Resistance: ARDB"
                     },
                     {
-                        "description": "Antibiotic Resistance: CARD",
+                        "data": 57,
                         "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 57
+                        "description": "Antibiotic Resistance: CARD"
                     },
                     {
-                        "description": "Drug Target: DrugBank",
+                        "data": 390,
                         "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
-                        "data": 390
+                        "description": "Drug Target: DrugBank"
                     },
                     {
-                        "description": "Drug Target: TTD",
+                        "data": 85,
                         "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,TTD)",
-                        "data": 85
+                        "description": "Drug Target: TTD"
                     },
                     {
-                        "description": "Human Homolog: Human",
+                        "data": 57,
                         "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,Human)",
-                        "data": 57
+                        "description": "Human Homolog: Human"
                     },
                     {
-                        "description": "Virulence Factor: PATRIC_VF",
-                        "link": "/view/Genome/198215.6&#view_tab=transcriptomicssource:PATRIC_VF",
-                        "data": 227
+                        "data": 227,
+                        "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,PATRIC_VF)",
+                        "description": "Virulence Factor: PATRIC_VF"
                     },
                     {
-                        "description": "Virulence Factor: VFDB",
+                        "data": 536,
                         "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,VFDB)",
-                        "data": 536
+                        "description": "Virulence Factor: VFDB"
                     },
                     {
-                        "description": "Virulence Factor: Victors",
+                        "data": 263,
                         "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,Victors)",
-                        "data": 263
+                        "description": "Virulence Factor: Victors"
                     }
-                ],
-                "link": "Genome?cType=genome&cId=198215.6",
-                "links": [
-                    {
-                        "link": "/view/Genome/198215.6#view_tab=browser",
-                        "name": "Genome Browser"
-                    },
-                    {
-                        "link": "/view/Genome/198215.6#view_tab=features",
-                        "name": "Feature Table"
-                    },
-                    {
-                        "link": "/view/Genome/198215.6#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
-                    },
-                    {
-                        "link": "/view/Genome/198215.6#view_tab=pathways",
-                        "name": "Pathway"
-                    },
-                    {
-                        "link": "/view/Genome/198215.6&#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
-                    }
-                ],
-                "popularName": "Shigella flexneri 2a str. 2457T"
+                ]
             },
             {
+                "popularName": "Yersinia pestis CO92",
+                "link": "/view/Genome/214092.21",
+                "links": [
+                    {
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/214092.21#view_tab=browser"
+                    },
+                    {
+                        "name": "Feature Table",
+                        "link": "/view/Genome/214092.21#view_tab=features"
+                    },
+                    {
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/214092.21#view_tab=proteinFamilies"
+                    },
+                    {
+                        "name": "Pathway",
+                        "link": "/view/Genome/214092.21#view_tab=pathways"
+                    },
+                    {
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/214092.21#view_tab=transcriptomics"
+                    }
+                ],
                 "specialtyGenes": [
                     {
-                        "description": "Antibiotic Resistance: ARDB",
+                        "data": 5,
                         "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 5
+                        "description": "Antibiotic Resistance: ARDB"
                     },
                     {
-                        "description": "Antibiotic Resistance: CARD",
+                        "data": 20,
                         "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 20
+                        "description": "Antibiotic Resistance: CARD"
                     },
                     {
-                        "description": "Drug Target: DrugBank",
+                        "data": 167,
                         "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
-                        "data": 167
+                        "description": "Drug Target: DrugBank"
                     },
                     {
-                        "description": "Drug Target: TTD",
+                        "data": 45,
                         "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,TTD)",
-                        "data": 45
+                        "description": "Drug Target: TTD"
                     },
                     {
-                        "description": "Human Homolog: Human",
+                        "data": 58,
                         "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,Human)",
-                        "data": 58
+                        "description": "Human Homolog: Human"
                     },
                     {
-                        "description": "Virulence Factor: PATRIC_VF",
-                        "link": "/view/Genome/214092.21&#view_tab=transcriptomicssource:PATRIC_VF",
-                        "data": 59
+                        "data": 59,
+                        "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,PATRIC_VF)",
+                        "description": "Virulence Factor: PATRIC_VF"
                     },
                     {
-                        "description": "Virulence Factor: VFDB",
+                        "data": 228,
                         "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,VFDB)",
-                        "data": 228
+                        "description": "Virulence Factor: VFDB"
                     },
                     {
-                        "description": "Virulence Factor: Victors",
+                        "data": 165,
                         "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,Victors)",
-                        "data": 165
+                        "description": "Virulence Factor: Victors"
                     }
-                ],
-                "link": "Genome?cType=genome&cId=214092.21",
-                "links": [
-                    {
-                        "link": "/view/Genome/214092.21#view_tab=browser",
-                        "name": "Genome Browser"
-                    },
-                    {
-                        "link": "/view/Genome/214092.21#view_tab=features",
-                        "name": "Feature Table"
-                    },
-                    {
-                        "link": "/view/Genome/214092.21#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
-                    },
-                    {
-                        "link": "/view/Genome/214092.21#view_tab=pathways",
-                        "name": "Pathway"
-                    },
-                    {
-                        "link": "/view/Genome/214092.21&#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
-                    }
-                ],
-                "popularName": "Yersinia pestis CO92"
+                ]
             },
             {
+                "popularName": "Listeria monocytogenes EGD-e",
+                "link": "/view/Genome/169963.11",
+                "links": [
+                    {
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/169963.11#view_tab=browser"
+                    },
+                    {
+                        "name": "Feature Table",
+                        "link": "/view/Genome/169963.11#view_tab=features"
+                    },
+                    {
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/169963.11#view_tab=proteinFamilies"
+                    },
+                    {
+                        "name": "Pathway",
+                        "link": "/view/Genome/169963.11#view_tab=pathways"
+                    },
+                    {
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/169963.11#view_tab=transcriptomics"
+                    }
+                ],
                 "specialtyGenes": [
                     {
-                        "description": "Antibiotic Resistance: ARDB",
+                        "data": 1,
                         "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 1
+                        "description": "Antibiotic Resistance: ARDB"
                     },
                     {
-                        "description": "Antibiotic Resistance: CARD",
+                        "data": 22,
                         "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 22
+                        "description": "Antibiotic Resistance: CARD"
                     },
                     {
-                        "description": "Drug Target: DrugBank",
+                        "data": 6,
                         "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
-                        "data": 6
+                        "description": "Drug Target: DrugBank"
                     },
                     {
-                        "description": "Human Homolog: Human",
+                        "data": 25,
                         "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,Human)",
-                        "data": 25
+                        "description": "Human Homolog: Human"
                     },
                     {
-                        "description": "Virulence Factor: PATRIC_VF",
-                        "link": "/view/Genome/169963.11&#view_tab=transcriptomicssource:PATRIC_VF",
-                        "data": 147
+                        "data": 147,
+                        "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,PATRIC_VF)",
+                        "description": "Virulence Factor: PATRIC_VF"
                     },
                     {
-                        "description": "Virulence Factor: VFDB",
+                        "data": 26,
                         "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,VFDB)",
-                        "data": 26
+                        "description": "Virulence Factor: VFDB"
                     },
                     {
-                        "description": "Virulence Factor: Victors",
+                        "data": 68,
                         "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,Victors)",
-                        "data": 68
+                        "description": "Virulence Factor: Victors"
                     }
-                ],
-                "link": "Genome?cType=genome&cId=169963.11",
-                "links": [
-                    {
-                        "link": "/view/Genome/169963.11#view_tab=browser",
-                        "name": "Genome Browser"
-                    },
-                    {
-                        "link": "/view/Genome/169963.11#view_tab=features",
-                        "name": "Feature Table"
-                    },
-                    {
-                        "link": "/view/Genome/169963.11#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
-                    },
-                    {
-                        "link": "/view/Genome/169963.11#view_tab=pathways",
-                        "name": "Pathway"
-                    },
-                    {
-                        "link": "/view/Genome/169963.11&#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
-                    }
-                ],
-                "popularName": "Listeria monocytogenes EGD-e"
+                ]
             },
             {
+                "popularName": "Staphylococcus aureus subsp. aureus N315",
+                "link": "/view/Genome/158879.11",
+                "links": [
+                    {
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/158879.11#view_tab=browser"
+                    },
+                    {
+                        "name": "Feature Table",
+                        "link": "/view/Genome/158879.11#view_tab=features"
+                    },
+                    {
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/158879.11#view_tab=proteinFamilies"
+                    },
+                    {
+                        "name": "Pathway",
+                        "link": "/view/Genome/158879.11#view_tab=pathways"
+                    },
+                    {
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/158879.11#view_tab=transcriptomics"
+                    }
+                ],
                 "specialtyGenes": [
                     {
-                        "description": "Antibiotic Resistance: ARDB",
+                        "data": 20,
                         "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 20
+                        "description": "Antibiotic Resistance: ARDB"
                     },
                     {
-                        "description": "Antibiotic Resistance: CARD",
+                        "data": 47,
                         "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 47
+                        "description": "Antibiotic Resistance: CARD"
                     },
                     {
-                        "description": "Drug Target: DrugBank",
+                        "data": 29,
                         "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
-                        "data": 29
+                        "description": "Drug Target: DrugBank"
                     },
                     {
-                        "description": "Drug Target: TTD",
+                        "data": 16,
                         "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,TTD)",
-                        "data": 16
+                        "description": "Drug Target: TTD"
                     },
                     {
-                        "description": "Human Homolog: Human",
+                        "data": 21,
                         "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,Human)",
-                        "data": 21
+                        "description": "Human Homolog: Human"
                     },
                     {
-                        "description": "Virulence Factor: VFDB",
+                        "data": 61,
                         "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,VFDB)",
-                        "data": 61
+                        "description": "Virulence Factor: VFDB"
                     },
                     {
-                        "description": "Virulence Factor: Victors",
+                        "data": 35,
                         "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,Victors)",
-                        "data": 35
+                        "description": "Virulence Factor: Victors"
                     }
-                ],
-                "link": "Genome?cType=genome&cId=158879.11",
-                "links": [
-                    {
-                        "link": "/view/Genome/158879.11#view_tab=browser",
-                        "name": "Genome Browser"
-                    },
-                    {
-                        "link": "/view/Genome/158879.11#view_tab=features",
-                        "name": "Feature Table"
-                    },
-                    {
-                        "link": "/view/Genome/158879.11#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
-                    },
-                    {
-                        "link": "/view/Genome/158879.11#view_tab=pathways",
-                        "name": "Pathway"
-                    },
-                    {
-                        "link": "/view/Genome/158879.11&#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
-                    }
-                ],
-                "popularName": "Staphylococcus aureus subsp. aureus N315"
+                ]
             },
             {
+                "popularName": "Streptococcus pneumoniae D39",
+                "link": "/view/Genome/373153.27",
+                "links": [
+                    {
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/373153.27#view_tab=browser"
+                    },
+                    {
+                        "name": "Feature Table",
+                        "link": "/view/Genome/373153.27#view_tab=features"
+                    },
+                    {
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/373153.27#view_tab=proteinFamilies"
+                    },
+                    {
+                        "name": "Pathway",
+                        "link": "/view/Genome/373153.27#view_tab=pathways"
+                    },
+                    {
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/373153.27#view_tab=transcriptomics"
+                    }
+                ],
                 "specialtyGenes": [
                     {
-                        "description": "Antibiotic Resistance: ARDB",
+                        "data": 2,
                         "link": "/view/Genome/373153.27#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 2
+                        "description": "Antibiotic Resistance: ARDB"
                     },
                     {
-                        "description": "Antibiotic Resistance: CARD",
+                        "data": 11,
                         "link": "/view/Genome/373153.27#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 11
+                        "description": "Antibiotic Resistance: CARD"
                     },
                     {
-                        "description": "Drug Target: DrugBank",
+                        "data": 25,
                         "link": "/view/Genome/373153.27#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
-                        "data": 25
+                        "description": "Drug Target: DrugBank"
                     },
                     {
-                        "description": "Drug Target: TTD",
+                        "data": 12,
                         "link": "/view/Genome/373153.27#view_tab=specialtyGenes&filter=eq(source,TTD)",
-                        "data": 12
+                        "description": "Drug Target: TTD"
                     },
                     {
-                        "description": "Human Homolog: Human",
+                        "data": 14,
                         "link": "/view/Genome/373153.27#view_tab=specialtyGenes&filter=eq(source,Human)",
-                        "data": 14
+                        "description": "Human Homolog: Human"
                     },
                     {
-                        "description": "Virulence Factor: VFDB",
+                        "data": 16,
                         "link": "/view/Genome/373153.27#view_tab=specialtyGenes&filter=eq(source,VFDB)",
-                        "data": 16
+                        "description": "Virulence Factor: VFDB"
                     },
                     {
-                        "description": "Virulence Factor: Victors",
+                        "data": 262,
                         "link": "/view/Genome/373153.27#view_tab=specialtyGenes&filter=eq(source,Victors)",
-                        "data": 262
+                        "description": "Virulence Factor: Victors"
                     }
-                ],
-                "link": "Genome?cType=genome&cId=373153.27",
-                "links": [
-                    {
-                        "link": "/view/Genome/373153.27#view_tab=browser",
-                        "name": "Genome Browser"
-                    },
-                    {
-                        "link": "/view/Genome/373153.27#view_tab=features",
-                        "name": "Feature Table"
-                    },
-                    {
-                        "link": "/view/Genome/373153.27#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
-                    },
-                    {
-                        "link": "/view/Genome/373153.27#view_tab=pathways",
-                        "name": "Pathway"
-                    },
-                    {
-                        "link": "/view/Genome/373153.27&#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
-                    }
-                ],
-                "popularName": "Streptococcus pneumoniae D39"
+                ]
             },
             {
+                "popularName": "Brucella melitensis bv. 1 str. 16M",
+                "link": "/view/Genome/224914.11",
+                "links": [
+                    {
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/224914.11#view_tab=browser"
+                    },
+                    {
+                        "name": "Feature Table",
+                        "link": "/view/Genome/224914.11#view_tab=features"
+                    },
+                    {
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/224914.11#view_tab=proteinFamilies"
+                    },
+                    {
+                        "name": "Pathway",
+                        "link": "/view/Genome/224914.11#view_tab=pathways"
+                    },
+                    {
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/224914.11#view_tab=transcriptomics"
+                    }
+                ],
                 "specialtyGenes": [
                     {
-                        "description": "Antibiotic Resistance: ARDB",
+                        "data": 1,
                         "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 1
+                        "description": "Antibiotic Resistance: ARDB"
                     },
                     {
-                        "description": "Drug Target: DrugBank",
+                        "data": 2,
                         "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
-                        "data": 2
+                        "description": "Drug Target: DrugBank"
                     },
                     {
-                        "description": "Drug Target: TTD",
+                        "data": 1,
                         "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,TTD)",
-                        "data": 1
+                        "description": "Drug Target: TTD"
                     },
                     {
-                        "description": "Human Homolog: Human",
+                        "data": 81,
                         "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,Human)",
-                        "data": 81
+                        "description": "Human Homolog: Human"
                     },
                     {
-                        "description": "Virulence Factor: PATRIC_VF",
-                        "link": "/view/Genome/224914.11&#view_tab=transcriptomicssource:PATRIC_VF",
-                        "data": 2
+                        "data": 2,
+                        "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,PATRIC_VF)",
+                        "description": "Virulence Factor: PATRIC_VF"
                     },
                     {
-                        "description": "Virulence Factor: VFDB",
+                        "data": 23,
                         "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,VFDB)",
-                        "data": 23
+                        "description": "Virulence Factor: VFDB"
                     },
                     {
-                        "description": "Virulence Factor: Victors",
+                        "data": 228,
                         "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,Victors)",
-                        "data": 228
+                        "description": "Virulence Factor: Victors"
                     }
-                ],
-                "link": "Genome?cType=genome&cId=224914.11",
-                "links": [
-                    {
-                        "link": "/view/Genome/224914.11#view_tab=browser",
-                        "name": "Genome Browser"
-                    },
-                    {
-                        "link": "/view/Genome/224914.11#view_tab=features",
-                        "name": "Feature Table"
-                    },
-                    {
-                        "link": "/view/Genome/224914.11#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
-                    },
-                    {
-                        "link": "/view/Genome/224914.11#view_tab=pathways",
-                        "name": "Pathway"
-                    },
-                    {
-                        "link": "/view/Genome/224914.11&#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
-                    }
-                ],
-                "popularName": "Brucella melitensis bv. 1 str. 16M"
+                ]
             },
             {
-                "specialtyGenes": [
-                    {
-                        "description": "Antibiotic Resistance: CARD",
-                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 2
-                    },
-                    {
-                        "description": "Drug Target: DrugBank",
-                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
-                        "data": 13
-                    },
-                    {
-                        "description": "Drug Target: TTD",
-                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,TTD)",
-                        "data": 6
-                    },
-                    {
-                        "description": "Human Homolog: Human",
-                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,Human)",
-                        "data": 17
-                    },
-                    {
-                        "description": "Virulence Factor: VFDB",
-                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,VFDB)",
-                        "data": 61
-                    },
-                    {
-                        "description": "Virulence Factor: Victors",
-                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,Victors)",
-                        "data": 67
-                    }
-                ],
-                "link": "Genome?cType=genome&cId=85962.8",
+                "popularName": "Helicobacter pylori 26695",
+                "link": "/view/Genome/85962.8",
                 "links": [
                     {
-                        "link": "/view/Genome/85962.8#view_tab=browser",
-                        "name": "Genome Browser"
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/85962.8#view_tab=browser"
                     },
                     {
-                        "link": "/view/Genome/85962.8#view_tab=features",
-                        "name": "Feature Table"
+                        "name": "Feature Table",
+                        "link": "/view/Genome/85962.8#view_tab=features"
                     },
                     {
-                        "link": "/view/Genome/85962.8#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/85962.8#view_tab=proteinFamilies"
                     },
                     {
-                        "link": "/view/Genome/85962.8#view_tab=pathways",
-                        "name": "Pathway"
+                        "name": "Pathway",
+                        "link": "/view/Genome/85962.8#view_tab=pathways"
                     },
                     {
-                        "link": "/view/Genome/85962.8&#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/85962.8#view_tab=transcriptomics"
                     }
                 ],
-                "popularName": "Helicobacter pylori 26695"
+                "specialtyGenes": [
+                    {
+                        "data": 2,
+                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,CARD)",
+                        "description": "Antibiotic Resistance: CARD"
+                    },
+                    {
+                        "data": 13,
+                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
+                        "description": "Drug Target: DrugBank"
+                    },
+                    {
+                        "data": 6,
+                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,TTD)",
+                        "description": "Drug Target: TTD"
+                    },
+                    {
+                        "data": 17,
+                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,Human)",
+                        "description": "Human Homolog: Human"
+                    },
+                    {
+                        "data": 61,
+                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,VFDB)",
+                        "description": "Virulence Factor: VFDB"
+                    },
+                    {
+                        "data": 67,
+                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,Victors)",
+                        "description": "Virulence Factor: Victors"
+                    }
+                ]
             }
         ]
     }

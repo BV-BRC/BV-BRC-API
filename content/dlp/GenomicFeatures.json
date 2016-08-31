@@ -3,1239 +3,1239 @@
         "popularTitle": "Select Genomes",
         "popularList": [
             {
-                "specialtyGenes": [
-                    {
-                        "description": "Antibiotic Resistance: ARDB",
-                        "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 2
-                    },
-                    {
-                        "description": "Antibiotic Resistance: CARD",
-                        "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 11
-                    },
-                    {
-                        "description": "Drug Target: DrugBank",
-                        "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
-                        "data": 76
-                    },
-                    {
-                        "description": "Drug Target: TTD",
-                        "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,TTD)",
-                        "data": 33
-                    },
-                    {
-                        "description": "Human Homolog: Human",
-                        "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,Human)",
-                        "data": 34
-                    },
-                    {
-                        "description": "Virulence Factor: PATRIC_VF",
-                        "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,PATRIC_VF)",
-                        "data": 473
-                    },
-                    {
-                        "description": "Virulence Factor: VFDB",
-                        "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,VFDB)",
-                        "data": 88
-                    },
-                    {
-                        "description": "Virulence Factor: Victors",
-                        "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,Victors)",
-                        "data": 271
-                    }
-                ],
+                "popularName": "Mycobacterium tuberculosis H37Rv",
                 "proteinSummary": [
                     {
-                        "description": "Unknown functions",
-                        "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(product,hypothetical+protein),eq(feature_type,CDS))",
-                        "data": 1109
+                        "data": 1109,
+                        "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(product,hypothetical+protein))",
+                        "description": "Unknown functions"
                     },
                     {
-                        "description": "Functional assignments",
-                        "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(annotation,PATRIC),ne(product,hypothetical+protein),eq(feature_type,CDS))",
-                        "data": 3258
+                        "data": 3258,
+                        "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),ne(product,hypothetical+protein))",
+                        "description": "Functional assignments"
                     },
                     {
-                        "description": "EC assignments",
-                        "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(ec,*))",
-                        "data": 1068
+                        "data": 1068,
+                        "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(ec,*))",
+                        "description": "EC assignments"
                     },
                     {
-                        "description": "GO assignments",
-                        "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(go,*))",
-                        "data": 963
+                        "data": 963,
+                        "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(go,*))",
+                        "description": "GO assignments"
                     },
                     {
-                        "description": "Pathways assignments",
-                        "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(pathway,*))",
-                        "data": 855
+                        "data": 855,
+                        "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pathway,*))",
+                        "description": "Pathways assignments"
                     },
                     {
-                        "description": "FIGfam assignments",
-                        "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(figfam_id,*))",
-                        "data": 4290
-                    }
-                ],
-                "featureTypes": [
-                    {
-                        "description": "CDS",
-                        "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
-                        "data": 4367
-                    },
-                    {
-                        "description": "tRNA",
-                        "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(feature_type,tRNA),eq(annotation,PATRIC))",
-                        "data": 45
-                    },
-                    {
-                        "description": "pseudogene",
-                        "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(feature_type,pseudogene),eq(annotation,PATRIC))",
-                        "data": 26
-                    },
-                    {
-                        "description": "rRNA",
-                        "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(feature_type,rRNA),eq(annotation,PATRIC))",
-                        "data": 2
-                    },
-                    {
-                        "description": "misc_RNA",
-                        "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(feature_type,misc_RNA),eq(annotation,PATRIC))",
-                        "data": 1
+                        "data": 4290,
+                        "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(figfam_id,*))",
+                        "description": "FIGfam assignments"
                     }
                 ],
                 "link": "/view/Genome/83332.12",
-                "links": [
-                    {
-                        "link": "/view/Genome/83332.12#view_tab=browser",
-                        "name": "Genome Browser"
-                    },
-                    {
-                        "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
-                        "name": "Feature Table"
-                    },
-                    {
-                        "link": "/view/Genome/83332.12#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
-                    },
-                    {
-                        "link": "/view/Genome/83332.12#view_tab=pathways",
-                        "name": "Pathway"
-                    },
-                    {
-                        "link": "/view/Genome/83332.12#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
-                    }
-                ],
-                "popularName": "Mycobacterium tuberculosis H37Rv"
-            },
-            {
-                "specialtyGenes": [
-                    {
-                        "description": "Antibiotic Resistance: ARDB",
-                        "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 24
-                    },
-                    {
-                        "description": "Antibiotic Resistance: CARD",
-                        "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 57
-                    },
-                    {
-                        "description": "Drug Target: DrugBank",
-                        "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
-                        "data": 388
-                    },
-                    {
-                        "description": "Drug Target: TTD",
-                        "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,TTD)",
-                        "data": 86
-                    },
-                    {
-                        "description": "Human Homolog: Human",
-                        "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,Human)",
-                        "data": 55
-                    },
-                    {
-                        "description": "Virulence Factor: PATRIC_VF",
-                        "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,PATRIC_VF)",
-                        "data": 218
-                    },
-                    {
-                        "description": "Virulence Factor: VFDB",
-                        "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,VFDB)",
-                        "data": 123
-                    },
-                    {
-                        "description": "Virulence Factor: Victors",
-                        "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,Victors)",
-                        "data": 245
-                    }
-                ],
-                "proteinSummary": [
-                    {
-                        "description": "Unknown functions",
-                        "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(product,hypothetical+protein),eq(feature_type,CDS))",
-                        "data": 456
-                    },
-                    {
-                        "description": "Functional assignments",
-                        "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(annotation,PATRIC),ne(product,hypothetical+protein),eq(feature_type,CDS))",
-                        "data": 4093
-                    },
-                    {
-                        "description": "EC assignments",
-                        "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(ec,*))",
-                        "data": 1294
-                    },
-                    {
-                        "description": "GO assignments",
-                        "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(go,*))",
-                        "data": 1139
-                    },
-                    {
-                        "description": "Pathways assignments",
-                        "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(pathway,*))",
-                        "data": 983
-                    },
-                    {
-                        "description": "FIGfam assignments",
-                        "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(figfam_id,*))",
-                        "data": 4413
-                    }
-                ],
                 "featureTypes": [
                     {
-                        "description": "CDS",
-                        "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
-                        "data": 4549
+                        "data": 4367,
+                        "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
+                        "description": "CDS"
                     },
                     {
-                        "description": "tRNA",
-                        "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(feature_type,tRNA),eq(annotation,PATRIC))",
-                        "data": 88
+                        "data": 45,
+                        "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(feature_type,tRNA),eq(annotation,PATRIC))",
+                        "description": "tRNA"
                     },
                     {
-                        "description": "rRNA",
-                        "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(feature_type,rRNA),eq(annotation,PATRIC))",
-                        "data": 14
+                        "data": 26,
+                        "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(feature_type,pseudogene),eq(annotation,PATRIC))",
+                        "description": "pseudogene"
                     },
                     {
-                        "description": "misc_RNA",
-                        "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(feature_type,misc_RNA),eq(annotation,PATRIC))",
-                        "data": 8
+                        "data": 2,
+                        "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(feature_type,rRNA),eq(annotation,PATRIC))",
+                        "description": "rRNA"
                     },
                     {
-                        "description": "pseudogene",
-                        "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(feature_type,pseudogene),eq(annotation,PATRIC))",
-                        "data": 7
+                        "data": 1,
+                        "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(feature_type,misc_RNA),eq(annotation,PATRIC))",
+                        "description": "misc_RNA"
+                    }
+                ],
+                "links": [
+                    {
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/83332.12#view_tab=browser"
+                    },
+                    {
+                        "name": "Feature Table",
+                        "link": "/view/Genome/83332.12#view_tab=features"
+                    },
+                    {
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/83332.12#view_tab=proteinFamilies"
+                    },
+                    {
+                        "name": "Pathway",
+                        "link": "/view/Genome/83332.12#view_tab=pathways"
+                    },
+                    {
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/83332.12#view_tab=transcriptomics"
+                    }
+                ],
+                "specialtyGenes": [
+                    {
+                        "data": 2,
+                        "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,ARDB)",
+                        "description": "Antibiotic Resistance: ARDB"
+                    },
+                    {
+                        "data": 11,
+                        "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,CARD)",
+                        "description": "Antibiotic Resistance: CARD"
+                    },
+                    {
+                        "data": 76,
+                        "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
+                        "description": "Drug Target: DrugBank"
+                    },
+                    {
+                        "data": 33,
+                        "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,TTD)",
+                        "description": "Drug Target: TTD"
+                    },
+                    {
+                        "data": 34,
+                        "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,Human)",
+                        "description": "Human Homolog: Human"
+                    },
+                    {
+                        "data": 473,
+                        "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,PATRIC_VF)",
+                        "description": "Virulence Factor: PATRIC_VF"
+                    },
+                    {
+                        "data": 88,
+                        "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,VFDB)",
+                        "description": "Virulence Factor: VFDB"
+                    },
+                    {
+                        "data": 271,
+                        "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,Victors)",
+                        "description": "Virulence Factor: Victors"
+                    }
+                ]
+            },
+            {
+                "popularName": "Escherichia coli str. K-12 substr. MG1655",
+                "proteinSummary": [
+                    {
+                        "data": 456,
+                        "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(product,hypothetical+protein))",
+                        "description": "Unknown functions"
+                    },
+                    {
+                        "data": 4093,
+                        "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),ne(product,hypothetical+protein))",
+                        "description": "Functional assignments"
+                    },
+                    {
+                        "data": 1294,
+                        "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(ec,*))",
+                        "description": "EC assignments"
+                    },
+                    {
+                        "data": 1139,
+                        "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(go,*))",
+                        "description": "GO assignments"
+                    },
+                    {
+                        "data": 983,
+                        "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pathway,*))",
+                        "description": "Pathways assignments"
+                    },
+                    {
+                        "data": 4413,
+                        "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(figfam_id,*))",
+                        "description": "FIGfam assignments"
                     }
                 ],
                 "link": "/view/Genome/511145.12",
-                "links": [
-                    {
-                        "link": "/view/Genome/511145.12#view_tab=browser",
-                        "name": "Genome Browser"
-                    },
-                    {
-                        "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
-                        "name": "Feature Table"
-                    },
-                    {
-                        "link": "/view/Genome/511145.12#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
-                    },
-                    {
-                        "link": "/view/Genome/511145.12#view_tab=pathways",
-                        "name": "Pathway"
-                    },
-                    {
-                        "link": "/view/Genome/511145.12#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
-                    }
-                ],
-                "popularName": "Escherichia coli str. K-12 substr. MG1655"
-            },
-            {
-                "specialtyGenes": [
-                    {
-                        "description": "Antibiotic Resistance: ARDB",
-                        "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 18
-                    },
-                    {
-                        "description": "Antibiotic Resistance: CARD",
-                        "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 51
-                    },
-                    {
-                        "description": "Drug Target: DrugBank",
-                        "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
-                        "data": 356
-                    },
-                    {
-                        "description": "Drug Target: TTD",
-                        "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,TTD)",
-                        "data": 80
-                    },
-                    {
-                        "description": "Human Homolog: Human",
-                        "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,Human)",
-                        "data": 56
-                    },
-                    {
-                        "description": "Virulence Factor: PATRIC_VF",
-                        "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,PATRIC_VF)",
-                        "data": 343
-                    },
-                    {
-                        "description": "Virulence Factor: VFDB",
-                        "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,VFDB)",
-                        "data": 198
-                    },
-                    {
-                        "description": "Virulence Factor: Victors",
-                        "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,Victors)",
-                        "data": 355
-                    }
-                ],
-                "proteinSummary": [
-                    {
-                        "description": "Unknown functions",
-                        "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(product,hypothetical+protein),eq(feature_type,CDS))",
-                        "data": 664
-                    },
-                    {
-                        "description": "Functional assignments",
-                        "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(annotation,PATRIC),ne(product,hypothetical+protein),eq(feature_type,CDS))",
-                        "data": 4308
-                    },
-                    {
-                        "description": "EC assignments",
-                        "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(ec,*))",
-                        "data": 1329
-                    },
-                    {
-                        "description": "GO assignments",
-                        "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(go,*))",
-                        "data": 1186
-                    },
-                    {
-                        "description": "Pathways assignments",
-                        "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(pathway,*))",
-                        "data": 1003
-                    },
-                    {
-                        "description": "FIGfam assignments",
-                        "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(figfam_id,*))",
-                        "data": 4910
-                    }
-                ],
                 "featureTypes": [
                     {
-                        "description": "CDS",
-                        "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
-                        "data": 4972
+                        "data": 4549,
+                        "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
+                        "description": "CDS"
                     },
                     {
-                        "description": "tRNA",
-                        "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(feature_type,tRNA),eq(annotation,PATRIC))",
-                        "data": 86
+                        "data": 88,
+                        "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(feature_type,tRNA),eq(annotation,PATRIC))",
+                        "description": "tRNA"
                     },
                     {
-                        "description": "rRNA",
-                        "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(feature_type,rRNA),eq(annotation,PATRIC))",
-                        "data": 14
+                        "data": 14,
+                        "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(feature_type,rRNA),eq(annotation,PATRIC))",
+                        "description": "rRNA"
                     },
                     {
-                        "description": "pseudogene",
-                        "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(feature_type,pseudogene),eq(annotation,PATRIC))",
-                        "data": 11
+                        "data": 8,
+                        "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(feature_type,misc_RNA),eq(annotation,PATRIC))",
+                        "description": "misc_RNA"
                     },
                     {
-                        "description": "misc_RNA",
-                        "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(feature_type,misc_RNA),eq(annotation,PATRIC))",
-                        "data": 8
+                        "data": 7,
+                        "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(feature_type,pseudogene),eq(annotation,PATRIC))",
+                        "description": "pseudogene"
+                    }
+                ],
+                "links": [
+                    {
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/511145.12#view_tab=browser"
+                    },
+                    {
+                        "name": "Feature Table",
+                        "link": "/view/Genome/511145.12#view_tab=features"
+                    },
+                    {
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/511145.12#view_tab=proteinFamilies"
+                    },
+                    {
+                        "name": "Pathway",
+                        "link": "/view/Genome/511145.12#view_tab=pathways"
+                    },
+                    {
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/511145.12#view_tab=transcriptomics"
+                    }
+                ],
+                "specialtyGenes": [
+                    {
+                        "data": 24,
+                        "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,ARDB)",
+                        "description": "Antibiotic Resistance: ARDB"
+                    },
+                    {
+                        "data": 57,
+                        "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,CARD)",
+                        "description": "Antibiotic Resistance: CARD"
+                    },
+                    {
+                        "data": 388,
+                        "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
+                        "description": "Drug Target: DrugBank"
+                    },
+                    {
+                        "data": 86,
+                        "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,TTD)",
+                        "description": "Drug Target: TTD"
+                    },
+                    {
+                        "data": 55,
+                        "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,Human)",
+                        "description": "Human Homolog: Human"
+                    },
+                    {
+                        "data": 218,
+                        "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,PATRIC_VF)",
+                        "description": "Virulence Factor: PATRIC_VF"
+                    },
+                    {
+                        "data": 123,
+                        "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,VFDB)",
+                        "description": "Virulence Factor: VFDB"
+                    },
+                    {
+                        "data": 245,
+                        "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,Victors)",
+                        "description": "Virulence Factor: Victors"
+                    }
+                ]
+            },
+            {
+                "popularName": "Salmonella enterica subsp. enterica serovar Typhimurium str. LT2",
+                "proteinSummary": [
+                    {
+                        "data": 664,
+                        "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(product,hypothetical+protein))",
+                        "description": "Unknown functions"
+                    },
+                    {
+                        "data": 4308,
+                        "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),ne(product,hypothetical+protein))",
+                        "description": "Functional assignments"
+                    },
+                    {
+                        "data": 1329,
+                        "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(ec,*))",
+                        "description": "EC assignments"
+                    },
+                    {
+                        "data": 1186,
+                        "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(go,*))",
+                        "description": "GO assignments"
+                    },
+                    {
+                        "data": 1003,
+                        "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pathway,*))",
+                        "description": "Pathways assignments"
+                    },
+                    {
+                        "data": 4910,
+                        "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(figfam_id,*))",
+                        "description": "FIGfam assignments"
                     }
                 ],
                 "link": "/view/Genome/99287.12",
-                "links": [
-                    {
-                        "link": "/view/Genome/99287.12#view_tab=browser",
-                        "name": "Genome Browser"
-                    },
-                    {
-                        "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
-                        "name": "Feature Table"
-                    },
-                    {
-                        "link": "/view/Genome/99287.12#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
-                    },
-                    {
-                        "link": "/view/Genome/99287.12#view_tab=pathways",
-                        "name": "Pathway"
-                    },
-                    {
-                        "link": "/view/Genome/99287.12#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
-                    }
-                ],
-                "popularName": "Salmonella enterica subsp. enterica serovar Typhimurium str. LT2"
-            },
-            {
-                "specialtyGenes": [
-                    {
-                        "description": "Antibiotic Resistance: ARDB",
-                        "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 25
-                    },
-                    {
-                        "description": "Antibiotic Resistance: CARD",
-                        "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 57
-                    },
-                    {
-                        "description": "Drug Target: DrugBank",
-                        "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
-                        "data": 390
-                    },
-                    {
-                        "description": "Drug Target: TTD",
-                        "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,TTD)",
-                        "data": 85
-                    },
-                    {
-                        "description": "Human Homolog: Human",
-                        "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,Human)",
-                        "data": 57
-                    },
-                    {
-                        "description": "Virulence Factor: PATRIC_VF",
-                        "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,PATRIC_VF)",
-                        "data": 227
-                    },
-                    {
-                        "description": "Virulence Factor: VFDB",
-                        "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,VFDB)",
-                        "data": 536
-                    },
-                    {
-                        "description": "Virulence Factor: Victors",
-                        "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,Victors)",
-                        "data": 263
-                    }
-                ],
-                "proteinSummary": [
-                    {
-                        "description": "Unknown functions",
-                        "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(annotation,PATRIC),eq(product,hypothetical+protein),eq(feature_type,CDS))",
-                        "data": 503
-                    },
-                    {
-                        "description": "Functional assignments",
-                        "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(annotation,PATRIC),ne(product,hypothetical+protein),eq(feature_type,CDS))",
-                        "data": 4628
-                    },
-                    {
-                        "description": "EC assignments",
-                        "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(annotation,PATRIC),eq(ec,*))",
-                        "data": 1283
-                    },
-                    {
-                        "description": "GO assignments",
-                        "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(annotation,PATRIC),eq(go,*))",
-                        "data": 1129
-                    },
-                    {
-                        "description": "Pathways assignments",
-                        "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(annotation,PATRIC),eq(pathway,*))",
-                        "data": 965
-                    },
-                    {
-                        "description": "FIGfam assignments",
-                        "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(annotation,PATRIC),eq(figfam_id,*))",
-                        "data": 4959
-                    }
-                ],
                 "featureTypes": [
                     {
-                        "description": "CDS",
-                        "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
-                        "data": 5131
+                        "data": 4972,
+                        "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
+                        "description": "CDS"
                     },
                     {
-                        "description": "tRNA",
-                        "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(feature_type,tRNA),eq(annotation,PATRIC))",
-                        "data": 100
+                        "data": 86,
+                        "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(feature_type,tRNA),eq(annotation,PATRIC))",
+                        "description": "tRNA"
                     },
                     {
-                        "description": "pseudogene",
-                        "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(feature_type,pseudogene),eq(annotation,PATRIC))",
-                        "data": 56
+                        "data": 14,
+                        "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(feature_type,rRNA),eq(annotation,PATRIC))",
+                        "description": "rRNA"
                     },
                     {
-                        "description": "rRNA",
-                        "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(feature_type,rRNA),eq(annotation,PATRIC))",
-                        "data": 14
+                        "data": 11,
+                        "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(feature_type,pseudogene),eq(annotation,PATRIC))",
+                        "description": "pseudogene"
                     },
                     {
-                        "description": "misc_RNA",
-                        "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(feature_type,misc_RNA),eq(annotation,PATRIC))",
-                        "data": 8
+                        "data": 8,
+                        "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(feature_type,misc_RNA),eq(annotation,PATRIC))",
+                        "description": "misc_RNA"
+                    }
+                ],
+                "links": [
+                    {
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/99287.12#view_tab=browser"
+                    },
+                    {
+                        "name": "Feature Table",
+                        "link": "/view/Genome/99287.12#view_tab=features"
+                    },
+                    {
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/99287.12#view_tab=proteinFamilies"
+                    },
+                    {
+                        "name": "Pathway",
+                        "link": "/view/Genome/99287.12#view_tab=pathways"
+                    },
+                    {
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/99287.12#view_tab=transcriptomics"
+                    }
+                ],
+                "specialtyGenes": [
+                    {
+                        "data": 18,
+                        "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,ARDB)",
+                        "description": "Antibiotic Resistance: ARDB"
+                    },
+                    {
+                        "data": 51,
+                        "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,CARD)",
+                        "description": "Antibiotic Resistance: CARD"
+                    },
+                    {
+                        "data": 356,
+                        "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
+                        "description": "Drug Target: DrugBank"
+                    },
+                    {
+                        "data": 80,
+                        "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,TTD)",
+                        "description": "Drug Target: TTD"
+                    },
+                    {
+                        "data": 56,
+                        "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,Human)",
+                        "description": "Human Homolog: Human"
+                    },
+                    {
+                        "data": 343,
+                        "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,PATRIC_VF)",
+                        "description": "Virulence Factor: PATRIC_VF"
+                    },
+                    {
+                        "data": 198,
+                        "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,VFDB)",
+                        "description": "Virulence Factor: VFDB"
+                    },
+                    {
+                        "data": 355,
+                        "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,Victors)",
+                        "description": "Virulence Factor: Victors"
+                    }
+                ]
+            },
+            {
+                "popularName": "Shigella flexneri 2a str. 2457T",
+                "proteinSummary": [
+                    {
+                        "data": 503,
+                        "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(product,hypothetical+protein))",
+                        "description": "Unknown functions"
+                    },
+                    {
+                        "data": 4628,
+                        "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),ne(product,hypothetical+protein))",
+                        "description": "Functional assignments"
+                    },
+                    {
+                        "data": 1283,
+                        "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(ec,*))",
+                        "description": "EC assignments"
+                    },
+                    {
+                        "data": 1129,
+                        "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(go,*))",
+                        "description": "GO assignments"
+                    },
+                    {
+                        "data": 965,
+                        "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pathway,*))",
+                        "description": "Pathways assignments"
+                    },
+                    {
+                        "data": 4959,
+                        "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(figfam_id,*))",
+                        "description": "FIGfam assignments"
                     }
                 ],
                 "link": "/view/Genome/198215.6",
-                "links": [
-                    {
-                        "link": "/view/Genome/198215.6#view_tab=browser",
-                        "name": "Genome Browser"
-                    },
-                    {
-                        "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
-                        "name": "Feature Table"
-                    },
-                    {
-                        "link": "/view/Genome/198215.6#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
-                    },
-                    {
-                        "link": "/view/Genome/198215.6#view_tab=pathways",
-                        "name": "Pathway"
-                    },
-                    {
-                        "link": "/view/Genome/198215.6#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
-                    }
-                ],
-                "popularName": "Shigella flexneri 2a str. 2457T"
-            },
-            {
-                "specialtyGenes": [
-                    {
-                        "description": "Antibiotic Resistance: ARDB",
-                        "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 5
-                    },
-                    {
-                        "description": "Antibiotic Resistance: CARD",
-                        "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 20
-                    },
-                    {
-                        "description": "Drug Target: DrugBank",
-                        "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
-                        "data": 167
-                    },
-                    {
-                        "description": "Drug Target: TTD",
-                        "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,TTD)",
-                        "data": 45
-                    },
-                    {
-                        "description": "Human Homolog: Human",
-                        "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,Human)",
-                        "data": 58
-                    },
-                    {
-                        "description": "Virulence Factor: PATRIC_VF",
-                        "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,PATRIC_VF)",
-                        "data": 59
-                    },
-                    {
-                        "description": "Virulence Factor: VFDB",
-                        "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,VFDB)",
-                        "data": 228
-                    },
-                    {
-                        "description": "Virulence Factor: Victors",
-                        "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,Victors)",
-                        "data": 165
-                    }
-                ],
-                "proteinSummary": [
-                    {
-                        "description": "Unknown functions",
-                        "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(annotation,PATRIC),eq(product,hypothetical+protein),eq(feature_type,CDS))",
-                        "data": 870
-                    },
-                    {
-                        "description": "Functional assignments",
-                        "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(annotation,PATRIC),ne(product,hypothetical+protein),eq(feature_type,CDS))",
-                        "data": 3796
-                    },
-                    {
-                        "description": "EC assignments",
-                        "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(annotation,PATRIC),eq(ec,*))",
-                        "data": 1092
-                    },
-                    {
-                        "description": "GO assignments",
-                        "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(annotation,PATRIC),eq(go,*))",
-                        "data": 1033
-                    },
-                    {
-                        "description": "Pathways assignments",
-                        "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(annotation,PATRIC),eq(pathway,*))",
-                        "data": 839
-                    },
-                    {
-                        "description": "FIGfam assignments",
-                        "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(annotation,PATRIC),eq(figfam_id,*))",
-                        "data": 4513
-                    }
-                ],
                 "featureTypes": [
                     {
-                        "description": "CDS",
-                        "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
-                        "data": 4666
+                        "data": 5131,
+                        "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
+                        "description": "CDS"
                     },
                     {
-                        "description": "pseudogene",
-                        "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(feature_type,pseudogene),eq(annotation,PATRIC))",
-                        "data": 162
+                        "data": 100,
+                        "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(feature_type,tRNA),eq(annotation,PATRIC))",
+                        "description": "tRNA"
                     },
                     {
-                        "description": "tRNA",
-                        "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(feature_type,tRNA),eq(annotation,PATRIC))",
-                        "data": 70
+                        "data": 56,
+                        "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(feature_type,pseudogene),eq(annotation,PATRIC))",
+                        "description": "pseudogene"
                     },
                     {
-                        "description": "rRNA",
-                        "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(feature_type,rRNA),eq(annotation,PATRIC))",
-                        "data": 19
+                        "data": 14,
+                        "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(feature_type,rRNA),eq(annotation,PATRIC))",
+                        "description": "rRNA"
                     },
                     {
-                        "description": "source",
-                        "link": "/view/Genome/214092.21&featuretype=source&annotation=PATRIC&filtertype=",
-                        "data": 4
+                        "data": 8,
+                        "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(feature_type,misc_RNA),eq(annotation,PATRIC))",
+                        "description": "misc_RNA"
+                    }
+                ],
+                "links": [
+                    {
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/198215.6#view_tab=browser"
+                    },
+                    {
+                        "name": "Feature Table",
+                        "link": "/view/Genome/198215.6#view_tab=features"
+                    },
+                    {
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/198215.6#view_tab=proteinFamilies"
+                    },
+                    {
+                        "name": "Pathway",
+                        "link": "/view/Genome/198215.6#view_tab=pathways"
+                    },
+                    {
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/198215.6#view_tab=transcriptomics"
+                    }
+                ],
+                "specialtyGenes": [
+                    {
+                        "data": 25,
+                        "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,ARDB)",
+                        "description": "Antibiotic Resistance: ARDB"
+                    },
+                    {
+                        "data": 57,
+                        "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,CARD)",
+                        "description": "Antibiotic Resistance: CARD"
+                    },
+                    {
+                        "data": 390,
+                        "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
+                        "description": "Drug Target: DrugBank"
+                    },
+                    {
+                        "data": 85,
+                        "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,TTD)",
+                        "description": "Drug Target: TTD"
+                    },
+                    {
+                        "data": 57,
+                        "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,Human)",
+                        "description": "Human Homolog: Human"
+                    },
+                    {
+                        "data": 227,
+                        "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,PATRIC_VF)",
+                        "description": "Virulence Factor: PATRIC_VF"
+                    },
+                    {
+                        "data": 536,
+                        "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,VFDB)",
+                        "description": "Virulence Factor: VFDB"
+                    },
+                    {
+                        "data": 263,
+                        "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,Victors)",
+                        "description": "Virulence Factor: Victors"
+                    }
+                ]
+            },
+            {
+                "popularName": "Yersinia pestis CO92",
+                "proteinSummary": [
+                    {
+                        "data": 870,
+                        "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(product,hypothetical+protein))",
+                        "description": "Unknown functions"
+                    },
+                    {
+                        "data": 3796,
+                        "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),ne(product,hypothetical+protein))",
+                        "description": "Functional assignments"
+                    },
+                    {
+                        "data": 1092,
+                        "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(ec,*))",
+                        "description": "EC assignments"
+                    },
+                    {
+                        "data": 1033,
+                        "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(go,*))",
+                        "description": "GO assignments"
+                    },
+                    {
+                        "data": 839,
+                        "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pathway,*))",
+                        "description": "Pathways assignments"
+                    },
+                    {
+                        "data": 4513,
+                        "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(figfam_id,*))",
+                        "description": "FIGfam assignments"
                     }
                 ],
                 "link": "/view/Genome/214092.21",
-                "links": [
-                    {
-                        "link": "/view/Genome/214092.21#view_tab=browser",
-                        "name": "Genome Browser"
-                    },
-                    {
-                        "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
-                        "name": "Feature Table"
-                    },
-                    {
-                        "link": "/view/Genome/214092.21#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
-                    },
-                    {
-                        "link": "/view/Genome/214092.21#view_tab=pathways",
-                        "name": "Pathway"
-                    },
-                    {
-                        "link": "/view/Genome/214092.21#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
-                    }
-                ],
-                "popularName": "Yersinia pestis CO92"
-            },
-            {
-                "specialtyGenes": [
-                    {
-                        "description": "Antibiotic Resistance: ARDB",
-                        "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 1
-                    },
-                    {
-                        "description": "Antibiotic Resistance: CARD",
-                        "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 22
-                    },
-                    {
-                        "description": "Drug Target: DrugBank",
-                        "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
-                        "data": 6
-                    },
-                    {
-                        "description": "Human Homolog: Human",
-                        "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,Human)",
-                        "data": 25
-                    },
-                    {
-                        "description": "Virulence Factor: PATRIC_VF",
-                        "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,PATRIC_VF)",
-                        "data": 147
-                    },
-                    {
-                        "description": "Virulence Factor: VFDB",
-                        "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,VFDB)",
-                        "data": 26
-                    },
-                    {
-                        "description": "Virulence Factor: Victors",
-                        "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,Victors)",
-                        "data": 68
-                    }
-                ],
-                "proteinSummary": [
-                    {
-                        "description": "Unknown functions",
-                        "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(product,hypothetical+protein),eq(feature_type,CDS))",
-                        "data": 586
-                    },
-                    {
-                        "description": "Functional assignments",
-                        "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(annotation,PATRIC),ne(product,hypothetical+protein),eq(feature_type,CDS))",
-                        "data": 2341
-                    },
-                    {
-                        "description": "EC assignments",
-                        "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(ec,*))",
-                        "data": 821
-                    },
-                    {
-                        "description": "GO assignments",
-                        "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(go,*))",
-                        "data": 881
-                    },
-                    {
-                        "description": "Pathways assignments",
-                        "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(pathway,*))",
-                        "data": 643
-                    },
-                    {
-                        "description": "FIGfam assignments",
-                        "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(figfam_id,*))",
-                        "data": 2906
-                    }
-                ],
                 "featureTypes": [
                     {
-                        "description": "CDS",
-                        "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
-                        "data": 2927
+                        "data": 4666,
+                        "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
+                        "description": "CDS"
                     },
                     {
-                        "description": "tRNA",
-                        "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(feature_type,tRNA),eq(annotation,PATRIC))",
-                        "data": 67
+                        "data": 162,
+                        "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(feature_type,pseudogene),eq(annotation,PATRIC))",
+                        "description": "pseudogene"
                     },
                     {
-                        "description": "rRNA",
-                        "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(feature_type,rRNA),eq(annotation,PATRIC))",
-                        "data": 12
+                        "data": 70,
+                        "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(feature_type,tRNA),eq(annotation,PATRIC))",
+                        "description": "tRNA"
                     },
                     {
-                        "description": "pseudogene",
-                        "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(feature_type,pseudogene),eq(annotation,PATRIC))",
-                        "data": 8
+                        "data": 19,
+                        "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(feature_type,rRNA),eq(annotation,PATRIC))",
+                        "description": "rRNA"
                     },
                     {
-                        "description": "misc_RNA",
-                        "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(feature_type,misc_RNA),eq(annotation,PATRIC))",
-                        "data": 6
+                        "data": 4,
+                        "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(feature_type,source),eq(annotation,PATRIC))",
+                        "description": "source"
+                    }
+                ],
+                "links": [
+                    {
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/214092.21#view_tab=browser"
+                    },
+                    {
+                        "name": "Feature Table",
+                        "link": "/view/Genome/214092.21#view_tab=features"
+                    },
+                    {
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/214092.21#view_tab=proteinFamilies"
+                    },
+                    {
+                        "name": "Pathway",
+                        "link": "/view/Genome/214092.21#view_tab=pathways"
+                    },
+                    {
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/214092.21#view_tab=transcriptomics"
+                    }
+                ],
+                "specialtyGenes": [
+                    {
+                        "data": 5,
+                        "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,ARDB)",
+                        "description": "Antibiotic Resistance: ARDB"
+                    },
+                    {
+                        "data": 20,
+                        "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,CARD)",
+                        "description": "Antibiotic Resistance: CARD"
+                    },
+                    {
+                        "data": 167,
+                        "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
+                        "description": "Drug Target: DrugBank"
+                    },
+                    {
+                        "data": 45,
+                        "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,TTD)",
+                        "description": "Drug Target: TTD"
+                    },
+                    {
+                        "data": 58,
+                        "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,Human)",
+                        "description": "Human Homolog: Human"
+                    },
+                    {
+                        "data": 59,
+                        "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,PATRIC_VF)",
+                        "description": "Virulence Factor: PATRIC_VF"
+                    },
+                    {
+                        "data": 228,
+                        "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,VFDB)",
+                        "description": "Virulence Factor: VFDB"
+                    },
+                    {
+                        "data": 165,
+                        "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,Victors)",
+                        "description": "Virulence Factor: Victors"
+                    }
+                ]
+            },
+            {
+                "popularName": "Listeria monocytogenes EGD-e",
+                "proteinSummary": [
+                    {
+                        "data": 586,
+                        "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(product,hypothetical+protein))",
+                        "description": "Unknown functions"
+                    },
+                    {
+                        "data": 2341,
+                        "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),ne(product,hypothetical+protein))",
+                        "description": "Functional assignments"
+                    },
+                    {
+                        "data": 821,
+                        "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(ec,*))",
+                        "description": "EC assignments"
+                    },
+                    {
+                        "data": 881,
+                        "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(go,*))",
+                        "description": "GO assignments"
+                    },
+                    {
+                        "data": 643,
+                        "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pathway,*))",
+                        "description": "Pathways assignments"
+                    },
+                    {
+                        "data": 2906,
+                        "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(figfam_id,*))",
+                        "description": "FIGfam assignments"
                     }
                 ],
                 "link": "/view/Genome/169963.11",
-                "links": [
-                    {
-                        "link": "/view/Genome/169963.11#view_tab=browser",
-                        "name": "Genome Browser"
-                    },
-                    {
-                        "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
-                        "name": "Feature Table"
-                    },
-                    {
-                        "link": "/view/Genome/169963.11#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
-                    },
-                    {
-                        "link": "/view/Genome/169963.11#view_tab=pathways",
-                        "name": "Pathway"
-                    },
-                    {
-                        "link": "/view/Genome/169963.11#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
-                    }
-                ],
-                "popularName": "Listeria monocytogenes EGD-e"
-            },
-            {
-                "specialtyGenes": [
-                    {
-                        "description": "Antibiotic Resistance: ARDB",
-                        "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 20
-                    },
-                    {
-                        "description": "Antibiotic Resistance: CARD",
-                        "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 47
-                    },
-                    {
-                        "description": "Drug Target: DrugBank",
-                        "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
-                        "data": 29
-                    },
-                    {
-                        "description": "Drug Target: TTD",
-                        "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,TTD)",
-                        "data": 16
-                    },
-                    {
-                        "description": "Human Homolog: Human",
-                        "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,Human)",
-                        "data": 21
-                    },
-                    {
-                        "description": "Virulence Factor: VFDB",
-                        "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,VFDB)",
-                        "data": 61
-                    },
-                    {
-                        "description": "Virulence Factor: Victors",
-                        "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,Victors)",
-                        "data": 35
-                    }
-                ],
-                "proteinSummary": [
-                    {
-                        "description": "Unknown functions",
-                        "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(product,hypothetical+protein),eq(feature_type,CDS))",
-                        "data": 626
-                    },
-                    {
-                        "description": "Functional assignments",
-                        "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(annotation,PATRIC),ne(product,hypothetical+protein),eq(feature_type,CDS))",
-                        "data": 2108
-                    },
-                    {
-                        "description": "EC assignments",
-                        "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(ec,*))",
-                        "data": 761
-                    },
-                    {
-                        "description": "GO assignments",
-                        "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(go,*))",
-                        "data": 805
-                    },
-                    {
-                        "description": "Pathways assignments",
-                        "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(pathway,*))",
-                        "data": 579
-                    },
-                    {
-                        "description": "FIGfam assignments",
-                        "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(figfam_id,*))",
-                        "data": 2700
-                    }
-                ],
                 "featureTypes": [
                     {
-                        "description": "CDS",
-                        "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
-                        "data": 2734
+                        "data": 2927,
+                        "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
+                        "description": "CDS"
                     },
                     {
-                        "description": "tRNA",
-                        "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(feature_type,tRNA),eq(annotation,PATRIC))",
-                        "data": 62
+                        "data": 67,
+                        "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(feature_type,tRNA),eq(annotation,PATRIC))",
+                        "description": "tRNA"
                     },
                     {
-                        "description": "rRNA",
-                        "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(feature_type,rRNA),eq(annotation,PATRIC))",
-                        "data": 10
+                        "data": 12,
+                        "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(feature_type,rRNA),eq(annotation,PATRIC))",
+                        "description": "rRNA"
                     },
                     {
-                        "description": "misc_RNA",
-                        "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(feature_type,misc_RNA),eq(annotation,PATRIC))",
-                        "data": 6
+                        "data": 8,
+                        "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(feature_type,pseudogene),eq(annotation,PATRIC))",
+                        "description": "pseudogene"
                     },
                     {
-                        "description": "source",
-                        "link": "/view/Genome/158879.11&featuretype=source&annotation=PATRIC&filtertype=",
-                        "data": 2
+                        "data": 6,
+                        "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(feature_type,misc_RNA),eq(annotation,PATRIC))",
+                        "description": "misc_RNA"
+                    }
+                ],
+                "links": [
+                    {
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/169963.11#view_tab=browser"
+                    },
+                    {
+                        "name": "Feature Table",
+                        "link": "/view/Genome/169963.11#view_tab=features"
+                    },
+                    {
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/169963.11#view_tab=proteinFamilies"
+                    },
+                    {
+                        "name": "Pathway",
+                        "link": "/view/Genome/169963.11#view_tab=pathways"
+                    },
+                    {
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/169963.11#view_tab=transcriptomics"
+                    }
+                ],
+                "specialtyGenes": [
+                    {
+                        "data": 1,
+                        "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,ARDB)",
+                        "description": "Antibiotic Resistance: ARDB"
+                    },
+                    {
+                        "data": 22,
+                        "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,CARD)",
+                        "description": "Antibiotic Resistance: CARD"
+                    },
+                    {
+                        "data": 6,
+                        "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
+                        "description": "Drug Target: DrugBank"
+                    },
+                    {
+                        "data": 25,
+                        "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,Human)",
+                        "description": "Human Homolog: Human"
+                    },
+                    {
+                        "data": 147,
+                        "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,PATRIC_VF)",
+                        "description": "Virulence Factor: PATRIC_VF"
+                    },
+                    {
+                        "data": 26,
+                        "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,VFDB)",
+                        "description": "Virulence Factor: VFDB"
+                    },
+                    {
+                        "data": 68,
+                        "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,Victors)",
+                        "description": "Virulence Factor: Victors"
+                    }
+                ]
+            },
+            {
+                "popularName": "Staphylococcus aureus subsp. aureus N315",
+                "proteinSummary": [
+                    {
+                        "data": 626,
+                        "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(product,hypothetical+protein))",
+                        "description": "Unknown functions"
+                    },
+                    {
+                        "data": 2108,
+                        "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),ne(product,hypothetical+protein))",
+                        "description": "Functional assignments"
+                    },
+                    {
+                        "data": 761,
+                        "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(ec,*))",
+                        "description": "EC assignments"
+                    },
+                    {
+                        "data": 805,
+                        "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(go,*))",
+                        "description": "GO assignments"
+                    },
+                    {
+                        "data": 579,
+                        "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pathway,*))",
+                        "description": "Pathways assignments"
+                    },
+                    {
+                        "data": 2700,
+                        "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(figfam_id,*))",
+                        "description": "FIGfam assignments"
                     }
                 ],
                 "link": "/view/Genome/158879.11",
-                "links": [
-                    {
-                        "link": "/view/Genome/158879.11#view_tab=browser",
-                        "name": "Genome Browser"
-                    },
-                    {
-                        "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
-                        "name": "Feature Table"
-                    },
-                    {
-                        "link": "/view/Genome/158879.11#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
-                    },
-                    {
-                        "link": "/view/Genome/158879.11#view_tab=pathways",
-                        "name": "Pathway"
-                    },
-                    {
-                        "link": "/view/Genome/158879.11#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
-                    }
-                ],
-                "popularName": "Staphylococcus aureus subsp. aureus N315"
-            },
-            {
-                "specialtyGenes": [
-                    {
-                        "description": "Antibiotic Resistance: ARDB",
-                        "link": "/view/Genome/373153.27#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 2
-                    },
-                    {
-                        "description": "Antibiotic Resistance: CARD",
-                        "link": "/view/Genome/373153.27#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 11
-                    },
-                    {
-                        "description": "Drug Target: DrugBank",
-                        "link": "/view/Genome/373153.27#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
-                        "data": 25
-                    },
-                    {
-                        "description": "Drug Target: TTD",
-                        "link": "/view/Genome/373153.27#view_tab=specialtyGenes&filter=eq(source,TTD)",
-                        "data": 12
-                    },
-                    {
-                        "description": "Human Homolog: Human",
-                        "link": "/view/Genome/373153.27#view_tab=specialtyGenes&filter=eq(source,Human)",
-                        "data": 14
-                    },
-                    {
-                        "description": "Virulence Factor: VFDB",
-                        "link": "/view/Genome/373153.27#view_tab=specialtyGenes&filter=eq(source,VFDB)",
-                        "data": 16
-                    },
-                    {
-                        "description": "Virulence Factor: Victors",
-                        "link": "/view/Genome/373153.27#view_tab=specialtyGenes&filter=eq(source,Victors)",
-                        "data": 262
-                    }
-                ],
-                "proteinSummary": [
-                    {
-                        "description": "Unknown functions",
-                        "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(annotation,PATRIC),eq(product,hypothetical+protein),eq(feature_type,CDS))",
-                        "data": 391
-                    },
-                    {
-                        "description": "Functional assignments",
-                        "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(annotation,PATRIC),ne(product,hypothetical+protein),eq(feature_type,CDS))",
-                        "data": 1814
-                    },
-                    {
-                        "description": "EC assignments",
-                        "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(annotation,PATRIC),eq(ec,*))",
-                        "data": 645
-                    },
-                    {
-                        "description": "GO assignments",
-                        "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(annotation,PATRIC),eq(go,*))",
-                        "data": 662
-                    },
-                    {
-                        "description": "Pathways assignments",
-                        "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(annotation,PATRIC),eq(pathway,*))",
-                        "data": 493
-                    },
-                    {
-                        "description": "FIGfam assignments",
-                        "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(annotation,PATRIC),eq(figfam_id,*))",
-                        "data": 2159
-                    }
-                ],
                 "featureTypes": [
                     {
-                        "description": "CDS",
-                        "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
-                        "data": 2205
+                        "data": 2734,
+                        "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
+                        "description": "CDS"
                     },
                     {
-                        "description": "tRNA",
-                        "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(feature_type,tRNA),eq(annotation,PATRIC))",
-                        "data": 58
+                        "data": 62,
+                        "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(feature_type,tRNA),eq(annotation,PATRIC))",
+                        "description": "tRNA"
                     },
                     {
-                        "description": "pseudogene",
-                        "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(feature_type,pseudogene),eq(annotation,PATRIC))",
-                        "data": 8
+                        "data": 10,
+                        "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(feature_type,rRNA),eq(annotation,PATRIC))",
+                        "description": "rRNA"
                     },
                     {
-                        "description": "rRNA",
-                        "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(feature_type,rRNA),eq(annotation,PATRIC))",
-                        "data": 8
+                        "data": 6,
+                        "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(feature_type,misc_RNA),eq(annotation,PATRIC))",
+                        "description": "misc_RNA"
                     },
                     {
-                        "description": "misc_RNA",
-                        "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(feature_type,misc_RNA),eq(annotation,PATRIC))",
-                        "data": 4
+                        "data": 2,
+                        "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(feature_type,source),eq(annotation,PATRIC))",
+                        "description": "source"
+                    }
+                ],
+                "links": [
+                    {
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/158879.11#view_tab=browser"
+                    },
+                    {
+                        "name": "Feature Table",
+                        "link": "/view/Genome/158879.11#view_tab=features"
+                    },
+                    {
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/158879.11#view_tab=proteinFamilies"
+                    },
+                    {
+                        "name": "Pathway",
+                        "link": "/view/Genome/158879.11#view_tab=pathways"
+                    },
+                    {
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/158879.11#view_tab=transcriptomics"
+                    }
+                ],
+                "specialtyGenes": [
+                    {
+                        "data": 20,
+                        "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,ARDB)",
+                        "description": "Antibiotic Resistance: ARDB"
+                    },
+                    {
+                        "data": 47,
+                        "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,CARD)",
+                        "description": "Antibiotic Resistance: CARD"
+                    },
+                    {
+                        "data": 29,
+                        "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
+                        "description": "Drug Target: DrugBank"
+                    },
+                    {
+                        "data": 16,
+                        "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,TTD)",
+                        "description": "Drug Target: TTD"
+                    },
+                    {
+                        "data": 21,
+                        "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,Human)",
+                        "description": "Human Homolog: Human"
+                    },
+                    {
+                        "data": 61,
+                        "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,VFDB)",
+                        "description": "Virulence Factor: VFDB"
+                    },
+                    {
+                        "data": 35,
+                        "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,Victors)",
+                        "description": "Virulence Factor: Victors"
+                    }
+                ]
+            },
+            {
+                "popularName": "Streptococcus pneumoniae D39",
+                "proteinSummary": [
+                    {
+                        "data": 391,
+                        "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(product,hypothetical+protein))",
+                        "description": "Unknown functions"
+                    },
+                    {
+                        "data": 1814,
+                        "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),ne(product,hypothetical+protein))",
+                        "description": "Functional assignments"
+                    },
+                    {
+                        "data": 645,
+                        "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(ec,*))",
+                        "description": "EC assignments"
+                    },
+                    {
+                        "data": 662,
+                        "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(go,*))",
+                        "description": "GO assignments"
+                    },
+                    {
+                        "data": 493,
+                        "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pathway,*))",
+                        "description": "Pathways assignments"
+                    },
+                    {
+                        "data": 2159,
+                        "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(figfam_id,*))",
+                        "description": "FIGfam assignments"
                     }
                 ],
                 "link": "/view/Genome/373153.27",
-                "links": [
-                    {
-                        "link": "/view/Genome/373153.27#view_tab=browser",
-                        "name": "Genome Browser"
-                    },
-                    {
-                        "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
-                        "name": "Feature Table"
-                    },
-                    {
-                        "link": "/view/Genome/373153.27#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
-                    },
-                    {
-                        "link": "/view/Genome/373153.27#view_tab=pathways",
-                        "name": "Pathway"
-                    },
-                    {
-                        "link": "/view/Genome/373153.27#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
-                    }
-                ],
-                "popularName": "Streptococcus pneumoniae D39"
-            },
-            {
-                "specialtyGenes": [
-                    {
-                        "description": "Antibiotic Resistance: ARDB",
-                        "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 1
-                    },
-                    {
-                        "description": "Drug Target: DrugBank",
-                        "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
-                        "data": 2
-                    },
-                    {
-                        "description": "Drug Target: TTD",
-                        "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,TTD)",
-                        "data": 1
-                    },
-                    {
-                        "description": "Human Homolog: Human",
-                        "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,Human)",
-                        "data": 81
-                    },
-                    {
-                        "description": "Virulence Factor: PATRIC_VF",
-                        "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,PATRIC_VF)",
-                        "data": 2
-                    },
-                    {
-                        "description": "Virulence Factor: VFDB",
-                        "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,VFDB)",
-                        "data": 23
-                    },
-                    {
-                        "description": "Virulence Factor: Victors",
-                        "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,Victors)",
-                        "data": 228
-                    }
-                ],
-                "proteinSummary": [
-                    {
-                        "description": "Unknown functions",
-                        "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(product,hypothetical+protein),eq(feature_type,CDS))",
-                        "data": 780
-                    },
-                    {
-                        "description": "Functional assignments",
-                        "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(annotation,PATRIC),ne(product,hypothetical+protein),eq(feature_type,CDS))",
-                        "data": 2719
-                    },
-                    {
-                        "description": "EC assignments",
-                        "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(ec,*))",
-                        "data": 986
-                    },
-                    {
-                        "description": "GO assignments",
-                        "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(go,*))",
-                        "data": 977
-                    },
-                    {
-                        "description": "Pathways assignments",
-                        "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(pathway,*))",
-                        "data": 788
-                    },
-                    {
-                        "description": "FIGfam assignments",
-                        "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(figfam_id,*))",
-                        "data": 3445
-                    }
-                ],
                 "featureTypes": [
                     {
-                        "description": "CDS",
-                        "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
-                        "data": 3499
+                        "data": 2205,
+                        "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
+                        "description": "CDS"
                     },
                     {
-                        "description": "tRNA",
-                        "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(feature_type,tRNA),eq(annotation,PATRIC))",
-                        "data": 54
+                        "data": 58,
+                        "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(feature_type,tRNA),eq(annotation,PATRIC))",
+                        "description": "tRNA"
                     },
                     {
-                        "description": "pseudogene",
-                        "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(feature_type,pseudogene),eq(annotation,PATRIC))",
-                        "data": 33
+                        "data": 8,
+                        "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(feature_type,pseudogene),eq(annotation,PATRIC))",
+                        "description": "pseudogene"
                     },
                     {
-                        "description": "rRNA",
-                        "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(feature_type,rRNA),eq(annotation,PATRIC))",
-                        "data": 9
+                        "data": 8,
+                        "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(feature_type,rRNA),eq(annotation,PATRIC))",
+                        "description": "rRNA"
                     },
                     {
-                        "description": "misc_RNA",
-                        "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(feature_type,misc_RNA),eq(annotation,PATRIC))",
-                        "data": 3
+                        "data": 4,
+                        "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(feature_type,misc_RNA),eq(annotation,PATRIC))",
+                        "description": "misc_RNA"
+                    }
+                ],
+                "links": [
+                    {
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/373153.27#view_tab=browser"
+                    },
+                    {
+                        "name": "Feature Table",
+                        "link": "/view/Genome/373153.27#view_tab=features"
+                    },
+                    {
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/373153.27#view_tab=proteinFamilies"
+                    },
+                    {
+                        "name": "Pathway",
+                        "link": "/view/Genome/373153.27#view_tab=pathways"
+                    },
+                    {
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/373153.27#view_tab=transcriptomics"
+                    }
+                ],
+                "specialtyGenes": [
+                    {
+                        "data": 2,
+                        "link": "/view/Genome/373153.27#view_tab=specialtyGenes&filter=eq(source,ARDB)",
+                        "description": "Antibiotic Resistance: ARDB"
+                    },
+                    {
+                        "data": 11,
+                        "link": "/view/Genome/373153.27#view_tab=specialtyGenes&filter=eq(source,CARD)",
+                        "description": "Antibiotic Resistance: CARD"
+                    },
+                    {
+                        "data": 25,
+                        "link": "/view/Genome/373153.27#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
+                        "description": "Drug Target: DrugBank"
+                    },
+                    {
+                        "data": 12,
+                        "link": "/view/Genome/373153.27#view_tab=specialtyGenes&filter=eq(source,TTD)",
+                        "description": "Drug Target: TTD"
+                    },
+                    {
+                        "data": 14,
+                        "link": "/view/Genome/373153.27#view_tab=specialtyGenes&filter=eq(source,Human)",
+                        "description": "Human Homolog: Human"
+                    },
+                    {
+                        "data": 16,
+                        "link": "/view/Genome/373153.27#view_tab=specialtyGenes&filter=eq(source,VFDB)",
+                        "description": "Virulence Factor: VFDB"
+                    },
+                    {
+                        "data": 262,
+                        "link": "/view/Genome/373153.27#view_tab=specialtyGenes&filter=eq(source,Victors)",
+                        "description": "Virulence Factor: Victors"
+                    }
+                ]
+            },
+            {
+                "popularName": "Brucella melitensis bv. 1 str. 16M",
+                "proteinSummary": [
+                    {
+                        "data": 780,
+                        "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(product,hypothetical+protein))",
+                        "description": "Unknown functions"
+                    },
+                    {
+                        "data": 2719,
+                        "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),ne(product,hypothetical+protein))",
+                        "description": "Functional assignments"
+                    },
+                    {
+                        "data": 986,
+                        "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(ec,*))",
+                        "description": "EC assignments"
+                    },
+                    {
+                        "data": 977,
+                        "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(go,*))",
+                        "description": "GO assignments"
+                    },
+                    {
+                        "data": 788,
+                        "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pathway,*))",
+                        "description": "Pathways assignments"
+                    },
+                    {
+                        "data": 3445,
+                        "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(figfam_id,*))",
+                        "description": "FIGfam assignments"
                     }
                 ],
                 "link": "/view/Genome/224914.11",
-                "links": [
-                    {
-                        "link": "/view/Genome/224914.11#view_tab=browser",
-                        "name": "Genome Browser"
-                    },
-                    {
-                        "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
-                        "name": "Feature Table"
-                    },
-                    {
-                        "link": "/view/Genome/224914.11#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
-                    },
-                    {
-                        "link": "/view/Genome/224914.11#view_tab=pathways",
-                        "name": "Pathway"
-                    },
-                    {
-                        "link": "/view/Genome/224914.11#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
-                    }
-                ],
-                "popularName": "Brucella melitensis bv. 1 str. 16M"
-            },
-            {
-                "specialtyGenes": [
-                    {
-                        "description": "Antibiotic Resistance: CARD",
-                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 2
-                    },
-                    {
-                        "description": "Drug Target: DrugBank",
-                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
-                        "data": 13
-                    },
-                    {
-                        "description": "Drug Target: TTD",
-                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,TTD)",
-                        "data": 6
-                    },
-                    {
-                        "description": "Human Homolog: Human",
-                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,Human)",
-                        "data": 17
-                    },
-                    {
-                        "description": "Virulence Factor: VFDB",
-                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,VFDB)",
-                        "data": 61
-                    },
-                    {
-                        "description": "Virulence Factor: Victors",
-                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,Victors)",
-                        "data": 67
-                    }
-                ],
-                "proteinSummary": [
-                    {
-                        "description": "Unknown functions",
-                        "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(annotation,PATRIC),eq(product,hypothetical+protein),eq(feature_type,CDS))",
-                        "data": 473
-                    },
-                    {
-                        "description": "Functional assignments",
-                        "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(annotation,PATRIC),ne(product,hypothetical+protein),eq(feature_type,CDS))",
-                        "data": 1201
-                    },
-                    {
-                        "description": "EC assignments",
-                        "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(annotation,PATRIC),eq(ec,*))",
-                        "data": 489
-                    },
-                    {
-                        "description": "GO assignments",
-                        "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(annotation,PATRIC),eq(go,*))",
-                        "data": 493
-                    },
-                    {
-                        "description": "Pathways assignments",
-                        "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(annotation,PATRIC),eq(pathway,*))",
-                        "data": 365
-                    },
-                    {
-                        "description": "FIGfam assignments",
-                        "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(annotation,PATRIC),eq(figfam_id,*))",
-                        "data": 1624
-                    }
-                ],
                 "featureTypes": [
                     {
-                        "description": "CDS",
-                        "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
-                        "data": 1674
+                        "data": 3499,
+                        "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
+                        "description": "CDS"
                     },
                     {
-                        "description": "tRNA",
-                        "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(feature_type,tRNA),eq(annotation,PATRIC))",
-                        "data": 36
+                        "data": 54,
+                        "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(feature_type,tRNA),eq(annotation,PATRIC))",
+                        "description": "tRNA"
                     },
                     {
-                        "description": "rRNA",
-                        "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(feature_type,rRNA),eq(annotation,PATRIC))",
-                        "data": 4
+                        "data": 33,
+                        "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(feature_type,pseudogene),eq(annotation,PATRIC))",
+                        "description": "pseudogene"
                     },
                     {
-                        "description": "source",
-                        "link": "/view/Genome/85962.8&featuretype=source&annotation=PATRIC&filtertype=",
-                        "data": 1
+                        "data": 9,
+                        "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(feature_type,rRNA),eq(annotation,PATRIC))",
+                        "description": "rRNA"
+                    },
+                    {
+                        "data": 3,
+                        "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(feature_type,misc_RNA),eq(annotation,PATRIC))",
+                        "description": "misc_RNA"
+                    }
+                ],
+                "links": [
+                    {
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/224914.11#view_tab=browser"
+                    },
+                    {
+                        "name": "Feature Table",
+                        "link": "/view/Genome/224914.11#view_tab=features"
+                    },
+                    {
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/224914.11#view_tab=proteinFamilies"
+                    },
+                    {
+                        "name": "Pathway",
+                        "link": "/view/Genome/224914.11#view_tab=pathways"
+                    },
+                    {
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/224914.11#view_tab=transcriptomics"
+                    }
+                ],
+                "specialtyGenes": [
+                    {
+                        "data": 1,
+                        "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,ARDB)",
+                        "description": "Antibiotic Resistance: ARDB"
+                    },
+                    {
+                        "data": 2,
+                        "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
+                        "description": "Drug Target: DrugBank"
+                    },
+                    {
+                        "data": 1,
+                        "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,TTD)",
+                        "description": "Drug Target: TTD"
+                    },
+                    {
+                        "data": 81,
+                        "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,Human)",
+                        "description": "Human Homolog: Human"
+                    },
+                    {
+                        "data": 2,
+                        "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,PATRIC_VF)",
+                        "description": "Virulence Factor: PATRIC_VF"
+                    },
+                    {
+                        "data": 23,
+                        "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,VFDB)",
+                        "description": "Virulence Factor: VFDB"
+                    },
+                    {
+                        "data": 228,
+                        "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,Victors)",
+                        "description": "Virulence Factor: Victors"
+                    }
+                ]
+            },
+            {
+                "popularName": "Helicobacter pylori 26695",
+                "proteinSummary": [
+                    {
+                        "data": 473,
+                        "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(product,hypothetical+protein))",
+                        "description": "Unknown functions"
+                    },
+                    {
+                        "data": 1201,
+                        "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),ne(product,hypothetical+protein))",
+                        "description": "Functional assignments"
+                    },
+                    {
+                        "data": 489,
+                        "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(ec,*))",
+                        "description": "EC assignments"
+                    },
+                    {
+                        "data": 493,
+                        "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(go,*))",
+                        "description": "GO assignments"
+                    },
+                    {
+                        "data": 365,
+                        "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pathway,*))",
+                        "description": "Pathways assignments"
+                    },
+                    {
+                        "data": 1624,
+                        "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(figfam_id,*))",
+                        "description": "FIGfam assignments"
                     }
                 ],
                 "link": "/view/Genome/85962.8",
-                "links": [
+                "featureTypes": [
                     {
-                        "link": "/view/Genome/85962.8#view_tab=browser",
-                        "name": "Genome Browser"
-                    },
-                    {
+                        "data": 1674,
                         "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(feature_type,CDS),eq(annotation,PATRIC))",
-                        "name": "Feature Table"
+                        "description": "CDS"
                     },
                     {
-                        "link": "/view/Genome/85962.8#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
+                        "data": 36,
+                        "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(feature_type,tRNA),eq(annotation,PATRIC))",
+                        "description": "tRNA"
                     },
                     {
-                        "link": "/view/Genome/85962.8#view_tab=pathways",
-                        "name": "Pathway"
+                        "data": 4,
+                        "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(feature_type,rRNA),eq(annotation,PATRIC))",
+                        "description": "rRNA"
                     },
                     {
-                        "link": "/view/Genome/85962.8#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
+                        "data": 1,
+                        "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(feature_type,source),eq(annotation,PATRIC))",
+                        "description": "source"
                     }
                 ],
-                "popularName": "Helicobacter pylori 26695"
+                "links": [
+                    {
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/85962.8#view_tab=browser"
+                    },
+                    {
+                        "name": "Feature Table",
+                        "link": "/view/Genome/85962.8#view_tab=features"
+                    },
+                    {
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/85962.8#view_tab=proteinFamilies"
+                    },
+                    {
+                        "name": "Pathway",
+                        "link": "/view/Genome/85962.8#view_tab=pathways"
+                    },
+                    {
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/85962.8#view_tab=transcriptomics"
+                    }
+                ],
+                "specialtyGenes": [
+                    {
+                        "data": 2,
+                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,CARD)",
+                        "description": "Antibiotic Resistance: CARD"
+                    },
+                    {
+                        "data": 13,
+                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
+                        "description": "Drug Target: DrugBank"
+                    },
+                    {
+                        "data": 6,
+                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,TTD)",
+                        "description": "Drug Target: TTD"
+                    },
+                    {
+                        "data": 17,
+                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,Human)",
+                        "description": "Human Homolog: Human"
+                    },
+                    {
+                        "data": 61,
+                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,VFDB)",
+                        "description": "Virulence Factor: VFDB"
+                    },
+                    {
+                        "data": 67,
+                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,Victors)",
+                        "description": "Virulence Factor: Victors"
+                    }
+                ]
             }
         ]
     }
