@@ -1,3 +1,8 @@
+<div style="width:80%;margin:auto">
+<h2 class="entry-title">
+                        PATRIC-DBPs
+</h2>
+
 <div class="entry-summary">
 	<!-- ?php the_excerpt(); ? --->
 		<p><b>Driving Biology Projects:</b></p>
@@ -120,3 +125,4 @@
 </ul>
 			
 	</div>
+</div>
