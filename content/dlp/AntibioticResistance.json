@@ -3,374 +3,374 @@
         "popularTitle": "Select Genomes",
         "popularList": [
             {
-                "specialtyGenes": [
-                    {
-                        "description": "CARD",
-                        "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 11
-                    },
-                    {
-                        "description": "ARDB",
-                        "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 2
-                    }
-                ],
+                "popularName": "Mycobacterium tuberculosis H37Rv",
                 "link": "/view/Genome/83332.12",
                 "links": [
                     {
-                        "link": "/view/Genome/83332.12#view_tab=browser",
-                        "name": "Genome Browser"
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/83332.12#view_tab=browser"
                     },
                     {
-                        "link": "/view/Genome/83332.12#view_tab=features",
-                        "name": "Feature Table"
+                        "name": "Feature Table",
+                        "link": "/view/Genome/83332.12#view_tab=features"
                     },
                     {
-                        "link": "/view/Genome/83332.12#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/83332.12#view_tab=proteinFamilies"
                     },
                     {
-                        "link": "/view/Genome/83332.12#view_tab=pathways",
-                        "name": "Pathway"
+                        "name": "Pathway",
+                        "link": "/view/Genome/83332.12#view_tab=pathways"
                     },
                     {
-                        "link": "/view/Genome/83332.12#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/83332.12#view_tab=transcriptomics"
                     }
                 ],
-                "popularName": "Mycobacterium tuberculosis H37Rv"
-            },
-            {
                 "specialtyGenes": [
                     {
-                        "description": "CARD",
-                        "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 57
+                        "data": 11,
+                        "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,CARD)",
+                        "description": "CARD"
                     },
                     {
-                        "description": "ARDB",
-                        "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 24
+                        "data": 2,
+                        "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,ARDB)",
+                        "description": "ARDB"
                     }
-                ],
+                ]
+            },
+            {
+                "popularName": "Escherichia coli str. K-12 substr. MG1655",
                 "link": "/view/Genome/511145.12",
                 "links": [
                     {
-                        "link": "/view/Genome/511145.12#view_tab=browser",
-                        "name": "Genome Browser"
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/511145.12#view_tab=browser"
                     },
                     {
-                        "link": "/view/Genome/511145.12#view_tab=features",
-                        "name": "Feature Table"
+                        "name": "Feature Table",
+                        "link": "/view/Genome/511145.12#view_tab=features"
                     },
                     {
-                        "link": "/view/Genome/511145.12#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/511145.12#view_tab=proteinFamilies"
                     },
                     {
-                        "link": "/view/Genome/511145.12#view_tab=pathways",
-                        "name": "Pathway"
+                        "name": "Pathway",
+                        "link": "/view/Genome/511145.12#view_tab=pathways"
                     },
                     {
-                        "link": "/view/Genome/511145.12#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/511145.12#view_tab=transcriptomics"
                     }
                 ],
-                "popularName": "Escherichia coli str. K-12 substr. MG1655"
-            },
-            {
                 "specialtyGenes": [
                     {
-                        "description": "CARD",
-                        "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 51
+                        "data": 57,
+                        "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,CARD)",
+                        "description": "CARD"
                     },
                     {
-                        "description": "ARDB",
-                        "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 18
+                        "data": 24,
+                        "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,ARDB)",
+                        "description": "ARDB"
                     }
-                ],
+                ]
+            },
+            {
+                "popularName": "Salmonella enterica subsp. enterica serovar Typhimurium str. LT2",
                 "link": "/view/Genome/99287.12",
                 "links": [
                     {
-                        "link": "/view/Genome/99287.12#view_tab=browser",
-                        "name": "Genome Browser"
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/99287.12#view_tab=browser"
                     },
                     {
-                        "link": "/view/Genome/99287.12#view_tab=features",
-                        "name": "Feature Table"
+                        "name": "Feature Table",
+                        "link": "/view/Genome/99287.12#view_tab=features"
                     },
                     {
-                        "link": "/view/Genome/99287.12#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/99287.12#view_tab=proteinFamilies"
                     },
                     {
-                        "link": "/view/Genome/99287.12#view_tab=pathways",
-                        "name": "Pathway"
+                        "name": "Pathway",
+                        "link": "/view/Genome/99287.12#view_tab=pathways"
                     },
                     {
-                        "link": "/view/Genome/99287.12#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/99287.12#view_tab=transcriptomics"
                     }
                 ],
-                "popularName": "Salmonella enterica subsp. enterica serovar Typhimurium str. LT2"
-            },
-            {
                 "specialtyGenes": [
                     {
-                        "description": "CARD",
-                        "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 57
+                        "data": 51,
+                        "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,CARD)",
+                        "description": "CARD"
                     },
                     {
-                        "description": "ARDB",
-                        "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 25
+                        "data": 18,
+                        "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,ARDB)",
+                        "description": "ARDB"
                     }
-                ],
+                ]
+            },
+            {
+                "popularName": "Shigella flexneri 2a str. 2457T",
                 "link": "/view/Genome/198215.6",
                 "links": [
                     {
-                        "link": "/view/Genome/198215.6#view_tab=browser",
-                        "name": "Genome Browser"
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/198215.6#view_tab=browser"
                     },
                     {
-                        "link": "/view/Genome/198215.6#view_tab=features",
-                        "name": "Feature Table"
+                        "name": "Feature Table",
+                        "link": "/view/Genome/198215.6#view_tab=features"
                     },
                     {
-                        "link": "/view/Genome/198215.6#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/198215.6#view_tab=proteinFamilies"
                     },
                     {
-                        "link": "/view/Genome/198215.6#view_tab=pathways",
-                        "name": "Pathway"
+                        "name": "Pathway",
+                        "link": "/view/Genome/198215.6#view_tab=pathways"
                     },
                     {
-                        "link": "/view/Genome/198215.6#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/198215.6#view_tab=transcriptomics"
                     }
                 ],
-                "popularName": "Shigella flexneri 2a str. 2457T"
-            },
-            {
                 "specialtyGenes": [
                     {
-                        "description": "CARD",
-                        "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 20
+                        "data": 57,
+                        "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,CARD)",
+                        "description": "CARD"
                     },
                     {
-                        "description": "ARDB",
-                        "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 5
+                        "data": 25,
+                        "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,ARDB)",
+                        "description": "ARDB"
                     }
-                ],
+                ]
+            },
+            {
+                "popularName": "Yersinia pestis CO92",
                 "link": "/view/Genome/214092.21",
                 "links": [
                     {
-                        "link": "/view/Genome/214092.21#view_tab=browser",
-                        "name": "Genome Browser"
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/214092.21#view_tab=browser"
                     },
                     {
-                        "link": "/view/Genome/214092.21#view_tab=features",
-                        "name": "Feature Table"
+                        "name": "Feature Table",
+                        "link": "/view/Genome/214092.21#view_tab=features"
                     },
                     {
-                        "link": "/view/Genome/214092.21#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/214092.21#view_tab=proteinFamilies"
                     },
                     {
-                        "link": "/view/Genome/214092.21#view_tab=pathways",
-                        "name": "Pathway"
+                        "name": "Pathway",
+                        "link": "/view/Genome/214092.21#view_tab=pathways"
                     },
                     {
-                        "link": "/view/Genome/214092.21#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/214092.21#view_tab=transcriptomics"
                     }
                 ],
-                "popularName": "Yersinia pestis CO92"
-            },
-            {
                 "specialtyGenes": [
                     {
-                        "description": "CARD",
-                        "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 22
+                        "data": 20,
+                        "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,CARD)",
+                        "description": "CARD"
                     },
                     {
-                        "description": "ARDB",
-                        "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 1
+                        "data": 5,
+                        "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,ARDB)",
+                        "description": "ARDB"
                     }
-                ],
+                ]
+            },
+            {
+                "popularName": "Listeria monocytogenes EGD-e",
                 "link": "/view/Genome/169963.11",
                 "links": [
                     {
-                        "link": "/view/Genome/169963.11#view_tab=browser",
-                        "name": "Genome Browser"
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/169963.11#view_tab=browser"
                     },
                     {
-                        "link": "/view/Genome/169963.11#view_tab=features",
-                        "name": "Feature Table"
+                        "name": "Feature Table",
+                        "link": "/view/Genome/169963.11#view_tab=features"
                     },
                     {
-                        "link": "/view/Genome/169963.11#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/169963.11#view_tab=proteinFamilies"
                     },
                     {
-                        "link": "/view/Genome/169963.11#view_tab=pathways",
-                        "name": "Pathway"
+                        "name": "Pathway",
+                        "link": "/view/Genome/169963.11#view_tab=pathways"
                     },
                     {
-                        "link": "/view/Genome/169963.11#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/169963.11#view_tab=transcriptomics"
                     }
                 ],
-                "popularName": "Listeria monocytogenes EGD-e"
-            },
-            {
                 "specialtyGenes": [
                     {
-                        "description": "CARD",
-                        "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 47
+                        "data": 22,
+                        "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,CARD)",
+                        "description": "CARD"
                     },
                     {
-                        "description": "ARDB",
-                        "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 20
+                        "data": 1,
+                        "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,ARDB)",
+                        "description": "ARDB"
                     }
-                ],
+                ]
+            },
+            {
+                "popularName": "Staphylococcus aureus subsp. aureus N315",
                 "link": "/view/Genome/158879.11",
                 "links": [
                     {
-                        "link": "/view/Genome/158879.11#view_tab=browser",
-                        "name": "Genome Browser"
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/158879.11#view_tab=browser"
                     },
                     {
-                        "link": "/view/Genome/158879.11#view_tab=features",
-                        "name": "Feature Table"
+                        "name": "Feature Table",
+                        "link": "/view/Genome/158879.11#view_tab=features"
                     },
                     {
-                        "link": "/view/Genome/158879.11#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/158879.11#view_tab=proteinFamilies"
                     },
                     {
-                        "link": "/view/Genome/158879.11#view_tab=pathways",
-                        "name": "Pathway"
+                        "name": "Pathway",
+                        "link": "/view/Genome/158879.11#view_tab=pathways"
                     },
                     {
-                        "link": "/view/Genome/158879.11#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/158879.11#view_tab=transcriptomics"
                     }
                 ],
-                "popularName": "Staphylococcus aureus subsp. aureus N315"
-            },
-            {
                 "specialtyGenes": [
                     {
-                        "description": "CARD",
-                        "link": "/view/Genome/373153.27#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 11
+                        "data": 47,
+                        "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,CARD)",
+                        "description": "CARD"
                     },
                     {
-                        "description": "ARDB",
-                        "link": "/view/Genome/373153.27#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 2
+                        "data": 20,
+                        "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,ARDB)",
+                        "description": "ARDB"
                     }
-                ],
+                ]
+            },
+            {
+                "popularName": "Streptococcus pneumoniae D39",
                 "link": "/view/Genome/373153.27",
                 "links": [
                     {
-                        "link": "/view/Genome/373153.27#view_tab=browser",
-                        "name": "Genome Browser"
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/373153.27#view_tab=browser"
                     },
                     {
-                        "link": "/view/Genome/373153.27#view_tab=features",
-                        "name": "Feature Table"
+                        "name": "Feature Table",
+                        "link": "/view/Genome/373153.27#view_tab=features"
                     },
                     {
-                        "link": "/view/Genome/373153.27#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/373153.27#view_tab=proteinFamilies"
                     },
                     {
-                        "link": "/view/Genome/373153.27#view_tab=pathways",
-                        "name": "Pathway"
+                        "name": "Pathway",
+                        "link": "/view/Genome/373153.27#view_tab=pathways"
                     },
                     {
-                        "link": "/view/Genome/373153.27#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/373153.27#view_tab=transcriptomics"
                     }
                 ],
-                "popularName": "Streptococcus pneumoniae D39"
-            },
-            {
                 "specialtyGenes": [
                     {
-                        "description": "ARDB",
-                        "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,ARDB)",
-                        "data": 1
+                        "data": 11,
+                        "link": "/view/Genome/373153.27#view_tab=specialtyGenes&filter=eq(source,CARD)",
+                        "description": "CARD"
+                    },
+                    {
+                        "data": 2,
+                        "link": "/view/Genome/373153.27#view_tab=specialtyGenes&filter=eq(source,ARDB)",
+                        "description": "ARDB"
                     }
-                ],
+                ]
+            },
+            {
+                "popularName": "Brucella melitensis bv. 1 str. 16M",
                 "link": "/view/Genome/224914.11",
                 "links": [
                     {
-                        "link": "/view/Genome/224914.11#view_tab=browser",
-                        "name": "Genome Browser"
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/224914.11#view_tab=browser"
                     },
                     {
-                        "link": "/view/Genome/224914.11#view_tab=features",
-                        "name": "Feature Table"
+                        "name": "Feature Table",
+                        "link": "/view/Genome/224914.11#view_tab=features"
                     },
                     {
-                        "link": "/view/Genome/224914.11#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/224914.11#view_tab=proteinFamilies"
                     },
                     {
-                        "link": "/view/Genome/224914.11#view_tab=pathways",
-                        "name": "Pathway"
+                        "name": "Pathway",
+                        "link": "/view/Genome/224914.11#view_tab=pathways"
                     },
                     {
-                        "link": "/view/Genome/224914.11#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/224914.11#view_tab=transcriptomics"
                     }
                 ],
-                "popularName": "Brucella melitensis bv. 1 str. 16M"
-            },
-            {
                 "specialtyGenes": [
                     {
-                        "description": "CARD",
-                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,CARD)",
-                        "data": 2
+                        "data": 1,
+                        "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,ARDB)",
+                        "description": "ARDB"
                     }
-                ],
+                ]
+            },
+            {
+                "popularName": "Helicobacter pylori 26695",
                 "link": "/view/Genome/85962.8",
                 "links": [
                     {
-                        "link": "/view/Genome/85962.8#view_tab=browser",
-                        "name": "Genome Browser"
+                        "name": "Genome Browser",
+                        "link": "/view/Genome/85962.8#view_tab=browser"
                     },
                     {
-                        "link": "/view/Genome/85962.8#view_tab=features",
-                        "name": "Feature Table"
+                        "name": "Feature Table",
+                        "link": "/view/Genome/85962.8#view_tab=features"
                     },
                     {
-                        "link": "/view/Genome/85962.8#view_tab=proteinFamilies",
-                        "name": "Protein Family Sorter"
+                        "name": "Protein Family Sorter",
+                        "link": "/view/Genome/85962.8#view_tab=proteinFamilies"
                     },
                     {
-                        "link": "/view/Genome/85962.8#view_tab=pathways",
-                        "name": "Pathway"
+                        "name": "Pathway",
+                        "link": "/view/Genome/85962.8#view_tab=pathways"
                     },
                     {
-                        "link": "/view/Genome/85962.8#view_tab=transcriptomics",
-                        "name": "Transcriptomics"
+                        "name": "Transcriptomics",
+                        "link": "/view/Genome/85962.8#view_tab=transcriptomics"
                     }
                 ],
-                "popularName": "Helicobacter pylori 26695"
+                "specialtyGenes": [
+                    {
+                        "data": 2,
+                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,CARD)",
+                        "description": "CARD"
+                    }
+                ]
             }
         ]
     }

@@ -2,25 +2,25 @@
     "featuredExperiment": {
         "data": [
             {
-                "title": "Characterization of the GbdR regulon in Pseudomonas aeruginosa",
-                "pmid": "24097953",
+                "organism": "Pseudomonas aeruginosa",
                 "link": "/view/ExperimentComparison/1223795",
                 "accession": "GSE49759",
-                "organism": "Pseudomonas aeruginosa"
+                "title": "Characterization of the GbdR regulon in Pseudomonas aeruginosa",
+                "pmid": "24097953"
             },
             {
-                "title": "Transcriptional profiles of Campylobacter jejuni NCTC 11168 to 0.125mg/L erythromycin treatment",
-                "pmid": "23767761",
+                "organism": "Campylobacter jejuni",
                 "link": "/view/ExperimentComparison/1201089",
                 "accession": "GSE43024",
-                "organism": "Campylobacter jejuni"
+                "title": "Transcriptional profiles of Campylobacter jejuni NCTC 11168 to 0.125mg/L erythromycin treatment",
+                "pmid": "23767761"
             },
             {
-                "title": "Transcriptional profiles of Campylobacter jejuni NCTC 11168 to 4mg/L erythromycin treatment",
-                "pmid": "23767761",
+                "organism": "Campylobacter jejuni",
                 "link": "/view/ExperimentComparison/1224258",
                 "accession": "GSE43023",
-                "organism": "Campylobacter jejuni"
+                "title": "Transcriptional profiles of Campylobacter jejuni NCTC 11168 to 4mg/L erythromycin treatment",
+                "pmid": "23767761"
             }
         ]
     },
@@ -28,34 +28,7 @@
         "popularTitle": "Select Genomes",
         "popularList": [
             {
-                "link": "/view/Genome/83332.12#view_tab=transcriptomics",
-                "GeneModifications": {
-                    "title": "Gene Modifications",
-                    "data": [
-                        {
-                            "count": 4,
-                            "label": "dosR"
-                        },
-                        {
-                            "count": 2,
-                            "label": "dosS"
-                        },
-                        {
-                            "count": 2,
-                            "label": "dosT"
-                        },
-                        {
-                            "count": 1,
-                            "label": "Bif1"
-                        },
-                        {
-                            "count": 1,
-                            "label": "H37Ra"
-                        }
-                    ]
-                },
                 "ExperimentConditions": {
-                    "title": "Experiment Conditions",
                     "data": [
                         {
                             "count": 22,
@@ -77,39 +50,39 @@
                             "count": 3,
                             "label": "diamide"
                         }
-                    ]
+                    ],
+                    "title": "Experiment Conditions"
                 },
-                "popularName": "Mycobacterium tuberculosis H37Rv"
-            },
-            {
-                "link": "/view/Genome/511145.12#view_tab=transcriptomics",
+                "popularName": "Mycobacterium tuberculosis H37Rv",
+                "link": "/view/Genome/83332.12#view_tab=transcriptomics",
                 "GeneModifications": {
-                    "title": "Gene Modifications",
                     "data": [
                         {
-                            "count": 9,
-                            "label": "rpoS"
-                        },
-                        {
                             "count": 4,
-                            "label": "crp"
+                            "label": "dosR"
                         },
                         {
-                            "count": 4,
-                            "label": "luxS"
+                            "count": 2,
+                            "label": "dosS"
                         },
                         {
-                            "count": 3,
-                            "label": "arcA"
+                            "count": 2,
+                            "label": "dosT"
                         },
                         {
-                            "count": 3,
-                            "label": "dam"
+                            "count": 1,
+                            "label": "Bif1"
+                        },
+                        {
+                            "count": 1,
+                            "label": "H37Ra"
                         }
-                    ]
-                },
+                    ],
+                    "title": "Gene Modifications"
+                }
+            },
+            {
                 "ExperimentConditions": {
-                    "title": "Experiment Conditions",
                     "data": [
                         {
                             "count": 60,
@@ -131,39 +104,39 @@
                             "count": 10,
                             "label": "time point"
                         }
-                    ]
+                    ],
+                    "title": "Experiment Conditions"
                 },
-                "popularName": "Escherichia coli str. K-12 substr. MG1655"
-            },
-            {
-                "link": "/view/Genome/99287.12#view_tab=transcriptomics",
+                "popularName": "Escherichia coli str. K-12 substr. MG1655",
+                "link": "/view/Genome/511145.12#view_tab=transcriptomics",
                 "GeneModifications": {
-                    "title": "Gene Modifications",
                     "data": [
                         {
-                            "count": 2,
-                            "label": "cheA"
+                            "count": 9,
+                            "label": "rpoS"
                         },
                         {
-                            "count": 2,
-                            "label": "cheB"
+                            "count": 4,
+                            "label": "crp"
                         },
                         {
-                            "count": 2,
-                            "label": "cheY"
+                            "count": 4,
+                            "label": "luxS"
                         },
                         {
-                            "count": 2,
-                            "label": "cheZ"
+                            "count": 3,
+                            "label": "arcA"
                         },
                         {
-                            "count": 2,
-                            "label": "hfq"
+                            "count": 3,
+                            "label": "dam"
                         }
-                    ]
-                },
+                    ],
+                    "title": "Gene Modifications"
+                }
+            },
+            {
                 "ExperimentConditions": {
-                    "title": "Experiment Conditions",
                     "data": [
                         {
                             "count": 25,
@@ -185,39 +158,39 @@
                             "count": 2,
                             "label": "Mitomycin C"
                         }
-                    ]
+                    ],
+                    "title": "Experiment Conditions"
                 },
-                "popularName": "Salmonella enterica subsp. enterica serovar Typhimurium str. LT2"
-            },
-            {
-                "link": "/view/Genome/208964.12#view_tab=transcriptomics",
+                "popularName": "Salmonella enterica subsp. enterica serovar Typhimurium str. LT2",
+                "link": "/view/Genome/99287.12#view_tab=transcriptomics",
                 "GeneModifications": {
-                    "title": "Gene Modifications",
                     "data": [
                         {
                             "count": 2,
-                            "label": "anr"
+                            "label": "cheA"
                         },
                         {
-                            "count": 1,
-                            "label": "PA0149"
+                            "count": 2,
+                            "label": "cheB"
                         },
                         {
-                            "count": 1,
-                            "label": "PA0675"
+                            "count": 2,
+                            "label": "cheY"
                         },
                         {
-                            "count": 1,
-                            "label": "PA2050"
+                            "count": 2,
+                            "label": "cheZ"
                         },
                         {
-                            "count": 1,
-                            "label": "PA2093"
+                            "count": 2,
+                            "label": "hfq"
                         }
-                    ]
-                },
+                    ],
+                    "title": "Gene Modifications"
+                }
+            },
+            {
                 "ExperimentConditions": {
-                    "title": "Experiment Conditions",
                     "data": [
                         {
                             "count": 10,
@@ -239,39 +212,39 @@
                             "count": 4,
                             "label": "time point"
                         }
-                    ]
+                    ],
+                    "title": "Experiment Conditions"
                 },
-                "popularName": "Pseudomonas aeruginosa PAO1"
-            },
-            {
-                "link": "/view/Genome/214092.21#view_tab=transcriptomics",
+                "popularName": "Pseudomonas aeruginosa PAO1",
+                "link": "/view/Genome/208964.12#view_tab=transcriptomics",
                 "GeneModifications": {
-                    "title": "Gene Modifications",
                     "data": [
                         {
                             "count": 2,
-                            "label": "ompR"
+                            "label": "anr"
                         },
                         {
                             "count": 1,
-                            "label": "LPP"
+                            "label": "PA0149"
                         },
                         {
                             "count": 1,
-                            "label": "fur"
+                            "label": "PA0675"
                         },
                         {
                             "count": 1,
-                            "label": "hfq"
+                            "label": "PA2050"
                         },
                         {
                             "count": 1,
-                            "label": "oxyR"
+                            "label": "PA2093"
                         }
-                    ]
-                },
+                    ],
+                    "title": "Gene Modifications"
+                }
+            },
+            {
                 "ExperimentConditions": {
-                    "title": "Experiment Conditions",
                     "data": [
                         {
                             "count": 4,
@@ -293,39 +266,39 @@
                             "count": 1,
                             "label": "chloramphenicol"
                         }
-                    ]
+                    ],
+                    "title": "Experiment Conditions"
                 },
-                "popularName": "Yersinia pestis CO92"
-            },
-            {
-                "link": "/view/Genome/169963.11#view_tab=transcriptomics",
+                "popularName": "Yersinia pestis CO92",
+                "link": "/view/Genome/214092.21#view_tab=transcriptomics",
                 "GeneModifications": {
-                    "title": "Gene Modifications",
                     "data": [
                         {
-                            "count": 3,
-                            "label": "prfA"
-                        },
-                        {
-                            "count": 3,
-                            "label": "sigB"
+                            "count": 2,
+                            "label": "ompR"
                         },
                         {
                             "count": 1,
-                            "label": "Hpr KP"
+                            "label": "LPP"
                         },
                         {
                             "count": 1,
-                            "label": "LhrA"
+                            "label": "fur"
                         },
                         {
                             "count": 1,
-                            "label": "LiaRLM"
+                            "label": "hfq"
+                        },
+                        {
+                            "count": 1,
+                            "label": "oxyR"
                         }
-                    ]
-                },
+                    ],
+                    "title": "Gene Modifications"
+                }
+            },
+            {
                 "ExperimentConditions": {
-                    "title": "Experiment Conditions",
                     "data": [
                         {
                             "count": 16,
@@ -347,39 +320,39 @@
                             "count": 3,
                             "label": "temperature"
                         }
-                    ]
+                    ],
+                    "title": "Experiment Conditions"
                 },
-                "popularName": "Listeria monocytogenes EGD-e"
-            },
-            {
-                "link": "/view/Genome/158879.11#view_tab=transcriptomics",
+                "popularName": "Listeria monocytogenes EGD-e",
+                "link": "/view/Genome/169963.11#view_tab=transcriptomics",
                 "GeneModifications": {
-                    "title": "Gene Modifications",
                     "data": [
                         {
-                            "count": 1,
-                            "label": "SACOL2645"
+                            "count": 3,
+                            "label": "prfA"
+                        },
+                        {
+                            "count": 3,
+                            "label": "sigB"
                         },
                         {
                             "count": 1,
-                            "label": "arg"
+                            "label": "Hpr KP"
                         },
                         {
                             "count": 1,
-                            "label": "ccpA"
+                            "label": "LhrA"
                         },
                         {
                             "count": 1,
-                            "label": "lexA"
-                        },
-                        {
-                            "count": 1,
-                            "label": "pknB"
+                            "label": "LiaRLM"
                         }
-                    ]
-                },
+                    ],
+                    "title": "Gene Modifications"
+                }
+            },
+            {
                 "ExperimentConditions": {
-                    "title": "Experiment Conditions",
                     "data": [
                         {
                             "count": 6,
@@ -401,39 +374,39 @@
                             "count": 1,
                             "label": "Cathelicidin LL-37"
                         }
-                    ]
+                    ],
+                    "title": "Experiment Conditions"
                 },
-                "popularName": "Staphylococcus aureus subsp. aureus N315"
-            },
-            {
-                "link": "/view/Genome/373153.27#view_tab=transcriptomics",
+                "popularName": "Staphylococcus aureus subsp. aureus N315",
+                "link": "/view/Genome/158879.11#view_tab=transcriptomics",
                 "GeneModifications": {
-                    "title": "Gene Modifications",
                     "data": [
                         {
-                            "count": 4,
+                            "count": 1,
+                            "label": "SACOL2645"
+                        },
+                        {
+                            "count": 1,
+                            "label": "arg"
+                        },
+                        {
+                            "count": 1,
                             "label": "ccpA"
                         },
                         {
                             "count": 1,
-                            "label": "ahrC"
+                            "label": "lexA"
                         },
                         {
                             "count": 1,
-                            "label": "argR1"
-                        },
-                        {
-                            "count": 1,
-                            "label": "argR1-ahrC"
-                        },
-                        {
-                            "count": 1,
-                            "label": "celR"
+                            "label": "pknB"
                         }
-                    ]
-                },
+                    ],
+                    "title": "Gene Modifications"
+                }
+            },
+            {
                 "ExperimentConditions": {
-                    "title": "Experiment Conditions",
                     "data": [
                         {
                             "count": 13,
@@ -455,14 +428,58 @@
                             "count": 1,
                             "label": "copper"
                         }
-                    ]
+                    ],
+                    "title": "Experiment Conditions"
                 },
-                "popularName": "Streptococcus pneumoniae D39"
+                "popularName": "Streptococcus pneumoniae D39",
+                "link": "/view/Genome/373153.27#view_tab=transcriptomics",
+                "GeneModifications": {
+                    "data": [
+                        {
+                            "count": 4,
+                            "label": "ccpA"
+                        },
+                        {
+                            "count": 1,
+                            "label": "ahrC"
+                        },
+                        {
+                            "count": 1,
+                            "label": "argR1"
+                        },
+                        {
+                            "count": 1,
+                            "label": "argR1-ahrC"
+                        },
+                        {
+                            "count": 1,
+                            "label": "celR"
+                        }
+                    ],
+                    "title": "Gene Modifications"
+                }
             },
             {
+                "ExperimentConditions": {
+                    "data": [
+                        {
+                            "count": 5,
+                            "label": "mutant vs wild type"
+                        },
+                        {
+                            "count": 1,
+                            "label": "C12-HSL"
+                        },
+                        {
+                            "count": 1,
+                            "label": "growth phase"
+                        }
+                    ],
+                    "title": "Experiment Conditions"
+                },
+                "popularName": "Brucella melitensis bv. 1 str. 16M",
                 "link": "/view/Genome/224914.11#view_tab=transcriptomics",
                 "GeneModifications": {
-                    "title": "Gene Modifications",
                     "data": [
                         {
                             "count": 2,
@@ -484,56 +501,12 @@
                             "count": 1,
                             "label": "prlR"
                         }
-                    ]
-                },
-                "ExperimentConditions": {
-                    "title": "Experiment Conditions",
-                    "data": [
-                        {
-                            "count": 5,
-                            "label": "mutant vs wild type"
-                        },
-                        {
-                            "count": 1,
-                            "label": "C12-HSL"
-                        },
-                        {
-                            "count": 1,
-                            "label": "growth phase"
-                        }
-                    ]
-                },
-                "popularName": "Brucella melitensis bv. 1 str. 16M"
+                    ],
+                    "title": "Gene Modifications"
+                }
             },
             {
-                "link": "/view/Genome/85962.8#view_tab=transcriptomics",
-                "GeneModifications": {
-                    "title": "Gene Modifications",
-                    "data": [
-                        {
-                            "count": 1,
-                            "label": "ArsRS"
-                        },
-                        {
-                            "count": 1,
-                            "label": "HP0244"
-                        },
-                        {
-                            "count": 1,
-                            "label": "HP0518"
-                        },
-                        {
-                            "count": 1,
-                            "label": "HP1021"
-                        },
-                        {
-                            "count": 1,
-                            "label": "HopZ"
-                        }
-                    ]
-                },
                 "ExperimentConditions": {
-                    "title": "Experiment Conditions",
                     "data": [
                         {
                             "count": 6,
@@ -555,14 +528,40 @@
                             "count": 1,
                             "label": "gentamycin"
                         }
-                    ]
+                    ],
+                    "title": "Experiment Conditions"
                 },
-                "popularName": "Helicobacter pylori 26695"
+                "popularName": "Helicobacter pylori 26695",
+                "link": "/view/Genome/85962.8#view_tab=transcriptomics",
+                "GeneModifications": {
+                    "data": [
+                        {
+                            "count": 1,
+                            "label": "ArsRS"
+                        },
+                        {
+                            "count": 1,
+                            "label": "HP0244"
+                        },
+                        {
+                            "count": 1,
+                            "label": "HP0518"
+                        },
+                        {
+                            "count": 1,
+                            "label": "HP1021"
+                        },
+                        {
+                            "count": 1,
+                            "label": "HopZ"
+                        }
+                    ],
+                    "title": "Gene Modifications"
+                }
             }
         ]
     },
     "topSpecies": {
-        "title": "TOP 5 Species with Transcriptomics Data",
         "data": [
             {
                 "count": 216,
@@ -584,6 +583,7 @@
                 "count": 36,
                 "label": "Listeria monocytogenes"
             }
-        ]
+        ],
+        "title": "TOP 5 Species with Transcriptomics Data"
     }
 }

@@ -1,111 +1,111 @@
 {
-    "top5_2": {
-        "chart_desc": "Top 5 Isolation Countries",
-        "data": [
-            {
-                "reported": 5261,
-                "icon": "/patric/images/flags/United-States.png",
-                "m_label": "usa",
-                "value": 16521,
-                "label": "USA"
-            },
-            {
-                "icon": "/patric/images/flags/Thailand.png",
-                "m_label": "thailand",
-                "value": 3507,
-                "label": "Thailand"
-            },
-            {
-                "icon": "/patric/images/flags/United-Kingdom.png",
-                "m_label": "united_kingdom",
-                "value": 3262,
-                "label": "United Kingdom"
-            },
-            {
-                "icon": "/patric/images/flags/China.png",
-                "m_label": "china",
-                "value": 1394,
-                "label": "China"
-            },
-            {
-                "icon": "/patric/images/flags/Russia.png",
-                "m_label": "russia",
-                "value": 1313,
-                "label": "Russia"
-            }
-        ],
-        "tab_title": "Isolation Country",
-        "chart_title": "Isolation Country"
-    },
     "top5_1": {
-        "chart_desc": "Top 5 Bacterial Hosts",
         "data": [
             {
-                "reported": 879,
-                "icon": "/patric/images/hosts/human.png",
                 "m_label": "human,_homo_sapiens",
-                "value": 36241,
-                "label": "Human, Homo sapiens"
+                "icon": "/patric/images/hosts/human.png",
+                "reported": 962,
+                "label": "Human, Homo sapiens",
+                "value": 36241
             },
             {
-                "icon": "/patric/images/hosts/cow.png",
                 "m_label": "cattle,_bos_taurus",
-                "value": 586,
-                "label": "Cattle, Bos taurus"
+                "icon": "/patric/images/hosts/cow.png",
+                "label": "Cattle, Bos taurus",
+                "value": 641
             },
             {
-                "icon": "/patric/images/flags/Thale-cress,-Arabidopsis-thaliana.png",
                 "m_label": "thale_cress,_arabidopsis_thaliana",
-                "value": 469,
-                "label": "Thale cress, Arabidopsis thaliana"
+                "icon": "/patric/images/flags/Thale-cress,-Arabidopsis-thaliana.png",
+                "label": "Thale cress, Arabidopsis thaliana",
+                "value": 472
             },
             {
-                "icon": "/patric/images/flags/Pig.png",
                 "m_label": "pig",
-                "value": 408,
-                "label": "Pig"
+                "icon": "/patric/images/flags/Pig.png",
+                "label": "Pig",
+                "value": 433
             },
             {
-                "icon": "/patric/images/hosts/blank.png",
                 "m_label": "chicken,_gallus_gallus",
-                "value": 326,
-                "label": "Chicken, Gallus gallus"
+                "icon": "/patric/images/hosts/blank.png",
+                "label": "Chicken, Gallus gallus",
+                "value": 340
             }
         ],
+        "chart_title": "Bacterial Host",
         "tab_title": "Host",
-        "chart_title": "Bacterial Host"
+        "chart_desc": "Top 5 Bacterial Hosts"
+    },
+    "top5_2": {
+        "data": [
+            {
+                "m_label": "usa",
+                "icon": "/patric/images/flags/United-States.png",
+                "reported": 5264,
+                "label": "USA",
+                "value": 17229
+            },
+            {
+                "m_label": "thailand",
+                "icon": "/patric/images/flags/Thailand.png",
+                "label": "Thailand",
+                "value": 3509
+            },
+            {
+                "m_label": "united_kingdom",
+                "icon": "/patric/images/flags/United-Kingdom.png",
+                "label": "United Kingdom",
+                "value": 3491
+            },
+            {
+                "m_label": "china",
+                "icon": "/patric/images/flags/China.png",
+                "label": "China",
+                "value": 1566
+            },
+            {
+                "m_label": "russia",
+                "icon": "/patric/images/flags/Russia.png",
+                "label": "Russia",
+                "value": 1338
+            }
+        ],
+        "chart_title": "Isolation Country",
+        "tab_title": "Isolation Country",
+        "chart_desc": "Top 5 Isolation Countries"
     },
     "numberGenomes": {
         "data": [
             {
-                "wgs": 1562,
-                "complete": 1421,
-                "year": 2010
-            },
-            {
                 "wgs": 2889,
-                "complete": 1828,
-                "year": 2011
+                "year": 2011,
+                "complete": 1828
             },
             {
                 "wgs": 6364,
-                "complete": 2276,
-                "year": 2012
+                "year": 2012,
+                "complete": 2276
             },
             {
                 "wgs": 14025,
-                "complete": 2774,
-                "year": 2013
+                "year": 2013,
+                "complete": 2774
             },
             {
                 "wgs": 27282,
-                "complete": 3781,
-                "year": 2014
+                "year": 2014,
+                "complete": 3788
             },
             {
                 "wgs": 49537,
-                "complete": 5341,
-                "year": 2015
+                "year": 2015,
+                "complete": 5348
+            },
+            {
+                "wgs": 62620,
+                "year": 2016,
+                "complete": 6316
             }
         ],
         "chart_title": "Number of Bacterial Genomes"
@@ -114,376 +114,386 @@
         "popularTitle": "Select Genomes",
         "popularList": [
             {
-                "dataType": {
-                    "features": {
-                        "link": "/view/Genome/83332.12#view_tab=features",
-                        "data": 4367
-                    },
-                    "pathways": {
-                        "link": "/view/Genome/83332.12#view_tab=pathways",
-                        "data": 141
-                    },
-                    "experiments": {
-                        "link": "/view/Genome/83332.12#view_tab=transcriptomics",
-                        "data": 47
-                    },
-                    "proteinfamily": {
-                        "link": "/view/Genome/83332.12#view_tab=proteinFamilies",
-                        "data": 4290
-                    }
-                },
-                "gb_link": "/view/Genome/83332.12#view_tab=browser",
-                "link": "/view/Genome/83332.12",
                 "metadata": {
-                    "genome_status": "Complete",
+                    "collection_date": "",
+                    "disease": "Tuberculosis",
+                    "contigs": 0,
                     "chromosomes": 1,
+                    "genome_status": "Complete",
+                    "completion_date": "1998-06-20",
+                    "isolation_country": "",
                     "plasmids": 0,
                     "genome_length": 4411532,
-                    "collection_date": "",
-                    "completion_date": "1998-06-20",
-                    "disease": "Tuberculosis",
-                    "host_name": "Human, Homo sapiens",
-                    "contigs": 0,
-                    "isolation_country": ""
+                    "host_name": "Human, Homo sapiens"
                 },
-                "popularName": "Mycobacterium tuberculosis H37Rv"
-            },
-            {
+                "gb_link": "/view/Genome/83332.12#view_tab=browser",
+                "popularName": "Mycobacterium tuberculosis H37Rv",
                 "dataType": {
                     "features": {
-                        "link": "/view/Genome/511145.12#view_tab=features",
-                        "data": 4549
-                    },
-                    "pathways": {
-                        "link": "/view/Genome/511145.12#view_tab=pathways",
-                        "data": 136
+                        "data": 4367,
+                        "link": "/view/Genome/83332.12#view_tab=features"
                     },
                     "experiments": {
-                        "link": "/view/Genome/511145.12#view_tab=transcriptomics",
-                        "data": 208
+                        "data": 47,
+                        "link": "/view/Genome/83332.12#view_tab=transcriptomics",
+                        "picture": "/patric/images/icon-popular-experiment.png"
                     },
                     "proteinfamily": {
-                        "link": "/view/Genome/511145.12#view_tab=proteinFamilies",
-                        "data": 4413
+                        "data": 4290,
+                        "link": "/view/Genome/83332.12#view_tab=proteinFamilies"
+                    },
+                    "pathways": {
+                        "data": 141,
+                        "link": "/view/Genome/83332.12#view_tab=pathways"
                     }
                 },
-                "gb_link": "/view/Genome/511145.12#view_tab=browser",
-                "link": "/view/Genome/511145.12",
+                "link": "/view/Genome/83332.12"
+            },
+            {
                 "metadata": {
-                    "genome_status": "Complete",
+                    "collection_date": "1922",
+                    "disease": "",
+                    "contigs": 0,
                     "chromosomes": 1,
+                    "genome_status": "Complete",
+                    "completion_date": "1997-09-05",
+                    "isolation_country": "",
                     "plasmids": 0,
                     "genome_length": 4639675,
-                    "collection_date": "1922",
-                    "completion_date": "1997-09-05",
-                    "disease": "",
-                    "host_name": "",
-                    "contigs": 0,
-                    "isolation_country": ""
+                    "host_name": ""
                 },
-                "popularName": "Escherichia coli str. K-12 substr. MG1655"
-            },
-            {
+                "gb_link": "/view/Genome/511145.12#view_tab=browser",
+                "popularName": "Escherichia coli str. K-12 substr. MG1655",
                 "dataType": {
                     "features": {
-                        "link": "/view/Genome/99287.12#view_tab=features",
-                        "data": 4972
-                    },
-                    "pathways": {
-                        "link": "/view/Genome/99287.12#view_tab=pathways",
-                        "data": 136
+                        "data": 4549,
+                        "link": "/view/Genome/511145.12#view_tab=features"
                     },
                     "experiments": {
-                        "link": "/view/Genome/99287.12#view_tab=transcriptomics",
-                        "data": 48
+                        "data": 208,
+                        "link": "/view/Genome/511145.12#view_tab=transcriptomics",
+                        "picture": "/patric/images/icon-popular-experiment.png"
                     },
                     "proteinfamily": {
-                        "link": "/view/Genome/99287.12#view_tab=proteinFamilies",
-                        "data": 4910
+                        "data": 4413,
+                        "link": "/view/Genome/511145.12#view_tab=proteinFamilies"
+                    },
+                    "pathways": {
+                        "data": 136,
+                        "link": "/view/Genome/511145.12#view_tab=pathways"
                     }
                 },
-                "gb_link": "/view/Genome/99287.12#view_tab=browser",
-                "link": "/view/Genome/99287.12",
+                "link": "/view/Genome/511145.12"
+            },
+            {
                 "metadata": {
-                    "genome_status": "Complete",
+                    "collection_date": "1940",
+                    "disease": "Gastroenteritis, Food poisoning",
+                    "contigs": 0,
                     "chromosomes": 1,
+                    "genome_status": "Complete",
+                    "completion_date": "2001-10-26",
+                    "isolation_country": "",
                     "plasmids": 1,
                     "genome_length": 4951371,
-                    "collection_date": "1940",
-                    "completion_date": "2001-10-26",
-                    "disease": "Gastroenteritis, Food poisoning",
-                    "host_name": "",
-                    "contigs": 0,
-                    "isolation_country": ""
+                    "host_name": ""
                 },
-                "popularName": "Salmonella enterica subsp. enterica serovar Typhimurium str. LT2"
-            },
-            {
+                "gb_link": "/view/Genome/99287.12#view_tab=browser",
+                "popularName": "Salmonella enterica subsp. enterica serovar Typhimurium str. LT2",
                 "dataType": {
                     "features": {
-                        "link": "/view/Genome/198215.6#view_tab=features",
-                        "data": 5131
-                    },
-                    "pathways": {
-                        "link": "/view/Genome/198215.6#view_tab=pathways",
-                        "data": 134
+                        "data": 4972,
+                        "link": "/view/Genome/99287.12#view_tab=features"
                     },
                     "experiments": {
-                        "link": "/view/Genome/198215.6#view_tab=transcriptomics",
-                        "data": 2
+                        "data": 48,
+                        "link": "/view/Genome/99287.12#view_tab=transcriptomics",
+                        "picture": "/patric/images/icon-popular-experiment.png"
                     },
                     "proteinfamily": {
-                        "link": "/view/Genome/198215.6#view_tab=proteinFamilies",
-                        "data": 4959
+                        "data": 4910,
+                        "link": "/view/Genome/99287.12#view_tab=proteinFamilies"
+                    },
+                    "pathways": {
+                        "data": 136,
+                        "link": "/view/Genome/99287.12#view_tab=pathways"
                     }
                 },
-                "gb_link": "/view/Genome/198215.6#view_tab=browser",
-                "link": "/view/Genome/198215.6",
+                "link": "/view/Genome/99287.12"
+            },
+            {
                 "metadata": {
-                    "genome_status": "Complete",
+                    "collection_date": "",
+                    "disease": "Dysentery",
+                    "contigs": 0,
                     "chromosomes": 1,
+                    "genome_status": "Complete",
+                    "completion_date": "2003-04-22",
+                    "isolation_country": "",
                     "plasmids": 0,
                     "genome_length": 4599354,
-                    "collection_date": "",
-                    "completion_date": "2003-04-22",
-                    "disease": "Dysentery",
-                    "host_name": "",
-                    "contigs": 0,
-                    "isolation_country": ""
+                    "host_name": ""
                 },
-                "popularName": "Shigella flexneri 2a str. 2457T"
-            },
-            {
+                "gb_link": "/view/Genome/198215.6#view_tab=browser",
+                "popularName": "Shigella flexneri 2a str. 2457T",
                 "dataType": {
                     "features": {
-                        "link": "/view/Genome/214092.21#view_tab=features",
-                        "data": 4666
-                    },
-                    "pathways": {
-                        "link": "/view/Genome/214092.21#view_tab=pathways",
-                        "data": 134
+                        "data": 5131,
+                        "link": "/view/Genome/198215.6#view_tab=features"
                     },
                     "experiments": {
-                        "link": "/view/Genome/214092.21#view_tab=transcriptomics",
-                        "data": 6
+                        "data": 2,
+                        "link": "/view/Genome/198215.6#view_tab=transcriptomics",
+                        "picture": "/patric/images/icon-popular-experiment.png"
                     },
                     "proteinfamily": {
-                        "link": "/view/Genome/214092.21#view_tab=proteinFamilies",
-                        "data": 4513
+                        "data": 4959,
+                        "link": "/view/Genome/198215.6#view_tab=proteinFamilies"
+                    },
+                    "pathways": {
+                        "data": 134,
+                        "link": "/view/Genome/198215.6#view_tab=pathways"
                     }
                 },
-                "gb_link": "/view/Genome/214092.21#view_tab=browser",
-                "link": "/view/Genome/214092.21",
+                "link": "/view/Genome/198215.6"
+            },
+            {
                 "metadata": {
-                    "genome_status": "Complete",
+                    "collection_date": "",
+                    "disease": "Bubonic plague",
+                    "contigs": 0,
                     "chromosomes": 1,
+                    "genome_status": "Complete",
+                    "completion_date": "2001-10-05",
+                    "isolation_country": "USA",
                     "plasmids": 3,
                     "genome_length": 4829855,
-                    "collection_date": "",
-                    "completion_date": "2001-10-05",
-                    "disease": "Bubonic plague",
-                    "host_name": "Human, Homo sapiens",
-                    "contigs": 0,
-                    "isolation_country": "USA"
+                    "host_name": "Human, Homo sapiens"
                 },
-                "popularName": "Yersinia pestis CO92"
-            },
-            {
+                "gb_link": "/view/Genome/214092.21#view_tab=browser",
+                "popularName": "Yersinia pestis CO92",
                 "dataType": {
                     "features": {
-                        "link": "/view/Genome/169963.11#view_tab=features",
-                        "data": 2927
-                    },
-                    "pathways": {
-                        "link": "/view/Genome/169963.11#view_tab=pathways",
-                        "data": 127
+                        "data": 4666,
+                        "link": "/view/Genome/214092.21#view_tab=features"
                     },
                     "experiments": {
-                        "link": "/view/Genome/169963.11#view_tab=transcriptomics",
-                        "data": 34
+                        "data": 6,
+                        "link": "/view/Genome/214092.21#view_tab=transcriptomics",
+                        "picture": "/patric/images/icon-popular-experiment.png"
                     },
                     "proteinfamily": {
-                        "link": "/view/Genome/169963.11#view_tab=proteinFamilies",
-                        "data": 2906
+                        "data": 4513,
+                        "link": "/view/Genome/214092.21#view_tab=proteinFamilies"
+                    },
+                    "pathways": {
+                        "data": 134,
+                        "link": "/view/Genome/214092.21#view_tab=pathways"
                     }
                 },
-                "gb_link": "/view/Genome/169963.11#view_tab=browser",
-                "link": "/view/Genome/169963.11",
+                "link": "/view/Genome/214092.21"
+            },
+            {
                 "metadata": {
-                    "genome_status": "Complete",
+                    "collection_date": "",
+                    "disease": "Listeriosis",
+                    "contigs": 0,
                     "chromosomes": 1,
+                    "genome_status": "Complete",
+                    "completion_date": "2001-10-27",
+                    "isolation_country": "",
                     "plasmids": 0,
                     "genome_length": 2944528,
-                    "collection_date": "",
-                    "completion_date": "2001-10-27",
-                    "disease": "Listeriosis",
-                    "host_name": "",
-                    "contigs": 0,
-                    "isolation_country": ""
+                    "host_name": ""
                 },
-                "popularName": "Listeria monocytogenes EGD-e"
-            },
-            {
+                "gb_link": "/view/Genome/169963.11#view_tab=browser",
+                "popularName": "Listeria monocytogenes EGD-e",
                 "dataType": {
                     "features": {
-                        "link": "/view/Genome/158879.11#view_tab=features",
-                        "data": 2734
-                    },
-                    "pathways": {
-                        "link": "/view/Genome/158879.11#view_tab=pathways",
-                        "data": 132
+                        "data": 2927,
+                        "link": "/view/Genome/169963.11#view_tab=features"
                     },
                     "experiments": {
-                        "link": "/view/Genome/158879.11#view_tab=transcriptomics",
-                        "data": 18
+                        "data": 34,
+                        "link": "/view/Genome/169963.11#view_tab=transcriptomics",
+                        "picture": "/patric/images/icon-popular-experiment.png"
                     },
                     "proteinfamily": {
-                        "link": "/view/Genome/158879.11#view_tab=proteinFamilies",
-                        "data": 2700
+                        "data": 2906,
+                        "link": "/view/Genome/169963.11#view_tab=proteinFamilies"
+                    },
+                    "pathways": {
+                        "data": 127,
+                        "link": "/view/Genome/169963.11#view_tab=pathways"
                     }
                 },
-                "gb_link": "/view/Genome/158879.11#view_tab=browser",
-                "link": "/view/Genome/158879.11",
+                "link": "/view/Genome/169963.11"
+            },
+            {
                 "metadata": {
-                    "genome_status": "Complete",
+                    "collection_date": "1982",
+                    "disease": "Toxic shock syndrome, Scarlet fever",
+                    "contigs": 0,
                     "chromosomes": 1,
+                    "genome_status": "Complete",
+                    "completion_date": "2001-06-22",
+                    "isolation_country": "",
                     "plasmids": 1,
                     "genome_length": 2839469,
-                    "collection_date": "1982",
-                    "completion_date": "2001-06-22",
-                    "disease": "Toxic shock syndrome, Scarlet fever",
-                    "host_name": "Human, Homo sapiens",
-                    "contigs": 0,
-                    "isolation_country": ""
+                    "host_name": "Human, Homo sapiens"
                 },
-                "popularName": "Staphylococcus aureus subsp. aureus N315"
-            },
-            {
+                "gb_link": "/view/Genome/158879.11#view_tab=browser",
+                "popularName": "Staphylococcus aureus subsp. aureus N315",
                 "dataType": {
                     "features": {
-                        "link": "/view/Genome/373153.27#view_tab=features",
-                        "data": 2205
-                    },
-                    "pathways": {
-                        "link": "/view/Genome/373153.27#view_tab=pathways",
-                        "data": 124
+                        "data": 2734,
+                        "link": "/view/Genome/158879.11#view_tab=features"
                     },
                     "experiments": {
-                        "link": "/view/Genome/373153.27#view_tab=transcriptomics",
-                        "data": 16
+                        "data": 18,
+                        "link": "/view/Genome/158879.11#view_tab=transcriptomics",
+                        "picture": "/patric/images/icon-popular-experiment.png"
                     },
                     "proteinfamily": {
-                        "link": "/view/Genome/373153.27#view_tab=proteinFamilies",
-                        "data": 2159
+                        "data": 2700,
+                        "link": "/view/Genome/158879.11#view_tab=proteinFamilies"
+                    },
+                    "pathways": {
+                        "data": 132,
+                        "link": "/view/Genome/158879.11#view_tab=pathways"
                     }
                 },
-                "gb_link": "/view/Genome/373153.27#view_tab=browser",
-                "link": "/view/Genome/373153.27",
+                "link": "/view/Genome/158879.11"
+            },
+            {
                 "metadata": {
-                    "genome_status": "Complete",
+                    "collection_date": "",
+                    "disease": "Pneumonia",
+                    "contigs": 0,
                     "chromosomes": 1,
+                    "genome_status": "Complete",
+                    "completion_date": "2006-10-12",
+                    "isolation_country": "",
                     "plasmids": 0,
                     "genome_length": 2046115,
-                    "collection_date": "",
-                    "completion_date": "2006-10-12",
-                    "disease": "Pneumonia",
-                    "host_name": "",
-                    "contigs": 0,
-                    "isolation_country": ""
+                    "host_name": ""
                 },
-                "popularName": "Streptococcus pneumoniae D39"
-            },
-            {
+                "gb_link": "/view/Genome/373153.27#view_tab=browser",
+                "popularName": "Streptococcus pneumoniae D39",
                 "dataType": {
                     "features": {
-                        "link": "/view/Genome/224914.11#view_tab=features",
-                        "data": 3499
-                    },
-                    "pathways": {
-                        "link": "/view/Genome/224914.11#view_tab=pathways",
-                        "data": 138
+                        "data": 2205,
+                        "link": "/view/Genome/373153.27#view_tab=features"
                     },
                     "experiments": {
-                        "link": "/view/Genome/224914.11#view_tab=transcriptomics",
-                        "data": 6
+                        "data": 16,
+                        "link": "/view/Genome/373153.27#view_tab=transcriptomics",
+                        "picture": "/patric/images/icon-popular-experiment.png"
                     },
                     "proteinfamily": {
-                        "link": "/view/Genome/224914.11#view_tab=proteinFamilies",
-                        "data": 3445
+                        "data": 2159,
+                        "link": "/view/Genome/373153.27#view_tab=proteinFamilies"
+                    },
+                    "pathways": {
+                        "data": 124,
+                        "link": "/view/Genome/373153.27#view_tab=pathways"
                     }
                 },
-                "gb_link": "/view/Genome/224914.11#view_tab=browser",
-                "link": "/view/Genome/224914.11",
+                "link": "/view/Genome/373153.27"
+            },
+            {
                 "metadata": {
-                    "genome_status": "Complete",
+                    "collection_date": "",
+                    "disease": "Brucellosis",
+                    "contigs": 0,
                     "chromosomes": 2,
+                    "genome_status": "Complete",
+                    "completion_date": "2002-01-05",
+                    "isolation_country": "",
                     "plasmids": 0,
                     "genome_length": 3294931,
-                    "collection_date": "",
-                    "completion_date": "2002-01-05",
-                    "disease": "Brucellosis",
-                    "host_name": "Human, Homo sapiens",
-                    "contigs": 0,
-                    "isolation_country": ""
+                    "host_name": "Human, Homo sapiens"
                 },
-                "popularName": "Brucella melitensis bv. 1 str. 16M"
-            },
-            {
+                "gb_link": "/view/Genome/224914.11#view_tab=browser",
+                "popularName": "Brucella melitensis bv. 1 str. 16M",
                 "dataType": {
                     "features": {
-                        "link": "/view/Genome/85962.8#view_tab=features",
-                        "data": 1674
-                    },
-                    "pathways": {
-                        "link": "/view/Genome/85962.8#view_tab=pathways",
-                        "data": 117
+                        "data": 3499,
+                        "link": "/view/Genome/224914.11#view_tab=features"
                     },
                     "experiments": {
-                        "link": "/view/Genome/85962.8#view_tab=transcriptomics",
-                        "data": 10
+                        "data": 6,
+                        "link": "/view/Genome/224914.11#view_tab=transcriptomics",
+                        "picture": "/patric/images/icon-popular-experiment.png"
                     },
                     "proteinfamily": {
-                        "link": "/view/Genome/85962.8#view_tab=proteinFamilies",
-                        "data": 1624
+                        "data": 3445,
+                        "link": "/view/Genome/224914.11#view_tab=proteinFamilies"
+                    },
+                    "pathways": {
+                        "data": 138,
+                        "link": "/view/Genome/224914.11#view_tab=pathways"
                     }
                 },
-                "gb_link": "/view/Genome/85962.8#view_tab=browser",
-                "link": "/view/Genome/85962.8",
+                "link": "/view/Genome/224914.11"
+            },
+            {
                 "metadata": {
-                    "genome_status": "Complete",
+                    "collection_date": "",
+                    "disease": "Gastritis, Peptic ulcer disease",
+                    "contigs": 0,
                     "chromosomes": 1,
+                    "genome_status": "Complete",
+                    "completion_date": "1997-08-07",
+                    "isolation_country": "United Kingdom",
                     "plasmids": 0,
                     "genome_length": 1667867,
-                    "collection_date": "",
-                    "completion_date": "1997-08-07",
-                    "disease": "Gastritis, Peptic ulcer disease",
-                    "host_name": "Human, Homo sapiens",
-                    "contigs": 0,
-                    "isolation_country": "United Kingdom"
+                    "host_name": "Human, Homo sapiens"
                 },
-                "popularName": "Helicobacter pylori 26695"
+                "gb_link": "/view/Genome/85962.8#view_tab=browser",
+                "popularName": "Helicobacter pylori 26695",
+                "dataType": {
+                    "features": {
+                        "data": 1674,
+                        "link": "/view/Genome/85962.8#view_tab=features"
+                    },
+                    "experiments": {
+                        "data": 10,
+                        "link": "/view/Genome/85962.8#view_tab=transcriptomics",
+                        "picture": "/patric/images/icon-popular-experiment.png"
+                    },
+                    "proteinfamily": {
+                        "data": 1624,
+                        "link": "/view/Genome/85962.8#view_tab=proteinFamilies"
+                    },
+                    "pathways": {
+                        "data": 117,
+                        "link": "/view/Genome/85962.8#view_tab=pathways"
+                    }
+                },
+                "link": "/view/Genome/85962.8"
             }
         ]
     },
     "genomeStatus": {
         "data": [
             {
-                "reported": "92%",
                 "m_label": "gsc_shotgun_sequence",
-                "value": 92,
-                "label": "Whole Genome Shotgun"
+                "reported": "92%",
+                "label": "Whole Genome Shotgun",
+                "value": 92
             },
             {
-                "reported": "8%",
                 "m_label": "gsc_complete",
-                "value": 8,
-                "label": "Complete"
+                "reported": "8%",
+                "label": "Complete",
+                "value": 8
             },
             {
-                "reported": "0%",
                 "m_label": "gsc_plasmid",
-                "value": 0,
-                "label": "Plasmid"
+                "reported": "0%",
+                "label": "Plasmid",
+                "value": 0
             }
         ],
         "chart_title": "Genome Status"
