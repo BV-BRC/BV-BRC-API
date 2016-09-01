@@ -1,0 +1,72 @@
+<div style="width:80%;margin:auto">
+<h2 class="entry-title">
+	omics4TB TFOE Expression Experiments 
+</h2>
+<div class="entry-summary">
+	<!-- ?php the_excerpt(); ? --->
+		<p><em>Mycobacterium tuberculosis</em> senses and responds to the shifting and hostile landscape of the host. To characterize the underlying intertwined gene regulatory network governed by approximately 200 transcription factors of <em>M. tuberculosis</em>, we have assayed the global transcriptional consequences of overexpressing each transcription factor from an inducible promoter.</p>
+<p>We cloned and overexpressed 206 transcription factors in <em>M. tuberculosis</em> to identify the regulatory signature of each. We identified 9,335 regulatory consequences of overexpressing each of 183 transcription factors, providing evidence of regulation for 70% of the <em>M. tuberculosis</em> genome. These transcriptional signatures agree well with previously described <em>M. tuberculosis</em> regulons. The number of genes differentially regulated by transcription factor overexpression varied from hundreds of genes to none, with the majority of expression changes repressing basal transcription. Exploring the global transcriptional maps of transcription factor overexpressing (TFOE) strains, we predicted and validated the phenotype of a regulator that reduces susceptibility to a first line anti-tubercular drug, isoniazid. We also combined the TFOE data with an existing model of <em>M. tuberculosis</em> metabolism to predict the growth rates of individual TFOE strains with high fidelity.</p>
+<p>This work has led to a systems-level framework describing the transcriptome of a devastating bacterial pathogen, characterized the transcriptional influence of nearly all individual transcription factors in <em>M. tuberculosis</em>, and demonstrated the utility of this resource. These results will stimulate additional systems-level and hypothesis-driven efforts to understand <em>M. tuberculosis</em> adaptations that promote disease.</p>
+<table style="height: 203px;" width="748">
+<tbody>
+<tr>
+<td width="134" class="first"><strong>Design Type(s)</strong></td>
+<td width="332" class="last">Tiling Array</td>
+</tr>
+<tr>
+<td width="134" class="first"><strong>Measurement Type(s)</strong></td>
+<td width="332" class="last">Transcription profiling assay</td>
+</tr>
+<tr>
+<td width="134" class="first"><strong>Technology Type(s)</strong></td>
+<td width="332" class="last">Tiling microarray</td>
+</tr>
+<tr>
+<td width="134" class="first"><strong>Sample Characteristic(s)</strong></td>
+<td width="332" class="last">Mycobacterium tuberculosis H37Rv</td>
+</tr>
+</tbody>
+</table>
+<p><strong>GEO Record</strong></p>
+<table style="height: 594px;" width="748">
+<tbody>
+<tr>
+<td class="first">Status</td>
+<td width="200" class="last">Public on Jul 04, 2014</td>
+</tr>
+<tr>
+<td class="first">Title</td>
+<td width="380" class="last">Mapping and manipulating the M. tuberculosis transcriptome using a transcription factor overexpression-derived regulatory network</td>
+</tr>
+<tr>
+<td class="first">Organism</td>
+<td width="380" class="last"><a href="http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&amp;id=83332" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&amp;id=83332', 'Mycobacterium tuberculosis H37Rv');">Mycobacterium tuberculosis H37Rv</a></td>
+</tr>
+<tr>
+<td class="first">Experiment type</td>
+<td width="380" class="last">Expression profiling by array</td>
+</tr>
+<tr>
+<td class="first">Summary</td>
+<td width="380" class="last">Expression data from transcription factor over expression experiments<br>
+(Abstract from paper will be appended after publication)</td>
+</tr>
+<tr>
+<td class="first">Overall design</td>
+<td width="380" class="last">TFOE are matched to the ChIP-seq experiment done simultaneously.</td>
+</tr>
+<tr>
+<td class="first">Contributor(s)</td>
+<td width="380" class="last"><a href="http://www.ncbi.nlm.nih.gov/pubmed?term=Rustad%20T%5BAuthor%5D" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ncbi.nlm.nih.gov/pubmed?term=Rustad%20T%5BAuthor%5D', 'Rustad T');">Rustad T</a>,&nbsp;<a href="http://www.ncbi.nlm.nih.gov/pubmed?term=Minch%20K%5BAuthor%5D" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ncbi.nlm.nih.gov/pubmed?term=Minch%20K%5BAuthor%5D', 'Minch K');">Minch K</a>,&nbsp;<a href="http://www.ncbi.nlm.nih.gov/pubmed?term=Sherman%20D%5BAuthor%5D" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ncbi.nlm.nih.gov/pubmed?term=Sherman%20D%5BAuthor%5D', 'Sherman D');">Sherman D</a></td>
+</tr>
+<tr>
+<td class="first">Citation(s)</td>
+<td width="380" class="last">Peterson EJ, Reiss DJ, Turkarslan S, Minch KJ et al.&nbsp;A high-resolution network model for global gene regulation in Mycobacterium tuberculosis.&nbsp;<em>Nucleic Acids Res</em>&nbsp;2014 Oct;42(18):11291-303. PMID:&nbsp;<a href="http://www.ncbi.nlm.nih.gov/pubmed/25232098" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ncbi.nlm.nih.gov/pubmed/25232098', '25232098');">25232098</a></td>
+</tr>
+</tbody>
+</table>
+<p>All transcription factor overexpression data from tiling microarray experiments are available at NCBI GEO database under the accession number GSE59086 (<a href="http://enews.patricbrc.org/wp-content/uploads/2016/03/tfoe-meta.xls" onclick="__gaTracker('send', 'event', 'download', 'http://enews.patricbrc.org/wp-content/uploads/2016/03/tfoe-meta.xls');">tfoe-meta.xls</a>) (Gene Expression Omnibus&nbsp;<a href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE59086" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE59086', 'GSE59086');">GSE59086</a>). Moreover, sample information for each experiment is available at MTB Network Portal (<a href="http://networks.systemsbiology.net/mtb/content/TFOE-Searchable-Data-File" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://networks.systemsbiology.net/mtb/content/TFOE-Searchable-Data-File', 'http://networks.systemsbiology.net/mtb/content/TFOE-Searchable-Data-File');">http://networks.systemsbiology.net/mtb/content/TFOE-Searchable-Data-File</a>). A searchable Excel file enabling easy query of this large dataset can also be downloaded from the portal.</p>
+<p>The same <a href="https://www.beta.patricbrc.org/workspace/PATRIC@patricbrc.org/home/Special%20Collections/NIAID%20Systems%20Biology%20Centers/Omics4TB" onclick="__gaTracker('send', 'event', 'outbound-article', 'https://www.beta.patricbrc.org/workspace/PATRIC@patricbrc.org/home/Special%20Collections/NIAID%20Systems%20Biology%20Centers/Omics4TB', 'TFOE dataset is also available from a public PATRIC workspace');">TFOE dataset is also available from a public PATRIC workspace</a>, which allows users to view the gene expression data as an interactive and dynamic gene list and heat map.</p>
+			
+	</div>
+</div>

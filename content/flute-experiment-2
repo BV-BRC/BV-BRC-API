@@ -1,0 +1,415 @@
+<div style="width:80%;margin:auto">
+<h2 class="entry-title">
+        FLUTE Experiment 2
+</h2>
+<div class="entry-summary">
+	<!-- ?php the_excerpt(); ? --->
+		<h3><strong>Peptidoglycan synthesis in Mycobacterium tuberculosis is organized into networks with varying drug susceptibility</strong></h3>
+<p>Publication: PMCID: <a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4620856/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4620856/', 'PMC4620856');">PMC4620856</a></p>
+<p class="p1"><span class="s1">Peptidoglycan (PG), a complex polymer composed of saccharide chains crosslinked by short peptides, is a critical component of the bacterial cell wall. PG synthesis has been extensively studied&nbsp;</span><span class="s1">in model organisms but remains poorly understood in mycobacteria, a genus that includes the important human pathogen Mycobacterium tuberculosis (Mtb). The principle PG synthetic&nbsp;</span><span class="s1">enzymes have similar and, at times, overlapping functions. To determine how these are functionally organized,we carried out whole genome transposon mutagenesis screens in Mtb strains&nbsp;</span><span class="s1">deleted for ponA1, ponA2, and ldtB, major PG synthetic enzymes. We identified distinct factors required to sustain bacterial growth in the absence of each of these enzymes. We find that even&nbsp;</span><span class="s1">the homologues PonA1 and PonA2 have unique sets of genetic interactions, suggesting there are distinct PG synthesis pathways in Mtb. Either PonA1 or PonA2 is required for growth of Mtb,&nbsp;</span><span class="s1">but both genetically interact with LdtB, which has its own distinct genetic network. We further provide evidence that each interaction network is differentially susceptible to antibiotics. Thus,&nbsp;</span><span class="s1">Mtb uses alternative pathways to produce PG, each with its own biochemical characteristics and vulnerabilities.</span></p>
+<p class="p1">Experimenter/researcher/owner of data: Karen Kieser<br>
+PI/lab: Eric Rubin, Harvard School of Public Health<br>
+Uploaded/deposited by: Thomas Ioerger, Texas A&amp;M University<br>
+Publication: manuscript in preparation (K. Kieser et al.)<br>
+Dataset: dPonA1_KOD.wig<br>
+SRA accession: SRA277968<br>
+<a href="http://www.ncbi.nlm.nih.gov/sra/?term=SRA277968[accn]" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ncbi.nlm.nih.gov/sra/?term=SRA277968[accn]', 'http://www.ncbi.nlm.nih.gov/sra/?term=SRA277968[accn]');" target="_blank" rel="noreferrer">http://www.ncbi.nlm.nih.gov/sra/?term=SRA277968[accn]</a><br>
+Library: This TnSeq library consists of insertion mutants of the&nbsp;Himar1 transposon in a Rv0050/PonA1-deletion mutant of the<br>
+M. tuberculosis H37Rv strain, constructed by Karen Kieser&nbsp;in the Rubin lab.<br>
+Conditions: grown on plates with 7H10 medium<br>
+Transposon used: Himar1<br>
+Protocol for library preparation: Himar1 transfection as described in&nbsp;Long et al (2015).<br>
+Protocol for TnSeq sample preparation: nested PCR, as described in&nbsp;Long et al (2015).<br>
+Protocol for DNA extraction: (perhaps not relevant)<br>
+Protocol for sequencing: 54 bp paired-end reads on Illumina GAII&nbsp;(sequencing date: 4/2/2013)<br>
+Protocol for data processing: mapped reads to reference genome using TRANSIT (Ioerger et al., 2015);<br>
+Reported as unique template counts at TA dinucleotides<br>
+Reference genome: M. tuberculosis H37Rv (GenBank refseq accession number: NC_000962.2)</p>
+<p>References:<br>
+Long, J.E., DeJesus, M., Ward, D., Baker, R.E., Ioerger, T.R. and&nbsp;Sassetti, C.M. (2015). Identifying essential genes in Mycobacterium<br>
+tuberculosis by global phenotypic profiling. in: Methods in Molecular&nbsp;Biology: Gene Essentiality, (Long Jason Lu, ed.), vol. 1279.<br>
+DeJesus, M.A., Ambadipudi, C., Baker, R., Sassetti, C., and Ioerger,&nbsp;T.R. (2015). TRANSIT – a Software Tool for Himar1 TnSeq Analysis. PLOS&nbsp;Computational Biology, to appear.</p>
+<p><strong>Results Dataset:&nbsp;&nbsp;<a href="http://brcdownloads.patricbrc.org/BRC_Mirrors/FLUTE/resampling_dPonA1_wt.xlsx">resampling_dPonA1_wt.xlsx</a></strong></p>
+<p><strong>Conditional Essentials:</strong></p>
+<div>
+<div>
+<div>
+<div>
+<div>The following genes are indicated as conditional essentials based on&nbsp;statistical analysis (resampling) output using Transit software (<a href="http://saclab.tamu.edu/essentiality/transit/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://saclab.tamu.edu/essentiality/transit/', 'http://saclab.tamu.edu/essentiality/transit/');">http://saclab.tamu.edu/essentiality/transit/</a>). In this method,&nbsp;for each ORF (e.g., Rv0001) Transit calculates to determine whether&nbsp;the essentiality of the gene significantly increase or decreases. The adjusted p-value uses the Benjamini-Hochberg correction for multiple tests, with a threshold of &lt;0.05 for significance.</div>
+<div></div>
+<div><strong>resampling_dPonA1_wt data set</strong></div>
+</div>
+</div>
+</div>
+</div>
+<div>
+<table style="height: 1761px;" width="538">
+<tbody>
+<tr>
+<td style="text-align: center;" width="87" class="first"><strong>ORF</strong></td>
+<td style="text-align: center;" width="87"><strong>log2 FC</strong></td>
+<td style="text-align: center;" width="87"><strong>q-value</strong></td>
+<td style="text-align: center;" width="117" class="last"><strong>Feature in PATRIC</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv0007</td>
+<td style="text-align: center;">-8.44</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.9914.10828.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv0050</td>
+<td style="text-align: center;">-9.59</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.53663.55699.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv0096</td>
+<td style="text-align: center;">-3.59</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.105324.106715.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv0097</td>
+<td style="text-align: center;">-4.03</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.106734.107603.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv0101</td>
+<td style="text-align: center;">-1.74</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.110001.117539.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv0127</td>
+<td style="text-align: center;">-3.35</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.154232.155599.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv0155</td>
+<td style="text-align: center;">-6.58</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.183622.184722.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv0157</td>
+<td style="text-align: center;">-5.93</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.185052.186479.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv0211</td>
+<td style="text-align: center;">-6.04</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.251782.253602.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv0238</td>
+<td style="text-align: center;">-8.61</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.288428.289042.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv0455c</td>
+<td style="text-align: center;">-5.73</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.545375.545821.rev">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv0467</td>
+<td style="text-align: center;">-6.84</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.557527.558813.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv0489</td>
+<td style="text-align: center;">-5.36</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.578426.579175.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv0642c</td>
+<td style="text-align: center;">-4.97</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.736298.737203.rev">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv0643c</td>
+<td style="text-align: center;">-2.38</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.737268.738149.rev">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv0806c</td>
+<td style="text-align: center;">-7.42</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.899732.901330.rev">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv0860</td>
+<td style="text-align: center;">-2.83</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.956293.958455.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv1086</td>
+<td style="text-align: center;">-7.96</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.1210595.1211383.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv1112</td>
+<td style="text-align: center;">-4.18</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.1238255.1239328.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv1339</td>
+<td style="text-align: center;">-4.55</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.1505917.1506738.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv1421</td>
+<td style="text-align: center;">-2.29</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.1595979.1596884.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv1565c</td>
+<td style="text-align: center;">-5.85</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.1771640.1773829.rev">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv1798</td>
+<td style="text-align: center;">-3.72</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.2036700.2038532.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv1836c</td>
+<td style="text-align: center;">-2.57</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.2082603.2084636.rev">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv2140c</td>
+<td style="text-align: center;">-5.52</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.2399798.2400328.rev">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv2171</td>
+<td style="text-align: center;">-8.78</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.2432951.2433634.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv2176</td>
+<td style="text-align: center;">-3.78</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.2437941.2439140.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv2222c</td>
+<td style="text-align: center;">-1.95</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.2492402.2493742.rev">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv2224c</td>
+<td style="text-align: center;">-3.49</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.2495461.2497023.rev">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv2404c</td>
+<td style="text-align: center;">-5.02</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.2701287.2703248.rev">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv2535c</td>
+<td style="text-align: center;">-4.47</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.2859300.2860418.rev">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv2864c</td>
+<td style="text-align: center;">-2.86</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.3175454.3177265.rev">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv3302c</td>
+<td style="text-align: center;">10.81</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.3687685.3689442.rev">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv3484</td>
+<td style="text-align: center;">-1.96</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.3903078.3904616.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv3490</td>
+<td style="text-align: center;">-4.67</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.3908236.3909738.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv3682</td>
+<td style="text-align: center;">-8.89</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.4121916.4124348.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv3910</td>
+<td style="text-align: center;">-4.88</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.4396597.4400151.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv0066c</td>
+<td style="text-align: center;">-3.32</td>
+<td style="text-align: center;">0.0095</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.72274.74511.rev">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv0153c</td>
+<td style="text-align: center;">-4.02</td>
+<td style="text-align: center;">0.0095</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.181155.181985.rev">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv1410c</td>
+<td style="text-align: center;">-2.08</td>
+<td style="text-align: center;">0.0095</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.1586210.1587766.rev">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv1432</td>
+<td style="text-align: center;">-3.7</td>
+<td style="text-align: center;">0.0095</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.1609849.1611270.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv1780</td>
+<td style="text-align: center;">-1.98</td>
+<td style="text-align: center;">0.0095</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.2014699.2015262.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv1248c</td>
+<td style="text-align: center;">-3.79</td>
+<td style="text-align: center;">0.017</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.1389357.1393052.rev">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv1371</td>
+<td style="text-align: center;">-3.3</td>
+<td style="text-align: center;">0.017</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.1543359.1544828.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv2038c</td>
+<td style="text-align: center;">-3.26</td>
+<td style="text-align: center;">0.017</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.2283723.2284796.rev">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv2940c</td>
+<td style="text-align: center;">-1.08</td>
+<td style="text-align: center;">0.017</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.3276380.3282715.rev">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv3529c</td>
+<td style="text-align: center;">-2.95</td>
+<td style="text-align: center;">0.017</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.3965884.3967038.rev">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv1662</td>
+<td style="text-align: center;">-2.85</td>
+<td style="text-align: center;">0.0249</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.1881704.1886512.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv0180c</td>
+<td style="text-align: center;">8.32</td>
+<td style="text-align: center;">0.0307</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.210892.212250.rev">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv1183</td>
+<td style="text-align: center;">-1.54</td>
+<td style="text-align: center;">0.0307</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.1321520.1324528.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv2246</td>
+<td style="text-align: center;">-4.65</td>
+<td style="text-align: center;">0.0307</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.2519396.2520712.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv3210c</td>
+<td style="text-align: center;">-4.47</td>
+<td style="text-align: center;">0.0307</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.3586844.3587539.rev">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv1401</td>
+<td style="text-align: center;">-2.81</td>
+<td style="text-align: center;">0.0369</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.1576930.1577532.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv2462c</td>
+<td style="text-align: center;">-1.79</td>
+<td style="text-align: center;">0.0369</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.2763891.2765291.rev">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv0260c</td>
+<td style="text-align: center;">-2.99</td>
+<td style="text-align: center;">0.0413</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.311514.312659.rev">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv1220c</td>
+<td style="text-align: center;">-3.27</td>
+<td style="text-align: center;">0.0413</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.1363503.1364150.rev">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv1791</td>
+<td style="text-align: center;">-7.46</td>
+<td style="text-align: center;">0.0413</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.2029904.2030203.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv2809</td>
+<td style="text-align: center;">-3.36</td>
+<td style="text-align: center;">0.0413</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.3115408.3115719.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td style="text-align: center;" class="first">Rv2131c</td>
+<td style="text-align: center;">-3.93</td>
+<td style="text-align: center;">0.0473</td>
+<td style="text-align: center;" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.2392517.2393320.rev">Feature page</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div></div>
+<div></div>
+			
+	</div>
+</div>

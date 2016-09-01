@@ -1,1223 +1,1223 @@
 {
-    "FIGfams": {
-        "chart_desc": "The graph below summarizes conservation of protein families across all the genomes in each pathogenic genus.",
-        "data": [
-            {
-                "total": 18457,
-                "pathogen": "Bacillus",
-                "accessory": 17445,
-                "functional": 7765,
-                "hypothetical": 10692,
-                "genomes": 1159,
-                "core": 1012
-            },
-            {
-                "total": 1770,
-                "pathogen": "Bartonella",
-                "accessory": 982,
-                "functional": 1563,
-                "hypothetical": 207,
-                "genomes": 83,
-                "core": 788
-            },
-            {
-                "total": 974,
-                "pathogen": "Borrelia",
-                "accessory": 283,
-                "functional": 645,
-                "hypothetical": 329,
-                "genomes": 24,
-                "core": 691
-            },
-            {
-                "total": 3771,
-                "pathogen": "Brucella",
-                "accessory": 1599,
-                "functional": 2618,
-                "hypothetical": 1153,
-                "genomes": 515,
-                "core": 2172
-            },
-            {
-                "total": 13579,
-                "pathogen": "Burkholderia",
-                "accessory": 11571,
-                "functional": 5713,
-                "hypothetical": 7866,
-                "genomes": 1193,
-                "core": 2008
-            },
-            {
-                "total": 5530,
-                "pathogen": "Campylobacter",
-                "accessory": 4477,
-                "functional": 3704,
-                "hypothetical": 1826,
-                "genomes": 1522,
-                "core": 1053
-            },
-            {
-                "total": 8181,
-                "pathogen": "Chlamydia",
-                "accessory": 7572,
-                "functional": 5409,
-                "hypothetical": 2772,
-                "genomes": 241,
-                "core": 609
-            },
-            {
-                "total": 14980,
-                "pathogen": "Clostridium",
-                "accessory": 14736,
-                "functional": 6620,
-                "hypothetical": 8360,
-                "genomes": 487,
-                "core": 244
-            },
-            {
-                "total": 2102,
-                "pathogen": "Coxiella",
-                "accessory": 1552,
-                "functional": 1391,
-                "hypothetical": 711,
-                "genomes": 28,
-                "core": 550
-            },
-            {
-                "total": 891,
-                "pathogen": "Ehrlichia",
-                "accessory": 329,
-                "functional": 712,
-                "hypothetical": 179,
-                "genomes": 18,
-                "core": 562
-            },
-            {
-                "total": 16040,
-                "pathogen": "Escherichia",
-                "accessory": 13351,
-                "functional": 8917,
-                "hypothetical": 7123,
-                "genomes": 4702,
-                "core": 2689
-            },
-            {
-                "total": 2269,
-                "pathogen": "Francisella",
-                "accessory": 1219,
-                "functional": 1643,
-                "hypothetical": 626,
-                "genomes": 119,
-                "core": 1050
-            },
-            {
-                "total": 3579,
-                "pathogen": "Helicobacter",
-                "accessory": 2870,
-                "functional": 1947,
-                "hypothetical": 1632,
-                "genomes": 636,
-                "core": 709
-            },
-            {
-                "total": 5636,
-                "pathogen": "Listeria",
-                "accessory": 3720,
-                "functional": 3524,
-                "hypothetical": 2112,
-                "genomes": 775,
-                "core": 1916
-            },
-            {
-                "total": 22853,
-                "pathogen": "Mycobacterium",
-                "accessory": 21188,
-                "functional": 11869,
-                "hypothetical": 10984,
-                "genomes": 8464,
-                "core": 1665
-            },
-            {
-                "total": 1942,
-                "pathogen": "Rickettsia",
-                "accessory": 1328,
-                "functional": 981,
-                "hypothetical": 961,
-                "genomes": 87,
-                "core": 614
-            },
-            {
-                "total": 10219,
-                "pathogen": "Salmonella",
-                "accessory": 7210,
-                "functional": 6803,
-                "hypothetical": 3416,
-                "genomes": 4827,
-                "core": 3009
-            },
-            {
-                "total": 10535,
-                "pathogen": "Shigella",
-                "accessory": 7975,
-                "functional": 7229,
-                "hypothetical": 3306,
-                "genomes": 785,
-                "core": 2560
-            },
-            {
-                "total": 16640,
-                "pathogen": "Staphylococcus",
-                "accessory": 15102,
-                "functional": 10500,
-                "hypothetical": 6140,
-                "genomes": 9210,
-                "core": 1538
-            },
-            {
-                "total": 21359,
-                "pathogen": "Streptococcus",
-                "accessory": 20598,
-                "functional": 10480,
-                "hypothetical": 10879,
-                "genomes": 10387,
-                "core": 761
-            },
-            {
-                "total": 11944,
-                "pathogen": "Vibrio",
-                "accessory": 10105,
-                "functional": 6420,
-                "hypothetical": 5524,
-                "genomes": 1414,
-                "core": 1839
-            },
-            {
-                "total": 7293,
-                "pathogen": "Yersinia",
-                "accessory": 5201,
-                "functional": 5114,
-                "hypothetical": 2179,
-                "genomes": 590,
-                "core": 2092
-            }
-        ],
-        "chart_title": "Protein Family Conservation in Pathogenic Bacteria"
-    },
     "popularGenomes": {
         "popularTitle": "Popular Genera",
         "popularList": [
             {
+                "popularName": "Bacillus",
+                "link": "/view/Taxonomy/1386#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "y": 12424,
-                        "x": "10%"
+                        "count": 12438,
+                        "label": "10%"
                     },
                     {
-                        "y": 1331,
-                        "x": "20%"
+                        "count": 1329,
+                        "label": "20%"
                     },
                     {
-                        "y": 824,
-                        "x": "30%"
+                        "count": 811,
+                        "label": "30%"
                     },
                     {
-                        "y": 598,
-                        "x": "40%"
+                        "count": 609,
+                        "label": "40%"
                     },
                     {
-                        "y": 1059,
-                        "x": "50%"
+                        "count": 1059,
+                        "label": "50%"
                     },
                     {
-                        "y": 338,
-                        "x": "60%"
+                        "count": 339,
+                        "label": "60%"
                     },
                     {
-                        "y": 171,
-                        "x": "70%"
+                        "count": 170,
+                        "label": "70%"
                     },
                     {
-                        "y": 200,
-                        "x": "80%"
+                        "count": 199,
+                        "label": "80%"
                     },
                     {
-                        "y": 285,
-                        "x": "90%"
+                        "count": 279,
+                        "label": "90%"
                     },
                     {
-                        "y": 1227,
-                        "x": "100%"
+                        "count": 1231,
+                        "label": "100%"
                     }
-                ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=1386&dm=result&bm=&pk=",
-                "popularName": "Bacillus"
+                ]
             },
             {
+                "popularName": "Bartonella",
+                "link": "/view/Taxonomy/773#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "y": 527,
-                        "x": "10%"
+                        "count": 527,
+                        "label": "10%"
                     },
                     {
-                        "y": 65,
-                        "x": "20%"
+                        "count": 65,
+                        "label": "20%"
                     },
                     {
-                        "y": 86,
-                        "x": "30%"
+                        "count": 86,
+                        "label": "30%"
                     },
                     {
-                        "y": 35,
-                        "x": "40%"
+                        "count": 35,
+                        "label": "40%"
                     },
                     {
-                        "y": 47,
-                        "x": "50%"
+                        "count": 47,
+                        "label": "50%"
                     },
                     {
-                        "y": 40,
-                        "x": "60%"
+                        "count": 40,
+                        "label": "60%"
                     },
                     {
-                        "y": 45,
-                        "x": "70%"
+                        "count": 45,
+                        "label": "70%"
                     },
                     {
-                        "y": 82,
-                        "x": "80%"
+                        "count": 82,
+                        "label": "80%"
                     },
                     {
-                        "y": 38,
-                        "x": "90%"
+                        "count": 38,
+                        "label": "90%"
                     },
                     {
-                        "y": 805,
-                        "x": "100%"
+                        "count": 805,
+                        "label": "100%"
                     }
-                ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=773&dm=result&bm=&pk=",
-                "popularName": "Bartonella"
+                ]
             },
             {
+                "popularName": "Borrelia",
+                "link": "/view/Taxonomy/138#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "y": 38,
-                        "x": "10%"
+                        "count": 38,
+                        "label": "10%"
                     },
                     {
-                        "y": 26,
-                        "x": "20%"
+                        "count": 26,
+                        "label": "20%"
                     },
                     {
-                        "y": 70,
-                        "x": "30%"
+                        "count": 70,
+                        "label": "30%"
                     },
                     {
-                        "y": 59,
-                        "x": "40%"
+                        "count": 59,
+                        "label": "40%"
                     },
                     {
-                        "y": 13,
-                        "x": "50%"
+                        "count": 13,
+                        "label": "50%"
                     },
                     {
-                        "y": 11,
-                        "x": "60%"
+                        "count": 11,
+                        "label": "60%"
                     },
                     {
-                        "y": 14,
-                        "x": "70%"
+                        "count": 14,
+                        "label": "70%"
                     },
                     {
-                        "y": 10,
-                        "x": "80%"
+                        "count": 10,
+                        "label": "80%"
                     },
                     {
-                        "y": 26,
-                        "x": "90%"
+                        "count": 26,
+                        "label": "90%"
                     },
                     {
-                        "y": 707,
-                        "x": "100%"
+                        "count": 707,
+                        "label": "100%"
                     }
-                ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=138&dm=result&bm=&pk=",
-                "popularName": "Borrelia"
+                ]
             },
             {
+                "popularName": "Brucella",
+                "link": "/view/Taxonomy/234#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "y": 816,
-                        "x": "10%"
+                        "count": 813,
+                        "label": "10%"
                     },
                     {
-                        "y": 164,
-                        "x": "20%"
+                        "count": 162,
+                        "label": "20%"
                     },
                     {
-                        "y": 49,
-                        "x": "30%"
+                        "count": 53,
+                        "label": "30%"
                     },
                     {
-                        "y": 53,
-                        "x": "40%"
+                        "count": 43,
+                        "label": "40%"
                     },
                     {
-                        "y": 38,
-                        "x": "50%"
+                        "count": 49,
+                        "label": "50%"
                     },
                     {
-                        "y": 73,
-                        "x": "60%"
+                        "count": 74,
+                        "label": "60%"
                     },
                     {
-                        "y": 43,
-                        "x": "70%"
+                        "count": 44,
+                        "label": "70%"
                     },
                     {
-                        "y": 80,
-                        "x": "80%"
+                        "count": 82,
+                        "label": "80%"
                     },
                     {
-                        "y": 167,
-                        "x": "90%"
+                        "count": 168,
+                        "label": "90%"
                     },
                     {
-                        "y": 2288,
-                        "x": "100%"
+                        "count": 2283,
+                        "label": "100%"
                     }
-                ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=234&dm=result&bm=&pk=",
-                "popularName": "Brucella"
+                ]
             },
             {
+                "popularName": "Burkholderia",
+                "link": "/view/Taxonomy/32008#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "y": 7264,
-                        "x": "10%"
+                        "count": 7263,
+                        "label": "10%"
                     },
                     {
-                        "y": 970,
-                        "x": "20%"
+                        "count": 975,
+                        "label": "20%"
                     },
                     {
-                        "y": 759,
-                        "x": "30%"
+                        "count": 760,
+                        "label": "30%"
                     },
                     {
-                        "y": 920,
-                        "x": "40%"
+                        "count": 918,
+                        "label": "40%"
                     },
                     {
-                        "y": 550,
-                        "x": "50%"
+                        "count": 549,
+                        "label": "50%"
                     },
                     {
-                        "y": 361,
-                        "x": "60%"
+                        "count": 363,
+                        "label": "60%"
                     },
                     {
-                        "y": 154,
-                        "x": "70%"
+                        "count": 152,
+                        "label": "70%"
                     },
                     {
-                        "y": 124,
-                        "x": "80%"
+                        "count": 124,
+                        "label": "80%"
                     },
                     {
-                        "y": 163,
-                        "x": "90%"
+                        "count": 163,
+                        "label": "90%"
                     },
                     {
-                        "y": 2314,
-                        "x": "100%"
+                        "count": 2314,
+                        "label": "100%"
                     }
-                ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=32008&dm=result&bm=&pk=",
-                "popularName": "Burkholderia"
+                ]
             },
             {
+                "popularName": "Campylobacter",
+                "link": "/view/Taxonomy/194#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "y": 3765,
-                        "x": "10%"
+                        "count": 3763,
+                        "label": "10%"
                     },
                     {
-                        "y": 170,
-                        "x": "20%"
+                        "count": 176,
+                        "label": "20%"
                     },
                     {
-                        "y": 141,
-                        "x": "30%"
+                        "count": 141,
+                        "label": "30%"
                     },
                     {
-                        "y": 46,
-                        "x": "40%"
+                        "count": 46,
+                        "label": "40%"
                     },
                     {
-                        "y": 112,
-                        "x": "50%"
+                        "count": 119,
+                        "label": "50%"
                     },
                     {
-                        "y": 57,
-                        "x": "60%"
+                        "count": 49,
+                        "label": "60%"
                     },
                     {
-                        "y": 22,
-                        "x": "70%"
+                        "count": 22,
+                        "label": "70%"
                     },
                     {
-                        "y": 28,
-                        "x": "80%"
+                        "count": 27,
+                        "label": "80%"
                     },
                     {
-                        "y": 47,
-                        "x": "90%"
+                        "count": 53,
+                        "label": "90%"
                     },
                     {
-                        "y": 1142,
-                        "x": "100%"
+                        "count": 1135,
+                        "label": "100%"
                     }
-                ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=194&dm=result&bm=&pk=",
-                "popularName": "Campylobacter"
+                ]
             },
             {
+                "popularName": "Chlamydia",
+                "link": "/view/Taxonomy/810#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "y": 7041,
-                        "x": "10%"
+                        "count": 7041,
+                        "label": "10%"
                     },
                     {
-                        "y": 33,
-                        "x": "20%"
+                        "count": 33,
+                        "label": "20%"
                     },
                     {
-                        "y": 146,
-                        "x": "30%"
+                        "count": 146,
+                        "label": "30%"
                     },
                     {
-                        "y": 96,
-                        "x": "40%"
+                        "count": 96,
+                        "label": "40%"
                     },
                     {
-                        "y": 28,
-                        "x": "50%"
+                        "count": 28,
+                        "label": "50%"
                     },
                     {
-                        "y": 48,
-                        "x": "60%"
+                        "count": 48,
+                        "label": "60%"
                     },
                     {
-                        "y": 92,
-                        "x": "70%"
+                        "count": 92,
+                        "label": "70%"
                     },
                     {
-                        "y": 17,
-                        "x": "80%"
+                        "count": 17,
+                        "label": "80%"
                     },
                     {
-                        "y": 16,
-                        "x": "90%"
+                        "count": 16,
+                        "label": "90%"
                     },
                     {
-                        "y": 664,
-                        "x": "100%"
+                        "count": 664,
+                        "label": "100%"
                     }
-                ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=810&dm=result&bm=&pk=",
-                "popularName": "Chlamydia"
+                ]
             },
             {
+                "popularName": "Clostridium",
+                "link": "/view/Taxonomy/1485#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "y": 11257,
-                        "x": "10%"
+                        "count": 11489,
+                        "label": "10%"
                     },
                     {
-                        "y": 928,
-                        "x": "20%"
+                        "count": 916,
+                        "label": "20%"
                     },
                     {
-                        "y": 748,
-                        "x": "30%"
+                        "count": 763,
+                        "label": "30%"
                     },
                     {
-                        "y": 428,
-                        "x": "40%"
+                        "count": 416,
+                        "label": "40%"
                     },
                     {
-                        "y": 260,
-                        "x": "50%"
+                        "count": 260,
+                        "label": "50%"
                     },
                     {
-                        "y": 232,
-                        "x": "60%"
+                        "count": 227,
+                        "label": "60%"
                     },
                     {
-                        "y": 216,
-                        "x": "70%"
+                        "count": 227,
+                        "label": "70%"
                     },
                     {
-                        "y": 268,
-                        "x": "80%"
+                        "count": 256,
+                        "label": "80%"
                     },
                     {
-                        "y": 263,
-                        "x": "90%"
+                        "count": 247,
+                        "label": "90%"
                     },
                     {
-                        "y": 380,
-                        "x": "100%"
+                        "count": 384,
+                        "label": "100%"
                     }
-                ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=1485&dm=result&bm=&pk=",
-                "popularName": "Clostridium"
+                ]
             },
             {
+                "popularName": "Coxiella",
+                "link": "/view/Taxonomy/776#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "y": 294,
-                        "x": "10%"
+                        "count": 294,
+                        "label": "10%"
                     },
                     {
-                        "y": 56,
-                        "x": "20%"
+                        "count": 56,
+                        "label": "20%"
                     },
                     {
-                        "y": 57,
-                        "x": "30%"
+                        "count": 57,
+                        "label": "30%"
                     },
                     {
-                        "y": 54,
-                        "x": "40%"
+                        "count": 54,
+                        "label": "40%"
                     },
                     {
-                        "y": 58,
-                        "x": "50%"
+                        "count": 58,
+                        "label": "50%"
                     },
                     {
-                        "y": 24,
-                        "x": "60%"
+                        "count": 24,
+                        "label": "60%"
                     },
                     {
-                        "y": 65,
-                        "x": "70%"
+                        "count": 65,
+                        "label": "70%"
                     },
                     {
-                        "y": 65,
-                        "x": "80%"
+                        "count": 65,
+                        "label": "80%"
                     },
                     {
-                        "y": 160,
-                        "x": "90%"
+                        "count": 160,
+                        "label": "90%"
                     },
                     {
-                        "y": 1269,
-                        "x": "100%"
+                        "count": 1269,
+                        "label": "100%"
                     }
-                ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=776&dm=result&bm=&pk=",
-                "popularName": "Coxiella"
+                ]
             },
             {
+                "popularName": "Ehrlichia",
+                "link": "/view/Taxonomy/943#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "y": 31,
-                        "x": "10%"
+                        "count": 31,
+                        "label": "10%"
                     },
                     {
-                        "y": 31,
-                        "x": "20%"
+                        "count": 31,
+                        "label": "20%"
                     },
                     {
-                        "y": 67,
-                        "x": "30%"
+                        "count": 67,
+                        "label": "30%"
                     },
                     {
-                        "y": 24,
-                        "x": "40%"
+                        "count": 24,
+                        "label": "40%"
                     },
                     {
-                        "y": 18,
-                        "x": "50%"
+                        "count": 18,
+                        "label": "50%"
                     },
                     {
-                        "y": 9,
-                        "x": "60%"
+                        "count": 9,
+                        "label": "60%"
                     },
                     {
-                        "y": 16,
-                        "x": "70%"
+                        "count": 16,
+                        "label": "70%"
                     },
                     {
-                        "y": 18,
-                        "x": "80%"
+                        "count": 18,
+                        "label": "80%"
                     },
                     {
-                        "y": 14,
-                        "x": "90%"
+                        "count": 14,
+                        "label": "90%"
                     },
                     {
-                        "y": 663,
-                        "x": "100%"
+                        "count": 663,
+                        "label": "100%"
                     }
-                ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=943&dm=result&bm=&pk=",
-                "popularName": "Ehrlichia"
+                ]
             },
             {
+                "popularName": "Escherichia",
+                "link": "/view/Taxonomy/561#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "y": 10501,
-                        "x": "10%"
+                        "count": 10499,
+                        "label": "10%"
                     },
                     {
-                        "y": 853,
-                        "x": "20%"
+                        "count": 853,
+                        "label": "20%"
                     },
                     {
-                        "y": 520,
-                        "x": "30%"
+                        "count": 522,
+                        "label": "30%"
                     },
                     {
-                        "y": 276,
-                        "x": "40%"
+                        "count": 278,
+                        "label": "40%"
                     },
                     {
-                        "y": 256,
-                        "x": "50%"
+                        "count": 256,
+                        "label": "50%"
                     },
                     {
-                        "y": 185,
-                        "x": "60%"
+                        "count": 184,
+                        "label": "60%"
                     },
                     {
-                        "y": 225,
-                        "x": "70%"
+                        "count": 222,
+                        "label": "70%"
                     },
                     {
-                        "y": 276,
-                        "x": "80%"
+                        "count": 282,
+                        "label": "80%"
                     },
                     {
-                        "y": 148,
-                        "x": "90%"
+                        "count": 147,
+                        "label": "90%"
                     },
                     {
-                        "y": 2800,
-                        "x": "100%"
+                        "count": 2800,
+                        "label": "100%"
                     }
-                ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=561&dm=result&bm=&pk=",
-                "popularName": "Escherichia"
+                ]
             },
             {
+                "popularName": "Francisella",
+                "link": "/view/Taxonomy/262#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "y": 365,
-                        "x": "10%"
+                        "count": 369,
+                        "label": "10%"
                     },
                     {
-                        "y": 239,
-                        "x": "20%"
+                        "count": 236,
+                        "label": "20%"
                     },
                     {
-                        "y": 60,
-                        "x": "30%"
+                        "count": 60,
+                        "label": "30%"
                     },
                     {
-                        "y": 76,
-                        "x": "40%"
+                        "count": 73,
+                        "label": "40%"
                     },
                     {
-                        "y": 21,
-                        "x": "50%"
+                        "count": 26,
+                        "label": "50%"
                     },
                     {
-                        "y": 37,
-                        "x": "60%"
+                        "count": 29,
+                        "label": "60%"
                     },
                     {
-                        "y": 74,
-                        "x": "70%"
+                        "count": 77,
+                        "label": "70%"
                     },
                     {
-                        "y": 112,
-                        "x": "80%"
+                        "count": 97,
+                        "label": "80%"
                     },
                     {
-                        "y": 149,
-                        "x": "90%"
+                        "count": 150,
+                        "label": "90%"
                     },
                     {
-                        "y": 1136,
-                        "x": "100%"
+                        "count": 1152,
+                        "label": "100%"
                     }
-                ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=262&dm=result&bm=&pk=",
-                "popularName": "Francisella"
+                ]
             },
             {
+                "popularName": "Helicobacter",
+                "link": "/view/Taxonomy/209#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "y": 2078,
-                        "x": "10%"
+                        "count": 2096,
+                        "label": "10%"
                     },
                     {
-                        "y": 175,
-                        "x": "20%"
+                        "count": 172,
+                        "label": "20%"
                     },
                     {
-                        "y": 88,
-                        "x": "30%"
+                        "count": 88,
+                        "label": "30%"
                     },
                     {
-                        "y": 71,
-                        "x": "40%"
+                        "count": 73,
+                        "label": "40%"
                     },
                     {
-                        "y": 54,
-                        "x": "50%"
+                        "count": 53,
+                        "label": "50%"
                     },
                     {
-                        "y": 35,
-                        "x": "60%"
+                        "count": 35,
+                        "label": "60%"
                     },
                     {
-                        "y": 31,
-                        "x": "70%"
+                        "count": 35,
+                        "label": "70%"
                     },
                     {
-                        "y": 51,
-                        "x": "80%"
+                        "count": 49,
+                        "label": "80%"
                     },
                     {
-                        "y": 48,
-                        "x": "90%"
+                        "count": 97,
+                        "label": "90%"
                     },
                     {
-                        "y": 948,
-                        "x": "100%"
+                        "count": 896,
+                        "label": "100%"
                     }
-                ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=209&dm=result&bm=&pk=",
-                "popularName": "Helicobacter"
+                ]
             },
             {
+                "popularName": "Listeria",
+                "link": "/view/Taxonomy/1637#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "y": 2868,
-                        "x": "10%"
+                        "count": 2867,
+                        "label": "10%"
                     },
                     {
-                        "y": 210,
-                        "x": "20%"
+                        "count": 208,
+                        "label": "20%"
                     },
                     {
-                        "y": 121,
-                        "x": "30%"
+                        "count": 123,
+                        "label": "30%"
                     },
                     {
-                        "y": 116,
-                        "x": "40%"
+                        "count": 106,
+                        "label": "40%"
                     },
                     {
-                        "y": 84,
-                        "x": "50%"
+                        "count": 95,
+                        "label": "50%"
                     },
                     {
-                        "y": 57,
-                        "x": "60%"
+                        "count": 61,
+                        "label": "60%"
                     },
                     {
-                        "y": 48,
-                        "x": "70%"
+                        "count": 44,
+                        "label": "70%"
                     },
                     {
-                        "y": 49,
-                        "x": "80%"
+                        "count": 49,
+                        "label": "80%"
                     },
                     {
-                        "y": 71,
-                        "x": "90%"
+                        "count": 70,
+                        "label": "90%"
                     },
                     {
-                        "y": 2012,
-                        "x": "100%"
+                        "count": 2013,
+                        "label": "100%"
                     }
-                ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=1637&dm=result&bm=&pk=",
-                "popularName": "Listeria"
+                ]
             },
             {
+                "popularName": "Mycobacterium",
+                "link": "/view/Taxonomy/1763#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "y": 19432,
-                        "x": "10%"
+                        "count": 19433,
+                        "label": "10%"
                     },
                     {
-                        "y": 94,
-                        "x": "20%"
+                        "count": 94,
+                        "label": "20%"
                     },
                     {
-                        "y": 101,
-                        "x": "30%"
+                        "count": 101,
+                        "label": "30%"
                     },
                     {
-                        "y": 51,
-                        "x": "40%"
+                        "count": 51,
+                        "label": "40%"
                     },
                     {
-                        "y": 60,
-                        "x": "50%"
+                        "count": 60,
+                        "label": "50%"
                     },
                     {
-                        "y": 55,
-                        "x": "60%"
+                        "count": 55,
+                        "label": "60%"
                     },
                     {
-                        "y": 82,
-                        "x": "70%"
+                        "count": 82,
+                        "label": "70%"
                     },
                     {
-                        "y": 93,
-                        "x": "80%"
+                        "count": 93,
+                        "label": "80%"
                     },
                     {
-                        "y": 296,
-                        "x": "90%"
+                        "count": 302,
+                        "label": "90%"
                     },
                     {
-                        "y": 2589,
-                        "x": "100%"
+                        "count": 2583,
+                        "label": "100%"
                     }
-                ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=1763&dm=result&bm=&pk=",
-                "popularName": "Mycobacterium"
+                ]
             },
             {
+                "popularName": "Rickettsia",
+                "link": "/view/Taxonomy/780#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "y": 418,
-                        "x": "10%"
+                        "count": 418,
+                        "label": "10%"
                     },
                     {
-                        "y": 207,
-                        "x": "20%"
+                        "count": 207,
+                        "label": "20%"
                     },
                     {
-                        "y": 149,
-                        "x": "30%"
+                        "count": 149,
+                        "label": "30%"
                     },
                     {
-                        "y": 139,
-                        "x": "40%"
+                        "count": 139,
+                        "label": "40%"
                     },
                     {
-                        "y": 122,
-                        "x": "50%"
+                        "count": 122,
+                        "label": "50%"
                     },
                     {
-                        "y": 101,
-                        "x": "60%"
+                        "count": 101,
+                        "label": "60%"
                     },
                     {
-                        "y": 46,
-                        "x": "70%"
+                        "count": 46,
+                        "label": "70%"
                     },
                     {
-                        "y": 77,
-                        "x": "80%"
+                        "count": 77,
+                        "label": "80%"
                     },
                     {
-                        "y": 31,
-                        "x": "90%"
+                        "count": 31,
+                        "label": "90%"
                     },
                     {
-                        "y": 652,
-                        "x": "100%"
+                        "count": 652,
+                        "label": "100%"
                     }
-                ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=780&dm=result&bm=&pk=",
-                "popularName": "Rickettsia"
+                ]
             },
             {
+                "popularName": "Salmonella",
+                "link": "/view/Taxonomy/590#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "y": 5399,
-                        "x": "10%"
+                        "count": 5402,
+                        "label": "10%"
                     },
                     {
-                        "y": 466,
-                        "x": "20%"
+                        "count": 465,
+                        "label": "20%"
                     },
                     {
-                        "y": 154,
-                        "x": "30%"
+                        "count": 154,
+                        "label": "30%"
                     },
                     {
-                        "y": 136,
-                        "x": "40%"
+                        "count": 137,
+                        "label": "40%"
                     },
                     {
-                        "y": 316,
-                        "x": "50%"
+                        "count": 318,
+                        "label": "50%"
                     },
                     {
-                        "y": 171,
-                        "x": "60%"
+                        "count": 169,
+                        "label": "60%"
                     },
                     {
-                        "y": 98,
-                        "x": "70%"
+                        "count": 98,
+                        "label": "70%"
                     },
                     {
-                        "y": 118,
-                        "x": "80%"
+                        "count": 120,
+                        "label": "80%"
                     },
                     {
-                        "y": 217,
-                        "x": "90%"
+                        "count": 216,
+                        "label": "90%"
                     },
                     {
-                        "y": 3144,
-                        "x": "100%"
+                        "count": 3144,
+                        "label": "100%"
                     }
-                ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=590&dm=result&bm=&pk=",
-                "popularName": "Salmonella"
+                ]
             },
             {
+                "popularName": "Shigella",
+                "link": "/view/Taxonomy/620#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "y": 6079,
-                        "x": "10%"
+                        "count": 6098,
+                        "label": "10%"
                     },
                     {
-                        "y": 418,
-                        "x": "20%"
+                        "count": 445,
+                        "label": "20%"
                     },
                     {
-                        "y": 195,
-                        "x": "30%"
+                        "count": 179,
+                        "label": "30%"
                     },
                     {
-                        "y": 87,
-                        "x": "40%"
+                        "count": 74,
+                        "label": "40%"
                     },
                     {
-                        "y": 73,
-                        "x": "50%"
+                        "count": 74,
+                        "label": "50%"
                     },
                     {
-                        "y": 71,
-                        "x": "60%"
+                        "count": 77,
+                        "label": "60%"
                     },
                     {
-                        "y": 98,
-                        "x": "70%"
+                        "count": 78,
+                        "label": "70%"
                     },
                     {
-                        "y": 378,
-                        "x": "80%"
+                        "count": 365,
+                        "label": "80%"
                     },
                     {
-                        "y": 201,
-                        "x": "90%"
+                        "count": 215,
+                        "label": "90%"
                     },
                     {
-                        "y": 2935,
-                        "x": "100%"
+                        "count": 2947,
+                        "label": "100%"
                     }
-                ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=620&dm=result&bm=&pk=",
-                "popularName": "Shigella"
+                ]
             },
             {
+                "popularName": "Staphylococcus",
+                "link": "/view/Taxonomy/1279#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "y": 14052,
-                        "x": "10%"
+                        "count": 14054,
+                        "label": "10%"
                     },
                     {
-                        "y": 161,
-                        "x": "20%"
+                        "count": 161,
+                        "label": "20%"
                     },
                     {
-                        "y": 128,
-                        "x": "30%"
+                        "count": 128,
+                        "label": "30%"
                     },
                     {
-                        "y": 68,
-                        "x": "40%"
+                        "count": 68,
+                        "label": "40%"
                     },
                     {
-                        "y": 49,
-                        "x": "50%"
+                        "count": 49,
+                        "label": "50%"
                     },
                     {
-                        "y": 66,
-                        "x": "60%"
+                        "count": 66,
+                        "label": "60%"
                     },
                     {
-                        "y": 83,
-                        "x": "70%"
+                        "count": 83,
+                        "label": "70%"
                     },
                     {
-                        "y": 90,
-                        "x": "80%"
+                        "count": 90,
+                        "label": "80%"
                     },
                     {
-                        "y": 111,
-                        "x": "90%"
+                        "count": 111,
+                        "label": "90%"
                     },
                     {
-                        "y": 1832,
-                        "x": "100%"
+                        "count": 1832,
+                        "label": "100%"
                     }
-                ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=1279&dm=result&bm=&pk=",
-                "popularName": "Staphylococcus"
+                ]
             },
             {
+                "popularName": "Streptococcus",
+                "link": "/view/Taxonomy/1301#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "y": 19037,
-                        "x": "10%"
+                        "count": 19038,
+                        "label": "10%"
                     },
                     {
-                        "y": 432,
-                        "x": "20%"
+                        "count": 433,
+                        "label": "20%"
                     },
                     {
-                        "y": 197,
-                        "x": "30%"
+                        "count": 201,
+                        "label": "30%"
                     },
                     {
-                        "y": 123,
-                        "x": "40%"
+                        "count": 126,
+                        "label": "40%"
                     },
                     {
-                        "y": 101,
-                        "x": "50%"
+                        "count": 98,
+                        "label": "50%"
                     },
                     {
-                        "y": 69,
-                        "x": "60%"
+                        "count": 69,
+                        "label": "60%"
                     },
                     {
-                        "y": 103,
-                        "x": "70%"
+                        "count": 110,
+                        "label": "70%"
                     },
                     {
-                        "y": 256,
-                        "x": "80%"
+                        "count": 251,
+                        "label": "80%"
                     },
                     {
-                        "y": 179,
-                        "x": "90%"
+                        "count": 181,
+                        "label": "90%"
                     },
                     {
-                        "y": 862,
-                        "x": "100%"
+                        "count": 858,
+                        "label": "100%"
                     }
-                ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=1301&dm=result&bm=&pk=",
-                "popularName": "Streptococcus"
+                ]
             },
             {
+                "popularName": "Vibrio",
+                "link": "/view/Taxonomy/662#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "y": 7281,
-                        "x": "10%"
+                        "count": 7369,
+                        "label": "10%"
                     },
                     {
-                        "y": 419,
-                        "x": "20%"
+                        "count": 426,
+                        "label": "20%"
                     },
                     {
-                        "y": 377,
-                        "x": "30%"
+                        "count": 380,
+                        "label": "30%"
                     },
                     {
-                        "y": 554,
-                        "x": "40%"
+                        "count": 553,
+                        "label": "40%"
                     },
                     {
-                        "y": 568,
-                        "x": "50%"
+                        "count": 564,
+                        "label": "50%"
                     },
                     {
-                        "y": 397,
-                        "x": "60%"
+                        "count": 384,
+                        "label": "60%"
                     },
                     {
-                        "y": 95,
-                        "x": "70%"
+                        "count": 108,
+                        "label": "70%"
                     },
                     {
-                        "y": 64,
-                        "x": "80%"
+                        "count": 64,
+                        "label": "80%"
                     },
                     {
-                        "y": 160,
-                        "x": "90%"
+                        "count": 164,
+                        "label": "90%"
                     },
                     {
-                        "y": 2029,
-                        "x": "100%"
+                        "count": 2025,
+                        "label": "100%"
                     }
-                ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=662&dm=result&bm=&pk=",
-                "popularName": "Vibrio"
+                ]
             },
             {
+                "popularName": "Yersinia",
+                "link": "/view/Taxonomy/629#view_tab=proteinFamilies",
                 "popularData": [
                     {
-                        "y": 2839,
-                        "x": "10%"
+                        "count": 2839,
+                        "label": "10%"
                     },
                     {
-                        "y": 357,
-                        "x": "20%"
+                        "count": 357,
+                        "label": "20%"
                     },
                     {
-                        "y": 259,
-                        "x": "30%"
+                        "count": 259,
+                        "label": "30%"
                     },
                     {
-                        "y": 473,
-                        "x": "40%"
+                        "count": 473,
+                        "label": "40%"
                     },
                     {
-                        "y": 269,
-                        "x": "50%"
+                        "count": 269,
+                        "label": "50%"
                     },
                     {
-                        "y": 445,
-                        "x": "60%"
+                        "count": 445,
+                        "label": "60%"
                     },
                     {
-                        "y": 188,
-                        "x": "70%"
+                        "count": 188,
+                        "label": "70%"
                     },
                     {
-                        "y": 101,
-                        "x": "80%"
+                        "count": 101,
+                        "label": "80%"
                     },
                     {
-                        "y": 147,
-                        "x": "90%"
+                        "count": 147,
+                        "label": "90%"
                     },
                     {
-                        "y": 2215,
-                        "x": "100%"
+                        "count": 2215,
+                        "label": "100%"
                     }
-                ],
-                "link": "/portal/portal/patric/FIGfam?cType=taxon&cId=629&dm=result&bm=&pk=",
-                "popularName": "Yersinia"
+                ]
             }
         ]
+    },
+    "FIGfams": {
+        "data": [
+            {
+                "genomes": 1183,
+                "core": 1016,
+                "total": 18464,
+                "functional": 7765,
+                "hypothetical": 10699,
+                "pathogen": "Bacillus",
+                "accessory": 17448
+            },
+            {
+                "genomes": 83,
+                "core": 788,
+                "total": 1770,
+                "functional": 1563,
+                "hypothetical": 207,
+                "pathogen": "Bartonella",
+                "accessory": 982
+            },
+            {
+                "genomes": 24,
+                "core": 691,
+                "total": 974,
+                "functional": 645,
+                "hypothetical": 329,
+                "pathogen": "Borrelia",
+                "accessory": 283
+            },
+            {
+                "genomes": 519,
+                "core": 2171,
+                "total": 3771,
+                "functional": 2618,
+                "hypothetical": 1153,
+                "pathogen": "Brucella",
+                "accessory": 1600
+            },
+            {
+                "genomes": 1195,
+                "core": 2008,
+                "total": 13581,
+                "functional": 5713,
+                "hypothetical": 7868,
+                "pathogen": "Burkholderia",
+                "accessory": 11573
+            },
+            {
+                "genomes": 1544,
+                "core": 979,
+                "total": 5531,
+                "functional": 3705,
+                "hypothetical": 1826,
+                "pathogen": "Campylobacter",
+                "accessory": 4552
+            },
+            {
+                "genomes": 241,
+                "core": 609,
+                "total": 8181,
+                "functional": 5409,
+                "hypothetical": 2772,
+                "pathogen": "Chlamydia",
+                "accessory": 7572
+            },
+            {
+                "genomes": 503,
+                "core": 246,
+                "total": 15185,
+                "functional": 6649,
+                "hypothetical": 8536,
+                "pathogen": "Clostridium",
+                "accessory": 14939
+            },
+            {
+                "genomes": 28,
+                "core": 550,
+                "total": 2102,
+                "functional": 1391,
+                "hypothetical": 711,
+                "pathogen": "Coxiella",
+                "accessory": 1552
+            },
+            {
+                "genomes": 18,
+                "core": 562,
+                "total": 891,
+                "functional": 712,
+                "hypothetical": 179,
+                "pathogen": "Ehrlichia",
+                "accessory": 329
+            },
+            {
+                "genomes": 4734,
+                "core": 2690,
+                "total": 16043,
+                "functional": 8918,
+                "hypothetical": 7125,
+                "pathogen": "Escherichia",
+                "accessory": 13353
+            },
+            {
+                "genomes": 122,
+                "core": 1065,
+                "total": 2269,
+                "functional": 1643,
+                "hypothetical": 626,
+                "pathogen": "Francisella",
+                "accessory": 1204
+            },
+            {
+                "genomes": 644,
+                "core": 688,
+                "total": 3594,
+                "functional": 1957,
+                "hypothetical": 1637,
+                "pathogen": "Helicobacter",
+                "accessory": 2906
+            },
+            {
+                "genomes": 782,
+                "core": 1922,
+                "total": 5636,
+                "functional": 3524,
+                "hypothetical": 2112,
+                "pathogen": "Listeria",
+                "accessory": 3714
+            },
+            {
+                "genomes": 8467,
+                "core": 1664,
+                "total": 22854,
+                "functional": 11869,
+                "hypothetical": 10985,
+                "pathogen": "Mycobacterium",
+                "accessory": 21190
+            },
+            {
+                "genomes": 87,
+                "core": 614,
+                "total": 1942,
+                "functional": 981,
+                "hypothetical": 961,
+                "pathogen": "Rickettsia",
+                "accessory": 1328
+            },
+            {
+                "genomes": 4843,
+                "core": 3009,
+                "total": 10223,
+                "functional": 6806,
+                "hypothetical": 3417,
+                "pathogen": "Salmonella",
+                "accessory": 7214
+            },
+            {
+                "genomes": 823,
+                "core": 2589,
+                "total": 10552,
+                "functional": 7235,
+                "hypothetical": 3317,
+                "pathogen": "Shigella",
+                "accessory": 7963
+            },
+            {
+                "genomes": 9222,
+                "core": 1537,
+                "total": 16642,
+                "functional": 10501,
+                "hypothetical": 6141,
+                "pathogen": "Staphylococcus",
+                "accessory": 15105
+            },
+            {
+                "genomes": 10451,
+                "core": 761,
+                "total": 21365,
+                "functional": 10482,
+                "hypothetical": 10883,
+                "pathogen": "Streptococcus",
+                "accessory": 20604
+            },
+            {
+                "genomes": 1433,
+                "core": 1837,
+                "total": 12037,
+                "functional": 6491,
+                "hypothetical": 5546,
+                "pathogen": "Vibrio",
+                "accessory": 10200
+            },
+            {
+                "genomes": 590,
+                "core": 2092,
+                "total": 7293,
+                "functional": 5114,
+                "hypothetical": 2179,
+                "pathogen": "Yersinia",
+                "accessory": 5201
+            }
+        ],
+        "chart_title": "Protein Family Conservation in Pathogenic Bacteria",
+        "chart_desc": "The graph below summarizes conservation of protein families across all the genomes in each pathogenic genus."
     }
 }

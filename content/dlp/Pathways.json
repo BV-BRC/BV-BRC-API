@@ -1,6 +1,5 @@
 {
     "conservation": {
-        "chart_desc": "The graph below shows conservation of metabolic pathways across percentage of total genomes in each pathogenic genus.",
         "data": [
             {
                 "total": 142,
@@ -8,8 +7,8 @@
                 "dist": [
                     29,
                     39,
-                    49,
-                    23,
+                    50,
+                    22,
                     2
                 ]
             },
@@ -61,8 +60,8 @@
                 "total": 137,
                 "pathogen": "Campylobacter",
                 "dist": [
-                    31,
-                    26,
+                    30,
+                    27,
                     39,
                     34,
                     7
@@ -127,8 +126,8 @@
                 "total": 131,
                 "pathogen": "Francisella",
                 "dist": [
-                    74,
-                    45,
+                    75,
+                    44,
                     9,
                     3,
                     0
@@ -138,9 +137,9 @@
                 "total": 133,
                 "pathogen": "Helicobacter",
                 "dist": [
-                    41,
-                    32,
-                    33,
+                    38,
+                    34,
+                    34,
                     23,
                     4
                 ]
@@ -161,9 +160,9 @@
                 "pathogen": "Mycobacterium",
                 "dist": [
                     22,
-                    42,
+                    41,
                     61,
-                    12,
+                    13,
                     5
                 ]
             },
@@ -216,8 +215,8 @@
                 "pathogen": "Streptococcus",
                 "dist": [
                     19,
-                    18,
-                    36,
+                    19,
+                    35,
                     39,
                     29
                 ]
@@ -226,8 +225,8 @@
                 "total": 141,
                 "pathogen": "Vibrio",
                 "dist": [
-                    40,
-                    47,
+                    41,
+                    46,
                     41,
                     12,
                     1
@@ -245,882 +244,871 @@
                 ]
             }
         ],
-        "chart_title": "Pathway Conservation in Pathogenic Bacteria"
-    },
-    "data": {
-        "content": "<p>Our analysis tools and interactive visualizations allow users to highlight regions of genome loss or conservation and ultimately look for changes within the context of functional pathways. Pathways of interest can be identified using the <a href=\"http://enews.patricbrc.org/faqs/comparative-pathway-tool-faqs/\">Comparative Pathway Tool</a> and then analyzed individually, or in selected sets, via the Comparative Pathway Heatmap and KEGG Map.</p>\n",
-        "tools": [
-
-        ],
-        "title": "DLP-Pathways-Data",
-        "workflows": [
-
-        ],
-        "subtitle": "PATRIC Data is Linked to Associated Biochemical Pathways ",
-        "tab_title": "Testing Data sub-tab Title field"
+        "chart_title": "Pathway Conservation in Pathogenic Bacteria",
+        "chart_desc": "The graph below shows conservation of metabolic pathways across percentage of total genomes in each pathogenic genus."
     },
     "popularGenomes": {
         "popularTitle": "Select Genomes",
         "popularList": [
             {
+                "popularName": "Mycobacterium tuberculosis H37Rv",
+                "link": "/view/Genome/83332.12#view_tab=pathways",
                 "popularData": [
                     {
                         "gene_count": "82",
-                        "name_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
+                        "gene_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "name": "Purine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
+                        "name_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
+                        "ec_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "ec_count": "46"
                     },
                     {
                         "gene_count": "37",
-                        "name_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00860&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00860&pClass=&ecN=",
+                        "gene_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
                         "name": "Porphyrin and chlorophyll metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00860&pClass=&ecN=",
+                        "name_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
+                        "ec_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
                         "ec_count": "30"
                     },
                     {
                         "gene_count": "45",
-                        "name_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
+                        "gene_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
                         "name": "Arginine and proline metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
+                        "name_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
+                        "ec_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
                         "ec_count": "29"
                     },
                     {
                         "gene_count": "49",
-                        "name_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
+                        "gene_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "name": "Pyrimidine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
+                        "name_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
+                        "ec_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "ec_count": "28"
                     },
                     {
                         "gene_count": "39",
-                        "name_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00260&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00260&pClass=&ecN=",
+                        "gene_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
                         "name": "Glycine, serine and threonine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00260&pClass=&ecN=",
+                        "name_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
+                        "ec_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
                         "ec_count": "25"
                     },
                     {
                         "gene_count": "24",
-                        "name_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00270&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00270&pClass=&ecN=",
+                        "gene_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00270))",
                         "name": "Cysteine and methionine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00270&pClass=&ecN=",
+                        "name_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00270))",
+                        "ec_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00270))",
                         "ec_count": "24"
                     },
                     {
                         "gene_count": "35",
-                        "name_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00620&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00620&pClass=&ecN=",
+                        "gene_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
                         "name": "Pyruvate metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00620&pClass=&ecN=",
+                        "name_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
+                        "ec_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
                         "ec_count": "24"
                     },
                     {
                         "gene_count": "95",
-                        "name_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00280&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00280&pClass=&ecN=",
+                        "gene_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00280))",
                         "name": "Valine, leucine and isoleucine degradation",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00280&pClass=&ecN=",
+                        "name_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00280))",
+                        "ec_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00280))",
                         "ec_count": "23"
                     },
                     {
                         "gene_count": "31",
-                        "name_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
+                        "gene_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "name": "Amino sugar and nucleotide sugar metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
+                        "name_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
+                        "ec_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "ec_count": "23"
                     },
                     {
                         "gene_count": "24",
-                        "name_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00970&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00970&pClass=&ecN=",
+                        "gene_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
                         "name": "Aminoacyl-tRNA biosynthesis",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00970&pClass=&ecN=",
+                        "name_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
+                        "ec_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
                         "ec_count": "23"
                     }
-                ],
-                "link": "CompPathwayTable?cType=genome&cId=83332.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=&pClass=&ecN=",
-                "popularName": "Mycobacterium tuberculosis H37Rv"
+                ]
             },
             {
+                "popularName": "Escherichia coli str. K-12 substr. MG1655",
+                "link": "/view/Genome/511145.12#view_tab=pathways",
                 "popularData": [
                     {
                         "gene_count": "101",
-                        "name_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
+                        "gene_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "name": "Purine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
+                        "name_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
+                        "ec_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "ec_count": "62"
                     },
                     {
                         "gene_count": "53",
-                        "name_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
+                        "gene_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
                         "name": "Arginine and proline metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
+                        "name_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
+                        "ec_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
                         "ec_count": "41"
                     },
                     {
                         "gene_count": "85",
-                        "name_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
+                        "gene_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "name": "Amino sugar and nucleotide sugar metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
+                        "name_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
+                        "ec_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "ec_count": "39"
                     },
                     {
                         "gene_count": "61",
-                        "name_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
+                        "gene_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "name": "Pyrimidine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
+                        "name_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
+                        "ec_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "ec_count": "36"
                     },
                     {
                         "gene_count": "44",
-                        "name_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00620&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00620&pClass=&ecN=",
+                        "gene_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
                         "name": "Pyruvate metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00620&pClass=&ecN=",
+                        "name_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
+                        "ec_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
                         "ec_count": "29"
                     },
                     {
                         "gene_count": "35",
-                        "name_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00040&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00040&pClass=&ecN=",
+                        "gene_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00040))",
                         "name": "Pentose and glucuronate interconversions",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00040&pClass=&ecN=",
+                        "name_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00040))",
+                        "ec_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00040))",
                         "ec_count": "26"
                     },
                     {
                         "gene_count": "38",
-                        "name_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00260&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00260&pClass=&ecN=",
+                        "gene_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
                         "name": "Glycine, serine and threonine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00260&pClass=&ecN=",
+                        "name_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
+                        "ec_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
                         "ec_count": "26"
                     },
                     {
                         "gene_count": "79",
-                        "name_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00051&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00051&pClass=&ecN=",
+                        "gene_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00051))",
                         "name": "Fructose and mannose metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00051&pClass=&ecN=",
+                        "name_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00051))",
+                        "ec_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00051))",
                         "ec_count": "25"
                     },
                     {
                         "gene_count": "75",
-                        "name_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00500&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00500&pClass=&ecN=",
+                        "gene_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00500))",
                         "name": "Starch and sucrose metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00500&pClass=&ecN=",
+                        "name_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00500))",
+                        "ec_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00500))",
                         "ec_count": "25"
                     },
                     {
                         "gene_count": "38",
-                        "name_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00860&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00860&pClass=&ecN=",
+                        "gene_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
                         "name": "Porphyrin and chlorophyll metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00860&pClass=&ecN=",
+                        "name_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
+                        "ec_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
                         "ec_count": "25"
                     }
-                ],
-                "link": "CompPathwayTable?cType=genome&cId=511145.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=&pClass=&ecN=",
-                "popularName": "Escherichia coli str. K-12 substr. MG1655"
+                ]
             },
             {
+                "popularName": "Salmonella enterica subsp. enterica serovar Typhimurium str. LT2",
+                "link": "/view/Genome/99287.12#view_tab=pathways",
                 "popularData": [
                     {
                         "gene_count": "98",
-                        "name_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
+                        "gene_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "name": "Purine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
+                        "name_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
+                        "ec_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "ec_count": "58"
                     },
                     {
                         "gene_count": "69",
-                        "name_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
+                        "gene_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
                         "name": "Arginine and proline metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
+                        "name_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
+                        "ec_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
                         "ec_count": "42"
                     },
                     {
                         "gene_count": "96",
-                        "name_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
+                        "gene_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "name": "Amino sugar and nucleotide sugar metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
+                        "name_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
+                        "ec_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "ec_count": "42"
                     },
                     {
                         "gene_count": "47",
-                        "name_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00860&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00860&pClass=&ecN=",
+                        "gene_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
                         "name": "Porphyrin and chlorophyll metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00860&pClass=&ecN=",
+                        "name_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
+                        "ec_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
                         "ec_count": "35"
                     },
                     {
                         "gene_count": "61",
-                        "name_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
+                        "gene_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "name": "Pyrimidine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
+                        "name_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
+                        "ec_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "ec_count": "32"
                     },
                     {
                         "gene_count": "57",
-                        "name_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00620&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00620&pClass=&ecN=",
+                        "gene_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
                         "name": "Pyruvate metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00620&pClass=&ecN=",
+                        "name_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
+                        "ec_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
                         "ec_count": "30"
                     },
                     {
                         "gene_count": "40",
-                        "name_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00040&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00040&pClass=&ecN=",
+                        "gene_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00040))",
                         "name": "Pentose and glucuronate interconversions",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00040&pClass=&ecN=",
+                        "name_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00040))",
+                        "ec_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00040))",
                         "ec_count": "27"
                     },
                     {
                         "gene_count": "88",
-                        "name_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00051&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00051&pClass=&ecN=",
+                        "gene_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00051))",
                         "name": "Fructose and mannose metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00051&pClass=&ecN=",
+                        "name_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00051))",
+                        "ec_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00051))",
                         "ec_count": "26"
                     },
                     {
                         "gene_count": "36",
-                        "name_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00030&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00030&pClass=&ecN=",
+                        "gene_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
                         "name": "Pentose phosphate pathway",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00030&pClass=&ecN=",
+                        "name_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
+                        "ec_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
                         "ec_count": "25"
                     },
                     {
                         "gene_count": "30",
-                        "name_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00250&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00250&pClass=&ecN=",
+                        "gene_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00250))",
                         "name": "Alanine, aspartate and glutamate metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00250&pClass=&ecN=",
+                        "name_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00250))",
+                        "ec_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00250))",
                         "ec_count": "24"
                     }
-                ],
-                "link": "CompPathwayTable?cType=genome&cId=99287.12&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=&pClass=&ecN=",
-                "popularName": "Salmonella enterica subsp. enterica serovar Typhimurium str. LT2"
+                ]
             },
             {
+                "popularName": "Shigella flexneri 2a str. 2457T",
+                "link": "/view/Genome/198215.6#view_tab=pathways",
                 "popularData": [
                     {
                         "gene_count": "101",
-                        "name_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
+                        "gene_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "name": "Purine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
+                        "name_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
+                        "ec_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "ec_count": "59"
                     },
                     {
                         "gene_count": "57",
-                        "name_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
+                        "gene_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
                         "name": "Arginine and proline metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
+                        "name_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
+                        "ec_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
                         "ec_count": "39"
                     },
                     {
                         "gene_count": "83",
-                        "name_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
+                        "gene_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "name": "Amino sugar and nucleotide sugar metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
+                        "name_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
+                        "ec_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "ec_count": "36"
                     },
                     {
                         "gene_count": "62",
-                        "name_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
+                        "gene_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "name": "Pyrimidine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
+                        "name_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
+                        "ec_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "ec_count": "35"
                     },
                     {
                         "gene_count": "45",
-                        "name_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00620&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00620&pClass=&ecN=",
+                        "gene_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
                         "name": "Pyruvate metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00620&pClass=&ecN=",
+                        "name_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
+                        "ec_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
                         "ec_count": "29"
                     },
                     {
                         "gene_count": "36",
-                        "name_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00040&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00040&pClass=&ecN=",
+                        "gene_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00040))",
                         "name": "Pentose and glucuronate interconversions",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00040&pClass=&ecN=",
+                        "name_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00040))",
+                        "ec_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00040))",
                         "ec_count": "26"
                     },
                     {
                         "gene_count": "77",
-                        "name_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00500&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00500&pClass=&ecN=",
+                        "gene_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00500))",
                         "name": "Starch and sucrose metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00500&pClass=&ecN=",
+                        "name_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00500))",
+                        "ec_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00500))",
                         "ec_count": "25"
                     },
                     {
                         "gene_count": "36",
-                        "name_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00860&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00860&pClass=&ecN=",
+                        "gene_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
                         "name": "Porphyrin and chlorophyll metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00860&pClass=&ecN=",
+                        "name_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
+                        "ec_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
                         "ec_count": "25"
                     },
                     {
                         "gene_count": "86",
-                        "name_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00051&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00051&pClass=&ecN=",
+                        "gene_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00051))",
                         "name": "Fructose and mannose metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00051&pClass=&ecN=",
+                        "name_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00051))",
+                        "ec_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00051))",
                         "ec_count": "24"
                     },
                     {
                         "gene_count": "33",
-                        "name_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00030&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00030&pClass=&ecN=",
+                        "gene_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
                         "name": "Pentose phosphate pathway",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00030&pClass=&ecN=",
+                        "name_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
+                        "ec_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
                         "ec_count": "23"
                     }
-                ],
-                "link": "CompPathwayTable?cType=genome&cId=198215.6&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=&pClass=&ecN=",
-                "popularName": "Shigella flexneri 2a str. 2457T"
+                ]
             },
             {
+                "popularName": "Yersinia pestis CO92",
+                "link": "/view/Genome/214092.21#view_tab=pathways",
                 "popularData": [
                     {
                         "gene_count": "95",
-                        "name_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
+                        "gene_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "name": "Purine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
+                        "name_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
+                        "ec_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "ec_count": "53"
                     },
                     {
                         "gene_count": "66",
-                        "name_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
+                        "gene_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "name": "Amino sugar and nucleotide sugar metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
+                        "name_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
+                        "ec_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "ec_count": "40"
                     },
                     {
                         "gene_count": "48",
-                        "name_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
+                        "gene_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
                         "name": "Arginine and proline metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
+                        "name_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
+                        "ec_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
                         "ec_count": "38"
                     },
                     {
                         "gene_count": "57",
-                        "name_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
+                        "gene_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "name": "Pyrimidine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
+                        "name_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
+                        "ec_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "ec_count": "31"
                     },
                     {
                         "gene_count": "37",
-                        "name_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00040&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00040&pClass=&ecN=",
+                        "gene_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00040))",
                         "name": "Pentose and glucuronate interconversions",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00040&pClass=&ecN=",
+                        "name_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00040))",
+                        "ec_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00040))",
                         "ec_count": "28"
                     },
                     {
                         "gene_count": "34",
-                        "name_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00260&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00260&pClass=&ecN=",
+                        "gene_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
                         "name": "Glycine, serine and threonine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00260&pClass=&ecN=",
+                        "name_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
+                        "ec_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
                         "ec_count": "27"
                     },
                     {
                         "gene_count": "34",
-                        "name_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00620&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00620&pClass=&ecN=",
+                        "gene_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
                         "name": "Pyruvate metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00620&pClass=&ecN=",
+                        "name_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
+                        "ec_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
                         "ec_count": "27"
                     },
                     {
                         "gene_count": "33",
-                        "name_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00030&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00030&pClass=&ecN=",
+                        "gene_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
                         "name": "Pentose phosphate pathway",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00030&pClass=&ecN=",
+                        "name_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
+                        "ec_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
                         "ec_count": "22"
                     },
                     {
                         "gene_count": "31",
-                        "name_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00250&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00250&pClass=&ecN=",
+                        "gene_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00250))",
                         "name": "Alanine, aspartate and glutamate metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00250&pClass=&ecN=",
+                        "name_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00250))",
+                        "ec_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00250))",
                         "ec_count": "22"
                     },
                     {
                         "gene_count": "27",
-                        "name_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00270&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00270&pClass=&ecN=",
+                        "gene_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00270))",
                         "name": "Cysteine and methionine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00270&pClass=&ecN=",
+                        "name_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00270))",
+                        "ec_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00270))",
                         "ec_count": "22"
                     }
-                ],
-                "link": "CompPathwayTable?cType=genome&cId=214092.21&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=&pClass=&ecN=",
-                "popularName": "Yersinia pestis CO92"
+                ]
             },
             {
+                "popularName": "Listeria monocytogenes EGD-e",
+                "link": "/view/Genome/169963.11#view_tab=pathways",
                 "popularData": [
                     {
                         "gene_count": "61",
-                        "name_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
+                        "gene_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "name": "Purine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
+                        "name_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
+                        "ec_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "ec_count": "42"
                     },
                     {
                         "gene_count": "39",
-                        "name_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00860&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00860&pClass=&ecN=",
+                        "gene_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
                         "name": "Porphyrin and chlorophyll metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00860&pClass=&ecN=",
+                        "name_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
+                        "ec_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
                         "ec_count": "33"
                     },
                     {
                         "gene_count": "49",
-                        "name_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
+                        "gene_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "name": "Pyrimidine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
+                        "name_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
+                        "ec_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "ec_count": "29"
                     },
                     {
                         "gene_count": "32",
-                        "name_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
+                        "gene_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
                         "name": "Arginine and proline metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
+                        "name_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
+                        "ec_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
                         "ec_count": "27"
                     },
                     {
                         "gene_count": "95",
-                        "name_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
+                        "gene_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "name": "Amino sugar and nucleotide sugar metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
+                        "name_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
+                        "ec_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "ec_count": "24"
                     },
                     {
                         "gene_count": "25",
-                        "name_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00970&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00970&pClass=&ecN=",
+                        "gene_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
                         "name": "Aminoacyl-tRNA biosynthesis",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00970&pClass=&ecN=",
+                        "name_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
+                        "ec_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
                         "ec_count": "23"
                     },
                     {
                         "gene_count": "31",
-                        "name_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00260&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00260&pClass=&ecN=",
+                        "gene_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
                         "name": "Glycine, serine and threonine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00260&pClass=&ecN=",
+                        "name_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
+                        "ec_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
                         "ec_count": "21"
                     },
                     {
                         "gene_count": "26",
-                        "name_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00270&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00270&pClass=&ecN=",
+                        "gene_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00270))",
                         "name": "Cysteine and methionine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00270&pClass=&ecN=",
+                        "name_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00270))",
+                        "ec_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00270))",
                         "ec_count": "20"
                     },
                     {
                         "gene_count": "102",
-                        "name_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00010&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00010&pClass=&ecN=",
+                        "gene_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00010))",
                         "name": "Glycolysis / Gluconeogenesis",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00010&pClass=&ecN=",
+                        "name_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00010))",
+                        "ec_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00010))",
                         "ec_count": "19"
                     },
                     {
                         "gene_count": "22",
-                        "name_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00400&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00400&pClass=&ecN=",
+                        "gene_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00400))",
                         "name": "Phenylalanine, tyrosine and tryptophan biosynthesis",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00400&pClass=&ecN=",
+                        "name_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00400))",
+                        "ec_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00400))",
                         "ec_count": "19"
                     }
-                ],
-                "link": "CompPathwayTable?cType=genome&cId=169963.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=&pClass=&ecN=",
-                "popularName": "Listeria monocytogenes EGD-e"
+                ]
             },
             {
+                "popularName": "Staphylococcus aureus subsp. aureus N315",
+                "link": "/view/Genome/158879.11#view_tab=pathways",
                 "popularData": [
                     {
                         "gene_count": "70",
-                        "name_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
+                        "gene_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "name": "Purine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
+                        "name_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
+                        "ec_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "ec_count": "47"
                     },
                     {
                         "gene_count": "52",
-                        "name_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
+                        "gene_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "name": "Pyrimidine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
+                        "name_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
+                        "ec_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "ec_count": "31"
                     },
                     {
                         "gene_count": "39",
-                        "name_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
+                        "gene_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
                         "name": "Arginine and proline metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
+                        "name_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
+                        "ec_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
                         "ec_count": "29"
                     },
                     {
                         "gene_count": "36",
-                        "name_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00260&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00260&pClass=&ecN=",
+                        "gene_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
                         "name": "Glycine, serine and threonine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00260&pClass=&ecN=",
+                        "name_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
+                        "ec_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
                         "ec_count": "26"
                     },
                     {
                         "gene_count": "35",
-                        "name_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00620&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00620&pClass=&ecN=",
+                        "gene_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
                         "name": "Pyruvate metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00620&pClass=&ecN=",
+                        "name_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
+                        "ec_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
                         "ec_count": "25"
                     },
                     {
                         "gene_count": "46",
-                        "name_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
+                        "gene_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "name": "Amino sugar and nucleotide sugar metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
+                        "name_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
+                        "ec_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "ec_count": "23"
                     },
                     {
                         "gene_count": "24",
-                        "name_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00970&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00970&pClass=&ecN=",
+                        "gene_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
                         "name": "Aminoacyl-tRNA biosynthesis",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00970&pClass=&ecN=",
+                        "name_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
+                        "ec_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
                         "ec_count": "23"
                     },
                     {
                         "gene_count": "48",
-                        "name_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00010&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00010&pClass=&ecN=",
+                        "gene_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00010))",
                         "name": "Glycolysis / Gluconeogenesis",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00010&pClass=&ecN=",
+                        "name_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00010))",
+                        "ec_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00010))",
                         "ec_count": "22"
                     },
                     {
                         "gene_count": "24",
-                        "name_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00270&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00270&pClass=&ecN=",
+                        "gene_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00270))",
                         "name": "Cysteine and methionine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00270&pClass=&ecN=",
+                        "name_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00270))",
+                        "ec_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00270))",
                         "ec_count": "21"
                     },
                     {
                         "gene_count": "20",
-                        "name_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00030&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00030&pClass=&ecN=",
+                        "gene_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
                         "name": "Pentose phosphate pathway",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00030&pClass=&ecN=",
+                        "name_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
+                        "ec_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
                         "ec_count": "18"
                     }
-                ],
-                "link": "CompPathwayTable?cType=genome&cId=158879.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=&pClass=&ecN=",
-                "popularName": "Staphylococcus aureus subsp. aureus N315"
+                ]
             },
             {
+                "popularName": "Streptococcus pneumoniae D39",
+                "link": "/view/Genome/373153.27#view_tab=pathways",
                 "popularData": [
                     {
                         "gene_count": "79",
-                        "name_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
+                        "gene_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "name": "Purine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
+                        "name_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
+                        "ec_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "ec_count": "38"
                     },
                     {
                         "gene_count": "72",
-                        "name_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
+                        "gene_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "name": "Pyrimidine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
+                        "name_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
+                        "ec_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "ec_count": "28"
                     },
                     {
                         "gene_count": "75",
-                        "name_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
+                        "gene_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "name": "Amino sugar and nucleotide sugar metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
+                        "name_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
+                        "ec_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "ec_count": "28"
                     },
                     {
                         "gene_count": "25",
-                        "name_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00970&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00970&pClass=&ecN=",
+                        "gene_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
                         "name": "Aminoacyl-tRNA biosynthesis",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00970&pClass=&ecN=",
+                        "name_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
+                        "ec_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
                         "ec_count": "23"
                     },
                     {
                         "gene_count": "20",
-                        "name_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00270&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00270&pClass=&ecN=",
+                        "gene_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00270))",
                         "name": "Cysteine and methionine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00270&pClass=&ecN=",
+                        "name_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00270))",
+                        "ec_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00270))",
                         "ec_count": "21"
                     },
                     {
                         "gene_count": "20",
-                        "name_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
+                        "gene_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
                         "name": "Arginine and proline metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
+                        "name_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
+                        "ec_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
                         "ec_count": "20"
                     },
                     {
                         "gene_count": "65",
-                        "name_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00010&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00010&pClass=&ecN=",
+                        "gene_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00010))",
                         "name": "Glycolysis / Gluconeogenesis",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00010&pClass=&ecN=",
+                        "name_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00010))",
+                        "ec_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00010))",
                         "ec_count": "18"
                     },
                     {
                         "gene_count": "65",
-                        "name_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00052&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00052&pClass=&ecN=",
+                        "gene_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00052))",
                         "name": "Galactose metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00052&pClass=&ecN=",
+                        "name_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00052))",
+                        "ec_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00052))",
                         "ec_count": "18"
                     },
                     {
                         "gene_count": "20",
-                        "name_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00400&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00400&pClass=&ecN=",
+                        "gene_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00400))",
                         "name": "Phenylalanine, tyrosine and tryptophan biosynthesis",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00400&pClass=&ecN=",
+                        "name_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00400))",
+                        "ec_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00400))",
                         "ec_count": "17"
                     },
                     {
                         "gene_count": "59",
-                        "name_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00500&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00500&pClass=&ecN=",
+                        "gene_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00500))",
                         "name": "Starch and sucrose metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00500&pClass=&ecN=",
+                        "name_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00500))",
+                        "ec_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00500))",
                         "ec_count": "17"
                     }
-                ],
-                "link": "CompPathwayTable?cType=genome&cId=373153.27&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=&pClass=&ecN=",
-                "popularName": "Streptococcus pneumoniae D39"
+                ]
             },
             {
+                "popularName": "Brucella melitensis bv. 1 str. 16M",
+                "link": "/view/Genome/224914.11#view_tab=pathways",
                 "popularData": [
                     {
                         "gene_count": "76",
-                        "name_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
+                        "gene_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "name": "Purine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
+                        "name_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
+                        "ec_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "ec_count": "50"
                     },
                     {
                         "gene_count": "53",
-                        "name_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
+                        "gene_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
                         "name": "Arginine and proline metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
+                        "name_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
+                        "ec_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
                         "ec_count": "37"
                     },
                     {
                         "gene_count": "38",
-                        "name_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00860&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00860&pClass=&ecN=",
+                        "gene_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
                         "name": "Porphyrin and chlorophyll metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00860&pClass=&ecN=",
+                        "name_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
+                        "ec_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
                         "ec_count": "33"
                     },
                     {
                         "gene_count": "48",
-                        "name_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
+                        "gene_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "name": "Pyrimidine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
+                        "name_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
+                        "ec_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "ec_count": "28"
                     },
                     {
                         "gene_count": "36",
-                        "name_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
+                        "gene_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "name": "Amino sugar and nucleotide sugar metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
+                        "name_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
+                        "ec_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "ec_count": "28"
                     },
                     {
                         "gene_count": "52",
-                        "name_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00260&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00260&pClass=&ecN=",
+                        "gene_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
                         "name": "Glycine, serine and threonine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00260&pClass=&ecN=",
+                        "name_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
+                        "ec_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
                         "ec_count": "26"
                     },
                     {
                         "gene_count": "52",
-                        "name_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00620&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00620&pClass=&ecN=",
+                        "gene_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
                         "name": "Pyruvate metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00620&pClass=&ecN=",
+                        "name_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
+                        "ec_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
                         "ec_count": "26"
                     },
                     {
                         "gene_count": "33",
-                        "name_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00630&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00630&pClass=&ecN=",
+                        "gene_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00630))",
                         "name": "Glyoxylate and dicarboxylate metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00630&pClass=&ecN=",
+                        "name_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00630))",
+                        "ec_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00630))",
                         "ec_count": "25"
                     },
                     {
                         "gene_count": "25",
-                        "name_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00970&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00970&pClass=&ecN=",
+                        "gene_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
                         "name": "Aminoacyl-tRNA biosynthesis",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00970&pClass=&ecN=",
+                        "name_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
+                        "ec_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
                         "ec_count": "23"
                     },
                     {
                         "gene_count": "24",
-                        "name_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00030&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00030&pClass=&ecN=",
+                        "gene_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
                         "name": "Pentose phosphate pathway",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00030&pClass=&ecN=",
+                        "name_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
+                        "ec_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
                         "ec_count": "21"
                     }
-                ],
-                "link": "CompPathwayTable?cType=genome&cId=224914.11&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=&pClass=&ecN=",
-                "popularName": "Brucella melitensis bv. 1 str. 16M"
+                ]
             },
             {
+                "popularName": "Helicobacter pylori 26695",
+                "link": "/view/Genome/85962.8#view_tab=pathways",
                 "popularData": [
                     {
                         "gene_count": "34",
-                        "name_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
+                        "gene_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "name": "Purine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00230&pClass=&ecN=",
+                        "name_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
+                        "ec_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "ec_count": "27"
                     },
                     {
                         "gene_count": "25",
-                        "name_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00970&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00970&pClass=&ecN=",
+                        "gene_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
                         "name": "Aminoacyl-tRNA biosynthesis",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00970&pClass=&ecN=",
+                        "name_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
+                        "ec_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
                         "ec_count": "23"
                     },
                     {
                         "gene_count": "30",
-                        "name_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
+                        "gene_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "name": "Pyrimidine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00240&pClass=&ecN=",
+                        "name_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
+                        "ec_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "ec_count": "22"
                     },
                     {
                         "gene_count": "19",
-                        "name_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
+                        "gene_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "name": "Amino sugar and nucleotide sugar metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00520&pClass=&ecN=",
+                        "name_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
+                        "ec_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "ec_count": "22"
                     },
                     {
                         "gene_count": "18",
-                        "name_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
+                        "gene_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
                         "name": "Arginine and proline metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00330&pClass=&ecN=",
+                        "name_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
+                        "ec_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
                         "ec_count": "16"
                     },
                     {
                         "gene_count": "16",
-                        "name_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00260&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00260&pClass=&ecN=",
+                        "gene_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
                         "name": "Glycine, serine and threonine metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00260&pClass=&ecN=",
+                        "name_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
+                        "ec_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
                         "ec_count": "15"
                     },
                     {
                         "gene_count": "16",
-                        "name_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00400&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00400&pClass=&ecN=",
+                        "gene_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00400))",
                         "name": "Phenylalanine, tyrosine and tryptophan biosynthesis",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00400&pClass=&ecN=",
+                        "name_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00400))",
+                        "ec_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00400))",
                         "ec_count": "15"
                     },
                     {
                         "gene_count": "32",
-                        "name_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00680&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00680&pClass=&ecN=",
+                        "gene_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00680))",
                         "name": "Methane metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00680&pClass=&ecN=",
+                        "name_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00680))",
+                        "ec_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00680))",
                         "ec_count": "15"
                     },
                     {
                         "gene_count": "14",
-                        "name_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00030&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00030&pClass=&ecN=",
+                        "gene_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
                         "name": "Pentose phosphate pathway",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00030&pClass=&ecN=",
+                        "name_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
+                        "ec_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
                         "ec_count": "14"
                     },
                     {
                         "gene_count": "14",
-                        "name_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=00564&pClass=&ecN=",
-                        "gene_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=2&alg=PATRIC&cwEC=false&cwP=true&pId=00564&pClass=&ecN=",
+                        "gene_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00564))",
                         "name": "Glycerophospholipid metabolism",
-                        "ec_link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=1&alg=PATRIC&cwEC=false&cwP=true&pId=00564&pClass=&ecN=",
+                        "name_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00564))",
+                        "ec_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00564))",
                         "ec_count": "14"
                     }
-                ],
-                "link": "CompPathwayTable?cType=genome&cId=85962.8&algorithm=PATRIC&ec_number=#aP0=1&aP1=1&aP2=1&aT=0&alg=PATRIC&cwEC=false&cwP=true&pId=&pClass=&ecN=",
-                "popularName": "Helicobacter pylori 26695"
+                ]
             }
         ]
     }

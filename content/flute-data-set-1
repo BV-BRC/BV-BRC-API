@@ -1,0 +1,331 @@
+<div style="width:80%;margin:auto">
+<h2 class="entry-title">
+        Flute Data Set 1
+</h2>
+<div class="entry-summary">
+	<!-- ?php the_excerpt(); ? --->
+		<h3><strong>High-Resolution Phenotypic Profiling Defines Genes Essential for Mycobacterial Growth and Cholesterol Catabolism</strong></h3>
+<p>Publication:&nbsp;<a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3182942/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3182942/', 'PMC3182942');" title="PMC3182942">PMC3182942</a></p>
+<p>The pathways that comprise cellular metabolism are highly interconnected, and alterations in individual enzymes can have far-reaching effects. As a result, global profiling methods that measure gene expression are of limited value in predicting how the loss of an individual function will affect the cell. In this work, we employed a new method of global phenotypic profiling to directly define the genes required for the growth of <em>Mycobacterium tuberculosis</em>. A combination of high-density mutagenesis and deep-sequencing was used to characterize the composition of complex mutant libraries exposed to different conditions. This allowed the unambiguous identification of the genes that are essential for Mtb to grow <em>in vitro</em>, and proved to be a significant improvement over previous approaches. To further explore functions that are required for persistence in the host, we defined the pathways necessary for the utilization of cholesterol, a critical carbon source during infection. Few of the genes we identified had previously been implicated in this adaptation by transcriptional profiling, and only a fraction were encoded in the chromosomal region known to encode sterol catabolic functions. These genes comprise an unexpectedly large percentage of those previously shown to be required for bacterial growth in mouse tissue. Thus, this single nutritional change accounts for a significant fraction of the adaption to the host. This work provides the most comprehensive genetic characterization of a sterol catabolic pathway to date, suggests putative roles for uncharacterized virulence genes, and precisely maps genes encoding potential drug targets.</p>
+<p>In order to precisely define the genes that are important for the growth of Mtb, we used highly parallel Illumina sequencing to characterize transposon libraries. This approach achieves single base pair resolution of insertion sites in very complex libraries, resulting in the precise identification of essential open reading frames. Furthermore, the depth of sequencing that is possible allowed the relative abundance of individual mutants to be accurately assessed in libraries grown under different conditions. Using the latter approach, we comprehensively defined the pathways required for the bacterium to grow on cholesterol, a critical nutrient during infection. These previously ill-defined pathways account for an unexpectedly large fraction of the genes required for survival in animal models of TB, providing new functional insight into the adaptation to the host environment.</p>
+<p>Conditions: grown <em>in vitro</em> (minimal media, liquid culture (as opposed to plates), as described in the paper, supplemented with either 0.1% glycerol or 0.01% cholesterol as a carbon source)<br>
+Library: This TnSeq library was prepared in the Sassetti lab by Jen Griffin in 20xx using Himar1 transposon and <em>M. tuberculosis</em> H37Rv as a parental strain.<br>
+Transposon used: Himar1<br>
+Protocol for library preparation: Himar1 transfection as described in paper<br>
+Protocol for TnSeq sample preparation: nested PCR, as described in paper<br>
+Protocol for sequencing: XX bp paired-end reads on Illumina GAII<br>
+Protocol for data processing: mapped reads to reference genome using SOAP; reported as raw read counts at TA dinucleotides<br>
+Reference Genome: <em>M. tuberculosis</em> H37Rv (GenBank refseq accession number: NC_000962.2)<br>
+Experimenter/Researcher/Owner of Data: Jen Griffin<br>
+PI/Lab: Chris Sassetti, UMass Med School<br>
+Uploaded/Deposited by: Thomas Ioerger, Texas A&amp;M University</p>
+<p><strong>TnSeq Datasets:</strong></p>
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top" width="319" class="first"><b>Name</b></td>
+<td valign="top" width="319" class="last"><b>Wig file</b></td>
+</tr>
+<tr>
+<td valign="top" width="319" class="first">Dataset 1</td>
+<td valign="top" width="319" class="last"><a href="http://brcdownloads.patricbrc.org/BRC_Mirrors/FLUTE/glycerol_H37Rv_rep1.wig">glycerol_H37Rv_rep1.wig</a></td>
+</tr>
+<tr>
+<td valign="top" width="319" class="first">Dataset 2</td>
+<td valign="top" width="319" class="last"><a href="http://brcdownloads.patricbrc.org/BRC_Mirrors/FLUTE/glycerol_H37Rv_rep2.wig">glycerol_H37Rv_rep2.wig</a></td>
+</tr>
+<tr>
+<td valign="top" width="319" class="first">Dataset 3</td>
+<td valign="top" width="319" class="last"><a href="http://brcdownloads.patricbrc.org/BRC_Mirrors/FLUTE/cholesterol_H37Rv_rep1.wig">cholesterol_H37Rv_rep1.wig</a></td>
+</tr>
+<tr>
+<td valign="top" width="319" class="first">Dataset 4</td>
+<td valign="top" width="319" class="last"><a href="http://brcdownloads.patricbrc.org/BRC_Mirrors/FLUTE/cholesterol_H37Rv_rep2.wig">cholesterol_H37Rv_rep2.wig</a></td>
+</tr>
+<tr>
+<td valign="top" width="319" class="first">Dataset 5</td>
+<td valign="top" width="319" class="last"><a href="http://brcdownloads.patricbrc.org/BRC_Mirrors/FLUTE/cholesterol_H37Rv_rep3.wig">cholesterol_H37Rv_rep3.wig</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Annotations in PATRIC:</strong></p>
+<table border="0" width="289" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top" nowrap="nowrap" width="104" class="first"><b>LOCUS_TAG</b></td>
+<td valign="top" width="185" class="last"><b>Annotation in PATRIC</b></td>
+</tr>
+<tr>
+<td valign="top" nowrap="nowrap" width="104" class="first">Rv3193c</td>
+<td valign="top" width="185" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.3560194.3563172.rev">Feature page</a></td>
+</tr>
+<tr>
+<td valign="top" nowrap="nowrap" width="104" class="first">Rv0955</td>
+<td valign="top" width="185" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.1066087.1067445.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td valign="top" nowrap="nowrap" width="104" class="first">Rv2202c</td>
+<td valign="top" width="185" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.2467053.2468027.rev">Feature page</a></td>
+</tr>
+<tr>
+<td valign="top" nowrap="nowrap" width="104" class="first">Rv1130</td>
+<td valign="top" width="185" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.1254609.1256135.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td valign="top" nowrap="nowrap" width="104" class="first">Rv2038c</td>
+<td valign="top" width="185" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.2283723.2284796.rev">Feature page</a></td>
+</tr>
+<tr>
+<td valign="top" nowrap="nowrap" width="104" class="first">Rv2040c</td>
+<td valign="top" width="185" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.2285628.2286491.rev">Feature page</a></td>
+</tr>
+<tr>
+<td valign="top" nowrap="nowrap" width="104" class="first">Rv3005c</td>
+<td valign="top" width="185" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=RefSeq.83332.12.NC_000962.CDS.3363693.3364532.rev">Feature page</a></td>
+</tr>
+<tr>
+<td valign="top" nowrap="nowrap" width="104" class="first">Rv2387</td>
+<td valign="top" width="185" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.2680765.2682018.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td valign="top" nowrap="nowrap" width="104" class="first">Rv3214</td>
+<td valign="top" width="185" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.3591652.3592257.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td valign="top" nowrap="nowrap" width="104" class="first">Rv3283</td>
+<td valign="top" width="185" class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.3664958.3665821.fwd">Feature page</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Results Dataset:&nbsp;<a href="http://brcdownloads.patricbrc.org/BRC_Mirrors/FLUTE/resampling_results_glyc_chol.xlsx">resampling_results_glyc_chol.xlsx</a></strong></p>
+<p><strong>Conditional Essentials:</strong></p>
+<div>
+<div>
+<div>
+<div>
+<div>The following genes are indicated as conditional essentials based on&nbsp;statistical analysis (resampling) output using Transit software (<a href="http://saclab.tamu.edu/essentiality/transit/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://saclab.tamu.edu/essentiality/transit/', 'http://saclab.tamu.edu/essentiality/transit/');">http://saclab.tamu.edu/essentiality/transit/</a>). In this method,&nbsp;for each ORF (e.g., Rv0001) Transit calculates to determine whether&nbsp;the essentiality of the gene significantly increase or decreases. The adjusted p-value uses the Benjamini-Hochberg correction for multiple tests, with a threshold of &lt;0.05 for significance.</div>
+<div></div>
+</div>
+</div>
+</div>
+</div>
+<div><strong>resampling_results_glyc_chol</strong></div>
+<div>
+<table width="537">
+<tbody>
+<tr>
+<td width="87" class="first"><strong>ORF</strong></td>
+<td width="87"><strong>log2 FC</strong></td>
+<td width="87"><strong>q-value</strong></td>
+<td width="117" class="last"><strong>Feature in PATRIC</strong></td>
+</tr>
+<tr>
+<td class="first">Rv0362</td>
+<td>-9.05</td>
+<td>0</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.439871.441253.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv0485</td>
+<td>-6.2</td>
+<td>0</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.574185.575300.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv0999</td>
+<td>2.54</td>
+<td>0</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.1115767.1116525.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv1130</td>
+<td>-6.6</td>
+<td>0</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.1254609.1256135.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv1287</td>
+<td>3.19</td>
+<td>0</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.1440835.1441290.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv1807</td>
+<td>3.23</td>
+<td>0</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.2048386.2049597.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv2691</td>
+<td>2.88</td>
+<td>0</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.3009344.3010027.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv2936</td>
+<td>2.25</td>
+<td>0</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.3272214.3273209.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv2938</td>
+<td>1.82</td>
+<td>0</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.3274165.3274902.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv2942</td>
+<td>2.12</td>
+<td>0</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.3285115.3287832.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv2945c</td>
+<td>3.47</td>
+<td>0</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.3290624.3291304.rev">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv3200c</td>
+<td>3.73</td>
+<td>0</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.3572602.3573669.rev">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv3484</td>
+<td>4.46</td>
+<td>0</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.3903171.3904616.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv3494c</td>
+<td>-7.25</td>
+<td>0</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.3911675.3913369.rev">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv3496c</td>
+<td>-4.84</td>
+<td>0</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.3914531.3915886.rev">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv3497c</td>
+<td>-5.2</td>
+<td>0</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.3915883.3916956.rev">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv3526</td>
+<td>-8.69</td>
+<td>0</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.3962544.3963599.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv3540c</td>
+<td>-8.42</td>
+<td>0</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.3979499.3980659.rev">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv3544c</td>
+<td>-8.1</td>
+<td>0</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.3983125.3984144.rev">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv3551</td>
+<td>-9.19</td>
+<td>0</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.3989896.3990774.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv3553</td>
+<td>-7.98</td>
+<td>0</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.3991621.3992688.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv3560c</td>
+<td>-7.29</td>
+<td>0</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.4000432.4001589.rev">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv3571</td>
+<td>-10.44</td>
+<td>0</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.4012417.4013493.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv3696c</td>
+<td>6.67</td>
+<td>0</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.4138202.4139755.rev">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv1129c</td>
+<td>-5.53</td>
+<td>0.0148</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.1253074.1254435.rev">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv3568c</td>
+<td>-8.06</td>
+<td>0.0148</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.4009297.4010199.rev">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv3569c</td>
+<td>-7.87</td>
+<td>0.0148</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.4010196.4011071.rev">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv0929</td>
+<td>3.04</td>
+<td>0.0257</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.1036028.1037002.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv2535c</td>
+<td>3.95</td>
+<td>0.0257</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.2859300.2860355.rev">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv2937</td>
+<td>2.42</td>
+<td>0.0257</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.3273299.3274075.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv3500c</td>
+<td>-3.9</td>
+<td>0.0257</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.3919220.3920062.rev">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv0111</td>
+<td>1.61</td>
+<td>0.0352</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.133992.136007.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv0820</td>
+<td>2.45</td>
+<td>0.0352</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.912726.913502.fwd">Feature page</a></td>
+</tr>
+<tr>
+<td class="first">Rv3502c</td>
+<td>-7</td>
+<td>0.0352</td>
+<td class="last"><a href="https://www.patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=PATRIC.83332.12.NC_000962.CDS.3921087.3922040.rev">Feature page</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+			
+	</div>
+</div>

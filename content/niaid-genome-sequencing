@@ -1,0 +1,23 @@
+<div style="width:80%;margin:auto">
+<h2 class="entry-title">
+	NIAID Genomic Sequencing 
+</h2>
+<div class="entry-summary">
+	<!-- ?php the_excerpt(); ? --->
+		<p><b>The Genomic Centers for Infectious Diseases (GSCID)</b></p>
+<p><a href="http://gsc.jcvi.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://gsc.jcvi.org/', '');" target="_blank"><img class="alignnone  wp-image-3686" alt="J-craig-venter" src="/public/patric/images/J-craig-venter.jpeg" width="180" height="50"></a>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<a href="http://www.broadinstitute.org/science/projects/gscid/genomic-sequencing-center-infectious-diseases" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.broadinstitute.org/science/projects/gscid/genomic-sequencing-center-infectious-diseases', '');" target="_blank"><img class="alignnone  wp-image-3685" alt="Broad logo" src="/public/patric/images/Broad-logo-300x75.jpeg" width="208" height="53"></a> &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;<a href="http://gscid.igs.umaryland.edu/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://gscid.igs.umaryland.edu/', '');" target="_blank"><img class="alignnone  wp-image-3684" alt="UMSM" src="/public/patric/images/UMSM.jpeg" width="223" height="59"></a></p>
+<p>Many of the genomes and their metadata available at the BRCs come from the GCIDs. &nbsp; The GCIDs will use and develop or improve innovative applications of genomic technologies, such as RNA sequencing and metagenomics, and provide rapid and cost-efficient production of high-quality genome sequences of microorganisms, invertebrate vectors of infectious diseases, and hosts and host microbiomes related to <a href="http://www.niaid.nih.gov/topics/emerging/Pages/list.aspx" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.niaid.nih.gov/topics/emerging/Pages/list.aspx', ' NIAID’s list of emerging and re-emerging infectious diseases');" target="_blank"> NIAID’s list of emerging and re-emerging infectious diseases</a>.</p>
+<p>For more information about projects conducted by the GCIDs, visit the individual Centers at</p>
+<ul>
+<li class="first"><span style="text-decoration: underline;"><a href="http://gsc.jcvi.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://gsc.jcvi.org/', 'The JCVI Genomic Center for Infectious Diseases');" target="_blank">The JCVI Genomic Center for Infectious Diseases</a></span></li>
+<li><span style="text-decoration: underline;"><a href="http://www.broadinstitute.org/science/projects/gscid/genomic-sequencing-center-infectious-diseases" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.broadinstitute.org/science/projects/gscid/genomic-sequencing-center-infectious-diseases', 'The Broad Institute Genomic Center for Infectious Diseases');" target="_blank">The Broad Institute Genomic Center for Infectious Diseases</a></span>
+<ul>
+<li class="last first"><a title="TB-ARC – TB Antibiotic Resistance Catalog" href="/content/tb-arc-tb-antibiotic-resistance-catalog">TB Antibiotic Resistance Catalog</a> (TB-ARC)</li>
+</ul>
+</li>
+<li class="last"><span style="text-decoration: underline;"><a href="http://gscid.igs.umaryland.edu/index.php" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://gscid.igs.umaryland.edu/index.php', 'The Institute for Genome Sciences at the University of Maryland School of Medicine');" target="_blank">The Institute for Genome Sciences at the University of Maryland School of Medicine</a></span></li>
+</ul>
+<p>Several of the projects conducted by the GCIDs have a focus on antimicrobial resistance (AMR). &nbsp; A <a title="NIAID Antimicrobial Resistance Sequencing Projects" href="http://enews.patricbrc.org/niaid-antimicrobial-resistance-sequencing-projects/">consolidated list</a> of these projects is available at PATRIC.</p>
+			
+	</div>
+</div>

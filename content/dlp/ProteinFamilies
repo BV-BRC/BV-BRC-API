@@ -53,38 +53,8 @@
 			</div><!-- / figfam -->
 			<div class="data-box popular-box tabbed hover-tabs no-underline-links" id="dlp-proteinfamily-dist">
 				<h3 class="ribbon-title">Protein Family Distribution</h3>
-				<div class="group"><!--
-				<%
-					JSONArray popularItems = (JSONArray) ((JSONObject)jsonData.get("popularGenomes")).get("popularList");
-					for(int popCt = 0; popCt < popularItems.size(); popCt++)
-					{
-						out.println("<div id='genome-tab" + (popCt+1) + "' style='display:none'></div>");
-					}
-					//
-					out.println("<div class='genome-data right half'>");
-					out.println("	<div id='dlp-proteinfamilies-dist-genus'><h4></h4><div class='chart'></div></div>");
-					out.println("</div>");
-					
-					out.println("<ul class='no-decoration genome-list tab-headers third'>");
-					
-					for(int nameCt = 0; nameCt < 11; nameCt++)
-					{
-						JSONObject name = (JSONObject)popularItems.get(nameCt);
-						out.println("<li class='left'>");
-						out.println("	<a onmouseover='fifamDistChart.updateChart(" + nameCt + ")' data-genome-href='" + name.get("link") + "' class='genome-link ui-tabs-anchor' href='#genome-tab" + (nameCt+1) + "'>" + name.get("popularName") + "</a>");
-						out.println("	<div class='arrow_far'></div>");
-						out.println("</li>");
-						
-						name = (JSONObject)popularItems.get(nameCt+11);
-						out.println("<li class='right'>");
-						out.println("	<a onmouseover='fifamDistChart.updateChart(" + (nameCt+11) + ")' data-genome-href='" + name.get("link") + "' class='genome-link ui-tabs-anchor' href='#genome-tab" + (nameCt+11+1) + "'>" + name.get("popularName") + "</a>");
-						out.println("	<div class='arrow'></div>");
-						out.println("</li>");
-					}
-					out.println("<div class='clear'></div>");
-					out.println("</ul>");
-				%>-->
-				</div><!-- / group -->
+				<div class="group">
+				</div>
 			</div>
 		</div>
 

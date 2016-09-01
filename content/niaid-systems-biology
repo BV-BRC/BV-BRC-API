@@ -1,0 +1,38 @@
+<div style="width:80%;margin:auto">
+<h2 class="entry-title">
+	NIAID Systems Biology 
+</h2>
+<div class="entry-summary">
+	<!-- ?php the_excerpt(); ? --->
+		<p>The NIAID Systems Biology for Infectious Diseases Research Program develops and validates predictive models of infectious disease initiation, progression, and outcomes.&nbsp;These models are derived from the study of the architecture and dynamics of systems-wide host/pathogen molecular interaction networks during infection, using integrated datasets generated from a combination of “omics” technologies. The research findings will provide a deeper understanding of the overall complexity of the biological, biochemical, and biophysical molecular processes within microbial organisms as well as their interaction with the host.&nbsp;The programs provide data and reagents that result from the research conducted and provide training for the broader infectious disease scientific community to promote the use of the systems biology approach.</p>
+<p>Data from the&nbsp;new <a href="http://www.omics4tb.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.omics4tb.org/', 'Omics4TB');" target="_blank">Omics4TB</a>&nbsp;project will be included at PATRIC and accessible from the page below as it is released.</p>
+<ul>
+<li class="last first"><strong><a title="Permalink to Omics4TB" href="/content/omics4tb" rel="bookmark">Omics4TB</a></strong></li>
+</ul>
+<p>For more information on the two recently completed bacterial projects and integration of the data into the PATRIC resource, please visit:</p>
+<ul>
+<li class="first"><strong><a title="Permalink to TB Systems Biology" href="/content/tb-systems-biology" rel="bookmark">TB Systems Biology&nbsp;</a></strong></li>
+<li class="last"><strong><a title="Permalink to Center for Systems Biology of EnteroPathogens (SysBEP)" href="/content/center-for-systems-biology-of-enteropathogens-sysbep" rel="bookmark">Center for Systems Biology of EnteroPathogens (SysBEP)&nbsp;</a></strong></li>
+</ul>
+<hr>
+<p><strong>&nbsp;Systems biology work specific to antibacterial resistance:</strong></p>
+<p>The following systems biology projects use a multi-disciplinary systems biology approach to study the molecular interaction networks of the pathogen and the host in association with antibacterial resistance or in response to treatment of antibacterial resistant infections.</p>
+<ul>
+<li class="last first"><strong><a href="/content/systems-biology-of-clostridium-difficile-infection">Systems Biology of Clostridium Difficile Infection</a></strong></li>
+</ul>
+<ul>
+<li class="last first"><strong><a href="/content/predicting-the-emergence-of-antibiotic-resistance-through-multi-omics-approaches-and-immune-system-surveillance">Predicting the emergence of antibiotic resistance through multi-omics approaches and immune system surveillance</a></strong></li>
+</ul>
+<ul>
+<li class="last first"><strong><a href="/content/systems-biology-approach-to-redefine-susceptibility-testing-and-treatment-of-amr-pathogens-in-the-context-of-host-immunity">Systems biology approach to redefine susceptibility testing and treatment of AMR pathogens in the context of host immunity</a></strong></li>
+</ul>
+<ul>
+<li class="last first"><strong><a href="/content/systems-immunolobiology-of-antibiotic-persistent-mrsa-infection">Systems immunolobiology of antibiotic-persistent MRSA infection</a></strong></li>
+</ul>
+<ul>
+<li class="last first"><strong><a href="/content/systems-biology-of-microbiome-mediated-resilience-to-antibiotic-resistance-pathogens">Systems biology of microbiome-mediated resilience to antibiotic-resistance pathogens</a></strong></li>
+</ul>
+<p>&nbsp;</p>
+			
+	</div>
+</div>

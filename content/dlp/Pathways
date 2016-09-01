@@ -56,45 +56,7 @@
 
 			<div class="data-box popular-box tabbed hover-tabs no-underline-links">
 				<h3 class="ribbon-title">Select Genomes</h3>
-				<div class="group"><!--
-				<%
-					JSONArray popularItems = (JSONArray) popular.get("popularList");
-					// list of genome-tabs
-					for(int popCt = 0; popCt < popularItems.size(); popCt++)
-					{
-						JSONObject pop = (JSONObject)popularItems.get(popCt);
-						out.println("<div class='genome-data right half group' id='genome-tab" + (popCt+1) + "'>");
-						JSONArray popularData = (JSONArray)pop.get("popularData");
-						String link = pop.get("link").toString();
-							//list of properties
-							out.println("<div class='far'><h3>Summary of Top 10 Pathways:</h3>");
-							out.println("<table class='basic no-decoration far2x'>");
-							out.println("<tr><th scope='column'>EC numbers</th><th scope='column'>Genes</th><th scope='column'>Pathway Name</th></tr>");
-							for(int i = 0; i < popularData.size(); i++)
-							{
-								JSONObject item = (JSONObject)popularData.get(i);
-								out.println("<tr>");
-								out.println("<td class='center-text'><a href='" + item.get("ec_link") + "'>" + item.get("ec_count") + "</a></td>");
-								out.println("<td class='center-text'><a href='" + item.get("gene_link") +"'>" + item.get("gene_count") + "</a></td>");
-								out.println("<td><a href='" + item.get("name_link") + "'>" + item.get("name") + "</a></td>");
-								out.println("</tr>");
-							}
-							out.println("</table>");
-							out.println("<a class='double-arrow-link' href='" + link + "'>View All Pathways in This Genome</a>");
-							out.println("</div>");
-							
-						out.println("</div>");
-					}
-					// list of genomes
-					out.println("<ul class='no-decoration genome-list tab-headers third'>");
-					for(int nameCt = 0; nameCt < popularItems.size(); nameCt++)
-					{
-						JSONObject name = (JSONObject)popularItems.get(nameCt);
-						out.println("<li><a data-genome-href='" + name.get("link") + "' class='genome-link' href='#genome-tab" + (nameCt+1) + "'>" + name.get("popularName") + "</a>");
-						out.println("<div class='arrow'></div></li>");
-					}
-					out.println("</ul>");
-				%>-->
+				<div class="group">
 				</div>
 			</div>
 		</div>

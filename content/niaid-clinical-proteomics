@@ -1,0 +1,62 @@
+<div style="width:80%;margin:auto">
+<h2 class="entry-title">
+   	NIAID Clinical Proteomics 
+</h2>
+<div class="entry-summary">
+	<!-- ?php the_excerpt(); ? --->
+		<p>The Clinical Proteomics Centers for Infectious Diseases and Biodefense apply state-of-the-art proteomics technologies for the discovery, qualification, and verification of protein biomarkers in well-defined clinical samples collected for infectious diseases caused by&nbsp;<a href="http://www.niaid.nih.gov/topics/emerging/Pages/list.aspx" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.niaid.nih.gov/topics/emerging/Pages/list.aspx', 'NIAID Category A-C biodefense pathogens and emerging and re-emerging infectious diseases');" target="_blank">NIAID Category A-C biodefense pathogens and emerging and re-emerging infectious diseases</a>. At the conclusion of the verification phase of each project conducted by the&nbsp;Clinical Proteomics Centers, scientists from the Centers and their collaborators will be allowed&nbsp;three months to prepare and submit a manuscript for publication prior to putting the associated data in the public domain. Candidate biomarkers from bacterial projects will then be made available to the scientific community on the PATRIC website, where they will be freely available to the public. &nbsp;The Centers and their bacterial projects are:</p>
+<p><strong>Caprion Clinical Proteomics Center</strong></p>
+<table style="height: 245px;" width="600">
+<tbody>
+<tr>
+<td width="106" class="first"><img class="alignnone size-full wp-image-4794" src="/public/patric/images/cov200h.gif" alt="cov200h" width="150" height="200"></td>
+<td width="425" class="last">Jacqueline M. Achkar, Laetitia Cortes, Pascal Croteau, Corey Yanofsky, Marija Mentinova, Isabelle Rajotte, Michael Schirm, Yiyong Zhou, Ana Paula Junqueira-Kipnis, Victoria O. Kasprowicz, Michelle Larsen, René Allard, Joanna Hunter, Eustache Paramithiotis,&nbsp;<strong>Host Protein Biomarkers Identify Active Tuberculosis in HIV Uninfected and Co-infected Individuals</strong>, EBioMedicine, Volume 2, Issue 9, September 2015, Pages 1160-1168, ISSN 2352-3964, http://dx.doi.org/10.1016/j.ebiom.2015.07.039.&nbsp;(<a href="http://www.sciencedirect.com/science/article/pii/S2352396415300918" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.sciencedirect.com/science/article/pii/S2352396415300918', 'http://www.sciencedirect.com/science/article/pii/S2352396415300918');">http://www.sciencedirect.com/science/article/pii/S2352396415300918</a>)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li class="last first"><span style="text-decoration: underline;">Diagnostic &amp; treatment response biomarkers of brucellosis</span>
+<ul>
+<li class="first">Discovery: Identification by MS/MS of secreted proteins differentially expressed in <em>Brucella abortus</em>-infected macrophage cells vs. non-infected macrophage cells&nbsp;<a href="ftp://ftp.patricbrc.org/BRC_Mirrors/clinical_proteomics/Caprion/brucellosis/D-JAH_EA_PEPTIDES.XLSX">D-JAH_EA_PEPTIDES.XLSX</a></li>
+<li>Discovery: Identification by MS/MS of secreted proteins differentially expressed in <em>Brucella abortus</em>-infected trophoblast cells vs. non-infected trophoblast cells&nbsp;<a href="ftp://ftp.patricbrc.org/BRC_Mirrors/clinical_proteomics/Caprion/brucellosis/D-JAI_EA_PEPTIDES.XLSX">D-JAI_EA_PEPTIDES.XLSX</a></li>
+<li>Discovery: Identification by MS/MS of differentially expressed serum protein biomarkers to guide brucellosis treatment selection and monitor treatment efficacy&nbsp;<a href="ftp://ftp.patricbrc.org/BRC_Mirrors/clinical_proteomics/Caprion/brucellosis/D-ZBA_EA_PEPTIDES_0.XLSX">D-ZBA_EA_PEPTIDES_0.XLSX</a></li>
+<li>Qualification: Qualification of candidate secreted proteins differentially expressed in <em>Brucella abortus</em>-infected macrophage cells vs. non-infected macrophage cells&nbsp;<a href="ftp://ftp.patricbrc.org/BRC_Mirrors/clinical_proteomics/Caprion/brucellosis/Q-JAH_EA_PEPTIDES.XLSX">Q-JAH_EA_PEPTIDES.XLSX</a></li>
+<li>Qualification: Qualification of candidate secreted proteins differentially expressed in <em>Brucella abortus</em>-infected trophoblast cells vs. non-infected trophoblast cells&nbsp;<a href="ftp://ftp.patricbrc.org/BRC_Mirrors/clinical_proteomics/Caprion/brucellosis/Q-JAI_EA_PEPTIDES.XLSX">Q-JAI_EA_PEPTIDES.XLSX</a></li>
+<li>Qualification: Qualification of candidate differentially expressed serum protein biomarkers to guide brucellosis treatment selection and monitor treatment efficacy&nbsp;<a href="ftp://ftp.patricbrc.org/BRC_Mirrors/clinical_proteomics/Caprion/brucellosis/Q-ZBA_EA_PEPTIDES_0.XLSX">Q-ZBA_EA_PEPTIDES_0.XLSX</a></li>
+<li>Verification: MRM verification of candidates serum protein biomarkers for Brucellosis diagnostic&nbsp;<a href="ftp://ftp.patricbrc.org/BRC_Mirrors/clinical_proteomics/Caprion/brucellosis/DIAGNOSTIC_EA_PEPTIDES.XLSX">DIAGNOSTIC_EA_PEPTIDES.XLSX</a></li>
+<li class="last">Verification: MRM verification of candidates serum protein biomarkers to guide Brucellosis treatment selection and monitor treatment efficacy &nbsp;<a href="ftp://ftp.patricbrc.org/BRC_Mirrors/clinical_proteomics/Caprion/brucellosis/TREAT_MONIT_EA_PEPTIDES.XLSX">TREAT_MONIT_EA_PEPTIDES.XLSX</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="first"><span style="text-decoration: underline;">Discovery of serum protein biomarkers of Active Tuberculosis in HIV- and HIV+ Individuals&nbsp;</span>
+<ul>
+<li class="first">Discovery:&nbsp;<span style="font-family: Calibri; font-size: small;"><span style="font-family: Calibri; font-size: small;">Identification by MS/MS of serum protein biomarkers of Active Tuberculosis in HIV- and HIV+ Individuals (US center)&nbsp;</span></span><a href="ftp://ftp.patricbrc.org/BRC_Mirrors/clinical_proteomics/Caprion/tb_in_hiv/ZFY_EA_PEPTIDES.XLSX">ZFY_EA_PEPTIDES.XLSX</a></li>
+<li>Discovery:&nbsp;<span style="font-family: Calibri; font-size: small;"><span style="font-family: Calibri; font-size: small;">Identification by MS/MS of serum protein biomarkers of Active Tuberculosis in HIV- and HIV+ Individuals (Brazil center)&nbsp;</span></span><a href="ftp://ftp.patricbrc.org/BRC_Mirrors/clinical_proteomics/Caprion/tb_in_hiv/ZFZ_EA_PEPTIDES.XLSX">ZFZ_EA_PEPTIDES.XLSX</a></li>
+<li>Discovery:&nbsp;<span style="font-family: Calibri; font-size: small;"><span style="font-family: Calibri; font-size: small;">Identification by MS/MS of serum protein biomarkers of Active Tuberculosis in HIV- and HIV+ Individuals (South Africa center)&nbsp;</span></span><a href="ftp://ftp.patricbrc.org/BRC_Mirrors/clinical_proteomics/Caprion/tb_in_hiv/ZGA_EA_PEPTIDES.XLSX">ZGA_EA_PEPTIDES.XLSX</a></li>
+<li>Qualification: Qualification of serum protein biomarkers of Active Tuberculosis in&nbsp;HIV- and HIV+ Individuals (US center)&nbsp;<a href="ftp://ftp.patricbrc.org/BRC_Mirrors/clinical_proteomics/Caprion/tb_in_hiv/ZBK_EA_PEPTIDES.XLSX">ZBK_EA_PEPTIDES.XLSX</a></li>
+<li>Qualification: Qualification&nbsp;of serum protein biomarkers of Active Tuberculosis in HIV- and HIV+ Individuals (Brazil center)&nbsp;<a href="ftp://ftp.patricbrc.org/BRC_Mirrors/clinical_proteomics/Caprion/tb_in_hiv/ZBL_EA_PEPTIDES.XLSX">ZBL_EA_PEPTIDES.XLSX</a></li>
+<li>Qualification: Qualification of&nbsp;serum protein biomarkers of Active Tuberculosis in HIV- and HIV+ Individuals (South Africa center)&nbsp;<a href="ftp://ftp.patricbrc.org/BRC_Mirrors/clinical_proteomics/Caprion/tb_in_hiv/ZAM_EA_PEPTIDES.XLSX">ZAM_EA_PEPTIDES.XLSX</a></li>
+<li class="last">Verification:&nbsp;<span style="font-family: Calibri; font-size: small;"><span style="font-family: Calibri; font-size: small;">The MRM assay developed during the qualification phase was run on a new set of serum/plasma samples from patients infected with TB or confounding diseases, and corresponding controls&nbsp;</span></span><a href="ftp://ftp.patricbrc.org/BRC_Mirrors/clinical_proteomics/Caprion/tb_in_hiv/ZFX_EA_PEPTIDES.XLSX">ZFX_EA_PEPTIDES.XLSX</a>&nbsp;&nbsp;<a href="ftp://ftp.patricbrc.org/BRC_Mirrors/clinical_proteomics/Caprion/tb_in_hiv/ZGO_EA_PEPTIDES.XLSX">ZGO_EA_PEPTIDES.XLSX</a></li>
+</ul>
+</li>
+<li class="last"><span style="text-decoration: underline;">Biomarkers of TB Disease Progression</span>
+<ul>
+<li class="first">Discovery:&nbsp;<span style="font-family: Calibri; font-size: small;"><span style="font-family: Calibri; font-size: small;">Identification by MS/MS of serum protein biomarkers of progression from <i>Mycobacterium tuberculosis</i> infection to disease&nbsp;</span></span><a href="ftp://ftp.patricbrc.org/BRC_Mirrors/clinical_proteomics/Caprion/biomarkers_tb_progression/ZDN_EA_PEPTIDES.XLSX">ZDN_EA_PEPTIDES.XLSX</a></li>
+<li>Qualification:&nbsp;<span style="font-family: Calibri; font-size: small;"><span style="font-family: Calibri; font-size: small;">Using the Discovery samples, one MRM assay was developed using a subset of the targets identified during the Discovery phase&nbsp;</span></span><a href="ftp://ftp.patricbrc.org/BRC_Mirrors/clinical_proteomics/Caprion/biomarkers_tb_progression/ZHH_EA_PEPTIDES.XLSX">ZHH_EA_PEPTIDES.XLSX</a></li>
+<li class="last">Verification:&nbsp;<span style="font-family: Calibri; font-size: small;"><span style="font-family: Calibri; font-size: small;">The MRM assay developed during the qualification phase was run on a new set of longitudinal (pre-conversion, post-conversion, 3 and 6 months) serum/plasma samples from patients infected with <i>Mycobacterium tuberculosis</i>, and corresponding controls&nbsp;</span></span><a href="ftp://ftp.patricbrc.org/BRC_Mirrors/clinical_proteomics/Caprion/biomarkers_tb_progression/ZHS_EA_PEPTIDES.XLSX">ZHS_EA_PEPTIDES.XLSX</a></li>
+</ul>
+</li>
+</ul>
+<p><strong>UTMB Clinical Proteomics Center</strong></p>
+<ul>
+<li class="last first"><span style="text-decoration: underline;">Biomarkers of <em>Helicobacter pylori</em> associated peptic ulcer disease</span>
+<ul>
+<li class="last first"><a href="ftp://ftp.patricbrc.org/BRC_Mirrors/clinical_proteomics/UTMB/HPylori_dataToBRC.zip">HPylori_dataToBRC.zip</a></li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+			
+	</div>
+</div>

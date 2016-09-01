@@ -1,0 +1,20 @@
+<div style="width:80%;margin:auto">
+<h2 class="entry-title">
+        PATRIC Collaborations
+</h2>
+	<div class="entry-summary">
+	<!-- ?php the_excerpt(); ? --->
+		<p>The opportunity to collaborate on various projects enables the team to understand  and drive important capabilities into the PATRIC resource as well as the addition of important collections of data.  Included in these efforts are</p>
+<hr />
+<p><strong><em>Burkholderia</em> Transcription data</strong></p>
+<p>Collaboration with Patrick Tan <a href="mailto:tanbop@gis.a-star.edu.sg" target="_blank">tanbop@gis.a-star.edu.sg</a> at the <a href="http://www.gis.a-star.edu.sg/internet/site/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.gis.a-star.edu.sg/internet/site/', 'Genome Institute of Singapore');" target="_blank">Genome Institute of Singapore</a>.   See the data at <a href="http://patricbrc.org/portal/portal/patric/SingleExperiment?cType=taxon&amp;cId=32008&amp;eid=1191081">PATRIC</a>.    For more information on this project, please read<em> </em><a title="Permalink to Burkholderia pseudomallei Transcriptome Compendium Project" href="/content/burkholderia_pseudomallei_transcriptome_compendium" target="_blank" rel="bookmark"><em>Burkholderia pseudomallei </em>Transcriptome Compendium Project </a>.</p>
+<hr />
+<p><strong>USDA Genome Sequencing Projects</strong></p>
+<ul>
+<li>Surveillance data for <em>Brucella</em> in the Greater Yellowstone Area, USA.   These genomes were sequenced by USDA and subsequently assembled and annotated by PATRIC using RAST. View or download all 148 genomes <a href="http://patricbrc.org/portal/portal/patric/GenomeList?cType=taxon&amp;cId=234&amp;kw=USDA">here</a> available exclusively at PATRIC.</li>
+<li><a href="http://test.patricbrc.org/portal/portal/patric/GenomeList?cType=taxon&amp;cId=1763&amp;kw=USDA+AND+2013-09-01">270 <em>Mycobacterium bovis</em> genomes</a> are available exclusively at PATRIC. These genomes were sequenced by USDA and, subsequently, assembled and annotated by PATRIC using RAST.</li>
+</ul>
+<p><strong><em> </em></strong></p>
+			
+	</div>
+</div>

@@ -13,43 +13,44 @@
 						<h3 class="ribbon-title">Genome Status</h3>
 						<div id="dlp-genomes-genomeStatus">
 							<div class="chart"></div>
-						</div><!-- / genomeStatus -->
-					</div><!-- data-box -->
-				</div><!-- / span-8 -->
+						</div>
+					</div>
+				</div>
+
 				<!-- Number of genomes (Two-value line chart ) -->
 				<div class="col span-13 append-1">
 					<div class="data-box" id="dlp-genomes-numberGenomes-header">
 						<h3 class="ribbon-title">Number of Bacterial Genomes</h3>
 						<div id="dlp-genomes-numberGenomes">
 							<div class="chart"></div>
-						</div><!-- / numberGenomes -->
-					</div><!-- / data-box -->
-				</div><!-- / span-13 -->
+						</div>
+					</div>
+				</div>
+
 				<!-- Three tabs with a vertical bar chart. -->
 				<div class="col span-13 last">
 					<div class="tabbed" id="dlp-genomes-chart">
-					<!-- Tab controls are identified seperately. -->
 						<ul class="tab-headers no-decoration inline no-underline-links">
-							<li><a href="#dlp-genomes-chart-tab1">Host</a></li>
-							<li><a href="#dlp-genomes-chart-tab2">Isolation Country</a></li>
+							<li class="ui-state-active"><span data-href="#dlp-genomes-chart-tab1">Host</span></li>
+							<li><span data-href="#dlp-genomes-chart-tab2">Isolation Country</span></li>
 						</ul>
-					<!-- First tab contents -->
+
 						<div class="data-box" id="dlp-genomes-chart-tab1">
 							<p class="desc">Top 5 Bacterial Hosts</p>
 								<div class="top-5">
 									<div class="chart"></div>
-								</div><!-- / top-5 -->
-						</div><!-- / data-box -->
-					<!-- Second tab contents -->
-						<div class="data-box" id="dlp-genomes-chart-tab2">
+								</div>
+						</div>
+
+						<div class="data-box hidden" id="dlp-genomes-chart-tab2">
 							<p class="desc">Top 5 Isolation Countries</p>
 							<div class="top-5">
 								<div class="chart"></div>
-							</div><!-- / top-5 -->
-						</div><!-- / data-box -->
-					<!-- Third tab contents -->
+							</div>
+						</div>
+
 					</div><!-- / tabbed -->
-				</div><!-- / span-13 -->
+				</div>
 			</div><!-- / group -->
 
 			<div class="data-box popular-box tabbed hover-tabs no-underline-links">
