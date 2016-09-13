@@ -8,6 +8,7 @@ var Query = require("rql/query").Query;
 var request = require('request');
 var config = require("./config");
 var Request = require('request');
+var distributeURL = config.get("distributeURL");
 
 var workspaceAPI = config.get("workspaceAPI");
 
@@ -55,7 +56,44 @@ function getWorkspaceObject(id,opts) {
 		def.reject(false);
 	});
 	return def.promise;
-}	
+}
+
+function getSubQuery(core, query, field, opts) {
+	var def = new defer();
+
+	when(query, function(subquery){
+		var q = subquery + "&facet((field," + field + "),(limit,-1),(mincount,1))&json(nl,map)&limit(1)";
+		// console.log("query: [", q, "]");
+
+		Request.post({
+			url: distributeURL + core + "/",
+			json: true,
+			headers: {
+				'Accept': "application/solr+json",
+				'Content-Type': "application/rqlquery+x-www-form-urlencoded",
+				'Authorization': (opts && opts.req && opts.req.headers["authorization"]) ? opts.req.headers["authorization"] : ""
+			},
+			body: q
+		}, function(err, resObj, results){
+			if(err){
+				def.reject(err);
+				return;
+			}
+
+			// console.log("results: ", results);
+			// console.log(results['facet_counts']['facet_fields'][field]);
+			if(results['facet_counts']['facet_fields'][field]){
+				var R = Object.keys(results['facet_counts']['facet_fields'][field]);
+
+				def.resolve(R);
+				return;
+			}
+
+			def.reject(false);
+		});
+	});
+	return def.promise;
+}
 
 var LazyWalk = exports.LazyWalk = function(term,opts) {
 //	console.log("LazyWalk term: ", term);
@@ -113,6 +151,14 @@ var LazyWalk = exports.LazyWalk = function(term,opts) {
 							return term.args[0];
 						}else if (term.name=="and" && term.args.length==0){
 							return "";
+						}else if (term.name=="join" && term.args.length==3){
+							// args: core, query, field
+							return when(getSubQuery(term.args[0], term.args[1], term.args[2], opts), function(ids){
+								return "in(" + term.args[2] + ",(" + ids.join(",") + "))";
+							},function(err){
+								console.log("Error in sub query", err);
+								return "(NOT_A_VALID_ID)";
+							});
 						}else if (term.name=="GenomeGroup") {
 //							console.log("call getWorkspaceObject(): ", term.args[0]);
 							return when(getWorkspaceObject(term.args[0],opts), function(ids){
