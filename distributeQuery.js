@@ -12,13 +12,13 @@ module.exports = function query(dataType,query,opts){
         opts = opts||{}
 
         debug("Send Request to distributeURL: ", distributeURL + dataType);
-        debug("runQuery: ", query);
+        debug("runQuery: ", dataType, query, opts);
         request.post({
                 url: distributeURL + dataType + "/",
                 headers: {
                         "content-type": "application/rqlquery+x-www-form-urlencoded",
                         accept: opts.accept || "application/json",
-                        authorization: opts.token || ""
+                        authorization: opts.authorization|| ""
                 },
                 body: query
         }, function(err,r,body){

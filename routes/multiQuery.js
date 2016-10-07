@@ -24,7 +24,7 @@ router.post("*", [
 			var qobj = req.body[qlabel];
 			res.results[qlabel]={};
 
-			defs.push(when(distributeQuery(qobj.dataType,qobj.query,{accept: qobj.accept}), function(result){
+			defs.push(when(distributeQuery(qobj.dataType,qobj.query,{accept: qobj.accept,authorization: (req.headers && req.headers["authorization"])?req.headers["authorization"]:""}), function(result){
 				console.log("RES: ", qlabel, result);
 				res.results[qlabel].result= result;
 			}))
