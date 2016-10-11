@@ -41,7 +41,7 @@ function generateTrackList(req,res,next){
 				"pinned": true
 			}
 			,{
-				"type": "JBrowse/View/Track/HTMLFeatures",
+				"type": "JBrowse/View/Track/CanvasFeatures",
 				// "urlTemplate": apiRoot + "/genome/" +req.params.id + "/{refseq}?annotation=PATRIC",
 				// "storeClass": "JBrowse/Store/SeqFeature/NCList",
 				"storeClass": "JBrowse/Store/SeqFeature/REST",
@@ -52,7 +52,10 @@ function generateTrackList(req,res,next){
 					annotation: "PATRIC"
 				},
 				"style": {
-					"label": "function( feature ) { /*console.log('RETURN PATRIC_ID: ', feature.get('patric_id'),feature); */return feature.get('patric_id'); }"
+                    "showLabels": true,
+                    "showTooltips":true,
+					"label": "gene,patric_id", //"function( feature ) { return feature.get('patric_id') }" //both the function and the attribute list work. but label doesn't show using HTMLFeatures only CanvasFeatures
+                    "color": "#17487d"
 				},
 				"hooks": {
 					"modify": "function(track, feature, div) { div.style.padding='4px'; div.style.backgroundColor = ['#17487d','#5190d5','#c7daf1'][feature.get('phase')];}"
@@ -66,7 +69,7 @@ function generateTrackList(req,res,next){
 				"region_stats":false 
 			}
 			, {
-				"type": "FeatureTrack",
+				"type": "JBrowse/View/Track/CanvasFeatures",
 				// "urlTemplate":  apiRoot + "/genome/" +req.params.id + "/{refseq}?annotation=RefSeq",
 				// "storeClass": "JBrowse/Store/SeqFeature/NCList",
 			    "storeClass": "JBrowse/Store/SeqFeature/REST",
@@ -77,11 +80,14 @@ function generateTrackList(req,res,next){
 				"key": "RefSeq Annotation",
 				"label": "RefSeqGenes",
 				"style": {
+                    "showLabels": true,
+                    "showTooltips":true,
 					"className": "feature3",
-					"label": "function( feature ) { return feature.refseq_locus_tag; }"
+					"label": "gene,protein_id,refseq_locus_tag,feature_type",//"function( feature ) { return feature.get('refseq_locus_tag') }", //label attribute doesn't seem to work on HTMLFeatures
+                    "color": "#4c5e22"
 				},
 				"hooks": {
-					"modify": "function(track, feature, div) { div.style.backgroundColor = ['#4c5e22','#9ab957','#c4d59b'][feature.get('phase')];}"
+					"modify": "function(track, feature, div) { div.style.backgroundColor = ['#4c5e22','#9ab957','#c4d59b'][feature.get('phase')];}" //these don't seem to work on CanvasFeatures
 				},
 				"tooltip": "<div style='line-height:1.7em'><b>{refseq_locus_tag}</b> | {gene}<br>{product}<br>{type}: {start_str} .. {end} ({strand_str})<br> <i>Click for detail information</i></div>",
 				"metadata": {
@@ -132,7 +138,7 @@ router.get("/genome/:id/stats/region/:feature_id",[
 	}
 ])
 
-router.get("/genome/:id/stats/regionFeatureDensities/:feature_id",[
+router.get("/genome/:id/stats/regionFeatureDensities/:sequence_id",[
 	function(req,res,next){
 		res.end();
 	}
