@@ -30,7 +30,7 @@ function generateTrackList(req,res,next){
 		"tracks": [
 			{
 				"type": "SequenceTrack",
-				"storeClass": "JBrowse/Store/SeqFeature/REST",
+				"storeClass": "p3/store/SeqFeatureREST",
 				"baseUrl":    apiRoot + "/genome/" + req.params.id,
 				// "urlTemplate": apiRoot + "/sequence/{refseq}",
 				"key": "Reference sequence",
@@ -44,7 +44,7 @@ function generateTrackList(req,res,next){
 				"type": "JBrowse/View/Track/CanvasFeatures",
 				// "urlTemplate": apiRoot + "/genome/" +req.params.id + "/{refseq}?annotation=PATRIC",
 				// "storeClass": "JBrowse/Store/SeqFeature/NCList",
-				"storeClass": "JBrowse/Store/SeqFeature/REST",
+				"storeClass": "p3/store/SeqFeatureREST",
 				"baseUrl":    apiRoot + "/genome/" + req.params.id,
 				"key": "PATRIC Annotation",
 				"label": "PATRICGenes",
@@ -72,7 +72,7 @@ function generateTrackList(req,res,next){
 				"type": "JBrowse/View/Track/CanvasFeatures",
 				// "urlTemplate":  apiRoot + "/genome/" +req.params.id + "/{refseq}?annotation=RefSeq",
 				// "storeClass": "JBrowse/Store/SeqFeature/NCList",
-			    "storeClass": "JBrowse/Store/SeqFeature/REST",
+			    "storeClass": "p3/store/SeqFeatureREST",
 				"baseUrl":    apiRoot + "/genome/" + req.params.id,
 				"query": {
 					annotation: "RefSeq"
