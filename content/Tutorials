@@ -2,10 +2,10 @@
 	<h2>New Beta Tutorials</h2>
 
 	<ul>
-		<li><a href="./pdfs/Annotating\ a\ genome\ in\ PATRIC-beta.pdf">Annotating a genome</a></li>
-		<li><a href="./pdfs/Assembling\ a\ genome\ in\ PATRIC-beta.pdf">Assembling a genome</a></li>
-		<li><a href="./pdfs/Comparing\ Pathways\ in\ PATRIC.pdf">Comparing Pathways</a></li>
-		<li><a href="./pdfs/Protein\ Families-Portein\ Family\ Sorter.pdf">Protein Families-Protein Family Sorter</a></li>
-		<li><a href="./pdfs/Submitting\ an\ RNA-seq\ job.pdf">Submitting an RNA-seq job</a></li>
+		<li><a target="_blank" href="/public/pdfs/Annotating a genome in PATRIC-beta.pdf">Annotating a genome</a></li>
+		<li><a target="_blank" href="/public/pdfs/Assembling a genome in PATRIC-beta.pdf">Assembling a genome</a></li>
+		<li><a target="_blank" href="/public/pdfs/Comparing Pathways in PATRIC.pdf">Comparing Pathways</a></li>
+		<li><a target="_blank" href="/public/pdfs/Protein Families-Portein Family Sorter.pdf">Protein Families-Protein Family Sorter</a></li>
+		<li><a target="_blank" href="/public/pdfs/Submitting an RNA-seq job.pdf">Submitting an RNA-seq job</a></li>
 	</ul>
 </div>
