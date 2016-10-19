@@ -54,13 +54,16 @@ function generateTrackList(req,res,next){
 				"style": {
                     "showLabels": true,
                     "showTooltips":true,
-					"label": "gene,patric_id", //"function( feature ) { return feature.get('patric_id') }" //both the function and the attribute list work. but label doesn't show using HTMLFeatures only CanvasFeatures
+					"label": "patric_id,gene", //"function( feature ) { return feature.get('patric_id') }" //both the function and the attribute list work. but label doesn't show using HTMLFeatures only CanvasFeatures
                     "color": "#17487d"
 				},
 				"hooks": {
 					"modify": "function(track, feature, div) { div.style.padding='4px'; div.style.backgroundColor = ['#17487d','#5190d5','#c7daf1'][feature.get('phase')];}"
 				},
-				"tooltip": "<div style='line-height:1.7em'><b>{patric_id}</b> | {refseq_locus_tag} | {alt_locus_Tag} | {gene}<br>{product}<br>{type}: {start_str} .. {end} ({strand_str})<br> <i>Click for detail information</i></div>",
+                "onClick":{
+                    "title": "{patric_id} {gene}",
+                    "action": "defaultDialog",
+				    "label": "<div style='line-height:1.7em'><b>{patric_id}</b> | {refseq_locus_tag} | {alt_locus_Tag} | {gene}<br>{product}<br>{type}: {start_str} .. {end} ({strand_str})<br> <i>Click for detailed information</i></div>"},
 				"metadata": {
 					"Description": "PATRIC annotated genes"
 				},
@@ -83,13 +86,16 @@ function generateTrackList(req,res,next){
                     "showLabels": true,
                     "showTooltips":true,
 					"className": "feature3",
-					"label": "gene,protein_id,refseq_locus_tag,feature_type",//"function( feature ) { return feature.get('refseq_locus_tag') }", //label attribute doesn't seem to work on HTMLFeatures
+					"label": "refseq_locus_tag,gene,gene_id,protein_id,feature_type",//"function( feature ) { return feature.get('refseq_locus_tag') }", //label attribute doesn't seem to work on HTMLFeatures
                     "color": "#4c5e22"
 				},
 				"hooks": {
 					"modify": "function(track, feature, div) { div.style.backgroundColor = ['#4c5e22','#9ab957','#c4d59b'][feature.get('phase')];}" //these don't seem to work on CanvasFeatures
 				},
-				"tooltip": "<div style='line-height:1.7em'><b>{refseq_locus_tag}</b> | {gene}<br>{product}<br>{type}: {start_str} .. {end} ({strand_str})<br> <i>Click for detail information</i></div>",
+                "onClick":{
+                    "title": "{refseq_locus_tag} {gene}",
+                    "action": "defaultDialog",
+				    "label": "<div style='line-height:1.7em'><b>{refseq_locus_tag}</b> | {gene}<br>{product}<br>{type}: {start_str} .. {end} ({strand_str})<br> <i>Click for detailed information</i></div>"},
 				"metadata": {
 					"Description": "RefSeq annotated genes"
 				},
