@@ -1,4 +1,5 @@
-<div class="container main-container dlp">
+<div class="dlp">
+	<span>Data</span>
     <h2>Genomes</h2>
 	<section class="main">
 		<!-- Section: Data -->
