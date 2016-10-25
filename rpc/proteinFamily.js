@@ -1,18 +1,18 @@
-var defer = require("promised-io/promise").defer;
-var when = require('promised-io/promise').when;
-var debug = require('debug')('p3api-server:ProteinFamily');
-var request = require('request');
-var config = require("../config");
-var distributeURL = config.get("distributeURL");
+const Deferred = require("promised-io/promise").Deferred;
+const when = require('promised-io/promise').when;
+const debug = require('debug')('p3api-server:ProteinFamily');
+const request = require('request');
+const config = require("../config");
+const distributeURL = config.get("distributeURL");
 
 function processProteinFamily(pfState, options){
-	var def = new defer();
+	const def = new Deferred();
 
 	// moved from MemoryStore implementation.
-	var familyType = pfState['familyType'];
-	var familyId = familyType + '_id';
+	const familyType = pfState['familyType'];
+	const familyId = familyType + '_id';
 
-	var query = {
+	const query = {
 		q: "genome_id:(" + pfState.genomeIds.join(' OR ') + ")",
 		fq: "annotation:PATRIC AND feature_type:CDS AND " + familyId + ":[* TO *]",
 		rows: 0,
@@ -20,9 +20,7 @@ function processProteinFamily(pfState, options){
 		'facet.method': 'uif',
 		'json.facet': '{stat:{type:field,field:' + familyId + ',sort:index,limit:-1,facet:{aa_length_min:"min(aa_length)",aa_length_max:"max(aa_length)",aa_length_mean:"avg(aa_length)",ss:"sumsq(aa_length)",sum:"sum(aa_length)"}}}'
 	};
-	var q = Object.keys(query).map(function(p){
-		return p + "=" + query[p]
-	}).join("&");
+	const q = Object.keys(query).map(p => p + "=" + query[p]).join("&");
 
 	request.post({
 		url: distributeURL + 'genome_feature/',
@@ -38,27 +36,21 @@ function processProteinFamily(pfState, options){
 			return def.reject(error);
 		}
 
-		var response = JSON.parse(body);
+		const response = JSON.parse(body);
 		// debug("q1 response: ", typeof(response));
 
 		if(response.facets.count == 0){
 			// data is not available
 			return def.resolve([]);
 		}
-		var familyStat = response.facets.stat.buckets;
+		const familyStat = response.facets.stat.buckets;
 
-		var familyIdList = [];
-		familyStat.forEach(function(element){
-			if(element.val != ""){
-				familyIdList.push(element.val);
-			}
-		});
+		const familyIdList = [];
+		familyStat.filter(el => el.val != "").forEach(el => familyIdList.push(el.val));
 
 		// sub query - genome distribution
 		query['json.facet'] = '{stat:{type:field,field:genome_id,limit:-1,facet:{families:{type:field,field:' + familyId + ',limit:-1,sort:{index:asc}}}}}';
-		q = Object.keys(query).map(function(p){
-			return p + "=" + query[p]
-		}).join("&");
+		const sq = Object.keys(query).map(p => p + "=" + query[p]).join("&");
 
 		// console.log("Do Second Request to /genome_feature/");
 		request.post({
@@ -68,14 +60,14 @@ function processProteinFamily(pfState, options){
 				'Content-Type': "application/solrquery+x-www-form-urlencoded",
 				'Authorization': options.token || ""
 			},
-			body: q
+			body: sq
 		}, function(error, resp, body){
 
 			if(error){
 				return def.reject(error);
 			}
 
-			response = JSON.parse(body);
+			const sub_response = JSON.parse(body);
 			// debug("q2 body: ", response);
 			request.post({
 				url: distributeURL + 'protein_family_ref/',
@@ -91,91 +83,86 @@ function processProteinFamily(pfState, options){
 					return def.reject(error);
 				}
 
-				var res = JSON.parse(body);
+				const res = JSON.parse(body);
 				// debug("q3 body: ", res);
-				var genomeFamilyDist = response.facets.stat.buckets;
-				var familyGenomeCount = {};
-				var familyGenomeIdCountMap = {};
-				var familyGenomeIdSet = {};
-				var genomePosMap = {};
-				var genome_ids = pfState.genomeIds;
-				genome_ids.forEach(function(genomeId, idx){
-					genomePosMap[genomeId] = idx;
-				});
+				const genomeFamilyDist = sub_response.facets.stat.buckets;
+				const familyGenomeCount = {};
+				const familyGenomeIdCountMap = {};
+				const familyGenomeIdSet = {};
+				const genomePosMap = {};
+				const genome_ids = pfState.genomeIds;
+				genome_ids.forEach((genomeId, idx) => genomePosMap[genomeId] = idx);
 
-				genomeFamilyDist.forEach(function(genome){
-					var genomeId = genome.val;
-					var genomePos = genomePosMap[genomeId];
-					var familyBuckets = genome.families.buckets;
+				genomeFamilyDist.forEach((genome)=>{
+					const genomeId = genome.val;
+					const genomePos = genomePosMap[genomeId];
+					const familyBuckets = genome.families.buckets;
 
-					familyBuckets.forEach(function(bucket){
-						var familyId = bucket.val;
-						if(familyId != ""){
-							var genomeCount = bucket.count.toString(16);
-							if(genomeCount.length < 2) genomeCount = '0' + genomeCount;
+					familyBuckets.filter(bucket => bucket.val != "").forEach((bucket)=>{
+						const familyId = bucket.val;
 
-							if(familyId in familyGenomeIdCountMap){
-								familyGenomeIdCountMap[familyId][genomePos] = genomeCount;
-							}
-							else{
-								var genomeIdCount = new Array(genome_ids.length).fill('00');
-								genomeIdCount[genomePos] = genomeCount;
-								familyGenomeIdCountMap[familyId] = genomeIdCount;
-							}
+						let genomeCount = bucket.count.toString(16);
+						if(genomeCount.length < 2) genomeCount = '0' + genomeCount;
 
-							if(familyId in familyGenomeIdSet){
-								familyGenomeIdSet[familyId].push(genomeId);
-							}
-							else{
-								var genomeIds = new Array(genome_ids.length);
-								genomeIds.push(genomeId);
-								familyGenomeIdSet[familyId] = genomeIds;
-							}
+						if(familyId in familyGenomeIdCountMap){
+							familyGenomeIdCountMap[familyId][genomePos] = genomeCount;
+						}
+						else{
+							const genomeIdCount = new Array(genome_ids.length).fill('00');
+							genomeIdCount[genomePos] = genomeCount;
+							familyGenomeIdCountMap[familyId] = genomeIdCount;
+						}
+
+						if(familyId in familyGenomeIdSet){
+							familyGenomeIdSet[familyId].push(genomeId);
+						}
+						else{
+							const genomeIds = new Array(genome_ids.length);
+							genomeIds.push(genomeId);
+							familyGenomeIdSet[familyId] = genomeIds;
 						}
 					});
 				});
 
-				Object.keys(familyGenomeIdCountMap).forEach(function(familyId){
-					var hashSet = {};
+				Object.keys(familyGenomeIdCountMap).forEach(familyId=>{
+					const hashSet = {};
 					familyGenomeIdSet[familyId].forEach(function(value){
 						hashSet[value] = true;
 					});
 					familyGenomeCount[familyId] = Object.keys(hashSet).length;
 				});
 
-				var familyRefHash = {};
+				const familyRefHash = {};
 				res.forEach(function(el){
 					if(!(el.family_id in familyRefHash)){
 						familyRefHash[el.family_id] = el.family_product;
 					}
 				});
 
-				var data = [];
-				familyStat.forEach(function(element){
-					var familyId = element.val;
-					if(familyId != ""){
-						var featureCount = element.count;
-						var std = 0;
-						if(featureCount > 1){
-							var sumSq = element.ss || 0;
-							var sum = element.sum || 0;
-							var realSq = sumSq - (sum * sum) / featureCount;
-							std = Math.sqrt(realSq / (featureCount - 1));
-						}
-
-						var row = {
-							family_id: familyId,
-							feature_count: featureCount,
-							genome_count: familyGenomeCount[familyId],
-							aa_length_std: std,
-							aa_length_max: element.aa_length_max,
-							aa_length_mean: element.aa_length_mean,
-							aa_length_min: element.aa_length_min,
-							description: familyRefHash[familyId],
-							genomes: familyGenomeIdCountMap[familyId].join("")
-						};
-						data.push(row);
+				const data = [];
+				familyStat.filter(el => el.val != "").forEach(el => {
+					const familyId = el.val;
+					const featureCount = el.count;
+					let std = 0;
+					if(featureCount > 1){
+						const sumSq = el.ss || 0;
+						const sum = el.sum || 0;
+						const realSq = sumSq - (sum * sum) / featureCount;
+						std = Math.sqrt(realSq / (featureCount - 1));
 					}
+
+					const row = {
+						family_id: familyId,
+						feature_count: featureCount,
+						genome_count: familyGenomeCount[familyId],
+						aa_length_std: std,
+						aa_length_max: el.aa_length_max,
+						aa_length_mean: el.aa_length_mean,
+						aa_length_min: el.aa_length_min,
+						description: familyRefHash[familyId],
+						genomes: familyGenomeIdCountMap[familyId].join("")
+					};
+					data.push(row);
 				});
 
 				def.resolve(data);
@@ -189,14 +176,14 @@ function processProteinFamily(pfState, options){
 module.exports = {
 	requireAuthentication: false,
 	validate: function(params){
-		var pfState = params[0];
+		const pfState = params[0];
 		return pfState && pfState.genomeIds.length > 0;
 	},
 	execute: function(params){
-		var def = new defer();
+		const def = new Deferred();
 
-		var pfState = params[0];
-		var opts = params[1];
+		const pfState = params[0];
+		const opts = params[1];
 
 		when(processProteinFamily(pfState, opts), function(result){
 			def.resolve(result);
