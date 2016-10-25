@@ -10,7 +10,6 @@ var fs = require('fs-extra');
 
 function runCluster(data, config, opts){
 	var def = new defer();
-	//var d = [];
 	var errorClosed;
 
 	debug("Run Cluster");
@@ -40,10 +39,11 @@ function runCluster(data, config, opts){
 				]
 			});
 
-		//child.stdout.on("data", function(data){
-		//	debug("Cluster Output Data: ", data.toString());
-		//	d.push(data.toString());
-		//});
+		setTimeout(function(){
+			debug("Cluster timed out!");
+			def.reject('Timed out. Cluster took more than 20 mins. Please reduce the data set and try again.');
+			child.kill('SIGHUP');
+		}, 1000 * 60 * 20);
 
 		child.stderr.on("data", function(errData){
 			debug("Cluster STDERR Data: ", errData.toString());
@@ -92,15 +92,16 @@ function runCluster(data, config, opts){
 
 					output.rows = rows;
 
-					// remove all related files
-					fs.remove(tempFileBase + '.*', function(err){
-						if(err) return debug(err);
-
-						debug('success removed temp files: ', tempFileBase + ".*");
-					});
 					def.resolve(output);
 				});
 			}
+
+			// remove all related files
+			fs.remove(tempFileBase + '.*', function(err){
+				if(err) return debug(err);
+
+				debug('success removed temp files: ', tempFileBase + ".*");
+			});
 		});
 	});
 
