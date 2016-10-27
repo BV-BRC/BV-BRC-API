@@ -1,11 +1,9 @@
 <div class="dlp">
-	<span>Data</span>
     <h2>Genomes</h2>
 	<section class="main">
 		<!-- Section: Data -->
 		<div class="data-tab" id="tab1">
-			<h3>PATRIC Offers Tens of Thousands of Assembled Bacterial Genomes Sequences</h3>
-
+		
 				<div class="large"><p>Genomes are received on a regular basis from a multitude of sources (GenBank, RefSeq, Collaborator Request, etc.). Our signature PATRIC annotation is generated via the RAST (Rapid Annotation Subsystems Technologies) Pipeline, resulting in a consistently annotated set of genomes in which meaningful comparisons can be made within and across taxonomic boundaries. We also maintain the original annotations from GenBank to allow users to explore and compare annotation differences. In addition, we automatically gather, parse, and curate over 60 various associated metadata attributes, such as isolation source, geographic location, and host. Find out how to search for genomes of interest in our <a href="http://enews.patricbrc.org/faqs/genome-finder-faqs/" target="_blank">Genome Finder FAQs</a>.</p></div>
 
 			<div class="group">
