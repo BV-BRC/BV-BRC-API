@@ -1,5 +1,6 @@
 var validateToken = require("p3-user/validateToken");
 var when = require("promised-io/promise").when;
+var debug = require('debug')('p3api-server:middleware/auth');
 
 /*
 var userIdRegex = /un=(\w+\@\w+(\.\w+))/
@@ -22,23 +23,23 @@ module.exports = function(req, res, next) {
 }
 */
 
-module.exports = function(req,res,next){
-        if (!req.isAuthenticated || (req.isAuthenticated && !req.isAuthenticated())){
-                if (req.headers && req.headers["authorization"]) {
-                        when(validateToken(req.headers["authorization"]),function(valid){
-                                if (valid && valid.id) {
-				//console.log("Valid Login: ", valid);
+module.exports = function(req, res, next){
+	if(!req.isAuthenticated || (req.isAuthenticated && !req.isAuthenticated())){
+		if(req.headers && req.headers["authorization"]){
+			when(validateToken(req.headers["authorization"]), function(valid){
+				if(valid && valid.id){
+					// debug("Valid Login: ", valid);
 					req.user = valid.id;
 				}
 				next();
-                        }, function(err){
-                                console.log("Invalid Token Validation");
-                                next(err);
-                        })
-                }else {
-                        next();
-                }
-        }else{
-                next();
-        }
+			}, function(err){
+				debug("Invalid Token Validation");
+				next(err);
+			})
+		}else{
+			next();
+		}
+	}else{
+		next();
+	}
 }

@@ -1,7 +1,7 @@
 var bodyParser = require("body-parser");
 var rpcMethods = require("../rpc");
 var when = require('promised-io/promise').when;
-var debug = require('debug')('p3api-server:rpcHandler');
+var debug = require('debug')('p3api-server:route/rpcHandler');
 
 module.exports = [
 	bodyParser.json({type: ["application/jsonrpc+json"], limit: "30mb"}),
@@ -51,11 +51,11 @@ module.exports = [
 
 		res.results = methodDef.execute(req.call_params, req, res);
 		when(res.results, function(r){
-			// console.log("Got execute Results: ", r)
+			// debug("Got execute Results: ", r)
 			res.results = r;
 			next();
 		}, function(err){
-			console.log("Got Execute Error: ", err);
+			debug("Got Execute Error: ", err);
 			res.error = err;
 			next();
 		});
@@ -63,7 +63,7 @@ module.exports = [
 	},
 
 	function(req, res, next){
-		//console.log("res.results: ", res.results)
+
 		var out = {};
 		out.id = req.body.id || 0;
 		if(res.error){
@@ -71,7 +71,7 @@ module.exports = [
 		}else{
 			out.result = res.results;
 		}
-		//console.log("OUTPUT : ", out)
+
 		res.write(JSON.stringify(out));
 		res.end();
 	}

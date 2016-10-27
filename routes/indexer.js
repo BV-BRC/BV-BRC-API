@@ -16,7 +16,7 @@ var SOLR_URL = config.get("solr").url;
 var bodyParser = require("body-parser");
 var rql = require("solrjs/rql");
 var Queue = require("file-queue").Queue;
-var debug = require('debug')('p3api-server:indexer');
+var debug = require('debug')('p3api-server:route/indexer');
 var formidable = require("formidable");
 var uuid = require("uuid");
 var fs = require("fs-extra");
@@ -25,24 +25,24 @@ var Path = require("path");
 debug("Queue Directory: ", config.get("queueDirectory"));
 var qdir = config.get("queueDirectory");
 var queue;
-fs.mkdirs(Path.join(qdir,"file_data"), function(err){
-	if (err){
-		console.log("Error Creating Index Directory Structure: ", err);
+fs.mkdirs(Path.join(qdir, "file_data"), function(err){
+	if(err){
+		debug("Error Creating Index Directory Structure: ", err);
 		return;
 	}
-	fs.mkdirs(Path.join(qdir,"history"), function(err){
-		if (err) {
-			console.log("Error Creating Index History Directory: ", err);
+	fs.mkdirs(Path.join(qdir, "history"), function(err){
+		if(err){
+			debug("Error Creating Index History Directory: ", err);
 			return;
 		}
-		fs.mkdirs(Path.join(qdir,"errors"), function(err){	
-			if (err) {
-				console.log("Error Creating Index Error Directory: ", err);
+		fs.mkdirs(Path.join(qdir, "errors"), function(err){
+			if(err){
+				debug("Error Creating Index Error Directory: ", err);
 				return;
 			}
-	
-			queue = new Queue(qdir, function(err) {
-				if (err) {
+
+			queue = new Queue(qdir, function(err){
+				if(err){
 					debug("error: ", err);
 					return;
 				}
@@ -54,11 +54,10 @@ fs.mkdirs(Path.join(qdir,"file_data"), function(err){
 
 });
 
-
 router.use(httpParams);
 router.use(authMiddleware);
 
-router.use(function(req, res, next) {
+router.use(function(req, res, next){
 	debug("req.path", req.path);
 	debug("req content-type", req.get("content-type"));
 	debug("accept", req.get("accept"));
@@ -68,10 +67,10 @@ router.use(function(req, res, next) {
 	next();
 });
 
-router.get("/:id", function(req,res,next){
-	console.log("Read Data from History: ", Path.join(qdir,"history", req.params.id));
-	fs.readJson(Path.join(qdir,"history",req.params.id), function(err,data){
-		if (err) {
+router.get("/:id", function(req, res, next){
+	debug("Read Data from History: ", Path.join(qdir, "history", req.params.id));
+	fs.readJson(Path.join(qdir, "history", req.params.id), function(err, data){
+		if(err){
 			return next(err);
 		}
 		res.set("content-type", "application/json");
@@ -81,45 +80,43 @@ router.get("/:id", function(req,res,next){
 });
 
 router.post("/:type", [
-	function(req, res, next) {
-		if (!req.user) {
+	function(req, res, next){
+		if(!req.user){
 			res.sendStatus(401);
 			return;
 		}
 
-		if (!req.params || !req.params.type || (!req.params.type=="genome")){
-			res.sendStatus(406);	
+		if(!req.params || !req.params.type || (!req.params.type == "genome")){
+			res.sendStatus(406);
 			return;
 		}
 
-		if (!queue){
+		if(!queue){
 			res.send("Indexing is unavailable due to a queueing error");
 			res.end(500);
 			return;
 		}
 		var form = new formidable.IncomingForm();
-		var qid=uuid.v4();
-		fs.mkdirs(Path.join(qdir,"file_data",qid), function(err) {
-			if (err) {
-				console.log("Error creating output directory for index files to be queued: ", Path.join(qdir,"file_data", qid));
+		var qid = uuid.v4();
+		fs.mkdirs(Path.join(qdir, "file_data", qid), function(err){
+			if(err){
+				debug("Error creating output directory for index files to be queued: ", Path.join(qdir, "file_data", qid));
 				res.end(500);
 				return;
 			}
-			form.keepExtensions=true;
-			form.uploadDir=Path.join(qdir,"file_data",qid);
-			form.multiples=true;
-			console.log("Begin parse");	
+			form.keepExtensions = true;
+			form.uploadDir = Path.join(qdir, "file_data", qid);
+			form.multiples = true;
+			debug("Begin parse");
 			form.parse(req, function(err, fields, files){
-				var d = {id: qid,type: req.params.type,user: req.user, options: fields, files: {}};
+				var d = {id: qid, type: req.params.type, user: req.user, options: fields, files: {}};
 
 				Object.keys(files).forEach(function(type){
 					d.files[type] = files[type]
 				});
 
-				
-
 				queue.push(d, function(err){
-					if (err){
+					if(err){
 						res.error("Error Adding to queue: " + err);
 						res.end(500);
 						return;
@@ -127,14 +124,13 @@ router.post("/:type", [
 					d.state = "queued";
 					d.queueTime = new Date();
 
-					fs.writeJson(Path.join(qdir,"history",qid), d, function(err){
-						res.set("content-type","application/json");
+					fs.writeJson(Path.join(qdir, "history", qid), d, function(err){
+						res.set("content-type", "application/json");
 						res.send(JSON.stringify({id: qid, state: "queued", queueTime: d.queueTime}));
 						res.end();
 					});
 				});
 
-				
 			});
 		});
 
