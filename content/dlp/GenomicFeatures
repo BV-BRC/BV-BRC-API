@@ -15,7 +15,7 @@
                         and characterize their functions. PATRIC supports genome annotations from multiple sources, including:</p>
                     <ul>
                         <li>Original annotations from GenBank / RefSeq</li>
-                        <li>Consistent annotation across all bacterial genomes using RAST</li>
+                        <li>Consistent annotations across all bacterial genomes using RAST anotation pipeline</li>
                     </ul>
                 </div>
                 <div class="data-box">
