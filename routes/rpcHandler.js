@@ -44,9 +44,9 @@ module.exports = [
 		}
 	},
 	function(req, res, next){
-		debug("req.call_method: ", req.call_method);
-		debug("MethodDef: ", rpcMethods[req.call_method]);
-		debug('req.call_params: ', req.call_params);
+		// debug("req.call_method: ", req.call_method);
+		// debug("MethodDef: ", rpcMethods[req.call_method]);
+		// debug('req.call_params: ', req.call_params);
 		var methodDef = rpcMethods[req.call_method];
 
 		res.results = methodDef.execute(req.call_params, req, res);
