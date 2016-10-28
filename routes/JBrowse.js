@@ -166,6 +166,7 @@ router.get("/genome/:id/stats/region/:feature_id",[
 	}
 ])
 
+//only called when HTMLFeature track
 router.get("/genome/:id/stats/regionFeatureDensities/:sequence_id",[
 	function(req,res,next){
 		var start = req.query.start || req.params.start;
