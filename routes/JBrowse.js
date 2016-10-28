@@ -58,7 +58,7 @@ function generateTrackList(req,res,next){
                     "color": "#17487d"
 				},
 				"hooks": {
-					"modify": "function(track, feature, div) { div.style.padding='4px'; div.style.backgroundColor = ['#17487d','#5190d5','#c7daf1'][feature.get('phase')];}"
+					//"modify": "function(track, feature, div) { div.style.padding='4px'; div.style.backgroundColor = ['#17487d','#5190d5','#c7daf1'][feature.get('phase')];}"
 				},
                 "onClick":{
                     "title": "{patric_id} {gene}",
@@ -90,7 +90,7 @@ function generateTrackList(req,res,next){
                     "color": "#4c5e22"
 				},
 				"hooks": {
-					"modify": "function(track, feature, div) { div.style.backgroundColor = ['#4c5e22','#9ab957','#c4d59b'][feature.get('phase')];}" //these don't seem to work on CanvasFeatures
+					//"modify": "function(track, feature, div) { div.style.backgroundColor = ['#4c5e22','#9ab957','#c4d59b'][feature.get('phase')];}" //these don't seem to work on CanvasFeatures
 				},
                 "onClick":{
                     "title": "{refseq_locus_tag} {gene}",
@@ -133,8 +133,30 @@ router.get("/genome/:id/tracks", [
 
 router.get("/genome/:id/stats/global",[
 	function(req,res,next){
-		res.write('{}');
-		res.end();
+		req.call_collection = "genome";
+		req.call_method = "query";
+		req.queryType = "rql";
+	    req.call_params = ["eq(genome_id,"+req.params.id+")"];
+		console.log("CALL_PARAMS: ", req.call_params);
+		next();
+	},
+	RQLQueryParser,
+	DecorateQuery,
+	Limiter,
+	APIMethodHandler,
+	function(req,res,next){
+        if (res.results && res.results.response && res.results.response.docs){
+
+		    console.log("solr result: ", res.results.response.docs);
+            var featureCount = res.results.response.docs[0].patric_cds;
+            var genomeLength = res.results.response.docs[0].genome_length;
+            var featureDensity = featureCount / genomeLength;
+		    console.log("patric_cds: ", featureCount);
+		    console.log("genome_length: ", genomeLength);
+            res.json({"featureDensity": featureDensity, "featureCount":featureCount});
+            res.end();
+        }
+
 	}
 ])
 
@@ -146,13 +168,52 @@ router.get("/genome/:id/stats/region/:feature_id",[
 
 router.get("/genome/:id/stats/regionFeatureDensities/:sequence_id",[
 	function(req,res,next){
-		res.end();
-	}
+		var start = req.query.start || req.params.start;
+		var end = req.query.end || req.params.end;
+		var annotation = req.query.annotation || req.params.annotation || "PATRIC"
+        var basesPerBin = req.query.basesPerBin || req.params.basesPerBin;
+		req.call_collection = "genome_feature";
+		req.call_method = "query";
+		req.call_params = [["accession:"+req.params.id,
+            "facet.range=start",
+            "f.start.facet.range.end="+end,
+            "f.start.facet.range.start="+start,
+            "fq=annotation:"+annotation+"+AND+!(feature_type:source)",
+            "facet.mincount=1",
+            "rows=0",
+            "f.start.facet.range.gap="+basesPerBin,
+            "facet=true"
+        ].join("&")];
+		req.queryType = "solr";
+		next();
+	},
+	DecorateQuery,
+	Limiter,
+	APIMethodHandler,
+	function(req,res,next){
+        if (res.results && res.results.response && res.results.facet_counts.facet_ranges.start){
+            var binCounts = res.results.facet_counts.facet_ranges.start.counts.map(function(d){
+                if(typeof(d) == "number"){
+                    return d;
+                }
+            });
+            var maxCount=Math.math(binCounts);
+                
+            res.json({
+                "stats":{
+                    "basesPerBin":req.query.basesPerBin,
+                    "max": maxCount
+                },
+                "bins": binCounts
+            });
+            res.end();
+        }
+    }
 ])
 
 
 
-router.get("/genome/:id/features/:feature_id",[
+router.get("/genome/:id/features/:seq_accession",[
 	function(req,res,next){
 		//console.log("req.params: ", req.params, "req.query: ", req.query);
 		var start = req.query.start || req.params.start;
@@ -160,14 +221,14 @@ router.get("/genome/:id/features/:feature_id",[
 		var annotation = req.query.annotation || req.params.annotation || "PATRIC"
 		req.call_collection = "genome_feature";
 		req.call_method = "query";
-		var st = "and(gt(start,"+start+"),lt(start,"+end+"))"
-		var en = "and(gt(end,"+start+"),lt(end,"+end+"))"
+		var st = "and(or(eq(start,"+start+"),gt(start,"+start+")),or(eq(start,"+end+"),lt(start,"+end+")))"
+		var en = "and(or(eq(end,"+start+"),gt(end,"+start+")),or(eq(end,"+end+"),lt(end,"+end+")))"
 		var over = "and(lt(start," + start + "),gt(end," + end + "))";
 		if (req.query && req.query["reference_sequences_only"]){
 			req.call_collection = "genome_sequence";
-			req.call_params = ["and(eq(genome_id," + req.params.id + "),eq(accession," +req.params.feature_id + "))"];
+			req.call_params = ["and(eq(genome_id," + req.params.id + "),eq(accession," +req.params.seq_accession + "))"];
 		}else{
-			req.call_params = ["and(eq(genome_id," + req.params.id + "),eq(accession," +req.params.feature_id + "),eq(annotation," + annotation + "),or(" +st+"," + en + "," + over + "),ne(feature_type,source))"];
+			req.call_params = ["and(eq(genome_id," + req.params.id + "),eq(accession," +req.params.seq_accession + "),eq(annotation," + annotation + "),or(" +st+"," + en + "," + over + "),ne(feature_type,source))"];
 		}
 		req.queryType = "rql";
 		//console.log("CALL_PARAMS: ", req.call_params);
