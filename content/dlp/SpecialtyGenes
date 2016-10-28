@@ -1,4 +1,5 @@
-<div class="container main-container dlp">
+<div class="dlp">
+    <span>Data</span>
     <h2>Specialty Genes</h2>
 	<section class="main">
 		<!-- Section: Data -->
@@ -25,7 +26,7 @@
 					<p>Drug Targets refer to the proteins being targeted by known/approved/experimental small molecule drugs. 
 					We have integrated and mapped such drug targets from the following sources:</p>
 					<ul>
-						<li><a href="http://v3.drugbank.ca/" target="_blank">DrugBank</a></li>
+						<li><a href="http://drugbank.ca/" target="_blank">DrugBank</a></li>
 						<li><a href="http://bidd.nus.edu.sg/group/TTD/ttd.asp" target="_blank">TTD</a></li>
 					</ul>
 				</div>
