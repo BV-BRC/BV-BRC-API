@@ -355,7 +355,7 @@ function processTranscriptomicsGene(tgState, options){
 					var expr = {samples: {}};
 					(expression.hasOwnProperty('feature_id')) ? expr.feature_id = expression.feature_id : '';
 					(expression.hasOwnProperty('na_feature_id')) ? expr.p2_feature_id = expression.na_feature_id : '';
-					(expression.hasOwnProperty('refseq_locus_tag')) ? expr.refseq_locus_tag = expression.refseq_locus_tag : expression.exp_locus_tag;
+					(expression.hasOwnProperty('refseq_locus_tag')) ? expr.refseq_locus_tag = expression.refseq_locus_tag : expr.refseq_locus_tag = expression.exp_locus_tag;
 					var log_ratio = expression.log_ratio, z_score = expression.z_score;
 					expr.samples[expression.pid.toString()] = {
 						log_ratio: log_ratio || '',
