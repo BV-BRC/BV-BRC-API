@@ -306,7 +306,7 @@ function processTranscriptomicsGene(tgState, options){
 			q: [(p3FeatureIdList.length > 0) ? 'feature_id:(' + p3FeatureIdList.join(' OR ') + ')' : '',
 				(p3FeatureIdList.length > 0 && p2FeatureIdList.length > 0) ? ' OR ' : '',
 				(p2FeatureIdList.length > 0) ? 'p2_feature_id:(' + p2FeatureIdList.join(' OR ') + ')' : ''].join(''),
-			fl: 'feature_id,p2_feature_id,strand,product,accession,start,end,patric_id,alt_locus_tag,genome_name,gene'
+			fl: 'feature_id,p2_feature_id,strand,product,accession,start,end,patric_id,alt_locus_tag,genome_name,genome_id,gene'
 		};
 		// debug("genome_feature query: ", query);
 		const q = Object.keys(query).map(p => p + "=" + query[p]).join("&");
