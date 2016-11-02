@@ -306,7 +306,7 @@ function processTranscriptomicsGene(tgState, options){
 			q: [(p3FeatureIdList.length > 0) ? 'feature_id:(' + p3FeatureIdList.join(' OR ') + ')' : '',
 				(p3FeatureIdList.length > 0 && p2FeatureIdList.length > 0) ? ' OR ' : '',
 				(p2FeatureIdList.length > 0) ? 'p2_feature_id:(' + p2FeatureIdList.join(' OR ') + ')' : ''].join(''),
-			fl: 'feature_id,p2_feature_id,strand,product,accession,start,end,patric_id,alt_locus_tag,genome_name,gene'
+			fl: 'feature_id,p2_feature_id,strand,product,accession,start,end,patric_id,alt_locus_tag,genome_name,genome_id,gene'
 		};
 		// debug("genome_feature query: ", query);
 		const q = Object.keys(query).map(p => p + "=" + query[p]).join("&");
@@ -355,7 +355,7 @@ function processTranscriptomicsGene(tgState, options){
 					var expr = {samples: {}};
 					(expression.hasOwnProperty('feature_id')) ? expr.feature_id = expression.feature_id : '';
 					(expression.hasOwnProperty('na_feature_id')) ? expr.p2_feature_id = expression.na_feature_id : '';
-					(expression.hasOwnProperty('refseq_locus_tag')) ? expr.refseq_locus_tag = expression.refseq_locus_tag : expression.exp_locus_tag;
+					(expression.hasOwnProperty('refseq_locus_tag')) ? expr.refseq_locus_tag = expression.refseq_locus_tag : expr.refseq_locus_tag = expression.exp_locus_tag;
 					var log_ratio = expression.log_ratio, z_score = expression.z_score;
 					expr.samples[expression.pid.toString()] = {
 						log_ratio: log_ratio || '',

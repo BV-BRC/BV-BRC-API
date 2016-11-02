@@ -85,7 +85,7 @@ function runCluster(data, config, opts){
 							output.columns = columns;
 						}
 						if(count >= 3){
-							rows.push(tabs[1].split('-')[0]);
+							rows.push(tabs[1]);
 						}
 						count++;
 					});
