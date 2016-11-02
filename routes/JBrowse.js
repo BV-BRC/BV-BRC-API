@@ -63,14 +63,15 @@ function generateTrackList(req, res, next){
 				"onClick": {
 					"title": "{patric_id} {gene}",
 					"action": "defaultDialog",
-					"label": "<div style='line-height:1.7em'><b>{patric_id}</b> | {refseq_locus_tag} | {alt_locus_Tag} | {gene}<br>{product}<br>{type}: {start_str} .. {end} ({strand_str})<br> <i>Click for detailed information</i></div>"
+					"label": "<div style='line-height:1.7em'><b>{patric_id}</b> | {refseq_locus_tag} | {alt_locus_Tag} | {gene}<br>{product}<br>{type}: {start} .. {end} ({strand})<br> <i>Click for detailed information</i></div>"
 				},
 				"metadata": {
 					"Description": "PATRIC annotated genes"
 				},
 				"maxExportFeatures": 10000,
 				"maxExportSpan": 10000000,
-				"region_stats": false
+				"chunkSize": 100000,
+				"region_stats": true
 			}
 			, {
 				"type": "JBrowse/View/Track/CanvasFeatures",
@@ -96,14 +97,14 @@ function generateTrackList(req, res, next){
 				"onClick": {
 					"title": "{refseq_locus_tag} {gene}",
 					"action": "defaultDialog",
-					"label": "<div style='line-height:1.7em'><b>{refseq_locus_tag}</b> | {gene}<br>{product}<br>{type}: {start_str} .. {end} ({strand_str})<br> <i>Click for detailed information</i></div>"
+					"label": "<div style='line-height:1.7em'><b>{refseq_locus_tag}</b> | {gene}<br>{product}<br>{type}: {start} .. {end} ({strand})<br> <i>Click for detailed information</i></div>"
 				},
 				"metadata": {
 					"Description": "RefSeq annotated genes"
 				},
 				"maxExportFeatures": 10000,
 				"maxExportSpan": 10000000,
-				"region_stats": false
+				"region_stats": true
 			}
 		],
 		"names": {
@@ -152,7 +153,7 @@ router.get("/genome/:id/stats/global", [
 			debug("solr result: ", res.results.response.docs);
 			var featureCount = res.results.response.docs[0].patric_cds;
 			var genomeLength = res.results.response.docs[0].genome_length;
-			var featureDensity = featureCount / genomeLength;
+			var featureDensity = (featureCount) / genomeLength;
 			debug("patric_cds: ", featureCount);
 			debug("genome_length: ", genomeLength);
 			res.json({"featureDensity": featureDensity, "featureCount": featureCount});
@@ -161,9 +162,41 @@ router.get("/genome/:id/stats/global", [
 	}
 ]);
 
-router.get("/genome/:id/stats/region/:feature_id", [
+router.get("/genome/:id/stats/region/:sequence_id", [
 	function(req, res, next){
-		res.end();
+		var start = req.query.start || req.params.start;
+		var end = req.query.end || req.params.end;
+		var annotation = req.query.annotation || req.params.annotation || "PATRIC"
+		req.call_collection = "genome_feature";
+		req.call_method = "query";
+		req.call_params = [[
+            [//the query part has to come first.
+                "accession:" + req.params.sequence_id,
+                "annotation:"+annotation,
+                "!(feature_type:source)",
+                "(start:["+start+"+TO+"+end+"]+OR+end:["+start+"+TO+"+end+"])",
+            ].join("+AND+"),
+			"stats=true",
+            "stats.field=na_length",
+			"rows=0",
+		].join("&")];
+		req.queryType = "solr";
+		next();
+	},
+	DecorateQuery,
+	Limiter,
+	APIMethodHandler,
+	function(req, res, next){
+		if(res.results  && res.results.stats){
+			var featureTotal = res.results.stats.stats_fields.na_length.sum;
+            var start = req.query.start || req.params.start;
+            var end = req.query.end || req.params.end;
+            var length = (end-start)+1;
+            var featureDensity = featureTotal/length;
+            var featureCount = res.results.stats.stats_fields.na_length.count;
+			res.json({"featureDensity": featureDensity, "featureCount": featureCount});
+			res.end();
+		}
 	}
 ]);
 
@@ -176,7 +209,8 @@ router.get("/genome/:id/stats/regionFeatureDensities/:sequence_id", [
 		var basesPerBin = req.query.basesPerBin || req.params.basesPerBin;
 		req.call_collection = "genome_feature";
 		req.call_method = "query";
-		req.call_params = [["accession:" + req.params.id,
+		req.call_params = [[
+            "accession:" + req.params.sequence_id, //for subsequent processing in the Decorator the query part of this query has to come first
 			"facet.range=start",
 			"f.start.facet.range.end=" + end,
 			"f.start.facet.range.start=" + start,
@@ -234,6 +268,7 @@ router.get("/genome/:id/features/:seq_accession", [
 		}else{
 			req.call_params = ["and(eq(genome_id," + req.params.id + "),eq(accession," + req.params.seq_accession + "),eq(annotation," + annotation + "),or(" + st + "," + en + "," + over + "),ne(feature_type,source))"];
 		}
+        req.call_params[0]+="&limit(10000)&sort(+start)"
 		req.queryType = "rql";
 		// debug("CALL_PARAMS: ", req.call_params);
 		next();
