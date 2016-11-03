@@ -4,7 +4,7 @@
         "popularList": [
             {
                 "popularName": "Bacillus",
-                "link": "/view/Taxonomy/1386#view_tab=proteinFamilies",
+                "link": "/view/Taxonomy/1386#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}",
                 "popularData": [
                     {
                         "count": 128615,
@@ -50,7 +50,7 @@
             },
             {
                 "popularName": "Bartonella",
-                "link": "/view/Taxonomy/773#view_tab=proteinFamilies",
+                "link": "/view/Taxonomy/773#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}",
                 "popularData": [
                     {
                         "count": 9656,
@@ -96,7 +96,7 @@
             },
             {
                 "popularName": "Borrelia",
-                "link": "/view/Taxonomy/138#view_tab=proteinFamilies",
+                "link": "/view/Taxonomy/138#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}",
                 "popularData": [
                     {
                         "count": 909,
@@ -142,7 +142,7 @@
             },
             {
                 "popularName": "Brucella",
-                "link": "/view/Taxonomy/234#view_tab=proteinFamilies",
+                "link": "/view/Taxonomy/234#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}",
                 "popularData": [
                     {
                         "count": 259,
@@ -188,7 +188,7 @@
             },
             {
                 "popularName": "Burkholderia",
-                "link": "/view/Taxonomy/32008#view_tab=proteinFamilies",
+                "link": "/view/Taxonomy/32008#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}",
                 "popularData": [
                     {
                         "count": 37106,
@@ -234,7 +234,7 @@
             },
             {
                 "popularName": "Campylobacter",
-                "link": "/view/Taxonomy/194#view_tab=proteinFamilies",
+                "link": "/view/Taxonomy/194#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}",
                 "popularData": [
                     {
                         "count": 12273,
@@ -280,7 +280,7 @@
             },
             {
                 "popularName": "Chlamydia",
-                "link": "/view/Taxonomy/810#view_tab=proteinFamilies",
+                "link": "/view/Taxonomy/810#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}",
                 "popularData": [
                     {
                         "count": 4017,
@@ -326,7 +326,7 @@
             },
             {
                 "popularName": "Clostridium",
-                "link": "/view/Taxonomy/1485#view_tab=proteinFamilies",
+                "link": "/view/Taxonomy/1485#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}",
                 "popularData": [
                     {
                         "count": 95660,
@@ -372,7 +372,7 @@
             },
             {
                 "popularName": "Coxiella",
-                "link": "/view/Taxonomy/776#view_tab=proteinFamilies",
+                "link": "/view/Taxonomy/776#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}",
                 "popularData": [
                     {
                         "count": 0,
@@ -418,7 +418,7 @@
             },
             {
                 "popularName": "Ehrlichia",
-                "link": "/view/Taxonomy/943#view_tab=proteinFamilies",
+                "link": "/view/Taxonomy/943#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}",
                 "popularData": [
                     {
                         "count": 0,
@@ -464,7 +464,7 @@
             },
             {
                 "popularName": "Escherichia",
-                "link": "/view/Taxonomy/561#view_tab=proteinFamilies",
+                "link": "/view/Taxonomy/561#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}",
                 "popularData": [
                     {
                         "count": 6079,
@@ -510,7 +510,7 @@
             },
             {
                 "popularName": "Francisella",
-                "link": "/view/Taxonomy/262#view_tab=proteinFamilies",
+                "link": "/view/Taxonomy/262#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}",
                 "popularData": [
                     {
                         "count": 0,
@@ -556,7 +556,7 @@
             },
             {
                 "popularName": "Helicobacter",
-                "link": "/view/Taxonomy/209#view_tab=proteinFamilies",
+                "link": "/view/Taxonomy/209#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}",
                 "popularData": [
                     {
                         "count": 17504,
@@ -602,7 +602,7 @@
             },
             {
                 "popularName": "Listeria",
-                "link": "/view/Taxonomy/1637#view_tab=proteinFamilies",
+                "link": "/view/Taxonomy/1637#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}",
                 "popularData": [
                     {
                         "count": 6750,
@@ -648,7 +648,7 @@
             },
             {
                 "popularName": "Mycobacterium",
-                "link": "/view/Taxonomy/1763#view_tab=proteinFamilies",
+                "link": "/view/Taxonomy/1763#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}",
                 "popularData": [
                     {
                         "count": 55984,
@@ -694,7 +694,7 @@
             },
             {
                 "popularName": "Rickettsia",
-                "link": "/view/Taxonomy/780#view_tab=proteinFamilies",
+                "link": "/view/Taxonomy/780#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}",
                 "popularData": [
                     {
                         "count": 3331,
@@ -740,7 +740,7 @@
             },
             {
                 "popularName": "Salmonella",
-                "link": "/view/Taxonomy/590#view_tab=proteinFamilies",
+                "link": "/view/Taxonomy/590#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}",
                 "popularData": [
                     {
                         "count": 0,
@@ -786,7 +786,7 @@
             },
             {
                 "popularName": "Shigella",
-                "link": "/view/Taxonomy/620#view_tab=proteinFamilies",
+                "link": "/view/Taxonomy/620#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}",
                 "popularData": [
                     {
                         "count": 0,
@@ -832,7 +832,7 @@
             },
             {
                 "popularName": "Staphylococcus",
-                "link": "/view/Taxonomy/1279#view_tab=proteinFamilies",
+                "link": "/view/Taxonomy/1279#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}",
                 "popularData": [
                     {
                         "count": 12373,
@@ -878,7 +878,7 @@
             },
             {
                 "popularName": "Streptococcus",
-                "link": "/view/Taxonomy/1301#view_tab=proteinFamilies",
+                "link": "/view/Taxonomy/1301#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}",
                 "popularData": [
                     {
                         "count": 31331,
@@ -924,7 +924,7 @@
             },
             {
                 "popularName": "Vibrio",
-                "link": "/view/Taxonomy/662#view_tab=proteinFamilies",
+                "link": "/view/Taxonomy/662#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}",
                 "popularData": [
                     {
                         "count": 53029,
@@ -970,7 +970,7 @@
             },
             {
                 "popularName": "Yersinia",
-                "link": "/view/Taxonomy/629#view_tab=proteinFamilies",
+                "link": "/view/Taxonomy/629#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}",
                 "popularData": [
                     {
                         "count": 5557,
