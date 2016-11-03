@@ -34,6 +34,16 @@
                         "data": 4290,
                         "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(figfam_id,*))",
                         "description": "FIGfam assignments"
+                    },
+                    {
+                        "data": 4367,
+                        "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(plfam_id,*))",
+                        "description": "PATRIC Local Family"
+                    },
+                    {
+                        "data": 4367,
+                        "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pgfam_id,*))",
+                        "description": "PATRIC Global Family"
                     }
                 ],
                 "link": "/view/Genome/83332.12",
@@ -75,7 +85,7 @@
                     },
                     {
                         "name": "Protein Family Sorter",
-                        "link": "/view/Genome/83332.12#view_tab=proteinFamilies"
+                        "link": "/view/Genome/83332.12#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     {
                         "name": "Pathway",
@@ -161,6 +171,16 @@
                         "data": 4413,
                         "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(figfam_id,*))",
                         "description": "FIGfam assignments"
+                    },
+                    {
+                        "data": 4549,
+                        "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(plfam_id,*))",
+                        "description": "PATRIC Local Family"
+                    },
+                    {
+                        "data": 4549,
+                        "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pgfam_id,*))",
+                        "description": "PATRIC Global Family"
                     }
                 ],
                 "link": "/view/Genome/511145.12",
@@ -202,7 +222,7 @@
                     },
                     {
                         "name": "Protein Family Sorter",
-                        "link": "/view/Genome/511145.12#view_tab=proteinFamilies"
+                        "link": "/view/Genome/511145.12#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     {
                         "name": "Pathway",
@@ -288,6 +308,16 @@
                         "data": 4910,
                         "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(figfam_id,*))",
                         "description": "FIGfam assignments"
+                    },
+                    {
+                        "data": 4972,
+                        "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(plfam_id,*))",
+                        "description": "PATRIC Local Family"
+                    },
+                    {
+                        "data": 4972,
+                        "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pgfam_id,*))",
+                        "description": "PATRIC Global Family"
                     }
                 ],
                 "link": "/view/Genome/99287.12",
@@ -329,7 +359,7 @@
                     },
                     {
                         "name": "Protein Family Sorter",
-                        "link": "/view/Genome/99287.12#view_tab=proteinFamilies"
+                        "link": "/view/Genome/99287.12#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     {
                         "name": "Pathway",
@@ -415,6 +445,16 @@
                         "data": 4959,
                         "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(figfam_id,*))",
                         "description": "FIGfam assignments"
+                    },
+                    {
+                        "data": 5131,
+                        "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(plfam_id,*))",
+                        "description": "PATRIC Local Family"
+                    },
+                    {
+                        "data": 5131,
+                        "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pgfam_id,*))",
+                        "description": "PATRIC Global Family"
                     }
                 ],
                 "link": "/view/Genome/198215.6",
@@ -456,7 +496,7 @@
                     },
                     {
                         "name": "Protein Family Sorter",
-                        "link": "/view/Genome/198215.6#view_tab=proteinFamilies"
+                        "link": "/view/Genome/198215.6#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     {
                         "name": "Pathway",
@@ -542,6 +582,16 @@
                         "data": 4513,
                         "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(figfam_id,*))",
                         "description": "FIGfam assignments"
+                    },
+                    {
+                        "data": 4666,
+                        "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(plfam_id,*))",
+                        "description": "PATRIC Local Family"
+                    },
+                    {
+                        "data": 4666,
+                        "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pgfam_id,*))",
+                        "description": "PATRIC Global Family"
                     }
                 ],
                 "link": "/view/Genome/214092.21",
@@ -583,7 +633,7 @@
                     },
                     {
                         "name": "Protein Family Sorter",
-                        "link": "/view/Genome/214092.21#view_tab=proteinFamilies"
+                        "link": "/view/Genome/214092.21#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     {
                         "name": "Pathway",
@@ -669,6 +719,16 @@
                         "data": 2906,
                         "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(figfam_id,*))",
                         "description": "FIGfam assignments"
+                    },
+                    {
+                        "data": 2927,
+                        "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(plfam_id,*))",
+                        "description": "PATRIC Local Family"
+                    },
+                    {
+                        "data": 2927,
+                        "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pgfam_id,*))",
+                        "description": "PATRIC Global Family"
                     }
                 ],
                 "link": "/view/Genome/169963.11",
@@ -710,7 +770,7 @@
                     },
                     {
                         "name": "Protein Family Sorter",
-                        "link": "/view/Genome/169963.11#view_tab=proteinFamilies"
+                        "link": "/view/Genome/169963.11#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     {
                         "name": "Pathway",
@@ -791,6 +851,16 @@
                         "data": 2700,
                         "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(figfam_id,*))",
                         "description": "FIGfam assignments"
+                    },
+                    {
+                        "data": 2734,
+                        "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(plfam_id,*))",
+                        "description": "PATRIC Local Family"
+                    },
+                    {
+                        "data": 2734,
+                        "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pgfam_id,*))",
+                        "description": "PATRIC Global Family"
                     }
                 ],
                 "link": "/view/Genome/158879.11",
@@ -832,7 +902,7 @@
                     },
                     {
                         "name": "Protein Family Sorter",
-                        "link": "/view/Genome/158879.11#view_tab=proteinFamilies"
+                        "link": "/view/Genome/158879.11#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     {
                         "name": "Pathway",
@@ -913,6 +983,16 @@
                         "data": 2159,
                         "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(figfam_id,*))",
                         "description": "FIGfam assignments"
+                    },
+                    {
+                        "data": 2205,
+                        "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(plfam_id,*))",
+                        "description": "PATRIC Local Family"
+                    },
+                    {
+                        "data": 2205,
+                        "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pgfam_id,*))",
+                        "description": "PATRIC Global Family"
                     }
                 ],
                 "link": "/view/Genome/373153.27",
@@ -954,7 +1034,7 @@
                     },
                     {
                         "name": "Protein Family Sorter",
-                        "link": "/view/Genome/373153.27#view_tab=proteinFamilies"
+                        "link": "/view/Genome/373153.27#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     {
                         "name": "Pathway",
@@ -1035,6 +1115,16 @@
                         "data": 3445,
                         "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(figfam_id,*))",
                         "description": "FIGfam assignments"
+                    },
+                    {
+                        "data": 3499,
+                        "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(plfam_id,*))",
+                        "description": "PATRIC Local Family"
+                    },
+                    {
+                        "data": 3499,
+                        "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pgfam_id,*))",
+                        "description": "PATRIC Global Family"
                     }
                 ],
                 "link": "/view/Genome/224914.11",
@@ -1076,7 +1166,7 @@
                     },
                     {
                         "name": "Protein Family Sorter",
-                        "link": "/view/Genome/224914.11#view_tab=proteinFamilies"
+                        "link": "/view/Genome/224914.11#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     {
                         "name": "Pathway",
@@ -1157,6 +1247,16 @@
                         "data": 1624,
                         "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(figfam_id,*))",
                         "description": "FIGfam assignments"
+                    },
+                    {
+                        "data": 1674,
+                        "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(plfam_id,*))",
+                        "description": "PATRIC Local Family"
+                    },
+                    {
+                        "data": 1674,
+                        "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pgfam_id,*))",
+                        "description": "PATRIC Global Family"
                     }
                 ],
                 "link": "/view/Genome/85962.8",
@@ -1193,7 +1293,7 @@
                     },
                     {
                         "name": "Protein Family Sorter",
-                        "link": "/view/Genome/85962.8#view_tab=proteinFamilies"
+                        "link": "/view/Genome/85962.8#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     {
                         "name": "Pathway",
