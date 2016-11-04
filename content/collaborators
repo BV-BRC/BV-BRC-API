@@ -1,70 +1,123 @@
-<div style="width:80%;margin:auto">
-<h2 class="entry-title">
-       Scientific Collaborations 
-</h2>
-<div class="entry-summary">
-	<!-- ?php the_excerpt(); ? --->
-		<p>&nbsp;</p>
-<p>Click <a href="/content/patric-publications">here</a> for a list of PATRIC joint publications with other Scientific Collaborators.</p>
-<hr />
-<h3><strong><em>Acknowledgements</em></strong></h3>
-<p>&nbsp;</p>
-<h4><strong><em>Data Sources Used by PATRIC:</em></strong></h4>
-<p><a href="http://ardb.cbcb.umd.edu/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://ardb.cbcb.umd.edu/', 'ARDB (Antibiotic Resistance Genes Database)');" target="_blank">ARDB (Antibiotic Resistance Genes Database)</a></p>
-<p><a href="http://www.isc.org/software/bind/history" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.isc.org/software/bind/history', 'BIND (Berkeley Internet Name Domain)');" target="_blank">BIND (Berkeley Internet Name Domain)</a></p>
-<p><a href="http://thebiogrid.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://thebiogrid.org/', 'BioGRID (Biological General Repository for Interaction Datasets)');" target="_blank">BioGRID (Biological General Repository for Interaction Datasets)</a></p>
-<p><a href="http://arpcard.mcmaster.ca/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://arpcard.mcmaster.ca/', 'CARD (The Comprehensive Antibiotic Resistance Database)');" target="_blank">CARD (The Comprehensive Antibiotic Resistance Database)</a></p>
-<p><a href="http://ctdbase.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://ctdbase.org/', 'CTD (Comparative Toxicogenomics Database)');" target="_blank">CTD (Comparative Toxicogenomics Database)</a></p>
-<p><a href="http://dip.doe-mbi.ucla.edu/dip/Main.cgi" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://dip.doe-mbi.ucla.edu/dip/Main.cgi', 'DIP (Database of Interacting Proteins)');" target="_blank">DIP (Database of Interacting Proteins)</a></p>
-<p><a href="http://v3.drugbank.ca/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://v3.drugbank.ca/', 'DrugBank');" target="_blank">DrugBank</a></p>
-<p><a href="http://www.ebi.ac.uk/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ebi.ac.uk/', 'EBI (European Bioinformatics Institute)');" target="_blank">EBI (European Bioinformatics Institute)</a></p>
-<ul>
-<li><a href="http://www.ebi.ac.uk/arrayexpress/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ebi.ac.uk/arrayexpress/', 'ArrayExpress');" target="_blank">ArrayExpress</a></li>
-<li><a href="http://www.ebi.ac.uk/pride/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ebi.ac.uk/pride/', 'PRIDE');" target="_blank">PRIDE</a></li>
-<li><a href="http://www.ebi.ac.uk/intact/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ebi.ac.uk/intact/', 'IntAct');" target="_blank">IntAct</a></li>
-</ul>
-<p><a href="http://geneticassociationdb.nih.gov/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://geneticassociationdb.nih.gov/', 'GAD (Genetic Association Database)');" target="_blank">GAD (Genetic Association Database)</a></p>
-<p><a href="http://www.geneontology.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.geneontology.org/', 'GO (Gene Ontology)');">GO (Gene Ontology)</a></p>
-<p><a href="http://www.healthmap.org/en/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.healthmap.org/en/', 'HealthMap');" target="_blank">HealthMap</a></p>
-<p><a href="http://www.hmpdacc.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.hmpdacc.org/', 'HMP (Human Microbiome Project)');" target="_blank">HMP (Human Microbiome Project)</a></p>
-<p><a href="http://www.immuneepitope.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.immuneepitope.org/', 'IEDB (Immune Epitope Database)');" target="_blank">IEDB (Immune Epitope Database)</a></p>
-<p><a href="http://www.genome.jp/kegg/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.genome.jp/kegg/', 'KEGG (Kyoto Encyclopedia of Genes and Genomes)');" target="_blank">KEGG (Kyoto Encyclopedia of Genes and Genomes)</a></p>
-<p><a href="http://mint.bio.uniroma2.it/mint/Welcome.do" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://mint.bio.uniroma2.it/mint/Welcome.do', 'MINT (Molecular Interaction Database)');" target="_blank">MINT (Molecular Interaction Database)</a></p>
-<p><a href="http://www.ncbi.nlm.nih.gov/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ncbi.nlm.nih.gov/', 'NCBI (National Center for Biotechnology Information)');" target="_blank">NCBI (National Center for Biotechnology Information)</a></p>
-<ul>
-<li><a href="http://www.ncbi.nlm.nih.gov/bioproject/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ncbi.nlm.nih.gov/bioproject/', 'BioProject');" target="_blank">BioProject</a></li>
-<li><a href="http://www.ncbi.nlm.nih.gov/cdd/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ncbi.nlm.nih.gov/cdd/', 'CDD');" target="_blank">CDD</a></li>
-<li><a href="http://www.ncbi.nlm.nih.gov/genome/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ncbi.nlm.nih.gov/genome/', 'Genome');" target="_blank">Genome</a></li>
-<li><a href="http://www.ncbi.nlm.nih.gov/geo/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ncbi.nlm.nih.gov/geo/', 'GEO');">GEO</a></li>
-<li><a href="http://www.ncbi.nlm.nih.gov/Structure/MMDB/mmdb.shtml" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ncbi.nlm.nih.gov/Structure/MMDB/mmdb.shtml', 'MMDB');" target="_blank">MMDB</a></li>
-<li><a href="http://www.ncbi.nlm.nih.gov/pubmed/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ncbi.nlm.nih.gov/pubmed/', 'PubMed');" target="_blank">PubMed</a></li>
-<li><a href="http://www.ncbi.nlm.nih.gov/RefSeq/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ncbi.nlm.nih.gov/RefSeq/', 'RefSeq');" target="_blank">RefSeq</a></li>
-<li><a href="http://www.ncbi.nlm.nih.gov/taxonomy" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ncbi.nlm.nih.gov/taxonomy', 'Taxonomy');" target="_blank">Taxonomy</a></li>
-</ul>
-<p><a href="http://www.rcsb.org/pdb/home/home.do" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.rcsb.org/pdb/home/home.do', 'PDB (Protein Data Bank)');" target="_blank">PDB (Protein Data Bank)</a></p>
-<p><a href="http://code.google.com/p/psicquic/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://code.google.com/p/psicquic/', 'PSICQUIC (Protemics Standard Initiative Common Query Interface)');" target="_blank">PSICQUIC (Protemics Standard Initiative Common Query Interface)</a></p>
-<p><a href="http://stitch.embl.de/cgi/show_input_page.pl?UserId=dew_Cq67PodO&amp;sessionId=1xn5KWSzsTrZ" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://stitch.embl.de/cgi/show_input_page.pl?UserId=dew_Cq67PodO&amp;sessionId=1xn5KWSzsTrZ', 'STITCH (Search Tool for Interactions of Chemicals)');" target="_blank">STITCH (Search Tool for Interactions of Chemicals)</a></p>
-<p><a href="http://string.embl.de/newstring_cgi/show_input_page.pl?UserId=rVAoJJTi6kUC&amp;sessionId=mt_5HRZP5HEI&amp;info_box_type_input_page=general" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://string.embl.de/newstring_cgi/show_input_page.pl?UserId=rVAoJJTi6kUC&amp;sessionId=mt_5HRZP5HEI&amp;info_box_type_input_page=general', 'STRING (Search Tool for the Retrieval of Interacting Genes/Proteins)');" target="_blank">STRING (Search Tool for the Retrieval of Interacting Genes/Proteins)</a></p>
-<p><a href="http://bidd.nus.edu.sg/group/TTD/ttd.asp" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://bidd.nus.edu.sg/group/TTD/ttd.asp', 'TTD (Therapeutic Targets Database)');" target="_blank">TTD (Therapeutic Targets Database)</a></p>
-<p><a href="http://www.uniprot.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.uniprot.org/', 'UniProt (Universal Protein Resource)');" target="_blank">UniProt (Universal Protein Resource)</a></p>
-<p><a href="http://www.phidias.us/victors/index.php" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.phidias.us/victors/index.php', 'Victors Virulence Factors');" target="_blank">Victors Virulence Factors</a></p>
-<p><a href="http://www.mgc.ac.cn/VFs/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.mgc.ac.cn/VFs/', 'VFDB (Virulence Factors Database)');" target="_blank">VFDB (Virulence Factors Database)</a></p>
-<h4><strong><em>Software and Tools used by PATRIC:</em></strong></h4>
-<p><a href="http://blast.ncbi.nlm.nih.gov/Blast.cgi" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://blast.ncbi.nlm.nih.gov/Blast.cgi', 'BLAST (Basic Local Alignment Search Tool)');" target="_blank">BLAST (Basic Local Alignment Search Tool)</a></p>
-<p><a href="http://www.ncbi.nlm.nih.gov/pubmed/11932250" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ncbi.nlm.nih.gov/pubmed/11932250', 'BLAT');" target="_blank">BLAT</a></p>
-<p><a href="http://circos.ca/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://circos.ca/', 'Circos');" target="_blank">Circos</a></p>
-<p><a href="http://bonsai.hgc.jp/~mdehoon/software/cluster/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://bonsai.hgc.jp/~mdehoon/software/cluster/', 'Cluster3');" target="_blank">Cluster3</a></p>
-<p><a href="http://www.cytoscape.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.cytoscape.org/', 'Cytoscape');" target="_blank">Cytoscape</a></p>
-<p><a href="http://www.microbesonline.org/fasttree/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.microbesonline.org/fasttree/', 'FastTree');" target="_blank">FastTree</a></p>
-<p><a href="http://molevol.cmima.csic.es/castresana/Gblocks.html" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://molevol.cmima.csic.es/castresana/Gblocks.html', 'Gblocks');" target="_blank">Gblocks</a></p>
-<p><a href="http://hmmer.janelia.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://hmmer.janelia.org/', 'HMMER');" target="_blank">HMMER</a></p>
-<p><a href="http://jbrowse.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://jbrowse.org/', 'JBrowse');" target="_blank">JBrowse</a> via <a href="http://biowiki.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://biowiki.org/', 'The Holmes Lab');" target="_blank">The Holmes Lab</a></p>
-<p><a href="http://jmol.sourceforge.net/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://jmol.sourceforge.net/', 'Jmol');" target="_blank">Jmol</a></p>
-<p><a href="http://micans.org/mcl/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://micans.org/mcl/', 'MCL (Markov Cluster Algorithm)');" target="_blank">MCL (Markov Cluster Algorithm)</a></p>
-<p><a href="http://www.ebi.ac.uk/Tools/msa/muscle/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ebi.ac.uk/Tools/msa/muscle/', 'MUSCLE (Multiple Sequence Comparison by Log- Expectation)');" target="_blank">MUSCLE (Multiple Sequence Comparison by Log- Expectation)</a></p>
-<p><a href="http://www.orthomcl.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.orthomcl.org/', 'OrthoMCL');" target="_blank">OrthoMCL</a></p>
-<hr />
-<p><a href="/content/data-release-policy">PATRIC Data Release Policy</a></p>
-			
-	</div>
+<div class="dlp">
+    <h2 class="entry-title">
+        Scientific Collaborations
+    </h2>
+
+    <section class="main">
+        <p>Click <a href="/content/patric-publications">here</a> for a list of PATRIC joint publications with other
+            Scientific Collaborators.</p>
+
+        <h3>Acknowledgements</h3>
+        <div class="data-box popular-box tabbed hover-tabs no-underline-links">
+            <h4 class="ribbon-title">Data Sources Used by PATRIC</h4>
+            <p><a href="http://ardb.cbcb.umd.edu/"
+                  target="_blank">ARDB (Antibiotic Resistance Genes Database)</a></p>
+            <p><a href="http://www.isc.org/software/bind/history"
+                  target="_blank">BIND (Berkeley Internet Name Domain)</a></p>
+            <p><a href="http://thebiogrid.org/"
+                  target="_blank">BioGRID (Biological General Repository for Interaction Datasets)</a></p>
+            <p><a href="http://arpcard.mcmaster.ca/"
+                  target="_blank">CARD (The Comprehensive Antibiotic Resistance Database)</a></p>
+            <p><a href="http://ctdbase.org/"
+                  target="_blank">CTD (Comparative Toxicogenomics Database)</a></p>
+            <p><a href="http://dip.doe-mbi.ucla.edu/dip/Main.cgi"
+                  target="_blank">DIP (Database of Interacting Proteins)</a></p>
+            <p><a href="http://v3.drugbank.ca/"
+                  target="_blank">DrugBank</a></p>
+            <p><a href="http://www.ebi.ac.uk/"
+                  target="_blank">EBI (European Bioinformatics Institute)</a></p>
+            <ul class="no-decoration">
+                <li><a href="http://www.ebi.ac.uk/arrayexpress/"
+                       target="_blank">ArrayExpress</a></li>
+                <li><a href="http://www.ebi.ac.uk/pride/"
+                       target="_blank">PRIDE</a></li>
+                <li><a href="http://www.ebi.ac.uk/intact/"
+                       target="_blank">IntAct</a></li>
+            </ul>
+            <p><a href="http://geneticassociationdb.nih.gov/"
+                  target="_blank">GAD (Genetic Association Database)</a></p>
+            <p><a href="http://www.geneontology.org/"
+                  target="_blank">GO (Gene Ontology)</a></p>
+            <p><a href="http://www.healthmap.org/en/"
+                  target="_blank">HealthMap</a></p>
+            <p><a href="http://www.hmpdacc.org/"
+                  target="_blank">HMP (Human Microbiome Project)</a></p>
+            <p><a href="http://www.immuneepitope.org/"
+                  target="_blank">IEDB (Immune Epitope Database)</a></p>
+            <p><a href="http://www.genome.jp/kegg/"
+                  target="_blank">KEGG (Kyoto Encyclopedia of Genes and Genomes)</a></p>
+            <p><a href="http://mint.bio.uniroma2.it/mint/Welcome.do"
+                  target="_blank">MINT (Molecular Interaction Database)</a></p>
+            <p><a href="http://www.ncbi.nlm.nih.gov/"
+                  target="_blank">NCBI (National Center for Biotechnology Information)</a></p>
+            <ul class="no-decoration">
+                <li><a href="http://www.ncbi.nlm.nih.gov/bioproject/"
+                       target="_blank">BioProject</a></li>
+                <li><a href="http://www.ncbi.nlm.nih.gov/cdd/"
+                       target="_blank">CDD</a></li>
+                <li><a href="http://www.ncbi.nlm.nih.gov/genome/"
+                       target="_blank">Genome</a></li>
+                <li><a href="http://www.ncbi.nlm.nih.gov/geo/"
+                       target="_blank">GEO</a>
+                </li>
+                <li><a href="http://www.ncbi.nlm.nih.gov/Structure/MMDB/mmdb.shtml"
+                       target="_blank">MMDB</a></li>
+                <li><a href="http://www.ncbi.nlm.nih.gov/pubmed/"
+                       target="_blank">PubMed</a></li>
+                <li><a href="http://www.ncbi.nlm.nih.gov/RefSeq/"
+                       target="_blank">RefSeq</a></li>
+                <li><a href="http://www.ncbi.nlm.nih.gov/taxonomy"
+                       target="_blank">Taxonomy</a></li>
+            </ul>
+            <p><a href="http://www.rcsb.org/pdb/home/home.do"
+                  target="_blank">PDB (Protein Data Bank)</a></p>
+            <p><a href="http://code.google.com/p/psicquic/"
+                  target="_blank">PSICQUIC (Protemics Standard Initiative Common Query Interface)</a></p>
+            <p><a href="http://stitch.embl.de/cgi/show_input_page.pl?UserId=dew_Cq67PodO&amp;sessionId=1xn5KWSzsTrZ"
+                  target="_blank">STITCH (Search Tool for Interactions of Chemicals)</a></p>
+            <p>
+                <a href="http://string.embl.de/newstring_cgi/show_input_page.pl?UserId=rVAoJJTi6kUC&amp;sessionId=mt_5HRZP5HEI&amp;info_box_type_input_page=general"
+                   target="_blank">STRING (Search Tool for the Retrieval of Interacting Genes/Proteins)</a></p>
+            <p><a href="http://bidd.nus.edu.sg/group/TTD/ttd.asp"
+                  target="_blank">TTD (Therapeutic Targets Database)</a></p>
+            <p><a href="http://www.uniprot.org/"
+                  target="_blank">UniProt (Universal Protein Resource)</a></p>
+            <p><a href="http://www.phidias.us/victors/index.php"
+                  target="_blank">Victors Virulence Factors</a></p>
+            <p><a href="http://www.mgc.ac.cn/VFs/"
+                  target="_blank">VFDB (Virulence Factors Database)</a></p>
+        </div>
+        <div class="data-box popular-box tabbed hover-tabs no-underline-links">
+            <h4 class="ribbon-title">Software and Tools used by PATRIC</h4>
+            <p><a href="http://blast.ncbi.nlm.nih.gov/Blast.cgi"
+                  target="_blank">BLAST (Basic Local Alignment Search Tool)</a></p>
+            <p><a href="http://www.ncbi.nlm.nih.gov/pubmed/11932250"
+                  target="_blank">BLAT</a></p>
+            <p><a href="http://circos.ca/"
+                  target="_blank">Circos</a></p>
+            <p><a href="http://bonsai.hgc.jp/~mdehoon/software/cluster/"
+                  target="_blank">Cluster3</a></p>
+            <p><a href="http://www.cytoscape.org/"
+                  target="_blank">Cytoscape</a></p>
+            <p><a href="http://www.microbesonline.org/fasttree/"
+                  target="_blank">FastTree</a></p>
+            <p><a href="http://molevol.cmima.csic.es/castresana/Gblocks.html"
+                  target="_blank">Gblocks</a></p>
+            <p><a href="http://hmmer.janelia.org/"
+                  target="_blank">HMMER</a></p>
+            <p><a href="http://jbrowse.org/"
+                  target="_blank">JBrowse</a> via <a href="http://biowiki.org/"
+                                                     target="_blank">The Holmes Lab</a></p>
+            <p><a href="http://jmol.sourceforge.net/"
+                  target="_blank">Jmol</a></p>
+            <p><a href="http://micans.org/mcl/"
+                  target="_blank">MCL (Markov Cluster Algorithm)</a></p>
+            <p><a href="http://www.ebi.ac.uk/Tools/msa/muscle/"
+                  target="_blank">MUSCLE (Multiple Sequence Comparison by Log- Expectation)</a></p>
+            <p><a href="http://www.orthomcl.org/"
+                  target="_blank">OrthoMCL</a></p>
+        </div>
+
+        <p><a href="/content/data-release-policy">PATRIC Data Release Policy</a></p>
+    </section>
 </div>
