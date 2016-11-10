@@ -8,7 +8,7 @@
             Scientific Collaborators.</p>
 
         <h3>Acknowledgements</h3>
-        <div class="data-box popular-box tabbed hover-tabs no-underline-links">
+        <div class="data-box">
             <h4 class="ribbon-title">Data Sources Used by PATRIC</h4>
             <p><a href="http://ardb.cbcb.umd.edu/"
                   target="_blank">ARDB (Antibiotic Resistance Genes Database)</a></p>
