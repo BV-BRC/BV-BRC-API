@@ -62,8 +62,10 @@ function generateTrackList(req, res, next){
 				},
 				"onClick": {
 					"title": "{patric_id} {gene}",
-					"action": "defaultDialog",
-					"label": "<div style='line-height:1.7em'><b>{patric_id}</b> | {refseq_locus_tag} | {alt_locus_Tag} | {gene}<br>{product}<br>{type}: {start} .. {end} ({strand})<br> <i>Click for detailed information</i></div>"
+					"action": "contentDialog",
+					"label": "<div style='line-height:1.7em'><b>{patric_id}</b> | {refseq_locus_tag} | {alt_locus_Tag} | {gene}<br>{product}<br>{type}: {start} .. {end} ({strand})<br> <i>Click for detailed information</i></div>",
+                    "content":"function(clickEvent){return window.featureDialogContent(this.feature);}"
+
 				},
 				"metadata": {
 					"Description": "PATRIC annotated genes"
@@ -96,8 +98,9 @@ function generateTrackList(req, res, next){
 				},
 				"onClick": {
 					"title": "{refseq_locus_tag} {gene}",
-					"action": "defaultDialog",
-					"label": "<div style='line-height:1.7em'><b>{refseq_locus_tag}</b> | {gene}<br>{product}<br>{type}: {start} .. {end} ({strand})<br> <i>Click for detailed information</i></div>"
+					"action": "contentDialog",
+					"label": "<div style='line-height:1.7em'><b>{refseq_locus_tag}</b> | {gene}<br>{product}<br>{type}: {start} .. {end} ({strand})<br> <i>Click for detailed information</i></div>",
+                    "content":"function(clickEvent){return window.featureDialogContent(this.feature);}"
 				},
 				"metadata": {
 					"Description": "RefSeq annotated genes"
