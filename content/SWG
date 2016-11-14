@@ -1,62 +1,67 @@
-<div style="padding:10px;">
-<h2>Scientific Working Group</h2>
-<div id="about_patric_content">
-<hr />
-<p>As part of PATRIC, we have established a Scientific Working Group (SWG) comprised of members with deep expertise in a broad range of domains of relevance to PATRIC. The SWG provides advice about the management and performance of the resource, and about the needs of the scientific community in relation to the resource.</p>
-<p>&nbsp;</p>
-<div class="table-container with-border" style="width: 95%;">
-<table class="data-table" width="100%" border="0" cellspacing="0">
-<tbody>
-<tr>
-<th style="text-align: left;" width="20%"><em><strong>SWG Member</strong></em></th>
-<th style="text-align: left;"><em>Affiliated Institution</em></th>
-</tr>
-<tr>
-<td>Joshua Adkins</td>
-<td>Pacific Northwest National Laboratory</td>
-</tr>
-<tr>
-<td>Kenneth Bayles</td>
-<td>University of Nebraska Medical Center</td>
-</tr>
-<tr>
-<td>Henry Chambers</td>
-<td>San Francisco General Hospital</td>
-</tr>
-<tr>
-<td>Nicholas Chia</td>
-<td>Mayo Clinic</td>
-</tr>
-<tr>
-<td>Valerie de Crecy-Lagard</td>
-<td>University of Florida</td>
-</tr>
-<tr>
-<td>Bill Jacobs Jr</td>
-<td>Albert Einstein Medical College, Howard Hughes Medical Institute</td>
-</tr>
-<tr>
-<td>Gyanu Lamichhane</td>
-<td>Johns Hopkins University</td>
-</tr>
-<tr>
-<td>Kim Lewis</td>
-<td>Northeastern University, Boston</td>
-</tr>
-<tr>
-<td>Andrei Osterman</td>
-<td>Sanford-Burnham Medical Research Institute</td>
-</tr>
-<tr>
-<td>Howard Shuman</td>
-<td>University of Chicago, Howard Taylor Ricketts Laboratory</td>
-</tr>
-<tr>
-<td>Bryan White</td>
-<td>University of Illinois at Urbana-Champaign</td>
-</tr>
-</tbody>
-</table>
+<div class="dlp">
+    <h2>Scientific Working Group</h2>
+    <section class="main">
+
+        <p>As part of PATRIC, we have established a Scientific Working Group (SWG) comprised of members with deep
+            expertise in a broad range of domains of relevance to PATRIC. The SWG provides advice about the management
+            and performance of the resource, and about the needs of the scientific community in relation to the
+            resource.</p>
+
+        <!--<div class="data-box popular-box tabbed hover-tabs no-underline-links">-->
+            <table class="p3basic striped">
+                <thead>
+                <tr>
+                    <th width="20%">SWG Member</th>
+                    <th>Affiliated Institution</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Joshua Adkins</td>
+                    <td>Pacific Northwest National Laboratory</td>
+                </tr>
+                <tr>
+                    <td>Kenneth Bayles</td>
+                    <td>University of Nebraska Medical Center</td>
+                </tr>
+                <tr>
+                    <td>Henry Chambers</td>
+                    <td>San Francisco General Hospital</td>
+                </tr>
+                <tr>
+                    <td>Nicholas Chia</td>
+                    <td>Mayo Clinic</td>
+                </tr>
+                <tr>
+                    <td>Valerie de Crecy-Lagard</td>
+                    <td>University of Florida</td>
+                </tr>
+                <tr>
+                    <td>Bill Jacobs Jr</td>
+                    <td>Albert Einstein Medical College, Howard Hughes Medical Institute</td>
+                </tr>
+                <tr>
+                    <td>Gyanu Lamichhane</td>
+                    <td>Johns Hopkins University</td>
+                </tr>
+                <tr>
+                    <td>Kim Lewis</td>
+                    <td>Northeastern University, Boston</td>
+                </tr>
+                <tr>
+                    <td>Andrei Osterman</td>
+                    <td>Sanford-Burnham Medical Research Institute</td>
+                </tr>
+                <tr>
+                    <td>Howard Shuman</td>
+                    <td>University of Chicago, Howard Taylor Ricketts Laboratory</td>
+                </tr>
+                <tr>
+                    <td>Bryan White</td>
+                    <td>University of Illinois at Urbana-Champaign</td>
+                </tr>
+                </tbody>
+            </table>
+        <!--</div>-->
+    </section>
 </div>
-</div>
-	</div>
