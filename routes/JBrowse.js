@@ -264,13 +264,7 @@ router.get("/genome/:id/features/:seq_accession", [
 		var en = "and(or(eq(end," + start + "),gt(end," + start + ")),or(eq(end," + end + "),lt(end," + end + ")))"
 
 		var over = "and(lt(start," + start + "),gt(end," + end + "))";
-		if(req.query && req.query["reference_sequences_only"]){
-			req.call_collection = "genome_sequence";
-
-			req.call_params = ["and(eq(genome_id," + req.params.id + "),eq(accession," + req.params.seq_accession + "))"];
-		}else{
-			req.call_params = ["and(eq(genome_id," + req.params.id + "),eq(accession," + req.params.seq_accession + "),eq(annotation," + annotation + "),or(" + st + "," + en + "," + over + "),ne(feature_type,source))"];
-		}
+		req.call_params = ["and(eq(genome_id," + req.params.id + "),eq(accession," + req.params.seq_accession + "),eq(annotation," + annotation + "),or(" + st + "," + en + "," + over + "),ne(feature_type,source))"];
         req.call_params[0]+="&limit(10000)&sort(+start)"
 		req.queryType = "rql";
 		// debug("CALL_PARAMS: ", req.call_params);
@@ -293,7 +287,8 @@ router.get("/genome/:id/features/:seq_accession", [
 						sid: d.genome_id,
 						start: 0,
 						end: d.length,
-						seq: d.sequence,
+						seq: d.na_sequence,
+                        residues: d.aa_sequence,
 						seqChunkSize: d.length
 					}
 				});
