@@ -7,8 +7,8 @@ module.exports = {
 	serialize: function(req, res, next){
 		debug("application/csv handler");
 		debug("Method: ", req.call_method);
-
 		var fields = req.fieldSelection;
+		var header = req.fieldHeader;
 
 		if(req.isDownload){
 			res.attachment('patric3_' + req.call_collection + '_query.csv');
@@ -18,23 +18,28 @@ module.exports = {
 		if(req.call_method == "stream"){
 			when(res.results, function(results){
 				var docCount = 0;
-				debug("Handle Stream");
 				var head;
 				results.stream.pipe(es.mapSync(function(data){
 					if(!head){
 						head = data;
 					}else{
-
 						if(!fields && docCount < 1){
 							fields = Object.keys(data);
 						}
-
 						if(docCount < 1){
-							res.write(fields.join(",") + "\n")
+							if(header){
+								res.write(header.join(",") + "\n");
+							}else{
+								res.write(fields.join(",") + "\n");
+							}
 						}
-
-						// debug(JSON.stringify(data));
-						var row = fields.map(function(field){
+						const row = fields.map(function(field){
+							if(data[field] instanceof Array){
+								return JSON.stringify(data[field].join(";"));
+							}
+							if(typeof data[field] == "string" && data[field].indexOf("\"") > -1){
+								return data[field];
+							}
 							return JSON.stringify(data[field]);
 						});
 						res.write(row.join(",") + "\n");
