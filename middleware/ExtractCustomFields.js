@@ -108,7 +108,7 @@ module.exports = function(req, res, next){
 					"condition", "timeseries", "release_date", "author", "pi", "institution"
 				];
 				break;
-			case "transcriptomics_comparison":
+			case "transcriptomics_sample":
 				req.fieldHeader = [
 					"Experiment ID", "Comparison ID", "Title", "Genes", "Significant genes(Log Ratio)",
 					"Significant genes(Z Score)", "PubMed", "Accession", "Organism", "Strain", "Gene Modification", "Experiment Condition",
