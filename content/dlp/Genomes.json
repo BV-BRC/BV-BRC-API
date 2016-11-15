@@ -6,7 +6,7 @@
                 "icon": "/patric/images/hosts/human.png",
                 "reported": 962,
                 "label": "Human, Homo sapiens",
-                "value": 36241
+                "value": 37061
             },
             {
                 "m_label": "cattle,_bos_taurus",
@@ -15,22 +15,22 @@
                 "value": 641
             },
             {
+                "m_label": "pig",
+                "icon": "/patric/images/flags/Pig.png",
+                "label": "Pig",
+                "value": 548
+            },
+            {
                 "m_label": "thale_cress,_arabidopsis_thaliana",
                 "icon": "/patric/images/flags/Thale-cress,-Arabidopsis-thaliana.png",
                 "label": "Thale cress, Arabidopsis thaliana",
                 "value": 472
             },
             {
-                "m_label": "pig",
-                "icon": "/patric/images/flags/Pig.png",
-                "label": "Pig",
-                "value": 433
-            },
-            {
-                "m_label": "chicken,_gallus_gallus",
-                "icon": "/patric/images/hosts/blank.png",
-                "label": "Chicken, Gallus gallus",
-                "value": 340
+                "m_label": "bovine",
+                "icon": "/patric/images/hosts/cow.png",
+                "label": "Bovine",
+                "value": 374
             }
         ],
         "chart_title": "Bacterial Host",
@@ -40,35 +40,35 @@
     "top5_2": {
         "data": [
             {
-                "m_label": "usa",
+                "m_label": "united_states",
                 "icon": "/patric/images/flags/United-States.png",
-                "reported": 5264,
-                "label": "USA",
-                "value": 17229
-            },
-            {
-                "m_label": "thailand",
-                "icon": "/patric/images/flags/Thailand.png",
-                "label": "Thailand",
-                "value": 3509
+                "reported": 6222,
+                "label": "United States",
+                "value": 19187
             },
             {
                 "m_label": "united_kingdom",
                 "icon": "/patric/images/flags/United-Kingdom.png",
                 "label": "United Kingdom",
-                "value": 3491
+                "value": 4148
+            },
+            {
+                "m_label": "thailand",
+                "icon": "/patric/images/flags/Thailand.png",
+                "label": "Thailand",
+                "value": 3587
+            },
+            {
+                "m_label": "netherlands",
+                "icon": "/patric/images/flags/Netherlands.png",
+                "label": "Netherlands",
+                "value": 3229
             },
             {
                 "m_label": "china",
                 "icon": "/patric/images/flags/China.png",
                 "label": "China",
-                "value": 1566
-            },
-            {
-                "m_label": "russia",
-                "icon": "/patric/images/flags/Russia.png",
-                "label": "Russia",
-                "value": 1338
+                "value": 2128
             }
         ],
         "chart_title": "Isolation Country",
@@ -93,19 +93,19 @@
                 "complete": 2774
             },
             {
-                "wgs": 27282,
+                "wgs": 27281,
                 "year": 2014,
                 "complete": 3788
             },
             {
-                "wgs": 49537,
+                "wgs": 52613,
                 "year": 2015,
                 "complete": 5348
             },
             {
-                "wgs": 62620,
+                "wgs": 66907,
                 "year": 2016,
-                "complete": 6316
+                "complete": 6577
             }
         ],
         "chart_title": "Number of Bacterial Genomes"
@@ -139,8 +139,8 @@
                         "picture": "/patric/images/icon-popular-experiment.png"
                     },
                     "proteinfamily": {
-                        "data": 4290,
-                        "link": "/view/Genome/83332.12#view_tab=proteinFamilies"
+                        "data": 4367,
+                        "link": "/view/Genome/83332.12#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     "pathways": {
                         "data": 141,
@@ -175,8 +175,8 @@
                         "picture": "/patric/images/icon-popular-experiment.png"
                     },
                     "proteinfamily": {
-                        "data": 4413,
-                        "link": "/view/Genome/511145.12#view_tab=proteinFamilies"
+                        "data": 4549,
+                        "link": "/view/Genome/511145.12#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     "pathways": {
                         "data": 136,
@@ -211,8 +211,8 @@
                         "picture": "/patric/images/icon-popular-experiment.png"
                     },
                     "proteinfamily": {
-                        "data": 4910,
-                        "link": "/view/Genome/99287.12#view_tab=proteinFamilies"
+                        "data": 4972,
+                        "link": "/view/Genome/99287.12#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     "pathways": {
                         "data": 136,
@@ -247,8 +247,8 @@
                         "picture": "/patric/images/icon-popular-experiment.png"
                     },
                     "proteinfamily": {
-                        "data": 4959,
-                        "link": "/view/Genome/198215.6#view_tab=proteinFamilies"
+                        "data": 5131,
+                        "link": "/view/Genome/198215.6#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     "pathways": {
                         "data": 134,
@@ -265,7 +265,7 @@
                     "chromosomes": 1,
                     "genome_status": "Complete",
                     "completion_date": "2001-10-05",
-                    "isolation_country": "USA",
+                    "isolation_country": "United States",
                     "plasmids": 3,
                     "genome_length": 4829855,
                     "host_name": "Human, Homo sapiens"
@@ -283,8 +283,8 @@
                         "picture": "/patric/images/icon-popular-experiment.png"
                     },
                     "proteinfamily": {
-                        "data": 4513,
-                        "link": "/view/Genome/214092.21#view_tab=proteinFamilies"
+                        "data": 4666,
+                        "link": "/view/Genome/214092.21#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     "pathways": {
                         "data": 134,
@@ -319,8 +319,8 @@
                         "picture": "/patric/images/icon-popular-experiment.png"
                     },
                     "proteinfamily": {
-                        "data": 2906,
-                        "link": "/view/Genome/169963.11#view_tab=proteinFamilies"
+                        "data": 2927,
+                        "link": "/view/Genome/169963.11#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     "pathways": {
                         "data": 127,
@@ -355,8 +355,8 @@
                         "picture": "/patric/images/icon-popular-experiment.png"
                     },
                     "proteinfamily": {
-                        "data": 2700,
-                        "link": "/view/Genome/158879.11#view_tab=proteinFamilies"
+                        "data": 2734,
+                        "link": "/view/Genome/158879.11#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     "pathways": {
                         "data": 132,
@@ -391,8 +391,8 @@
                         "picture": "/patric/images/icon-popular-experiment.png"
                     },
                     "proteinfamily": {
-                        "data": 2159,
-                        "link": "/view/Genome/373153.27#view_tab=proteinFamilies"
+                        "data": 2205,
+                        "link": "/view/Genome/373153.27#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     "pathways": {
                         "data": 124,
@@ -427,8 +427,8 @@
                         "picture": "/patric/images/icon-popular-experiment.png"
                     },
                     "proteinfamily": {
-                        "data": 3445,
-                        "link": "/view/Genome/224914.11#view_tab=proteinFamilies"
+                        "data": 3499,
+                        "link": "/view/Genome/224914.11#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     "pathways": {
                         "data": 138,
@@ -463,8 +463,8 @@
                         "picture": "/patric/images/icon-popular-experiment.png"
                     },
                     "proteinfamily": {
-                        "data": 1624,
-                        "link": "/view/Genome/85962.8#view_tab=proteinFamilies"
+                        "data": 1674,
+                        "link": "/view/Genome/85962.8#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     "pathways": {
                         "data": 117,

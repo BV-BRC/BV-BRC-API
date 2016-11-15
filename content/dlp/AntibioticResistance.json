@@ -16,7 +16,7 @@
                     },
                     {
                         "name": "Protein Family Sorter",
-                        "link": "/view/Genome/83332.12#view_tab=proteinFamilies"
+                        "link": "/view/Genome/83332.12#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     {
                         "name": "Pathway",
@@ -54,7 +54,7 @@
                     },
                     {
                         "name": "Protein Family Sorter",
-                        "link": "/view/Genome/511145.12#view_tab=proteinFamilies"
+                        "link": "/view/Genome/511145.12#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     {
                         "name": "Pathway",
@@ -92,7 +92,7 @@
                     },
                     {
                         "name": "Protein Family Sorter",
-                        "link": "/view/Genome/99287.12#view_tab=proteinFamilies"
+                        "link": "/view/Genome/99287.12#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     {
                         "name": "Pathway",
@@ -130,7 +130,7 @@
                     },
                     {
                         "name": "Protein Family Sorter",
-                        "link": "/view/Genome/198215.6#view_tab=proteinFamilies"
+                        "link": "/view/Genome/198215.6#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     {
                         "name": "Pathway",
@@ -168,7 +168,7 @@
                     },
                     {
                         "name": "Protein Family Sorter",
-                        "link": "/view/Genome/214092.21#view_tab=proteinFamilies"
+                        "link": "/view/Genome/214092.21#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     {
                         "name": "Pathway",
@@ -206,7 +206,7 @@
                     },
                     {
                         "name": "Protein Family Sorter",
-                        "link": "/view/Genome/169963.11#view_tab=proteinFamilies"
+                        "link": "/view/Genome/169963.11#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     {
                         "name": "Pathway",
@@ -244,7 +244,7 @@
                     },
                     {
                         "name": "Protein Family Sorter",
-                        "link": "/view/Genome/158879.11#view_tab=proteinFamilies"
+                        "link": "/view/Genome/158879.11#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     {
                         "name": "Pathway",
@@ -282,7 +282,7 @@
                     },
                     {
                         "name": "Protein Family Sorter",
-                        "link": "/view/Genome/373153.27#view_tab=proteinFamilies"
+                        "link": "/view/Genome/373153.27#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     {
                         "name": "Pathway",
@@ -320,7 +320,7 @@
                     },
                     {
                         "name": "Protein Family Sorter",
-                        "link": "/view/Genome/224914.11#view_tab=proteinFamilies"
+                        "link": "/view/Genome/224914.11#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     {
                         "name": "Pathway",
@@ -353,7 +353,7 @@
                     },
                     {
                         "name": "Protein Family Sorter",
-                        "link": "/view/Genome/85962.8#view_tab=proteinFamilies"
+                        "link": "/view/Genome/85962.8#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     {
                         "name": "Pathway",

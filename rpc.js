@@ -1,10 +1,11 @@
-var defer = require('promised-io/promise').defer;
-var MSA = require("./rpc/msa");
-var Cluster = require("./rpc/cluster");
-var ProteinFamily = require("./rpc/proteinFamily");
+const MSA = require("./rpc/msa");
+const Cluster = require("./rpc/cluster");
+const ProteinFamily = require("./rpc/proteinFamily");
+const TranscriptomicsGene = require("./rpc/transcriptomicsGene");
 
 module.exports = {
 	"multipleSequenceAlignment": MSA,
 	"proteinFamily": ProteinFamily,
+	"transcriptomicsGene": TranscriptomicsGene,
 	"cluster": Cluster
 };
