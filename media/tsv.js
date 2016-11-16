@@ -8,6 +8,7 @@ module.exports = {
 		debug("application/tsv handler");
 		debug("Method: ", req.call_method);
 		var fields = req.fieldSelection;
+		var header = req.fieldHeader;
 
 		if(req.isDownload){
 			res.attachment('patric3_' + req.call_collection + '_query.txt');
@@ -22,14 +23,20 @@ module.exports = {
 					if(!head){
 						head = data;
 					}else{
-						// debug(JSON.stringify(data));
 						if(!fields && docCount < 1){
 							fields = Object.keys(data);
 						}
 						if(docCount < 1){
-							res.write(fields.join("\t") + "\n")
+							if(header){
+								res.write(header.join("\t") + "\n");
+							}else{
+								res.write(fields.join("\t") + "\n");
+							}
 						}
-						var row = fields.map(function(field){
+						const row = fields.map(function(field){
+							if(data[field] instanceof Array){
+								return JSON.stringify(data[field].join(";"));
+							}
 							return JSON.stringify(data[field]);
 						});
 						res.write(row.join("\t") + "\n");
@@ -40,7 +47,7 @@ module.exports = {
 				})
 			});
 		}else if(req.call_method == "query"){
-			debug('res.results: ', res.results);
+			debug("query response: ", res.results);
 			if(res.results && res.results.response && res.results.response.docs){
 				if(!fields){
 					fields = Object.keys(res.results.response.docs[0]);
