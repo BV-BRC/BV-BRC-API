@@ -40,7 +40,7 @@
 					<p>Virulence factors refer to the gene products that enable bacteria to establish itself on or within a host organism 
 					and enhance its potential to cause disease. We have integrated and mapped virulence factor genes from the following sources:</p>
 					<ul>
-						<li><a href="https://www.patricbrc.org/portal/portal/patric/SpecialtyGeneSource?source=PATRIC_VF&kw=" target="_blank">PATRIC_VF</a></li>
+						<li><a href="/view/SpecialtyGeneList/?and(eq(source,PATRIC_VF),eq(evidence,Literature))" target="_blank">PATRIC_VF</a></li>
 						<li><a href="http://www.mgc.ac.cn/VFs/" target="_blank">VFDB</a></li>
 						<li><a href="http://www.phidias.us/victors/" target="_blank">Victors</a></li>
 					</ul>

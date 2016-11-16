@@ -7,8 +7,8 @@ module.exports = {
 	serialize: function(req, res, next){
 		debug("application/csv handler");
 		debug("Method: ", req.call_method);
-
 		var fields = req.fieldSelection;
+		var header = req.fieldHeader;
 
 		if(req.isDownload){
 			res.attachment('patric3_' + req.call_collection + '_query.csv');
@@ -18,19 +18,20 @@ module.exports = {
 		if(req.call_method == "stream"){
 			when(res.results, function(results){
 				var docCount = 0;
-				debug("Handle Stream");
 				var head;
 				results.stream.pipe(es.mapSync(function(data){
 					if(!head){
 						head = data;
 					}else{
-
 						if(!fields && docCount < 1){
 							fields = Object.keys(data);
 						}
-
 						if(docCount < 1){
-							res.write(fields.join(",") + "\n")
+							if(header){
+								res.write(header.join(",") + "\n");
+							}else{
+								res.write(fields.join(",") + "\n");
+							}
 						}
 
 						// debug(JSON.stringify(data));
@@ -46,6 +47,7 @@ module.exports = {
 							}else{
 								return "";
 							}
+
 						});
 						res.write(row.join(",") + "\n");
 						docCount++;
