@@ -285,17 +285,23 @@ router.get("/genome/:id/features/:seq_accession", [
 		if(req.call_collection == "genome_sequence"){
 			if(res.results && res.results.response && res.results.response.docs){
 				var refseqs = res.results.response.docs.map(function(d){
+                var end = req.query.end || req.params.end;
+                var start= req.query.start || req.params.start;
+                start = start < 0 ? 0 : start;
+                end = end > d.length ? d.length : end;
+                var sequence = d.sequence.slice(start,end+1);
+                var length = end -start;
 					return {
-						length: d.length,
+						length: length,
 						name: d.accession,
 						accn: d.accession,
 						type: "reference",
 						score: d.gc_content,
 						sid: d.genome_id,
-						start: 0,
-						end: d.length,
-						seq: d.sequence,
-						seqChunkSize: d.length
+						start: start,
+						end: end,
+						seq: sequence,
+						seqChunkSize: length
 					}
 				});
 				res.json({features: refseqs});
@@ -316,6 +322,7 @@ router.get("/genome/:id/features/:seq_accession", [
 				d.uniqueID = d.feature_id;
 				d.strand = (d.strand == "+") ? 1 : -1;
 				d.phase = (d.feature_type == "CDS") ? 0 : ((d.feature_type == "RNA") ? 1 : 2);
+                d.start = d.start-1;
 				return d;
 			});
 			// debug("FEATURES: ", features)
