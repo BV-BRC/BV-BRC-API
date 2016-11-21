@@ -316,7 +316,7 @@ router.get("/genome/:id/features/:seq_accession", [
 		// debug("res.results: ", res.results)
 		if(res.results && res.results.response && res.results.response.docs){
 			var features = res.results.response.docs.map(function(d){
-				d.seq = d.na_sequence;
+				//d.seq = d.na_sequence;
 				d.type = d.feature_type;
 				d.name = d.accession;
 				d.uniqueID = d.feature_id;
