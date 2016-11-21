@@ -46,7 +46,7 @@ function buildFasta(sequences,opts){
 		if (o.annotation == "PATRIC") {
 			fasta_id = o.feature_id;
 		} else if (o.annotation == "RefSeq") {
-			fasta_id = "gi|" + o.gi;
+			fasta_id = o.feature_id;
 		}
 		var row = ">" + fasta_id + " [" + o.genome_id + "]\n" + o.aa_sequence + "\n"; 
 		fasta.push(row)
