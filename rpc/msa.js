@@ -251,7 +251,9 @@ module.exports = {
                                     "feature_id":seq.feature_id,
                                     "genome_id":seq.genome_id,
                                     "patric_id":seq.patric_id,
-                                    "aa_length":seq.aa_length};
+                                    "aa_length":seq.aa_length,
+                                    "refseq_locus_tag": seq.refseq_locus_tag
+                                };
 							})
 
 							def.resolve({
