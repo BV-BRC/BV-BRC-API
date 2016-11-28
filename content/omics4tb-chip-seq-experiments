@@ -1,83 +1,103 @@
-<div style="width:80%;margin:auto">
-<h2 class="entry-title">
-        omics4TB ChipSeq Experiments
-</h2>
-<div class="entry-summary">
-	<!-- ?php the_excerpt(); ? --->
-		<p><em>Mycobacterium tuberculosis</em>&nbsp;(MTB) is a pathogenic bacterium responsible for 12 million active cases of tuberculosis (TB) worldwide. The complexity and critical regulatory components of MTB pathogenicity are still poorly understood despite extensive research efforts. In this study, we constructed the first systems-scale map of transcription factor (TF) binding sites and their regulatory target proteins in MTB. We constructed FLAG-tagged overexpression constructs for 206 TFs in MTB, used ChIP-seq to identify genome-wide binding events and surveyed global transcriptomic changes for each overexpressed TF. Here we present data for the most comprehensive map of MTB gene regulation to date. We also define elaborate quality control measures, extensive filtering steps, and the gene-level overlap between ChIP-seq and microarray datasets. Further, we describe the use of TF overexpression datasets to validate a global gene regulatory network model of MTB and describe an online source to explore the datasets.</p>
-<p><a href="/public/patric/images/ChIP-Seq_TFOE_Analysis_Workflow.png"><img class="wp-image-4999 aligncenter" src="/public/patric/images/ChIP-Seq_TFOE_Analysis_Workflow.png" alt="ChIP-Seq_TFOE_Analysis_Workflow" width="567" height="526"></a></p>
-<p>Figure: <strong>ChIP-Seq and TFOE Analysis Workflow.</strong></p>
-<p>All putative DNA-binding proteins in MTB genome were cloned into expression vector with FLAG-tag under the control of inducible promoter. After induction of expression, either chromatin immunoprecipitation followed by sequencing or transcriptional profiling by using high-density tiling arrays was performed for each TF. For ChIP-seq experiments, confident binding events across genome were identified after analysis and filtering of read pileups as described in Methods section. These binding events were further investigated with respect to transcription start sites and compared to expression consequences in TFOE dataset. Consensus DNA binding motifs were also identified. For TFOE experiments, differentially expressed genes were identified by microarray analysis. Differential expression signatures were used to build a transcriptional network model. Moreover, TFOE-derived regulatory influences were compared to 12 existing regulons as a validation.</p>
-<p>(<em>Source: Turkarslan et al., Scientific Data&nbsp;<strong>2</strong>, Article number: 150010 (2015) &nbsp;</em><em>​doi:10.1038/sdata.2015.10</em>)</p>
-<table style="height: 232px;" width="746">
-<tbody>
-<tr>
-<td width="134" class="first"><strong>Design Type(s)</strong></td>
-<td width="332" class="last">
-<ul>
-<li class="last first">ChIP-Seq</li>
-</ul>
-</td>
-</tr>
-<tr>
-<td width="134" class="first"><strong>Measurement Type(s)</strong></td>
-<td width="332" class="last">
-<ul>
-<li class="last first">transcription factor binding site identification</li>
-</ul>
-</td>
-</tr>
-<tr>
-<td width="134" class="first"><strong>Technology Type(s)</strong></td>
-<td width="332" class="last">
-<ul>
-<li class="last first">ChIP assay</li>
-</ul>
-</td>
-</tr>
-<tr>
-<td width="134" class="first"><strong>Sample Characteristic(s)</strong></td>
-<td width="332" class="last">
-<ul>
-<li class="last first">Mycobacterium tuberculosis H37Rv</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Bioproject Record:</strong></p>
-<p>Attributes:</p>
-<table style="height: 170px;" width="433">
-<tbody>
-<tr>
-<td class="first"><strong>collected by</strong></td>
-<td class="last">Kyle Minch</td>
-</tr>
-<tr>
-<td class="first"><strong>collection date</strong></td>
-<td class="last">2014</td>
-</tr>
-<tr>
-<td class="first"><strong>geographic location</strong></td>
-<td class="last"><a href="http://www.ncbi.nlm.nih.gov/biosample?term=%22geo_loc_name=USA:Washington:Seattle%22%5Battr%5D" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ncbi.nlm.nih.gov/biosample?term=%22geo_loc_name=USA:Washington:Seattle%22%5Battr%5D', 'USA:Washington:Seattle');">USA:Washington:Seattle</a></td>
-</tr>
-<tr>
-<td class="first"><strong>host</strong></td>
-<td class="last">Homo sapiens</td>
-</tr>
-<tr>
-<td class="first"><strong>host disease</strong></td>
-<td class="last">tuberculosis</td>
-</tr>
-<tr>
-<td class="first"><strong>isolation source</strong></td>
-<td class="last">human</td>
-</tr>
-</tbody>
-</table>
-<p>BioProject: <a href="http://www.ncbi.nlm.nih.gov/bioproject/255984" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ncbi.nlm.nih.gov/bioproject/255984', 'PRJNA255984');">PRJNA255984</a></p>
-<p>Submission: <a href="http://www.seattlebiomed.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.seattlebiomed.org/', 'Seattle Biomed');">Seattle Biomed</a>, Serdar Turkarslan; 2014-07-23</p>
-<p>All raw sequencing data for ChIP-seq experiments in BAM format are available at NCBI under BioProject number PRJNA255984 (<a href="http://enews.patricbrc.org/wp-content/uploads/2016/03/chIPSeq-meta.xls" onclick="__gaTracker('send', 'event', 'download', 'http://enews.patricbrc.org/wp-content/uploads/2016/03/chIPSeq-meta.xls');">ChIPSeq-meta.xls</a>) (GenBank<a href="http://www.ncbi.nlm.nih.gov/bioproject/?term=PRJNA255984" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ncbi.nlm.nih.gov/bioproject/?term=PRJNA255984', 'PRJNA255984');">PRJNA255984</a>). In addition, sorted and indexed BAM files are available at the MTB Network Portal (<a href="http://networks.systemsbiology.net/mtb/chipseq-gateway" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://networks.systemsbiology.net/mtb/chipseq-gateway', 'http://networks.systemsbiology.net/mtb/chipseq-gateway');">http://networks.systemsbiology.net/mtb/chipseq-gateway</a>). The MTB Network Portal enables exploration of ChIP-seq data for each TF as UCSC Genome Browser Tracks and also provides download links for sorted BAM files. Binding events identified as described in Methods section are also presented along with associated transcriptional consequences.</p>
-			
-	</div>
+<div class="dlp">
+    <h2>Omics4TB ChipSeq Experiments</h2>
+
+    <section class="main">
+        <div class="data-box">
+            <p><em>Mycobacterium tuberculosis</em>&nbsp;(MTB) is a pathogenic bacterium responsible for 12 million
+                active cases of tuberculosis (TB) worldwide. The complexity and critical regulatory components of MTB
+                pathogenicity are still poorly understood despite extensive research efforts. In this study, we
+                constructed the first systems-scale map of transcription factor (TF) binding sites and their regulatory
+                target proteins in MTB. We constructed FLAG-tagged overexpression constructs for 206 TFs in MTB, used
+                ChIP-seq to identify genome-wide binding events and surveyed global transcriptomic changes for each
+                overexpressed TF. Here we present data for the most comprehensive map of MTB gene regulation to date. We
+                also define elaborate quality control measures, extensive filtering steps, and the gene-level overlap
+                between ChIP-seq and microarray datasets. Further, we describe the use of TF overexpression datasets to
+                validate a global gene regulatory network model of MTB and describe an online source to explore the
+                datasets.</p>
+            <p><a href="/public/patric/images/ChIP-Seq_TFOE_Analysis_Workflow.png"><img
+                    class="wp-image-4999 aligncenter" src="/public/patric/images/ChIP-Seq_TFOE_Analysis_Workflow.png"
+                    alt="ChIP-Seq_TFOE_Analysis_Workflow" width="567" height="526"></a></p>
+            <p>Figure: <strong>ChIP-Seq and TFOE Analysis Workflow.</strong></p>
+            <p>All putative DNA-binding proteins in MTB genome were cloned into expression vector with FLAG-tag under
+                the control of inducible promoter. After induction of expression, either chromatin immunoprecipitation
+                followed by sequencing or transcriptional profiling by using high-density tiling arrays was performed
+                for each TF. For ChIP-seq experiments, confident binding events across genome were identified after
+                analysis and filtering of read pileups as described in Methods section. These binding events were
+                further investigated with respect to transcription start sites and compared to expression consequences
+                in TFOE dataset. Consensus DNA binding motifs were also identified. For TFOE experiments, differentially
+                expressed genes were identified by microarray analysis. Differential expression signatures were used to
+                build a transcriptional network model. Moreover, TFOE-derived regulatory influences were compared to 12
+                existing regulons as a validation.</p>
+            <p>(<em>Source: Turkarslan et al., Scientific Data&nbsp;<strong>2</strong>, Article number: 150010 (2015)
+                &nbsp;</em><em>​doi:10.1038/sdata.2015.10</em>)</p>
+
+            <table class="p3basic">
+                <tbody>
+                <tr>
+                    <td width="200"><strong>Design Type(s)</strong></td>
+                    <td>ChIP-Seq</td>
+                </tr>
+                <tr>
+                    <td><strong>Measurement Type(s)</strong></td>
+                    <td>transcription factor binding site identification</td>
+                </tr>
+                <tr>
+                    <td><strong>Technology Type(s)</strong></td>
+                    <td>ChIP assay</td>
+                </tr>
+                <tr>
+                    <td><strong>Sample Characteristic(s)</strong></td>
+                    <td>Mycobacterium tuberculosis H37Rv</td>
+                </tr>
+                </tbody>
+            </table>
+            <p> </p>
+
+            <h4 class="ribbon-title">Bioproject Record:</h4>
+            <p>Attributes:</p>
+            <table class="p3basic">
+                <tbody>
+                <tr>
+                    <td><strong>collected by</strong></td>
+                    <td>Kyle Minch</td>
+                </tr>
+                <tr>
+                    <td><strong>collection date</strong></td>
+                    <td>2014</td>
+                </tr>
+                <tr>
+                    <td><strong>geographic location</strong></td>
+                    <td><a href="http://www.ncbi.nlm.nih.gov/biosample?term=%22geo_loc_name=USA:Washington:Seattle%22%5Battr%5D">USA:Washington:Seattle</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>host</strong></td>
+                    <td>Homo sapiens</td>
+                </tr>
+                <tr>
+                    <td><strong>host disease</strong></td>
+                    <td>tuberculosis</td>
+                </tr>
+                <tr>
+                    <td><strong>isolation source</strong></td>
+                    <td>human</td>
+                </tr>
+                </tbody>
+            </table>
+            <p> </p>
+            <p>BioProject: <a href="http://www.ncbi.nlm.nih.gov/bioproject/255984">PRJNA255984</a>
+            </p>
+            <p>Submission: <a href="http://www.seattlebiomed.org/">Seattle
+                Biomed</a>, Serdar Turkarslan; 2014-07-23</p>
+            <p>All raw sequencing data for ChIP-seq experiments in BAM format are available at NCBI under BioProject
+                number PRJNA255984 (<a href="http://enews.patricbrc.org/wp-content/uploads/2016/03/chIPSeq-meta.xls"
+                                       >ChIPSeq-meta.xls</a>)
+                (GenBank<a href="http://www.ncbi.nlm.nih.gov/bioproject/?term=PRJNA255984">PRJNA255984</a>).
+                In addition, sorted and indexed BAM files are available at the MTB Network Portal (<a
+                        href="http://networks.systemsbiology.net/mtb/chipseq-gateway">http://networks.systemsbiology.net/mtb/chipseq-gateway</a>).
+                The MTB Network Portal enables exploration of ChIP-seq data for each TF as UCSC Genome Browser Tracks
+                and also provides download links for sorted BAM files. Binding events identified as described in Methods
+                section are also presented along with associated transcriptional consequences.</p>
+        </div>
+    </section>
 </div>
