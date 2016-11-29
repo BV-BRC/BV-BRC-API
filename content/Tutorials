@@ -1,12 +1,189 @@
-<div style="padding:8px;">
-	<h3>New Beta Tutorials</h3>
+<div class="dlp">
+    <h2>Tutorials</h2>
 
-	<ul>
-		<li><a target="_blank" href="/public/pdfs/Annotating a genome in PATRIC-beta.pdf">Annotating a genome</a></li>
-		<li><a target="_blank" href="/public/pdfs/Assembling a genome in PATRIC-beta.pdf">Assembling a genome</a></li>
-		<li><a target="_blank" href="/public/pdfs/Comparing Pathways in PATRIC.pdf">Comparing Pathways</a></li>
-		<li><a target="_blank" href="/public/pdfs/Protein Families-Portein Family Sorter.pdf">Protein Families-Protein Family Sorter</a></li>
-		<li><a target="_blank" href="/public/pdfs/Submitting an RNA-seq job.pdf">Submitting an RNA-seq job</a></li>
-		<li><a target="_blank" href="/public/pdfs/Expression Import.pdf">Expression Import</a></li>
-	</ul>
+    <section class="main">
+        <!--<div class="data-box">-->
+
+        <div id="pdf_tutorials">
+            <h3 class="section-title normal-case far"><span
+                    class="wrap">Step-by-Step PDF Tutorials</span></h3>
+            <div class="left" style="margin-right: 17px; width: 311px">
+                <ul id="column_pt_0" class="no-decoration no-underline-links">
+                    <li class="clear">
+                        <figure class="figure-right"><a
+                                href="/public/pdfs/Workshop-Genome-Assembly.pdf"><img
+                                src="/public/patric/images/workshop-pdf-icon.jpg"
+                                alt="Workshop Guide: Genome Assembly"></a></figure>
+                        <h4 class="bold"><a
+                                href="/public/pdfs/Workshop-Genome-Assembly.pdf">Workshop
+                            Guide: Genome Assembly</a></h4>
+                        <p>This document provides step-by-step instructions for following the corresponding workflow
+                            covered during the PATRIC Workshop.</p></li>
+<!--
+
+                    <li class="clear">
+                        <figure class="figure-right"><a
+                                href="/public/pdf/Workshop-Differential-Expression.pdf"><img
+                                src="/public/patric/images/workshop-pdf-icon.jpg"
+                                alt="Workshop Guide: Differential Expression"></a></figure>
+                        <h4 class="bold"><a
+                                href="/public/pdf/Workshop-Differential-Expression.pdf">Workshop
+                            Guide: Differential Expression</a></h4>
+                        <p>This document provides step-by-step instructions for following the corresponding workflow
+                            covered during the PATRIC Workshop.</p></li>
+-->
+                    <li class="clear">
+                        <figure class="figure-right"><a
+                                href="/public/pdfs/Workshop-Protein-Family-Sorter.pdf"><img
+                                src="/public/patric/images/workshop-pdf-icon.jpg"
+                                alt="Workshop Guide: Protein Family Sorter"></a></figure>
+                        <h4 class="bold"><a
+                                href="/public/pdfs/Workshop-Protein-Family-Sorter.pdf">Workshop
+                            Guide: Protein Family Sorter</a></h4>
+                        <p>This document provides step-by-step instructions for following the corresponding workflow
+                            covered during the PATRIC Workshop.</p></li>
+                    <li class="clear">
+                        <figure class="figure-right"><a
+                                href="/public/pdfs/Workshop-RNA-Seq-Submission.pdf"><img
+                                src="/public/patric/images/workshop-pdf-icon.jpg"
+                                alt="Workshop Guide: RNA-Seq Data Submission"></a></figure>
+                        <h4 class="bold"><a
+                                href="/public/pdfs/Workshop-RNA-Seq-Submission.pdf">Workshop
+                            Guide: RNA-Seq Data Submission</a></h4>
+                        <p>This document provides step-by-step instructions for following the corresponding workflow
+                            covered during the PATRIC Workshop.</p></li>
+                    <li class="clear">
+                        <figure class="figure-right"><a
+                                href="/public/pdfs/Workshop-Pathway-Comparison.pdf"><img
+                                src="/public/patric/images/workshop-pdf-icon.jpg"
+                                alt="Workshop Guide: Comparing Pathways"></a></figure>
+                        <h4 class="bold"><a
+                                href="/public/pdfs/Workshop-Pathway-Comparison.pdf">Workshop
+                            Guide: Comparing Pathways</a></h4>
+                        <p>This document provides step-by-step instructions for following the corresponding workflow
+                            covered during the PATRIC Workshop.</p></li>
+                </ul>
+            </div>
+            <div class="left" style="margin-right: 17px; width: 311px">
+                <ul id="column_pt_1" class="no-decoration no-underline-links">
+                    <li class="clear">
+                        <figure class="figure-right"><a
+                                href="/public/pdfs/Workshop-Genome-Annotation.pdf"><img
+                                src="/public/patric/images/workshop-pdf-icon.jpg"
+                                alt="Workshop Guide: Genome Annotation"></a></figure>
+                        <h4 class="bold"><a
+                                href="/public/pdfs/Workshop-Genome-Annotation.pdf">Workshop
+                            Guide: Genome Annotation</a></h4>
+                        <p>This document provides step-by-step instructions for following the corresponding workflow
+                            covered during the PATRIC Workshop.</p></li>
+<!--
+                    <li class="clear">
+                        <figure class="figure-right"><a
+                                href="http://enews.patricbrc.org/wp-content/uploads/2015/06/Metabolic-model-reconstruction.pdf"><img
+                                src="/public/patric/images/workshop-pdf-icon.jpg"
+                                alt="Workshop Guide: Metabolic Model Reconstruction"></a></figure>
+                        <h4 class="bold"><a
+                                href="http://enews.patricbrc.org/wp-content/uploads/2015/06/Metabolic-model-reconstruction.pdf">Workshop
+                            Guide: Metabolic Model Reconstruction</a></h4>
+                        <p>This document provides step-by-step instructions for following the corresponding workflow
+                            covered during the PATRIC Workshop.</p></li>
+-->
+<!--
+                    <li class="clear">
+                        <figure class="figure-right"><a
+                                href="/public/pdfs/Workshop-Genome-Groups.pdf"><img
+                                src="/public/patric/images/workshop-pdf-icon.jpg"
+                                alt="Workshop Guide: Genome Groups"></a></figure>
+                        <h4 class="bold"><a
+                                href="/public/pdfs/Workshop-Genome-Groups.pdf">Workshop
+                            Guide: Genome Groups</a></h4>
+                        <p>This document provides step-by-step instructions for following the corresponding workflow
+                            covered during the PATRIC Workshop.</p></li>
+-->
+                    <li class="clear">
+                        <figure class="figure-right"><a
+                                href="/public/pdfs/Expression-Import-upload.pdf"><img
+                                src="/public/patric/images/workshop-pdf-icon.jpg"
+                                alt="Workshop Guide: Expression Import"></a></figure>
+                        <h4 class="bold"><a
+                                href="/public/pdfs/Expression-Import-upload.pdf">Workshop
+                            Guide: Expression Import</a></h4>
+                        <p>This document provides step-by-step instructions for following the corresponding workflow
+                            covered during the PATRIC Workshop.</p></li>
+                    <li class="clear">
+                        <figure class="figure-right"><a
+                                href="/public/pdfs/Workshop-BLAST-Service.pdf"><img
+                                src="/public/patric/images/workshop-pdf-icon.jpg"
+                                alt="Workshop Guide: BLAST Service"></a></figure>
+                        <h4 class="bold"><a
+                                href="/public/pdfs/Workshop-BLAST-Service.pdf">Workshop
+                            Guide: BLAST Service</a></h4>
+                        <p>This document provides step-by-step instructions for following the corresponding workflow
+                            covered during the PATRIC Workshop.</p></li>
+                </ul>
+            </div>
+            <div class="left" style="width: 311px">
+                <ul id="column_pt_2" class="no-decoration no-underline-links">
+<!--
+                    <li class="clear">
+                        <figure class="figure-right"><a
+                                href="/public/pdf/Workshop-RNA-Seq-Analysis.pdf"><img
+                                src="/public/patric/images/workshop-pdf-icon.jpg"
+                                alt="Workshop Guide: RNA-Seq Analysis"></a></figure>
+                        <h4 class="bold"><a
+                                href="/public/pdf/Workshop-RNA-Seq-Analysis.pdf">Workshop
+                            Guide: RNA-Seq Analysis</a></h4>
+                        <p>This document provides step-by-step instructions for following the corresponding workflow
+                            covered during the PATRIC Workshop.</p></li>
+-->
+                    <li class="clear">
+                        <figure class="figure-right"><a
+                                href="/public/pdf/Workshop-Proteome-Comparison.pdf"><img
+                                src="/public/patric/images/workshop-pdf-icon.jpg"
+                                alt="Workshop Guide: Proteome Comparison"></a></figure>
+                        <h4 class="bold"><a
+                                href="/public/pdf/Workshop-Proteome-Comparison.pdf">Workshop
+                            Guide: Proteome Comparison</a></h4>
+                        <p>This document provides step-by-step instructions for following the corresponding workflow
+                            covered during the PATRIC Workshop.</p></li>
+<!--
+                    <li class="clear">
+                        <figure class="figure-right"><a
+                                href="/public/pdf/Workshop-Private-Genome.pdf"><img
+                                src="/public/patric/images/workshop-pdf-icon.jpg"
+                                alt="Workshop Guide: Private Genome"></a></figure>
+                        <h4 class="bold"><a
+                                href="/public/pdf/Workshop-Private-Genome.pdf">Workshop
+                            Guide: Private Genome</a></h4>
+                        <p>This document provides step-by-step instructions for following the corresponding workflow
+                            covered during the PATRIC Workshop.</p></li>
+-->
+
+                    <li class="clear">
+                        <figure class="figure-right"><a
+                                href="/public/pdfs/Workshop-Transcriptomics.pdf"><img
+                                src="/public/patric/images/workshop-pdf-icon.jpg"
+                                alt="Workshop Guide: Transcriptomics Page"></a></figure>
+                        <h4 class="bold"><a
+                                href="/public/pdfs/Workshop-Transcriptomics.pdf">Workshop
+                            Guide: Transcriptomics Page</a></h4>
+                        <p>This document provides step-by-step instructions for following the corresponding workflow
+                            covered during the PATRIC Workshop.</p></li>
+                    <li class="clear">
+                        <figure class="figure-right"><a
+                                href="/public/pdfs/Workshop-Variation-Service.v3.pdf"><img
+                                src="/public/patric/images/workshop-pdf-icon.jpg"
+                                alt="Workshop Guide: Variation Service"></a></figure>
+                        <h4 class="bold"><a
+                                href="/public/pdfs/Workshop-Variation-Service.v3.pdf">Workshop
+                            Guide: Variation Analysis Service</a></h4>
+                        <p>This document provides step-by-step instructions for following the corresponding workflow
+                            covered during the PATRIC Workshop.</p></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="clear"></div>
+        <!--</div>-->
+    </section>
 </div>
