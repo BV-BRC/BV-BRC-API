@@ -76,9 +76,9 @@
                     <td>
                         <a href="http://brcdownloads.patricbrc.org/BRC_Mirrors/TBSysBio/ChIP-Seq_patric/Rv0022c_58_6.bigwig">download
                             bigwig</a></td>
-                    <td class="last"><a
-                            href="http://patricbrc.org/portal/portal/patric/GenomeBrowser?cType=genome&amp;cId=87468&amp;addTracks=%5B%7B%22style%22%3A%7B%22height%22%3A200%7D%2C%22autoscale%22%3A%22local%22%2C%22variance_band%22%3A%22true%22%2C%22label%22%3A%22Rv0022c_58_6.bigwig%22%2C%22key%22%3A%22Rv0022c_58_6.bigwig%22%2C%22type%22%3A%22JBrowse%2FView%2FTrack%2FWiggle%2FXYPlot%22%2C%22store%22%3A%22Rv0022c_58_6%22%7D%5D&amp;addStores=%7B%22Rv0022c_58_6%22%3A%7B%22type%22%3A%22JBrowse%2FStore%2FBigWig%22%2C%22urlTemplate%22%3A%22http%3A%2F%2Fbrcdownloads.patricbrc.org%2FBRC_Mirrors%2FTBSysBio%2FChIP-Seq_patric%2FRv0022c_58_6.bigwig%22%7D%7D&amp;loc=sid%7C576%7Caccn%7CNC_000962%3A1..5000&amp;tracks=DNA%2CPATRICGenes%2CRv0022c_58_6.bigwig&amp;highlight= ">view
-                        peaks</a></td>
+                    <td class="last"><a 
+                            href="/view/Genome/83332.12#view_tab=browser&addTracks=%5B%7B%22style%22%3A%7B%22height%22%3A200%7D%2C%22autoscale%22%3A%22local%22%2C%22variance_band%22%3A%22true%22%2C%22label%22%3A%22Rv0022c_58_6.bigwig%22%2C%22key%22%3A%22Rv0022c_58_6.bigwig%22%2C%22type%22%3A%22JBrowse%2FView%2FTrack%2FWiggle%2FXYPlot%22%2C%22store%22%3A%22Rv0022c_58_6%22%7D%5D&amp;addStores=%7B%22Rv0022c_58_6%22%3A%7B%22type%22%3A%22JBrowse%2FStore%2FBigWig%22%2C%22urlTemplate%22%3A%22http%3A%2F%2Fbrcdownloads.patricbrc.org%2FBRC_Mirrors%2FTBSysBio%2FChIP-Seq_patric%2FRv0022c_58_6.bigwig%22%7D%7D&amp;loc=sid%7C576%7Caccn%7CNC_000962%3A1..5000&amp;tracks=DNA%2CPATRICGenes%2CRv0022c_58_6.bigwig&amp;highlight= ">view 
+                            peaks</a></td>
                 </tr>
                 <tr>
                     <td class="first">Rv0023_52_4</td>
