@@ -23,7 +23,7 @@ module.exports = {
 		debug("application/dna+fastahandler");
 
 		if(req.isDownload){
-			res.attachment('patric3_' + req.call_collection + '.fasta');
+			res.attachment('PATRIC_' + req.call_collection + '.fasta');
 		}
 
 		if(req.call_method == "stream"){

@@ -11,7 +11,7 @@ module.exports = {
 		var header = req.fieldHeader;
 
 		if(req.isDownload){
-			res.attachment('patric3_' + req.call_collection + '_query.csv');
+			res.attachment('PATRIC_' + req.call_collection + '.csv');
 			//res.set("content-disposition", 'attachment; filename="patric3_' + req.call_collection + '_query.csv"');
 		}
 
