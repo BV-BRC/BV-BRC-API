@@ -11,7 +11,7 @@ module.exports = {
 		var header = req.fieldHeader;
 
 		if(req.isDownload){
-			res.attachment('patric3_' + req.call_collection + '_query.txt');
+			res.attachment('PATRIC_' + req.call_collection + '.txt');
 			// res.set("content-disposition", 'attachment; filename="patric3_' + req.call_collection + '_query.txt"');
 		}
 
