@@ -58,7 +58,7 @@ module.exports = {
 		debug("application/cufflinks+gff");
 
 		if(req.isDownload){
-			res.attachment('patric3_' + req.call_collection + '.fasta');
+			res.attachment('PATRIC_' + req.call_collection + '.fasta');
 			// res.set("content-disposition", "attachment; filename=patric_genomes.fasta");
 		}
 

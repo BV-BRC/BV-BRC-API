@@ -10,7 +10,7 @@ module.exports = {
 		var header = req.fieldHeader;
 
 		if(req.isDownload){
-			res.attachment('patric3_' + req.call_collection + '_query.xlsx');
+			res.attachment('PATRIC_' + req.call_collection + '.xlsx');
 			// res.set("content-disposition", 'attachment; filename="patric3_' + req.call_collection + '_query.xlsx"');
 		}
 

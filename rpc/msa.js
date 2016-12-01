@@ -46,7 +46,7 @@ function buildFasta(sequences,opts){
 		if (o.annotation == "PATRIC") {
 			fasta_id = o.feature_id;
 		} else if (o.annotation == "RefSeq") {
-			fasta_id = "gi|" + o.gi;
+			fasta_id = o.feature_id;
 		}
 		var row = ">" + fasta_id + " [" + o.genome_id + "]\n" + o.aa_sequence + "\n"; 
 		fasta.push(row)
@@ -251,7 +251,9 @@ module.exports = {
                                     "feature_id":seq.feature_id,
                                     "genome_id":seq.genome_id,
                                     "patric_id":seq.patric_id,
-                                    "aa_length":seq.aa_length};
+                                    "aa_length":seq.aa_length,
+                                    "refseq_locus_tag": seq.refseq_locus_tag
+                                };
 							})
 
 							def.resolve({
