@@ -1,0 +1,80 @@
+<div class="dlp">
+    <h2>ID Mapping Tool</h2>
+
+    <section class="main">
+        <div class="data-box">
+            <div>
+                <hr size="2"/>
+            </div>
+            <h4 class="far"><strong><em>Accessing the ID Mapping Tool on the PATRIC Website</em></strong></h4>
+            <p>This tool may be accessed from the MAP IDs Tools button in the light blue Table Toolbar at the top of
+                PATRIC tables, including the Table Toolbar within your Workspace. It may also be accessed via the
+                “Searches and Tools” tab at the top of the PATRIC site. To learn more about PATRIC Tables see <a
+                        href="../../../../../feature-table-faqs/">Feature Table FAQs</a>.<strong> </strong></p>
+            <div>
+                <hr size="2"/>
+            </div>
+            <h4 class="far"><strong><em>ID Mapping Overview</em></strong></h4>
+            <p>The ID Mapping Tool allows users to quickly map PATRIC identifiers to those from other prominent external
+                databases, such as GenBank, RefSeq, EMBL, UniProt, KEGG, etc. Alternatively, users can start with a list
+                of external database identifiers and map them to the corresponding PATRIC features.</p>
+            <div>
+                <hr size="2"/>
+            </div>
+            <h4 class="far"><strong><em>Using the ID Mapping Tool</em></strong></h4>
+            <ul>
+                <li>To use the ID Mapping Tool from a Table Toolbar, simply select items in the table, click the <img
+                        class="alignnone size-full wp-image-2869" alt="16x16-toolbar-icon-idmapping"
+                        src="http://enews.patricbrc.org/wp-content/uploads/2013/04/16x16-toolbar-icon-idmapping.png"
+                        width="16" height="16"/> MAP IDs Tools button, and chose an external database from the dropdown
+                    menu. Some example Use Cases include:
+                    <ul>
+                        <li>Select a set of PATRIC features of interest from any PATRIC table and find corresponding
+                            identifiers in one of the external databases, such as RefSeq locus tags, GI numbers,
+                            UniProtKB Accessions etc.
+                        </li>
+                        <li>Select a set of PATRIC features of interest from any PATRIC table and find corresponding
+                            metabolic pathways at KEGG or BioCyc.
+                        </li>
+                        <li>Select a set of PATRIC features of interest from any PATRIC table and find corresponding
+                            protein structures in PDB.
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <ul>
+                <li>To use the ID Mapping Tool from the “Searches and Tools” tab at the top of the PATRIC site, enter
+                    your identifiers in the box to the left and select “From” and “To” ID types from the dropdown menus
+                    on the right. Some example Use Cases include:
+                    <ul>
+                        <li>Start with a set of external database identifiers, such as RefSeq locus tags, or UniprotKB
+                            Accessions, and find corresponding features in PATRIC.
+                            <ul>
+                                <li>Note: You may enter your identifiers as either a list with one entry per line or
+                                    multiple entries per line separated by commas.
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <div>
+                <hr size="2"/>
+            </div>
+            <h4 class="far"><strong><em>ID Mapping Sources</em></strong></h4>
+            <ul>
+                <li>First, PATRIC CDSs (protein coding genes) are mapped to corresponding CDSs in RefSeq/GenBank by
+                    matching their stop position on genome sequences.
+                </li>
+                <li>Second, RefSeq/GenBank CDSs are mapped to corresponding UniProtKB Accession.</li>
+                <li>Third, mappings are extended to other prominent external database identifiers using <a
+                        href="http://www.uniprot.org/mapping/"
+                        onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.uniprot.org/mapping/', 'UniProt’s ID Mapping Service');">UniProt’s
+                    ID Mapping Service</a>.
+                </li>
+            </ul>
+            <p style="padding-left: 60px;">PATRIC ↔ RefSeq/GenBank ↔ UniProtKB Accession ↔ Other External Databases</p>
+
+        </div>
+    </section>
+</div>
