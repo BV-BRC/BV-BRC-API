@@ -1,18 +1,40 @@
-<div style="width:80%;margin:auto">
-	<h2 class="entry-title">Website Overview</h2>
-		
-	<div class="entry-summary">
-		<p>The PATRIC website  provides an entry point to integrated data and tools for bacterial infectious disease research.  The website is organized by data types and analysis tools.  Primary access is provided through the PATRIC main menu, available at the top of the home page.  The main menu options are the following:</p>
-		<ul style="list-style: none; ">
-			<li><strong>Organisms</strong> - links to bacterial data sorted into genera. On each organism page, further divisions of data types are available from the data tabs such as Overview, Taxonomy, Phylogeny, Genome List, Feature Table, Specialty Genes, etc.</li>
-			<li><strong>Data</strong> - links to specialized "Data Landing Pages" that provide overview and summary information of PATRIC data, including pages for Antibiotic Resistance, Genomes, Genome Features, Pathways, Protein Families, Specialty Genes, Transcriptomics, and special featured data sets.</li>
-			<li><strong>Workspaces</strong> - links to the private workspace and subdirectories in the private workspace.</li>
-			<li><strong>Services</strong> - links to data processing and analysis pipelines in PATRIC. Currently, services are available for processing user-supplied data including Genome Assembly, Genome Annotation, BLAST, Variation Analysis, Expression Data Integration, RNA-Seq Analysis, Protein Family Sorter, Proteome Comparison, Pathway Comparison, and Model Reconstruction.</li>
-			<li><strong>Help</strong> - links to pages containing a PATRIC Quickstart video, Tutorials, User Guides, and information to Provide Feedback.</li>
-			<li><strong>Other information</strong> (the three-line "hamburger" icon on the top right of the page) - links to pages containing additional information such as News, Publications, About PATRIC, Citing PATRIC, Scientific Working Group, Personnel, Collaborators, Related Sites, and System Architecture.</li>
-		</ul>
+<div class="dlp">
+    <h2>Website Overview</h2>
 
-		<p>A "PATRIC Quickstart" video tutorial providing an overview of the PATRIC website is available from the Help Menu .</p>		
-	</div>
+    <section class="main">
+        <div class="data-box">
+            <p>The PATRIC website provides an entry point to integrated data and tools for bacterial infectious disease
+                research. The website is organized by data types and analysis tools. Primary access is provided through
+                the PATRIC main menu, available at the top of the home page. The main menu options are the
+                following:</p>
+            <ul style="list-style: none; ">
+                <li><strong>Organisms</strong> - links to bacterial data sorted into genera. On each organism page,
+                    further divisions of data types are available from the data tabs such as Overview, Taxonomy,
+                    Phylogeny, Genome List, Feature Table, Specialty Genes, etc.
+                </li>
+                <li><strong>Data</strong> - links to specialized "Data Landing Pages" that provide overview and summary
+                    information of PATRIC data, including pages for Antibiotic Resistance, Genomes, Genome Features,
+                    Pathways, Protein Families, Specialty Genes, Transcriptomics, and special featured data sets.
+                </li>
+                <li><strong>Workspaces</strong> - links to the private workspace and subdirectories in the private
+                    workspace.
+                </li>
+                <li><strong>Services</strong> - links to data processing and analysis pipelines in PATRIC. Currently,
+                    services are available for processing user-supplied data including Genome Assembly, Genome
+                    Annotation, BLAST, Variation Analysis, Expression Data Integration, RNA-Seq Analysis, Protein Family
+                    Sorter, Proteome Comparison, Pathway Comparison, and Model Reconstruction.
+                </li>
+                <li><strong>Help</strong> - links to pages containing a PATRIC Quickstart video, Tutorials, User Guides,
+                    and information to Provide Feedback.
+                </li>
+                <li><strong>Other information</strong> (the three-line "hamburger" icon on the top right of the page) -
+                    links to pages containing additional information such as News, Publications, About PATRIC, Citing
+                    PATRIC, Scientific Working Group, Personnel, Collaborators, Related Sites, and System Architecture.
+                </li>
+            </ul>
 
+            <p>A "PATRIC Quickstart" video tutorial providing an overview of the PATRIC website is available from the
+                Help Menu .</p>
+        </div>
+    </section>
 </div>

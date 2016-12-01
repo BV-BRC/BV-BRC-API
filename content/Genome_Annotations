@@ -1,9 +1,18 @@
-<div style="width:80%;margin:auto">
-	<h2 class="entry-title">Genome Annotations</h2>
-	
-	<div class="entry-summary">
-		<h3>Annotation sources</h3>
-		<p>PATRIC provides two basic annotation sources, RefSeq, and PATRIC. RefSeq sequences from NCBI, have each been annotated by the submitting researcher using methodologies of their choice. PATRIC re-annotates all genomes using RAST tool kit <a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4322359/" target="new">(RASTtk)</a> to provide annotation consistency across a wide variety of genomes. The original RefSeq annotations have been retained and are still available for comparison purposes.</p>
-		<p>Genomes that are in more than 500 contigs are not annotated by RAST. Nor are plasmid-only genomes. There is approximately a two-month interval between when sequences are submitted to RefSeq and re-annotation/integration with PATRIC, thus there may be a significant difference in the number of genomes at NCBI and at PATRIC.</p>	
-	</div>
+<div class="dlp">
+    <h2>Genome Annotations</h2>
+
+    <section class="main">
+        <div class="data-box">
+            <h3 class="ribbon-title">Annotation sources</h3>
+            <p>PATRIC provides two basic annotation sources, RefSeq, and PATRIC. RefSeq sequences from NCBI, have each
+                been annotated by the submitting researcher using methodologies of their choice. PATRIC re-annotates all
+                genomes using RAST tool kit <a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4322359/" target="_blank">(RASTtk)</a>
+                to provide annotation consistency across a wide variety of genomes. The original RefSeq annotations have
+                been retained and are still available for comparison purposes.</p>
+            <p>Genomes that are in more than 500 contigs are not annotated by RAST. Nor are plasmid-only genomes. There
+                is approximately a two-month interval between when sequences are submitted to RefSeq and
+                re-annotation/integration with PATRIC, thus there may be a significant difference in the number of
+                genomes at NCBI and at PATRIC.</p>
+        </div>
+    </section>
 </div>
