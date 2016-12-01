@@ -146,19 +146,16 @@
                             Guide: Proteome Comparison</a></h4>
                         <p>This document provides step-by-step instructions for following the corresponding workflow
                             covered during the PATRIC Workshop.</p></li>
-<!--
                     <li class="clear">
                         <figure class="figure-right"><a
-                                href="/public/pdf/Workshop-Private-Genome.pdf"><img
+                                href="/public/pdfs/Workshop-Private-Genome.pdf"><img
                                 src="/public/patric/images/workshop-pdf-icon.jpg"
                                 alt="Workshop Guide: Private Genome"></a></figure>
                         <h4 class="bold"><a
-                                href="/public/pdf/Workshop-Private-Genome.pdf">Workshop
+                                href="/public/pdfs/Workshop-Private-Genome.pdf">Workshop
                             Guide: Private Genome</a></h4>
                         <p>This document provides step-by-step instructions for following the corresponding workflow
                             covered during the PATRIC Workshop.</p></li>
--->
-
                     <li class="clear">
                         <figure class="figure-right"><a
                                 href="/public/pdfs/Workshop-Transcriptomics.pdf"><img
