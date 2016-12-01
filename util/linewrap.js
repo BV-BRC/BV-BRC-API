@@ -7,7 +7,7 @@ module.exports = function(str,linelen){
 	var cur=0;
 	while (cur < str.length){
 		if (cur+linelen>str.length){
-			out.push(str.slice(cur,str.length-1));
+			out.push(str.slice(cur));
 			cur = str.length;
 		}else{
 			out.push(str.slice(cur, cur + linelen))

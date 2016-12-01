@@ -34,7 +34,7 @@ function generateTrackList(req, res, next){
 				"baseUrl": apiRoot + "/genome/" + req.params.id,
 				// "urlTemplate": apiRoot + "/sequence/{refseq}",
 				"key": "Reference sequence",
-				"label": "ReferenceSequence",
+				"label": "refseqs",
 				"chunkSize": 20000,
 				"maxExportSpan": 10000000,
 				"region_stats": false,
@@ -62,8 +62,10 @@ function generateTrackList(req, res, next){
 				},
 				"onClick": {
 					"title": "{patric_id} {gene}",
-					"action": "defaultDialog",
-					"label": "<div style='line-height:1.7em'><b>{patric_id}</b> | {refseq_locus_tag} | {alt_locus_Tag} | {gene}<br>{product}<br>{type}: {start} .. {end} ({strand})<br> <i>Click for detailed information</i></div>"
+					//"action": "Javascript callback",
+					"label": "<div style='line-height:1.7em'><b>{patric_id}</b> | {refseq_locus_tag} | {alt_locus_Tag} | {gene}<br>{product}<br>{type}: {start} .. {end} ({strand})<br> <i>Click for detailed information</i></div>",
+                    "action":"function(clickEvent){return window.featureDialogContent(this.feature);}"
+
 				},
 				"metadata": {
 					"Description": "PATRIC annotated genes"
@@ -96,8 +98,9 @@ function generateTrackList(req, res, next){
 				},
 				"onClick": {
 					"title": "{refseq_locus_tag} {gene}",
-					"action": "defaultDialog",
-					"label": "<div style='line-height:1.7em'><b>{refseq_locus_tag}</b> | {gene}<br>{product}<br>{type}: {start} .. {end} ({strand})<br> <i>Click for detailed information</i></div>"
+					//"action": "contentDialog",
+					"label": "<div style='line-height:1.7em'><b>{refseq_locus_tag}</b> | {gene}<br>{product}<br>{type}: {start} .. {end} ({strand})<br> <i>Click for detailed information</i></div>",
+                    "action":"function(clickEvent){return window.featureDialogContent(this.feature);}"
 				},
 				"metadata": {
 					"Description": "RefSeq annotated genes"
@@ -265,10 +268,11 @@ router.get("/genome/:id/features/:seq_accession", [
 			req.call_collection = "genome_sequence";
 
 			req.call_params = ["and(eq(genome_id," + req.params.id + "),eq(accession," + req.params.seq_accession + "))"];
+            req.call_params[0]+="&limit(10000)"
 		}else{
 			req.call_params = ["and(eq(genome_id," + req.params.id + "),eq(accession," + req.params.seq_accession + "),eq(annotation," + annotation + "),or(" + st + "," + en + "," + over + "),ne(feature_type,source))"];
+            req.call_params[0]+="&limit(10000)&sort(+start)"
 		}
-        req.call_params[0]+="&limit(10000)&sort(+start)"
 		req.queryType = "rql";
 		// debug("CALL_PARAMS: ", req.call_params);
 		next();
@@ -281,17 +285,23 @@ router.get("/genome/:id/features/:seq_accession", [
 		if(req.call_collection == "genome_sequence"){
 			if(res.results && res.results.response && res.results.response.docs){
 				var refseqs = res.results.response.docs.map(function(d){
+                var end = req.query.end || req.params.end;
+                var start= req.query.start || req.params.start;
+                start = start < 0 ? 0 : start;
+                end = end > d.length ? d.length : end;
+                var sequence = d.sequence.slice(start,end+1);
+                var length = end -start;
 					return {
-						length: d.length,
+						length: length,
 						name: d.accession,
 						accn: d.accession,
 						type: "reference",
 						score: d.gc_content,
 						sid: d.genome_id,
-						start: 0,
-						end: d.length,
-						seq: d.sequence,
-						seqChunkSize: d.length
+						start: start,
+						end: end,
+						seq: sequence,
+						seqChunkSize: length
 					}
 				});
 				res.json({features: refseqs});
@@ -306,12 +316,13 @@ router.get("/genome/:id/features/:seq_accession", [
 		// debug("res.results: ", res.results)
 		if(res.results && res.results.response && res.results.response.docs){
 			var features = res.results.response.docs.map(function(d){
-				d.seq = d.na_sequence;
+				//d.seq = d.na_sequence;
 				d.type = d.feature_type;
 				d.name = d.accession;
 				d.uniqueID = d.feature_id;
 				d.strand = (d.strand == "+") ? 1 : -1;
 				d.phase = (d.feature_type == "CDS") ? 0 : ((d.feature_type == "RNA") ? 1 : 2);
+                d.start = d.start-1;
 				return d;
 			});
 			// debug("FEATURES: ", features)

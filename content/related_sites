@@ -1,50 +1,70 @@
-<div style="padding:10px">
-<h2>Related Sites</h2>
-<div class="entry-summary">
-	<!-- ?php the_excerpt(); ? --->
-		<div id="about_patric_content">
-<hr />
-<h3><em><strong>Other BRCs</strong></em></h3>
-<p><a href="http://eupathdb.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://eupathdb.org/', 'EuPathDB (Eukaryotic Pathogen Database Resources)');" target="_blank">EuPathDB (Eukaryotic Pathogen Database Resources)</a><br />
-All eukaryotic pathogen species</p>
-<h3></h3>
-<p><a href="http://www.fludb.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.fludb.org/', 'IRD (Influenza Research Database)');" target="_blank">IRD (Influenza Research Database)</a><br />
-Influenza virus</p>
-<h3></h3>
-<p><a href="http://www.vectorbase.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.vectorbase.org/', 'VectorBase');" target="_blank">VectorBase</a><br />
-Invertebrate vectors of human pathogens</p>
-<h3></h3>
-<p><a href="http://www.viprbrc.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.viprbrc.org/', 'ViPR (Virus Pathogen Resource)');" target="_blank">ViPR (Virus Pathogen Resource)</a><br />
-Human viral pathogens</p>
-<h3></h3>
-<hr />
-<h3><em><strong>Related Links</strong></em></h3>
-<h4><em><strong>NIH/NIAID</strong></em></h4>
-<p><a href="http://www.niaid.nih.gov/labsandresources/resources/dmid/brc/Pages/default.aspx" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.niaid.nih.gov/labsandresources/resources/dmid/brc/Pages/default.aspx', 'Bioinformatics Resource Centers');" target="_blank">Bioinformatics Resource Centers</a></p>
-<p><a href="http://www3.niaid.nih.gov/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www3.niaid.nih.gov/', 'NIAID');" target="_blank">NIAID</a></p>
-<p><a href="http://www3.niaid.nih.gov/topics/BiodefenseRelated/Biodefense/research/CatA.htm" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www3.niaid.nih.gov/topics/BiodefenseRelated/Biodefense/research/CatA.htm', 'NIAID Category A, B, and C Priority Pathogens');" target="_blank">NIAID Category A, B, and C Priority Pathogens</a></p>
-<h4></h4>
-<h4></h4>
-<h4><em><strong>Systems Biology for Infectious Disease Research</strong></em></h4>
-<p><a href="http://www.omics4tb.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.omics4tb.org/', 'Omics4TB');" target="_blank">Omics4TB</a></p>
-<h4></h4>
-<h4></h4>
-<h4><em><strong>Understanding the Functions of Uncharacterized Genes in Infectious Disease Pathogens</strong></em></h4>
-<p><a href="http://saclab.tamu.edu/mad/u19/index.html" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://saclab.tamu.edu/mad/u19/index.html', 'Functionalizing Lists of Unknown TB Entities (FLUTE)');" target="_blank">Functionalizing Lists of Unknown TB Entities (FLUTE)</a></p>
-<p><a href="http://ucfunction.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://ucfunction.org/', 'CCFA: Chicago Center for Functional Annotation (CCFA)');" target="_blank">CCFA: Chicago Center for Functional Annotation (CCFA)</a></p>
-<p><a href="http://uwgenomics.org/ab/index.php" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://uwgenomics.org/ab/index.php', 'Genes Unknown in Acinetobacter baumannii  (GUnk)');" target="_blank">Genes Unknown in <em>Acinetobacter baumannii </em> (GUnk)</a></p>
-<h4></h4>
-<h4></h4>
-<h4><em><strong>Structural Genomics Centers for Infectious Diseases</strong></em></h4>
-<p><a href="http://www.csgid.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.csgid.org/', 'Center for Structural Genomics of Infectious Diseases (CSGID)');" target="_blank">Center for Structural Genomics of Infectious Diseases (CSGID)</a></p>
-<p><a href="http://www.ssgcid.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.ssgcid.org/', 'Seattle Structural Genomics Center for Infectious Diseases (SSGCID)');" target="_blank">Seattle Structural Genomics Center for Infectious Diseases (SSGCID)</a></p>
-<h4><em><strong>Genomics Centers for Infectious Diseases</strong></em></h4>
-<p><a href="http://gsc.jcvi.org/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://gsc.jcvi.org/', 'J. Craig Venter Institute (JCVI)');" target="_blank">J. Craig Venter Institute (JCVI)</a></p>
-<p><a href="http://www.broadinstitute.org/science/projects/gscid/genomic-sequencing-center-infectious-diseases" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.broadinstitute.org/science/projects/gscid/genomic-sequencing-center-infectious-diseases', 'Broad Institute');" target="_blank">Broad Institute</a></p>
-<p><a href="http://gscid.igs.umaryland.edu/index.php" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://gscid.igs.umaryland.edu/index.php', 'Institute for Genome Sciences (IGS) at the University of Maryland School of Medicine');" target="_blank">Institute for Genome Sciences (IGS) at the University of Maryland School of Medicine</a></p>
-<h4><em><strong>Other</strong></em></h4>
-<p><a href="http://kbase.us/" onclick="__gaTracker('send', 'event', 'outbound-article', 'http://kbase.us/', 'Department of Energy Systems Biology Knowledgebase (KBase)');" target="_blank">Department of Energy Systems Biology Knowledgebase (KBase)</a>
+<div class="dlp">
+    <h2>Related Sites</h2>
+
+    <section class="main">
+        <div class="data-box">
+
+            <h3 class="ribbon-title">Other BRCs</h3>
+            <p><a href="http://eupathdb.org/"
+                  target="_blank">EuPathDB (Eukaryotic Pathogen Database Resources)</a><br/>
+                All eukaryotic pathogen species</p>
+
+            <p><a href="http://www.fludb.org/"
+                  target="_blank">IRD (Influenza Research Database)</a><br/>
+                Influenza virus</p>
+
+            <p><a href="http://www.vectorbase.org/"
+                  target="_blank">VectorBase</a><br/>
+                Invertebrate vectors of human pathogens</p>
+
+            <p><a href="http://www.viprbrc.org/"
+                  target="_blank">ViPR (Virus Pathogen Resource)</a><br/>
+                Human viral pathogens</p>
+
+
+            <h3 class="ribbon-title">Related Links</h3>
+            <h4>NIH/NIAID</h4>
+            <p><a href="http://www.niaid.nih.gov/labsandresources/resources/dmid/brc/Pages/default.aspx"
+                  target="_blank">Bioinformatics Resource Centers</a></p>
+            <p><a href="http://www3.niaid.nih.gov/"
+                  target="_blank">NIAID</a></p>
+            <p><a href="http://www3.niaid.nih.gov/topics/BiodefenseRelated/Biodefense/research/CatA.htm"
+                  target="_blank">NIAID Category A, B, and C Priority Pathogens</a></p>
+
+            <h4>Systems Biology for Infectious Disease Research</h4>
+            <p><a href="http://www.omics4tb.org/"
+                  target="_blank">Omics4TB</a></p>
+
+            <h4>Understanding the Functions of Uncharacterized Genes in Infectious Disease
+                Pathogens</h4>
+            <p><a href="http://saclab.tamu.edu/mad/u19/index.html"
+                  target="_blank">Functionalizing Lists of Unknown TB Entities (FLUTE)</a></p>
+            <p><a href="http://ucfunction.org/"
+                  target="_blank">CCFA: Chicago Center for Functional Annotation (CCFA)</a></p>
+            <p><a href="http://uwgenomics.org/ab/index.php"
+                  target="_blank">Genes Unknown in <em>Acinetobacter baumannii </em> (GUnk)</a></p>
+
+            <h4>Structural Genomics Centers for Infectious Diseases</h4>
+            <p><a href="http://www.csgid.org/"
+                  target="_blank">Center for Structural Genomics of Infectious Diseases (CSGID)</a></p>
+            <p><a href="http://www.ssgcid.org/"
+                  target="_blank">Seattle Structural Genomics Center for Infectious Diseases (SSGCID)</a></p>
+
+            <h4>Genomics Centers for Infectious Diseases</h4>
+            <p><a href="http://gsc.jcvi.org/"
+                  target="_blank">J. Craig Venter Institute (JCVI)</a></p>
+            <p>
+                <a href="http://www.broadinstitute.org/science/projects/gscid/genomic-sequencing-center-infectious-diseases"
+                   target="_blank">Broad Institute</a></p>
+
+            <p><a href="http://gscid.igs.umaryland.edu/index.php"
+                  target="_blank">Institute for Genome Sciences (IGS) at the University of Maryland School of
+                Medicine</a></p>
+
+            <h4>Other</h4>
+            <p><a href="http://kbase.us/"
+                  target="_blank">Department of Energy Systems Biology Knowledgebase (KBase)</a></p>
+        </div>
+    </section>
 </div>
-</div>			
-	</div>
 

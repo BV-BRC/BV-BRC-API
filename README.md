@@ -14,9 +14,7 @@ PATRIC 3 API SERVER
 	DEBUG=p3api-server ./bin/p3api-server
 
 ##Testing
-Testing requires internjs to be installed (https://theintern.github.io/).  It can be installed globally like so:
-
-	sudo npm install intern -g
+Testing requires internjs 2.x (https://theintern.github.io/), which has been included already.
 
 Test files exist in the tests/ directory.  All of the configured tests can be run by launching the p3api server locally on port 3001 (the default port) and then running
 
@@ -24,7 +22,7 @@ Test files exist in the tests/ directory.  All of the configured tests can be ru
 
 Individual test suites from the tests/ directory can be run by specifying them to intern-client
 
-	intern-client config=tests/intern suite=tests/query
+	node_modules/.bin/intern-client config=tests/intern suite=tests/query
 
 ###API Usage
 
