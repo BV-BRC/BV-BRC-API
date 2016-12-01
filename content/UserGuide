@@ -1,3 +1,73 @@
-<div>
-	User Guide goes here
+<div style="width:80%;margin:auto">
+		<h2 class="entry-title">PATRIC Website User Guide</h2>
+			
+		<div class="entry-content">
+			<p>The links below provide overviews of the primary PATRIC website data and tools.  To suggest new sections for the User Guide, <a href="http://enews.patricbrc.org/contact-us/">contact us</a>.</p>
+			<div class="pagenav" />
+				<ul style="list-style: none; ">
+					<li><a href="Website_Overview">Website Overview</a></li>
+					<li><a href="Genome_Data_and_Tools">Genome Data and Tools</a>
+					<ul style="list-style: none; ">
+						<li><a href="/help/Services/Genome_Annotation">Genome Annotation Service</a></li>
+						<li><a href="Genome_Annotations">Genome Annotations</a></li>
+						<li><a href="Protein_Families">Protein Families</a></li>
+						<li><a href="Genome_Metadata">Genome Metadata</a></li>
+						<li><a href="AMR_Clinical_Metadata">Antimicrobial Resistance and Other Clinical Metadata</a></li>
+						<li><a href="Genome_Browser">Genome Browser</a></li>
+						<li><a href="Circular_Genome_Viewer">Circular Genome Viewer</a></li>
+						<li><a href="Phylogenetic_Trees">Phylogenetic Trees</a></li>
+					</ul>
+					</li>
+					<li><a href="Genome_Features_and_Tools">Genome Feature Data and Tools</a>
+					<ul style="list-style: none; ">
+						<li><a href="Feature_Table">Feature Table</a></li>
+						<li><a href="specialty-genes-faqs">Specialty Genes</a></li>
+						<li><a href="patric-curated-virulence-factors-faqs">Curated Virulence Factors</a></li>
+						<li><a href="id-mapping-tool-faqs">ID Mapping Tool</a></li>
+						<li><a href="multiple-sequence-alignment-faqs">Multiple Sequence Alignment</a></li>
+					</ul>
+					</li>
+					<li><a href="differential-expression">Differential Expression Data and Tools</a>
+					<ul style="list-style: none; ">
+						<li><a href="gene-page-transcriptomics-faqs">Gene Page Transcriptomics Data</a></li>
+						<li><a href="transcriptomics-experiment-and-comparison-list-faqs">Transcriptomics Experiment and Comparison List</a></li>
+						<li><a href="transcriptomics-gene-list-faqs">Transcriptomics Gene List</a></li>
+						<li><a href="upload-transcriptomics-data-to-workspace-faqs">Upload Transcriptomics Data to Workspace</a></li>
+					</ul>
+					</li>
+					<li><a href="protein-family-sorter">Protein Family Sorter</a>
+					<ul style="list-style: none; ">
+						<li><a href="protein-family-heatmap-faqs">Protein Family Heatmap</a></li>
+					</ul>
+					</li>
+					<li><a href="comparative-pathway-tool-faqs">Comparative Pathway Tool</a>
+					<ul style="list-style: none; ">
+						<li><a href="comparative-pathway-kegg-map-faqs">Comparative Pathway KEGG Map</a></li>
+						<li><a href="comparative-pathway-heatmap-faqs">Comparative Pathway Heatmap</a></li>
+					</ul>
+					</li>
+					<li><a href="other-data-and-tools">Other Data and Tools</a>
+					<ul style="list-style: none; ">
+						<li><a href="go-search-faqs">GO Search</a></li>
+						<li><a href="ec-search-faqs/">EC Search</a></li>
+						<li><a href="pathogen-interaction-gateway-pig-faqs">Protein-Protein Interactions (Pathogen Interaction Gateway)</a></li>
+						<li><a href="virulence-and-disease-faqs">Virulence and Disease Data</a></li>
+						<li><a href="literature-faqs">Literature</a></li>
+						<li><a href="download-data-faqs">Download Data</a>
+						<ul style="list-style: none; ">
+							<li><a href="download-data-tool-faqs-2">Download Data Tool</a></li>
+						</ul>
+					</li>
+					</ul>
+					</li>
+					<li><a href="workspace-faqs">Workspace and Groups</a>
+					<ul style="list-style: none; ">
+						<li><a href="registration-faqs">Registration</a></li>
+					</ul>
+					</li>
+					<li><a href="recommended-system-requirements">Recommended System Requirements</a></li>
+				</ul>
+			</div>
+	</div><!-- .entry-content -->
+
 </div>

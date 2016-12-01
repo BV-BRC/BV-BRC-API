@@ -1,0 +1,8 @@
+<div style="width:80%;margin:auto">
+	<h2 class="entry-title">Genome Feature Data and Tools</h2>
+			
+			<div class="entry-summary">
+		<p>PATRIC genome features are the resulting annotations from the RASTtk system, and include coding sequences (CDS / gene calls), protein function predictions, rRNAs, tRNAs, and specialty gene designations. An array of various comparative tools are available in PATRIC for working with genome features and their products.</p>	
+	</div>
+
+</div>
