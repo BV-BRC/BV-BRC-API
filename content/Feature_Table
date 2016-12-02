@@ -25,17 +25,15 @@
                 </li>
             </ul>
             <ul>
-                <li>By default, tables show 200 rows of data. For rows beyond 200, the numbers on the right side below the allow advancement throught pages in increments of 200 rows.
+                <li>By default, tables show 200 rows of data. For rows beyond 200, the numbers on the right side below
+                    the table, allowing advancement throught pages in increments of 200 rows.
                 </li>
-                <li>Click on links within columns to navigate to specific PATRIC genome pages (Genome Name), NCBI
-                    nucleotide page for that genome (Accession), and specific PATRIC locus pages (Locus Tag). Note: The
-                    Accession column is not shown in the default view.
+                <li>When a row is selected, the information panel (accessible via the Show/Hide icon at the top of the green
+                    Action Bar, provides detailed information for that row including links to other PATRIC genome pages 
+                    and external resources, such as NCBI protein pages, where appropriate.  It also provides access to the 
+                    corresponding nucleotide and amino acid sequences.
                 </li>
-                <li>Within the table, click on any Genome Browser icon to view an illustration of a specific feature
-                    within the context of it’s genome. For more information please see the <a href="Genome_Browser">Genome
-                        Browser</a> user guide.
-                </li>
-            </ul>
+             </ul>
             <ul>
                 <li>The vertical green Action Bar, located just to the right of the feature table provides a set of
                     actions that can be performed on the features selected in the table:
@@ -68,8 +66,7 @@
 
             <h3 class="ribbon-title">Filtering</h3>
             <p>When filtering a feature table based on keyword, PATRIC matches the user-specified keyword term against
-                the following fields: Genome Name, Gene Symbol, Product, Locus Tag, Product Description and Protein ID.
-                All resulting features will contain the user-specific keyword in one or more of those fields.</p>
+                the the fields in the table and shows only those with matching text.</p>
             <p>You can also filter by clicking the filter icon above the table on the right side. It will open a filter
                 panel wherein you can filter on different columns by value, such as Sequence Type (chromosome, contig,
                 plasmid) and Topology (linear, circular).</p>
