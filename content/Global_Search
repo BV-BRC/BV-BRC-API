@@ -2,7 +2,13 @@
     <h2>Global Search</h2>
     <section class="main">
         <div class="data-box">
-            Coming soon.
+            <h3 class="ribbon-title">Global Search</h3>
+            <p>PATRIC provides a global search capability to quickly locate data of interest.  The Search box is available on the right side of the menu bar at the top of each PATRIC page. Features of the Global Search include:</p>
+            <ul>
+                <li>Top matches, sorted by data types, including genomes, genomic features, taxa, specialty genes, and transcriptomics experiments. Clicking on the number beside the data type section headers returns all matching data for that type.</li>
+                <li>Data type specific searches. Pre-filter results to specific data types by clicking the down arrow on the left side of the search box.</li>
+                <li></li>
+            </ul>
         </div>
     </section>
 </div>
