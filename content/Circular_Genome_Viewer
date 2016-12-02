@@ -33,8 +33,8 @@
             <h3 class="ribbon-title">Circular Genome Viewer Features and Functionality</h3>
             <p>Circular Genome Viewer Main Window:</p>
             <ul>
-                <li>mouse over to or mouse click on a contig in the circular graph to view the genome information.</li>
-                <li>mouse over to or mouse click on a feature in the circular graph to view the feature information.</li>
+                <li>mouse over or mouse click on a contig in the circular graph to view the genome information.</li>
+                <li>mouse over or mouse click on a feature in the circular graph to view the feature information.</li>
             </ul>
             <p>Available Tracks Panel</p>
             <ul>
