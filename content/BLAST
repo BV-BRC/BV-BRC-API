@@ -22,7 +22,7 @@
                  <li>BLASTing against gene features or contigs. Depending upon query type, researchers will be able to choose to search entire genomes or limit the search to only features.  When BLASTN, TBLASTN, or TBLASTX are selected, researchers can choose to search against either contigs or features.  When BLASTP or BLASTX are selected, the search is limited to features.</li>
                  <li>Adjusting the BLAST parameters. You may use the Advanced Options to adjust both the number of hits returned, and the E value threshold.</li>
                  <li>Submitting the BLAST job. Once the sequence has been uploaded, the program and database selected, the BLAST parameters adjusted, the job can be started by clicking the Search button at the bottom of the page.</li>         
-                 <li>Submitting another BLAST job. At the top of the BLAST result page, researchers can click on the Edit from and resubmit button to initiate another BLAST job</li>
+                 <li>Submitting another BLAST job. At the top of the BLAST result page, researchers can click on the Edit from and resubmit button to initiate another BLAST job.</li>
            </ul>
         </div>
     </section>
