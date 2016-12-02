@@ -3,8 +3,7 @@
 
     <section class="main">
         <div class="data-box">
-            <hr/>
-            <h4><b><i>Specialty Genes Overview</i></b></h4>
+            <h3 class="ribbon-title">Specialty Genes Overview</h3>
             <p>Specialty Genes refers to the special classes of genes that are of particular interest to infectious
                 disease researchers, such as antibiotic resistance genes, virulence factors, drug targets, and human
                 homologs.</p>
@@ -31,23 +30,22 @@
                     therapeutics.
                 </li>
             </ul>
-            <hr/>
-            <h4><b><i>Classes and Data Sources of Specialty Genes in PATRIC</i></b></h4>
+            <h3 class="ribbon-title">Classes and Data Sources of Specialty Genes in PATRIC</h3>
             <ul>
-                <li><span style="text-decoration: underline;"><i>Antibiotic Resistance Genes:</i> </span> Antibiotic
+                <li>Antibiotic Resistance Genes: Antibiotic
                     Resistance refers to the ability of bacteria to develop resistance to antibiotics through gene
                     mutation or acquisition of antibiotic resistance genes. We have integrated and mapped known
                     antibiotic resistance genes from the following sources:
                     <ul>
-                        <li><a href="http://ardb.cbcb.umd.edu/" target="_blank">ARDB &#8211; Antibiotic Resistance Genes
+                        <li><a href="http://ardb.cbcb.umd.edu/" target="_blank">ARDB - Antibiotic Resistance Genes
                             Database</a></li>
-                        <li><a href="http://arpcard.mcmaster.ca/" target="_blank">CARD &#8211; The Comprehensive
+                        <li><a href="http://arpcard.mcmaster.ca/" target="_blank">CARD - The Comprehensive
                             Antibiotic Resistance Database</a></li>
                     </ul>
                 </li>
             </ul>
             <ul>
-                <li><span style="text-decoration: underline;"><i>Drug Targets:</i></span> Drug Targets are proteins
+                <li>Drug Targets: Drug Targets are proteins
                     being targeted by known, approved, or experimental small molecule drugs. We have integrated and
                     mapped such drug targets from the following sources:
                     <ul>
@@ -58,7 +56,7 @@
                 </li>
             </ul>
             <ul>
-                <li><span style="text-decoration: underline;"><i>Human Homologs:</i></span> Human Homologs are the
+                <li>Human Homologs: Human Homologs are the
                     bacterial proteins that share high sequence similarity with human proteins. We have integrated and
                     mapped proteins from the Reference Human Genome available at NCBI RefSeq .
                     <ul>
@@ -68,7 +66,7 @@
                 </li>
             </ul>
             <ul>
-                <li><span style="text-decoration: underline;"><i>Virulence Factors:</i></span> Virulence Factors are the
+                <li>Virulence Factors: Virulence Factors are the
                     gene products that enable bacteria to establish itself on or within a host organism and enhance its
                     potential to cause disease. We have integrated and mapped virulence factor genes from the following
                     sources:
@@ -97,8 +95,7 @@
             <p style="text-align: left;">For identifying Human Homologs, we use:</p>
             <p style="text-align: center;"><em>(%Query coverage &gt;=50 OR %Subject Coverage &gt;=50) AND %Identity &gt;=50</em>
             </p>
-            <hr/>
-            <h4><b><i>Evidence Field</i></b></h4>
+            <h3 class="ribbon-title">Evidence Field</h3>
             <p>All the BLAST hits that pass the above-mentioned similarity criteria are further classified as follows
                 using field “Evidence”.</p>
             <ul>
@@ -121,81 +118,46 @@
                     and/or in the same genome.
                 </li>
             </ul>
-            <hr/>
-            <h4><b><i>Accessing Specialty Genes on the PATRIC Website</i></b></h4>
+            <h3 class="ribbon-title">Accessing Specialty Genes on the PATRIC Website</h3>
             <p>At PATRIC, you can access specialty genes and related information in the following ways:</p>
             <ul>
-                <li>Using the <a href="http://patricbrc.org/portal/portal/patric/SpecialtyGenes">Specialty Genes Data
+                <li>Using the <a href="https://www.patricbrc.org/view/DataType/SpecialtyGenes">Specialty Genes Data
                     Summary</a> available under the “Data” Tab in the main navigation along the top of the PATRIC site.
                     Here you can view summaries of selected genomes, related tools and tutorials, and diagrams of how we
-                    curate, map, and integrate Specialty Genes.
-                </li>
+                    curate, map, and integrate Specialty Genes.</li>
+                <li>Via the “Specialty Genes” Tab on any taxon or genome page. Here you’ll find a pre-scoped
+                    Specialty Genes List.</li>
+                <li>As a tabular summary at the bottom of any genome page.</li>
+                <li>As a tabular summary entitled Special Properties at the bottom of a gene page.</li>
+                <li>Using the "Specialty Genes" option in the Global Search.</li>
             </ul>
-            <ul>
-                <li>Via the “Specialty Genes” Tab on any taxon or genome “Overview” page. Here you’ll find a pre-scoped
-                    Specialty Genes List. See next question for more details on what you can do from this list.
-                </li>
-            </ul>
-            <ul>
-                <li>As a tabular summary entitled Specialty Gene Summary at the bottom of any taxon or genome “Overview”
-                    page. <a href="http://patricbrc.org/portal/portal/patric/Genome?cType=genome&amp;cId=92729">See
-                        example</a>.
-                </li>
-            </ul>
-            <ul>
-                <li>As a tabular summary entitled Special Properties at the bottom of a gene “Overview” page. <a
-                        href="http://patricbrc.org/portal/portal/patric/Feature?cType=feature&amp;cId=18148844">See
-                    example</a>.
-                </li>
-            </ul>
-            <ul>
-                <li>Using the <a
-                        href="http://patricbrc.org/portal/portal/patric/SpecialtyGeneSearch?cType=taxon&amp;cId=&amp;dm=">Specialty
-                    Genes Search</a>, which allows researchers to find specialty genes in their organisms/genomes of
-                    interest based on taxonomy, special property, and keyword.
-                    <ul>
-                        <li><i>*Note</i>: Search results are displayed in a Specialty Genes List, described below.</li>
-                    </ul>
-                </li>
-            </ul>
-            <hr/>
-            <h4><b><i>Specialty Gene List and Related Filters</i></b></h4>
+            <h3 class="ribbon-title">Specialty Gene List and Related Filters</h3>
             <p>The Specialty Gene List provides the following information:</p>
             <ul>
                 <li>Information about PATRIC genes, such as Genome Name, PATRIC and RefSeq Locus Tags, Gene Names, and
                     Products.
                 </li>
-            </ul>
-            <ul>
                 <li>Information about the matching specialty gene in the reference database, such as Property, Source
                     Database Name, Source ID, Classification, and PubMed references. Source IDs are linked to the
                     corresponding pages on the Source Database websites where you can access more information. PubMed
                     links take you to the corresponding references lists at PubMed.
                 </li>
-            </ul>
-            <ul>
                 <li>Summaries of sequence similarity from BLASTP hit, such as Percent Query Coverage, Percent Subject
                     Coverage, and Percent Identity.
                 </li>
             </ul>
-            <p>The Specialty Gene List can be filtered using the progressive filters available in the left-hand panel as
-                follows:</p>
+            <p>The Specialty Gene List can be filtered using the options from the filter panel which can be opened
+               from the icon at the top right of the table:</p>
             <ul>
                 <li><i>Filter by Keyword</i>: Search using any keywords related to the Organism Name, Gene Name, Locus
                     Tag, or Gene Product and find matching specialty genes.
                 </li>
-            </ul>
-            <ul>
                 <li><i>Filter by Property:</i> Select one or more classes of specialty genes, such as Antibiotic
                     Resistance Genes, or Virulence Factors.
                 </li>
-            </ul>
-            <ul>
                 <li><i>Filter by Source:</i> Select one or more source databases to see genes similar to the reference
                     genes from those databases.
                 </li>
-            </ul>
-            <ul>
                 <li><i>Filter by Evidence:</i> Hits designated as “Literature” imply that the query and the subject
                     genes are the same, i.e. the same genes in the same genome based on locus tag or some other
                     identifier match, however, there may be some differences in the start site. It means that there is
@@ -203,17 +165,6 @@
                     based on experimental evidence. All other hits designated as “BLASTP” imply that the gene in
                     question is highly similar to a reference gene described in one of the source databases. However,
                     the reference gene may or may not be exactly the same gene and/or in the same genome.
-                </li>
-            </ul>
-            <ul>
-                <li><i>Filter BLAST Hits by Source Organism:</i> This allows researchers to find BLAST hits where the
-                    query organism is the same as the source organism. The filter can be used to find hits from the same
-                    genome, same species, or the same genus thus removing any hits based on other organisms.
-                </li>
-            </ul>
-            <ul>
-                <li><i>Filter BLAST Hits by Sequence Similarity: </i> This allows researchers to filter hits by applying
-                    different cut-offs for percent query coverage, percent subject coverage, and/or percent identity.
                 </li>
             </ul>
 
