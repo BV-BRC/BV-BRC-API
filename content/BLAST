@@ -4,138 +4,26 @@
     <section class="main">
         <div class="data-box">
 
-            <h3 class="ribbon-title">Accessing the Genome Browser on the PATRIC Website</h3>
-            <p>Each Organism on PATRIC has an Organism Landing Page. To get to this page at the Genus level, select
-                your Genera of interest from the Organisms tab on the PATRIC homepage. The phylogeny of each Landing
-                Page is listed across the top of the page. Once on the Genera Landing Page, you may access the
-                Genome Browser by drilling down in one of the following ways to either the Genome or the Feature
-                level:</p>
+            <h3 class="ribbon-title">Accessing the BLAST Service on the PATRIC Website</h3>
+            <p>The BLAST Service can be accessed from the SERVICES tab on the PATRIC homepage. The BLAST Search allows you to search against public or private genomes in PATRIC or other reference databases using a DNA or protein sequence and find matching genomes, genes, RNAs, or proteins.</p>
+            <p>Clicking on BLAST from the SERVICES tab will open up the BLAST landing page where researchers can do nucleotide or amino acid BLAST searches. </p>
             <ul>
-                <li>Select the Genome List tab and click on your Genome Name of interest. This will take you to the
-                    chosen Genome-level Landing Page. At all Genome and Feature-level Landing Pages, the Genome List
-                    tab at the top of the page changes to a Genome Browser tab providing direct access to the Tool.
-                </li>
-                <li>Select the Genome List tab and click on any Genome Browser icon within the table to visually
-                    explore a specific genome.
-                </li>
-            </ul>
-            <ul>
-                <li>Select the Feature Table tab and click on any Genome Browser icon within the table.</li>
-            </ul>
-            <p>You may also access the Genome Browser from within any PATRIC table you create while using PATRIC
-                Searches and Tools where you see the Genome Browser icon.</p>
-
-            <h3 class="ribbon-title">Genome Browser Overview</h3>
-            <p>The Genome Browser is a graphical representation of the alignment of genes and other genomic data
-                depicted along a central horizontal axis of genome coordinates.</p>
-
-            <h3 class="ribbon-title">Genome Browser Features and Functionality</h3>
-            <p>Genome Browser Main Window:</p>
-            <ul>
-                <li>Pan to a region of interest in the genome by:
-                    <ul>
-                        <li>Using the forward and backward arrow buttons at the top of the Browser.</li>
-                        <li>Clicking and dragging the red slide bar located within the genome coordinate axis.</li>
-                        <li>Entering your own start and/or end coordinates in the coordinate field and clicking on
-                            the “Go” button.
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            <ul>
-                <li>Zoom in/out to regions of interest by using the + and – buttons along the top of the Browser.
-                    The larger buttons will zoom further in/out with one click than the smaller buttons.
-                </li>
-            </ul>
-            <p>Note: Once you reach a zoom level of approximately 1,300 base pairs or less a color-coded DNA
-                sequence track (with associated AAs) will appear for the Reference Sequence. Zooming in to 150 base
-                pairs or less will label the NAs and AAs with the corresponding letter.</p>
-            <p>A = green, T = red , C = blue , G = yellow.</p>
-            <ul>
-                <li>Any specific area you are viewing in the genome browser may be saved for the future via clicking
-                    the “Link” button in the upper right. Copy this url and share it or save it and visit the same
-                    area at another time.
-                </li>
-                <li>Using a yellow highlighter, you may highlight a region of the browser. To do this either select
-                    the highlighter icon (in the zoom bar) and then click and drag an area of the browser window or
-                    use the View menu in the top left. Clear highlighted sections via the View menu.
-                </li>
-            </ul>
-            <p>Note: A highlighted notation will remain when using the Link tool.</p>
-            <p>Interacting with Browser Tracks and Downloading Track/Sequence Data:</p>
-            <ul>
-                <li>The Genome Browser will initially open showing both PATRIC (blue) and RefSeq (green) annotated
-                    data tracks.
-                </li>
-                <li>Additional tracks, such as those annotated by Legacy BRCs, are located in the Available Tracks
-                    column, along the left side of the Genome Browser.
-                    <ul>
-                        <li>To add or remove tracks from the Genome Browser, simply click and drag them between the
-                            “Available Tracks” column and the browser window.
-                        </li>
-                        <li>You may also remove tracks from the browser window by clicking on “Remove Track” from
-                            the drop-down menu next to the annotation source label or clicking on the “x” on the
-                            annotation source label.
-                        </li>
-                    </ul>
-                </li>
-                <li>From the drop down menu (accessed by hovering over the Reference sequence track label,) you may
-                    see information about the track, pin the track to the top row in the browser, edit the tracks
-                    configuration, remove the track to the Available Tracks column, save track data, and chose to
-                    show/hide forward strand, reverse strand, and translation.
-                    <ul>
-                        <li>When saving track data, you may chose to view or download either the “visible region” or
-                            the “whole reference genome” in FASTA format.
-                        </li>
-                    </ul>
-                </li>
-                <li>From the drop down menu (accessed by hovering over any Annotation track label,) you may see
-                    information about the track, pin the track to the top of the row in the browser, edit the tracks
-                    configuration, remove the track to the Available Tracks column, save the track data, or
-                    show/hide feature labels.
-                    <ul>
-                        <li>When saving track data, you may chose to view or download either the “visible region” or
-                            the “whole reference genome” in one of the three following formats: GFF3, BED, or Sequin
-                            Table.
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            <p>Uploading Your Own Tracks and Adding Custom Tracks:</p>
-            <ul>
-                <li>Upload and view your own annotations or gene lists as GFF3 files and view them as tracks on the
-                    genome browser by selecting “Open” from the File menu in the top left corner of the browser.
-                </li>
-                <li>Upload and view your RNA-Seq, ChIP-Seq, or SNP data as BigWig or BAM files and view them as
-                    tracks in the genome browser by selecting “Open” from the File menu in the top left corner of
-                    the browser.
-                </li>
-                <li>You may also create tracks showing specific regions of the Reference Sequence (or it’s
-                    translations) by entering the NA or AA sequence. To do this, select “Add sequence search track”
-                    from the file menu.
-                </li>
-            </ul>
-            <p>Interacting with Individual Browser Features and Accessing Feature Sequence Data:</p>
-            <ul>
-                <li>Different genomic feature types annotated by the same source are grouped together as single
-                    tracks, using various shades of the same color to represent different feature types. i.e. PATRIC
-                    annotations, shown in blue, will range from light blue to darker blue depending on the feature
-                    type.
-                </li>
-                <li>Hovering over any feature within the Browser will display information such as Locus Tag,
-                    Location, Strand, Type, Gene Symbol, and Product.
-                </li>
-                <li>Clicking on any feature within the Browser will open a pop-up with feature details and, if
-                    applicable, links to the Genome Browser, Compare Region Viewer, Associated Pathways,
-                    Transcriptomics Data, and Correlated Genes for that particular feature. The pop-up also contains
-                    the NA sequence for the feature.
-                </li>
-            </ul>
-            <h3 class="ribbon-title">Source</h3>
-            <p>PATRIC offers Ajax-based genome browser implemented using JBrowse (<a
-                    href="http://www.ncbi.nlm.nih.gov/pubmed/19570905">Skinner
-                et al, 2009</a>).</p>
-
+                <li>Loading a sequence. Cut and paste a sequence into the Sequence box. </li>
+                <li>Choosing a type of BLAST. Depending upon the sequence, this will open the drop down box under Program, showing the types of BLAST available. Definitions of the types of BLAST searches are as follows:
+					 <ul>
+						<li>BLAST: searches nucleotide databases using a nucleotide query</li>
+						<li>BLASTP: searcesh protein databases using a protein query</li>
+						<li>BLASTX: searches protein databases using a translated nucleotide query</li>
+						<li>TBLASTX: searches translated nucleotide databases using a translated nucleotide query</li>
+						<li>TBLASTN: searches translated nucleotide subjects using a protein query</li>
+					</ul>
+				 </li>
+                 <li>Selecting a database. PATRIC provides a variety of databases that selected sequences can be compared to. </li>
+                 <li>BLASTing against gene features or contigs. Depending upon query type, researchers will be able to choose to search entire genomes or limit the search to only features.  When BLASTN, TBLASTN, or TBLASTX are selected, researchers can choose to search against either contigs or features.  When BLASTP or BLASTX are selected, the search is limited to features.</li>
+                 <li>Adjusting the BLAST parameters. You may use the Advanced Options to adjust both the number of hits returned, and the E value threshold.</li>
+                 <li>Submitting the BLAST job. Once the sequence has been uploaded, the program and database selected, the BLAST parameters adjusted, the job can be started by clicking the Search button at the bottom of the page.</li>         
+                 <li>Submitting another BLAST job. At the top of the BLAST result page, researchers can click on the Edit from and resubmit button to initiate another BLAST job</li>
+           </ul>
         </div>
     </section>
 </div>
