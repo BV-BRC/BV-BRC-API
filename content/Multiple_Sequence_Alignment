@@ -3,30 +3,30 @@
 
     <section class="main">
         <div class="data-box">
-            <hr/>
-            <h4 class="far"><strong><em>Accessing the Multiple Sequence Alignment Viewer on the PATRIC
-                Website</em></strong></h4>
+
+            <h4 class="ribbon-title">Accessing the Multiple Sequence Alignment Viewer on the PATRIC
+                Website</h4>
             <p>This tool may be accessed from the MSA Tools button in the light blue Table Toolbar at the top of PATRIC
                 tables, including the Table Toolbar within your Workspace. From within the Protein Family Sorter you may
                 chose to access MSA via the Table Toolbar or to conduct MSA for <strong>ALL</strong> protein members on
-                any FIGfam details page by clicking “For All XX Members” link under “Integrated Protein Tree and
-                Alignment<strong>” </strong>in the upper right corner of the page. For more details on the Protein
-                Family Sorter please see <a href="../protein-family-sorter/">Protein Family Sorter FAQs</a>.</p>
-            <hr/>
-            <h4 class="far"><strong><em>Multiple Sequence Alignment Viewer Overview</em></strong></h4>
+                any FIGfam details page by clicking “For All XX Members” link under "Integrated Protein Tree and
+                Alignment<strong>" </strong>in the upper right corner of the page. For more details on the Protein
+                Family Sorter please see <a href="/content/Protein_Family_Sorter">Protein Family Sorter FAQs</a>.</p>
+
+            <h4 class="ribbon-title">Multiple Sequence Alignment Viewer Overview</h4>
             <p>The multiple sequence alignment viewer is an interactive tool that displays multiple sequence alignment
                 and a family tree side-by-side and allows the user to examine details of selected protein families,
                 including the overall quality of the alignment as well as more specific details such as particular
                 regions or motifs of interest.</p>
-            <hr/>
-            <h4 class="far"><strong><em>Alignment Program and Source Data</em></strong></h4>
+
+            <h4 class="ribbon-title">Alignment Program and Source Data</h4>
             <p>The protein sequences from each family are aligned using MUSCLE (v 3.6) and<br/>
                 ambiguous portions of the alignment are removed using Gblocks (v 0.91b). The input data for the multiple
                 sequence alignments are the protein sequences that have been grouped together in a FIGfam. When the user
                 selects a FIGfam from the protein family sorter, all members of that FIGfam from the set of genomes
                 being examined are included.</p>
-            <hr/>
-            <h4 class="far"><strong><em>Multiple Sequence Alignment Viewer Features and Functionality</em></strong></h4>
+
+            <h4 class="ribbon-title">Multiple Sequence Alignment Viewer Features and Functionality</h4>
             <ul>
                 <li>The Family Tree, displayed on the left side of the screen, may be collapsed or expanded in order to
                     co-locate sequences of interest.
@@ -46,7 +46,7 @@
                     pattern for very closely related taxa (where the branch lengths are too small to allow the branching
                     pattern to be distinguished in phylogram view). Cladogram view also shows branch support values,
                     which are calculated by <a href="http://www.microbesonline.org/fasttree/"
-                                               onclick="__gaTracker('send', 'event', 'outbound-article', 'http://www.microbesonline.org/fasttree/', 'FastTree. ');">FastTree. </a>
+                                               target="_blank">FastTree. </a>
                 </li>
             </ul>
             <ul>
