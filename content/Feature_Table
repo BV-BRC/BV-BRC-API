@@ -25,8 +25,7 @@
                 </li>
             </ul>
             <ul>
-                <li>By default, tables show 20 rows of data. In a field at the bottom of the table, this number can be
-                    changed to any value up to 200 and the table can refreshed.
+                <li>By default, tables show 200 rows of data. For rows beyond 200, the numbers on the right side below the allow advancement throught pages in increments of 200 rows.
                 </li>
                 <li>Click on links within columns to navigate to specific PATRIC genome pages (Genome Name), NCBI
                     nucleotide page for that genome (Accession), and specific PATRIC locus pages (Locus Tag). Note: The
