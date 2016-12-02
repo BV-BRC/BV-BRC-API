@@ -101,11 +101,11 @@
                 <ul id="column_pt_2" class="no-decoration no-underline-links">
                     <li class="clear">
                         <figure class="figure-right"><a
-                                href="/public/pdf/Workshop-Proteome-Comparison.pdf"><img
+                                href="/public/pdfs/Workshop-Proteome-Comparison.pdf"><img
                                 src="/public/patric/images/workshop-pdf-icon.jpg"
                                 alt="Workshop Guide: Proteome Comparison"></a></figure>
                         <h4 class="bold"><a
-                                href="/public/pdf/Workshop-Proteome-Comparison.pdf">Workshop
+                                href="/public/pdfs/Workshop-Proteome-Comparison.pdf">Workshop
                             Guide: Proteome Comparison</a></h4>
                         <p>This document provides step-by-step instructions for doing a bi-directional BLASTP analysis
                             comparing up to 10 genomes in PATRIC.</p></li>
