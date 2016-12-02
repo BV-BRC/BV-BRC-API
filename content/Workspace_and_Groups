@@ -3,26 +3,22 @@
 
     <section class="main">
         <div class="data-box">
-            <div>
-                <hr size="2"/>
-            </div>
-            <h4 class="far"><strong><em>Workspace Overview</em></strong></h4>
+
+            <h4 class="ribbon-title">Workspace Overview</h4>
             <p>The PATRIC Workspace provides a private area in the website where you can run analysis services on your
                 own data, store the results of those analyses, and create groups of data you have selected from within
                 the PATRIC Website. In future releases, we plan to enable sharing of workspaces, comparisons of groups,
                 and other functionality.</p>
-            <div>
-                <hr size="2"/>
-                <h4 class="far"><strong><em>Accessing the Workspace</em></strong></h4>
-                <p>In order to use the PATRIC private Workspace, you must register and login. The registration link is
-                    at the top right corner of the PATRIC Website page. If you have already registered, you can login by
-                    clicking the &lt;Login&gt; button beside the registration link. Once you have logged in, you can
-                    access the Workspace by clicking the link beside the word WORKSPACE: in the top right of the PATRIC
-                    Website. The default workspace is called HOME.</p>
 
-                <hr size="2"/>
-            </div>
-            <h4 class="far"><strong><em>Creating and Using Workspace Groups</em></strong></h4>
+            <h4  class="ribbon-title">Accessing the Workspace</h4>
+            <p>In order to use the PATRIC private Workspace, you must register and login. The registration link is
+                at the top right corner of the PATRIC Website page. If you have already registered, you can login by
+                clicking the &lt;Login&gt; button beside the registration link. Once you have logged in, you can
+                access the Workspace by clicking the link beside the word WORKSPACE: in the top right of the PATRIC
+                Website. The default workspace is called HOME.</p>
+
+
+            <h4  class="ribbon-title">Creating and Using Workspace Groups</h4>
             <p>“Groups” in PATRIC are collections of items that you have selected and store together with a name that
                 you provide. Groups are particularly useful for organizing and managing data sets of interest for
                 further exploration and analysis.</p>
@@ -31,10 +27,8 @@
                 may enter a group name and description for your selected items. You may also choose to create a new
                 group or add items to an existing group.</p>
 
-            <div>
-                <hr size="2"/>
-            </div>
-            <h4 class="far"><strong><em>Using Your Workspace Groups in the PATRIC Website</em></strong><strong></strong>
+
+            <h4  class="ribbon-title">Using Your Workspace Groups in the PATRIC Website<strong></strong>
             </h4>
             <p>Many PATRIC features are available to work with data in your groups. This can be particularly useful if
                 you have collected together a group of data items in PATRIC and wish to do further analysis with those
@@ -42,10 +36,7 @@
                 “Searches and Tools” tab at the top of the PATRIC site, and then select the group(s) you wish to include
                 in the analysis.</p>
 
-            <div>
-                <hr size="2"/>
-            </div>
-            <h4 class="far"><strong><em>Managing Your Groups and Data in the Workspace</em></strong></h4>
+            <h4  class="ribbon-title">Managing Your Groups and Data in the Workspace</h4>
             <p>The Workspace contains directory folders for organizing your data in the Workspace. An initial set of
                 directory folders are provided as default locations for your data, based on data type. Clicking on one
                 of the directory folder names selects it. The Information Panel on the right-hand side provides

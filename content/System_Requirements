@@ -3,21 +3,21 @@
 
     <section class="main">
         <div class="data-box">
-            <div>
-                <hr size="2"/>
-            </div>
-            <h4 class="far"><strong><em>Recommended System Requirements for PATRIC</em></strong></h4>
+            <h3 class="ribbon-title">Recommended System Requirements for PATRIC</h3>
             <p>The following system requirements are recommended for optimal PATRIC tool access and performance:</p>
             <ul>
-                <li><a href="http://www.google.com/chrome">Chrome</a></span>, ><a
-                        href="http://www.apple.com/safari/download/">Safari</a></span>, or <a
+                <li><a href="http://www.google.com/chrome">Chrome</a>, <a
+                        href="http://www.apple.com/safari/download/">Safari</a>, or <a
                         href="http://www.mozilla.com/en-US/firefox/all.html">Firefox</a> browser (Internet Explorer is
                     not recommended)
                 </li>
-                <li><a href="http://www.java.com/en/download/index.jsp">Java Runtime Environment (JRE)</a></li>
                 <li><a href="http://get.adobe.com/flashplayer/otherversions/">Adobe Flash Player</a></li>
+                <ul>
+                    For Safari users, Adobe Flash Player could be disabled by default. <a
+                        href="https://helpx.adobe.com/flash-player/kb/enabling-flash-player-safari.html"
+                        target="_blank">Click Here</a> to learn how to enable it.
+                </ul>
             </ul>
-
         </div>
     </section>
 </div>

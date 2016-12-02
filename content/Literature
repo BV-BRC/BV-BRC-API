@@ -3,20 +3,14 @@
 
     <section class="main">
         <div class="data-box">
-            <div>
-                <hr size="2"/>
-            </div>
-            <h4 class="far"><strong><em>Accessing Literature on the PATRIC Website</em></strong></h4>
+
+            <h4  class="ribbon-title">Accessing Literature on the PATRIC Website</h4>
             <p>You may access literature from any Organism Landing Page by clicking on the “Literature” tab at the top
                 of the page. Note: You will receive literature relevant to the taxonomic level of the Landing Page.
                 Taxonomy is listed across the top of the page, directly under the blue banner.</p>
             <p>PATRIC searches PubMed directly for literature related to the taxonomic level shown at the top of the
                 page. PubMed abstracts are available and you may also link out to any article directly on PubMed. These
                 search results may be filtered along the left of the page by date and keyword.</p>
-            <div>
-                <hr size="2"/>
-            </div>
-            <h4 class="far"><strong><em> </em></strong></h4>
 
         </div>
     </section>
