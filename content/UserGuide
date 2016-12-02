@@ -8,8 +8,10 @@
 
             <ul style="list-style: none; ">
                 <li><a href="Website_Overview">Website Overview</a></li>
+                </li>
                 <li><a href="Genome_Data_and_Tools">Genome Data and Tools</a>
                     <ul style="list-style: none; ">
+                        <li><a href="/help/Services/Genome_Assembly">Genome Assembly Service</a></li>
                         <li><a href="/help/Services/Genome_Annotation">Genome Annotation Service</a></li>
                         <li><a href="Genome_Annotations">Genome Annotations</a></li>
                         <li><a href="Protein_Families">Protein Families</a></li>
@@ -19,6 +21,10 @@
                         <li><a href="Genome_Browser">Genome Browser</a></li>
                         <li><a href="Circular_Genome_Viewer">Circular Genome Viewer</a></li>
                         <li><a href="Phylogenetic_Trees">Phylogenetic Trees</a></li>
+                        <li><a href="/help/Services/Proteome_Comparison">Proteome Comparison Service</a></li>
+                        <li><a href="/help/Services/BLAST">BLAST Service</a></li>
+                        <li><a href="/help/Services/Variation_Analysis">Variation Analysis Service</a></li>
+                        <li><a href="/help/Services/Model_Reconstruction">Model Reconstruction Service</a></li>
                     </ul>
                 </li>
                 <li><a href="Genome_Features_and_Tools">Genome Feature Data and Tools</a>
@@ -38,6 +44,7 @@
                             List</a></li>
                         <li><a href="Transcriptomics_Gene_List">Transcriptomics Gene List</a></li>
                         <li><a href="/help/Services/Expression_Import">Expression Data Import Service</a></li>
+                        <li><a href="/help/Services/RNA-Seq_Analysis">RNA-Seq Analysis Service</a></li>
                     </ul>
                 </li>
                 <li><a href="Protein_Family_Sorter">Protein Family Sorter</a>
