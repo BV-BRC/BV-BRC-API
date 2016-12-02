@@ -3,29 +3,23 @@
 
     <section class="main">
         <div class="data-box">
-            <div>
-                <hr size="2"/>
-            </div>
-            <h4 class="far"><strong><em>Transcriptomics Experiment and Comparison Lists Overview</em></strong></h4>
+
+            <h4  class="ribbon-title">Transcriptomics Experiment and Comparison Lists Overview</h4>
             <p>For any taxonomy level or genome, all publically available transcriptomics experiment datasets that are
                 incorporated into PATRIC are displayed as Experiment and Comparison lists. The Experiment Tab shows a
                 list of studies or datasets that contain one or more samples or experimental conditions. The Comparison
                 Tab shows a list of curated pair-wise comparisons of two samples or experimental conditions to provide
                 differential gene expression measurements. Metadata-based searching and progressive filtering allows you
                 to quickly find datasets of interest.</p>
-            <div>
-                <hr size="2"/>
-            </div>
-            <h4 class="far"><strong><em>Accessing Transcriptomics Experiment and Condition Lists</em></strong></h4>
+
+            <h4  class="ribbon-title">Accessing Transcriptomics Experiment and Condition Lists</h4>
             <p>Experiment and Comparison lists can be accessed via the Transcriptomics tab on any Taxonomy or Genome
                 level landing page.</p>
-            <div>
-                <hr size="2"/>
-            </div>
-            <h4 class="far"><strong><em>Using Transcriptomics Experiment and Condition Lists</em></strong></h4>
+
+            <h4  class="ribbon-title">Using Transcriptomics Experiment and Condition Lists</h4>
             <ul>
                 <li>All tables accessed via the Experiments and Comparisons Tabs may be sorted as described in <a
-                        href="http://enews.patricbrc.org/feature-table-faqs/">Feature Table FAQs</a>.
+                        href="/content/Feature_Table">Feature Table FAQs</a>.
                 </li>
                 <li>Filter controls on the left allow you to filter the data based on the following key metadata
                     attributes (in orange text): Sample Organism, Strain, Gene modification, Experimental condition,
@@ -51,8 +45,8 @@
                                     will be permanently saved to your workspace. To learn more about the benefits of
                                     registration, and how to save data for future visits and utilize your personal
                                     workspace, see <a
-                                            href="http://enews.patricbrc.org/faqs/workspace-faqs/registration-faqs/">Registration
-                                        FAQs</a> and <a href="http://enews.patricbrc.org/faqs/workspace-faqs/">Workspace
+                                            href="/content/Registration">Registration
+                                        FAQs</a> and <a href="/content/Workspace_and_Groups">Workspace
                                         FAQs</a>.
                                 </li>
                             </ul>

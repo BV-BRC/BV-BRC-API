@@ -3,27 +3,21 @@
 
     <section class="main">
         <div class="data-box">
-            <div>
-                <hr size="2"/>
-            </div>
-            <h4 class="far"><strong><em>Gene Page Transcriptomics Data Overview</em></strong></h4>
+
+            <h4  class="ribbon-title">Gene Page Transcriptomics Data Overview</h4>
             <p>The Transcriptomics Tab at the gene-level summarizes the expression of a gene in all available
                 experimental datasets. All the comparisons in which a gene is differentially expressed are listed in
                 a table along with associated metadata such as Strain, Gene Modification, and Experimental
                 Condition. Expression value based filters and a graphical summary of the experimental metadata allow
                 you to quickly find top experimental conditions and gene manipulations related to the differential
                 expression of the gene. This may help to confirm or infer potential function of the gene.</p>
-            <div>
-                <hr size="2"/>
-            </div>
-            <h4 class="far"><strong><em>Accessing Gene-Level Transcriptomics Data</em></strong></h4>
+
+            <h4  class="ribbon-title">Accessing Gene-Level Transcriptomics Data</h4>
             <p>Gene-level transcriptomics data is available under the Transcriptomics Tab on any given Gene Overview
                 Landing page. You may search for your gene/CDS of interest using PATRIC’s Global Search and then go
                 directly to the corresponding Gene Overview Landing page.</p>
-            <div>
-                <hr size="2"/>
-            </div>
-            <h4 class="far"><strong><em>Using Transcriptomics Data at the Gene Level</em></strong></h4>
+
+            <h4  class="ribbon-title">Using Transcriptomics Data at the Gene Level</h4>
             <ul>
                 <li>The data may be filtered, via the controls above the graphs, in the following ways:
                     <ul>
@@ -54,14 +48,14 @@
                     file.
                 </li>
             </ul>
-            <hr size="2"/>
-            <h4 class="far"><strong><em>Correlated Genes?</em></strong></h4>
+
+            <h4  class="ribbon-title">Correlated Genes?</h4>
             <p>For a gene of interest, the Correlated Genes tab shows a list of genes that have correlated
                 expression profiles (positively or negatively) across all available data sets along with their
                 functions. Thus, researchers may identify genes that are co-regulated or have similar functions. It
                 can also help to infer potential function of a hypothetical or unknown gene.</p>
-            <hr size="2"/>
-            <h4 class="far"><strong><em>Working with Lists of Correlated Genes</em></strong></h4>
+
+            <h4  class="ribbon-title">Working with Lists of Correlated Genes</h4>
             <ul>
                 <li>Filter the list by specifying any correlation cut-off (between 0 and 1) and positive/negative
                     correlation<b>.</b></li>
@@ -69,7 +63,7 @@
                     <ul>
                         <li>Save selected items to groups within your Workspace by clicking the Add Feature(s)
                             button. To learn more about how to save data for future visits and utilize your personal
-                            Workspace see <a href="http://enews.patricbrc.org/faqs/workspace-faqs/">Workspace
+                            Workspace see <a href="/content/Workspace_and_Groups">Workspace
                                 FAQs</a>.
                         </li>
                         <li>View or download selected DNA and/or protein sequence data in FASTA format. The
@@ -82,12 +76,12 @@
                         <li>Conduct Multiple Sequence Alignment analysis on selected groups, or selected items
                             within groups, by clicking the Multiple Sequence Alignment button. For more details on
                             this tool please see <a
-                                    href="http://enews.patricbrc.org/multiple-sequence-alignment-faqs/">Multiple
+                                    href="/content/Multiple_Sequence_Alignment">Multiple
                                 Sequence Alignment FAQs</a>.
                         </li>
                         <li>Utilize the ID Mapping Tool on selected items by clicking the Map IDs button. For more
                             information on this tool please see <a
-                                    href="http://enews.patricbrc.org/id-mapping-tool-faqs/">ID Mapping FAQs.</a>
+                                    href="/content/ID_Mapping_Tool">ID Mapping FAQs.</a>
                         </li>
                         <li>Customize columns shown/hidden in your results table with the Columns button.</li>
                     </ul>
