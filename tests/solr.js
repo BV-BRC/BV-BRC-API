@@ -74,7 +74,17 @@ define([
 
         },
         "transcriptomics_experiment": {},
-        "transcriptomics_gene": {},
+        "transcriptomics_gene": {
+            queries: [
+                ['q=genome_id%3A83332.12&fq=%7B!correlation%20fieldId%3Drefseq_locus_tag%20fieldCondition%3Dpid%20fieldValue%3Dlog_ratio%20srcId%3DRv2429%20filterCutOff%3D0.4%20filterDir%3Dpos%20cost%3D101%7D&rows=0&json.nl=map&wt=json', function(data){
+                    assert.isArray(data.correlation);
+                    assert.isTrue(data.correlation.length > 0);
+                    assert.isTrue(data.correlation.some(function(d){
+                        return d.id == "Rv2429" && d.correlation == 1.0;
+                    }))
+                }]
+            ]
+        },
         "transcriptomics_sample": {}
     };
 
