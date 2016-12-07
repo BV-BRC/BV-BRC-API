@@ -22,7 +22,7 @@
                         <li><a href="Circular_Genome_Viewer">Circular Genome Viewer</a></li>
                         <li><a href="Phylogenetic_Trees">Phylogenetic Trees</a></li>
                         <li><a href="/help/Services/Proteome_Comparison">Proteome Comparison Service</a></li>
-                        <li><a href="/help/Services/BLAST">BLAST Service</a></li>
+                        <li><a href="BLAST">BLAST Service</a></li>
                         <li><a href="/help/Services/Variation_Analysis">Variation Analysis Service</a></li>
                         <li><a href="/help/Services/Model_Reconstruction">Model Reconstruction Service</a></li>
                     </ul>
