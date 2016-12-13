@@ -5,7 +5,7 @@
 
 
 Most of the Patric command line tools take as input a file containing a single column set or a tab-separated table and they output a modified table. The most common modification is the addition of one of more columns. We create "pipelines" of these tools to implement fairly complex transformations leading to the final table containing the desired output. We begin with accessing information about genomes.
-<H2> Accessing Genome Information</H2>
+<H3 class="ribbon-title"> Accessing Genome Information</H3>
 Consider the following example. 
 <pre>
 <b>p3-all-genomes</b> 
