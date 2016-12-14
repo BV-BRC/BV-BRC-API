@@ -17,7 +17,7 @@ function processProteinFamily(pfState, options){
 		fq: "annotation:PATRIC AND feature_type:CDS AND " + familyId + ":[* TO *]",
 		rows: 0,
 		facet: true,
-		'facet.method': 'uif',
+		'facet.method': 'fcs',
 		'json.facet': '{stat:{type:field,field:' + familyId + ',sort:index,limit:-1,facet:{aa_length_min:"min(aa_length)",aa_length_max:"max(aa_length)",aa_length_mean:"avg(aa_length)",ss:"sumsq(aa_length)",sum:"sum(aa_length)"}}}'
 	};
 	const q = Object.keys(query).map(p => p + "=" + query[p]).join("&");
