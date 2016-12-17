@@ -110,6 +110,6 @@ if (cluster.isMaster) {
 	var port = conf.get("http_port");
 	app.set('port',port || 3001);
 	app.server = http.createServer(app);
-	app.server.setTimeout(60 * 1000 * 10, function() { console.log("Timeout waiting for response")});
+	app.server.setTimeout(60 * 1000 * 20, function() { console.log("Timeout waiting for response")});
 	return app.server.listen(app.get("port"));
 };
