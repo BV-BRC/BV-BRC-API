@@ -1,0 +1,55 @@
+<div class="dlp">
+    <h2>Genomic Feature Types</h2>
+
+    <section class="main">
+        <div class="data-box">
+            <p>Currently, PATRIC supports over 40 genomic feature types, including:</p>
+            <ul>
+                <li>-10_signal</li>
+                <li>-35_signal</li>
+                <li>5&#8217;UTR</li>
+                <li>attenuator</li>
+                <li>CDS</li>
+                <li>conflict</li>
+                <li>enhancer</li>
+                <li>exon</li>
+                <li>gene</li>
+                <li>intron</li>
+                <li>LTR</li>
+                <li>mat_peptide</li>
+                <li>misc_binding</li>
+                <li>misc_difference</li>
+                <li>misc_feature</li>
+                <li>misc_recomb</li>
+                <li>misc_RNA</li>
+                <li>misc_signal</li>
+                <li>misc_structure</li>
+                <li>mRNA</li>
+                <li>ncRNA</li>
+                <li>old_sequence</li>
+                <li>prim_transcript</li>
+                <li>primer_bind</li>
+                <li>promoter</li>
+                <li>protein_bind</li>
+                <li>pseudogene</li>
+                <li>pseudogenic_region</li>
+                <li>RBS</li>
+                <li>region</li>
+                <li>rep_origin</li>
+                <li>repeat_region</li>
+                <li>repeat_unit</li>
+                <li>ribosome_entry_site</li>
+                <li>rRNA</li>
+                <li>sig_peptide</li>
+                <li>source</li>
+                <li>stem_loop</li>
+                <li>terminator</li>
+                <li>tmRNA</li>
+                <li>transcript</li>
+                <li>tRNA</li>
+                <li>unsure</li>
+                <li>variation</li>
+            </ul>
+        </div>
+    </section>
+</div>
