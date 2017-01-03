@@ -161,6 +161,12 @@ var LazyWalk = exports.LazyWalk = function(term, opts){
 							debug("Error in sub query", err);
 							return "(NOT_A_VALID_ID)";
 						});
+					}else if(term.name == "descendants" && term.args.length == 1){
+						// debug("call descendants(): ", term.args);
+						var taxId = term.args[0];
+						var p1 = encodeURIComponent('(*,' + taxId + ')');
+						var p2 = encodeURIComponent('(*,' + taxId + ',*)');
+						return "or(eq(taxpath_a," + p1 + "),eq(taxpath_a," + p2 + "),eq(taxpath_b," + p1 + "),eq(taxpath_b," + p2 + "))";
 					}else if(term.name == "GenomeGroup"){
 //							debug("call getWorkspaceObject(): ", term.args[0]);
 						return when(getWorkspaceObject(term.args[0], opts), function(ids){
