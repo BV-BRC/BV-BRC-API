@@ -68,7 +68,11 @@ router.get("*", function(req, res, next){
 
 		req.call_params = [req._parsedUrl.query || ""];
 		req.call_collection = req.params.dataType;
-	}else{
+	}else if(req.path == '/schema'){
+		req.call_method = "schema";
+		req.call_params = [];
+		req.call_collection = req.params.dataType;
+    }else{
 		if(req.params[0]){
 			req.params[0] = req.params[0].substr(1);
 			var ids = decodeURIComponent(req.params[0]).split(",");
