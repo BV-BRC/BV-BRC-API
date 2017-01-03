@@ -127,12 +127,12 @@ app.use("/content", [
 	contentRouter
 ])
 
-// app.use("/testTimeout", function(req,res,next){
-// 	setTimeout(function(){
-// 		res.send("OK");
-// 		res.end();
-// 	},60 * 1000 * 5 );
-// });
+app.use("/testTimeout", function(req,res,next){
+	setTimeout(function(){
+		res.send("OK");
+		res.end();
+	}, 60 * 1000 * 5);
+});
 
 app.use("/jbrowse/", [
 	jbrowseRouter
