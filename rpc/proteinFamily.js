@@ -20,7 +20,8 @@ function processProteinFamily(pfState, options){
 		fq: "annotation:PATRIC AND feature_type:CDS AND " + familyId + ":[* TO *]",
 		rows: 0,
 		facet: true,
-		'facet.method': 'fc',
+		'facet.method': 'fcs',
+		'facet.threads': 48,
 		'json.facet': '{stat:{type:field,field:' + familyId + ',sort:index,limit:-1,facet:{aa_length_min:"min(aa_length)",aa_length_max:"max(aa_length)",aa_length_mean:"avg(aa_length)",ss:"sumsq(aa_length)",sum:"sum(aa_length)"}},dist:{type:field,field:genome_id,limit:-1,facet:{families:{type:field,field:' + familyId + ',limit:-1,sort:{index:asc}}}}}'
 	};
 	const q = Object.keys(query).map(p => p + "=" + query[p]).join("&");
@@ -35,7 +36,7 @@ function processProteinFamily(pfState, options){
 		json: true,
 		body: q
 	}, function(error, res, response){
-		debug("merged query running: ", (Date.now() - qSt) / 1000, "s");
+		debug("facet query took ", (Date.now() - qSt) / 1000, "s");
 
 		if(error){
 			return def.reject(error);
@@ -57,9 +58,9 @@ function processProteinFamily(pfState, options){
 		const q2St = Date.now();
 		for(let i = 0; i < steps; i++){
 			const subDef = Deferred();
-			const subFamilyIdList = familyIdList.slice(i*fetchSize, Math.min((i+1)*fetchSize, familyIdList.length));
+			const subFamilyIdList = familyIdList.slice(i * fetchSize, Math.min((i + 1) * fetchSize, familyIdList.length));
 
-			debug("subFamilyList: ", subFamilyIdList.length, i*fetchSize, Math.min((i+1)*fetchSize, familyIdList.length));
+			// debug("subFamilyList: ", subFamilyIdList.length, i*fetchSize, Math.min((i+1)*fetchSize, familyIdList.length));
 			request.post({
 				url: distributeURL + 'protein_family_ref/',
 				json: true,
@@ -77,10 +78,10 @@ function processProteinFamily(pfState, options){
 			});
 			allRequests.push(subDef);
 		}
-			debug("querying protein_family_ref: ", familyIdList.length);
+		debug("querying protein_family_ref: ", familyIdList.length);
 
 		all(allRequests).then(function(body){
-			debug("protein_family_ref took", (Date.now() - q2St)/1000, "s");
+			debug("protein_family_ref took", (Date.now() - q2St) / 1000, "s");
 
 			let res = [];
 			body.forEach(function(r){
