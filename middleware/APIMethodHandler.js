@@ -4,6 +4,7 @@ var config = require("../config");
 var SOLR_URL = config.get("solr").url;
 var debug = require('debug')('p3api-server:middleware/APIMethodHandler');
 var when = require("promised-io/promise").when;
+var request = require("request");
 
 var streamQuery = function(req, res, next){
 	if(req.call_method != "stream"){
@@ -78,6 +79,30 @@ var getSOLR = function(req, res, next){
 	});
 };
 
+var getSchema= function(req, res, next){
+    debug(SOLR_URL + "/" + req.call_collection +"/schema");
+	request.get({
+		url: SOLR_URL + "/" + req.call_collection +"/schema",
+		headers: {
+			accept:"application/json"
+		}
+	}, function(err, r, body){
+		//debug("Distribute RESULTS: ", body);
+        debug("schema results: "+body);
+		debug("r.headers: ", r.headers);
+		if(err){
+            debug("Error in SOLR Get: ", err);
+            return next(err);
+		}
+
+		if(body && typeof body == "string"){
+			body = JSON.parse(body)
+		}
+        res.results=body;
+        next();
+	});
+};
+
 module.exports = function(req, res, next){
 
 	if(req.cacheHit && res.results){
@@ -94,6 +119,9 @@ module.exports = function(req, res, next){
 			break;
 		case "get":
 			return getSOLR(req, res, next);
+			break;
+		case "schema":
+			return getSchema(req, res, next);
 			break;
 		case "stream":
 			return streamQuery(req, res, next);

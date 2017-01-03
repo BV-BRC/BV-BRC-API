@@ -271,7 +271,8 @@ router.get("/genome/:id/features/:seq_accession", [
             req.call_params[0]+="&limit(10000)"
 		}else{
 			req.call_params = ["and(eq(genome_id," + req.params.id + "),eq(accession," + req.params.seq_accession + "),eq(annotation," + annotation + "),or(" + st + "," + en + "," + over + "),ne(feature_type,source))"];
-            req.call_params[0]+="&limit(10000)&sort(+start)"
+            //req.call_params[0]+="&select(patric_id,refseq_locus_tag,gene,product,annotation,feature_type,protein_id,gene_id,genome_name,accession,strand,na_length,aa_length,genome_id,start,end,annotation)";
+            req.call_params[0]+="&limit(10000)&sort(+start)";
 		}
 		req.queryType = "rql";
 		// debug("CALL_PARAMS: ", req.call_params);
