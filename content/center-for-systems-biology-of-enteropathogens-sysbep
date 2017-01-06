@@ -60,18 +60,11 @@
                 required for virulence were analyzed in a sample-matched fashion to facilitate analysis of the <em>Salmonella</em>
                 metabolic model.</p>
             <ul>
-                <li class="first">Metabolomics Data <a href="http://omics.pnl.gov/view/publication_1053.html"
-                                                       target="_blank">PNNL_1053</a></li>
-                <li>Proteomics Data&nbsp;<a href="http://omics.pnl.gov/view/publication_1054.html"
-                                            target="_blank">PNNL_1054</a>,&nbsp;<a
-                        href="http://omics.pnl.gov/view/publication_1055.html"
-                        target="_blank">PNNL_1055</a></li>
                 <li>Transcriptomics Data&nbsp;Series GSE25441&nbsp;at <a
                         href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE25441"
                         target="_blank">GEO</a> and at <a
                         href="/view/ExperimentComparison/483361#view_tab=overview">PATRIC</a>
                 </li>
-                <li class="last">Genes of Interest: TBD</li>
             </ul>
             <p><strong>Systems analysis of <em>Salmonella</em> regulatory mutants</strong></p>
             <p>Sample-matched multi-omic measurements of fourteen virulence-essential regulator mutants were coupled
@@ -149,7 +142,7 @@
                             Grown in a Low Mg/pH Medium</a></li>
                     </ul>
                 </li>
-                <li>Proteomics Data: <a href="http://omics.pnl.gov/view/publication_0008.html"
+                <li>Proteomics Data: <a href="http://www.ncbi.nlm.nih.gov/pubmed/19953200"
 
                                         target="_blank">PNNL_0008</a></li>
                 <li class="last">Genes of Interest:
@@ -179,7 +172,7 @@
                     </ul>
                 </li>
                 <li class="last">Raw Data and Collated Peptide Identification Information: <a
-                        href="http://omics.pnl.gov/view/publication_1039.html"
+                        href="http://www.ncbi.nlm.nih.gov/pubmed/21867535"
 
                         target="_blank">PNNL_1039</a></li>
             </ul>
