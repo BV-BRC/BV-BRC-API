@@ -69,7 +69,7 @@
                 <li>Transcriptomics Data&nbsp;Series GSE25441&nbsp;at <a
                         href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE25441"
                         target="_blank">GEO</a> and at <a
-                        href="http://patricbrc.org/portal/portal/patric/SingleExperiment?cType=taxon&amp;cId=590&amp;eid=483361">PATRIC</a>
+                        href="/view/ExperimentComparison/483361#view_tab=overview">PATRIC</a>
                 </li>
                 <li class="last">Genes of Interest: TBD</li>
             </ul>
@@ -95,7 +95,7 @@
                         href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE38378"
 
                         target="_blank">GEO</a> and at <a
-                        href="http://patricbrc.org/portal/portal/patric/SingleExperiment?cType=taxon&amp;cId=590&amp;eid=867640">PATRIC</a>
+                        href="/view/ExperimentComparison/867640#view_tab=overview">PATRIC</a>
                 </li>
                 <li class="last">Genes of Interest:
                     <ul>
@@ -210,7 +210,7 @@
                         href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=gse30634"
 
                         target="_blank">GEO</a> and at <a
-                        href="http://patricbrc.org/portal/portal/patric/SingleExperiment?cType=taxon&amp;cId=629&amp;eid=482123">PATRIC</a>
+                        href="/view/ExperimentComparison/482123#view_tab=overview">PATRIC</a>
                 </li>
                 <li class="last">Genes of Interest:
                     <ul>
