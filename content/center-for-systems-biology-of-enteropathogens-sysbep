@@ -41,15 +41,14 @@
                                             target="_blank">PeptideAtlas, accession PASS00551</a></li>
                 <li class="last">Genes of Interest:
                     <ul>
-                        <li class="first"><a href="http://patricbrc.org/patric/html/S_enterica_CYT.html"
-                                             target="_blank">Cytoplasmic identified proteins</a></li>
-                        <li><a href="http://patricbrc.org/patric/html/S_enterica_IM.html" target="_blank">Inner membrane
+                        <li class="first"><a href="/content/S_enterica_CYT" target="_blank">Cytoplasmic identified proteins</a></li>
+                        <li><a href="/content/S_enterica_IM" target="_blank">Inner membrane
                             identified proteins</a></li>
-                        <li><a href="http://patricbrc.org/patric/html/S_enterica_PERI.html" target="_blank">Periplasmic
+                        <li><a href="/content/S_enterica_PERI" target="_blank">Periplasmic
                             identified proteins</a></li>
-                        <li><a href="http://patricbrc.org/patric/html/S_enterica_OM.html" target="_blank">Outer membrane
+                        <li><a href="/content/S_enterica_OM" target="_blank">Outer membrane
                             identified proteins</a></li>
-                        <li class="last"><a href="http://patricbrc.org/patric/html/S_enterica_moonlighting.html"
+                        <li class="last"><a href="/content/S_enterica_moonlighting"
                                             target="_blank">Promising moonlighting candidate proteins (known cytoplasmic
                             proteins observed in the OM)</a></li>
                     </ul>
@@ -62,17 +61,13 @@
                 metabolic model.</p>
             <ul>
                 <li class="first">Metabolomics Data <a href="http://omics.pnl.gov/view/publication_1053.html"
-
                                                        target="_blank">PNNL_1053</a></li>
                 <li>Proteomics Data&nbsp;<a href="http://omics.pnl.gov/view/publication_1054.html"
-
                                             target="_blank">PNNL_1054</a>,&nbsp;<a
                         href="http://omics.pnl.gov/view/publication_1055.html"
-
                         target="_blank">PNNL_1055</a></li>
                 <li>Transcriptomics Data&nbsp;Series GSE25441&nbsp;at <a
                         href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE25441"
-
                         target="_blank">GEO</a> and at <a
                         href="http://patricbrc.org/portal/portal/patric/SingleExperiment?cType=taxon&amp;cId=590&amp;eid=483361">PATRIC</a>
                 </li>
@@ -104,7 +99,7 @@
                 </li>
                 <li class="last">Genes of Interest:
                     <ul>
-                        <li class="first"><a href="http://patricbrc.org/patric/html/S_enterica_pathogenesis.html"
+                        <li class="first"><a href="/content/S_enterica_pathogenesis"
                                              target="_blank">Broader list of pathogenesis related proteins</a></li>
                         <li>Network predicted virulence factors secreted into host cytoplasm</li>
                         <li class="last">Validated translocated effectors required for virulence</li>
@@ -130,13 +125,12 @@
                     </ul>
                 </li>
                 <li>Proteomics Data: <a href="http://omics.pnl.gov/view/publication_1026.html"
-
                                         target="_blank">PNNL_1026</a></li>
                 <li class="last">Genes of Interest:
                     <ul>
-                        <li class="first"><a href="http://patricbrc.org/patric/html/S_enterica_SPI-2_effector.html"
+                        <li class="first"><a href="/content/S_enterica_SPI-2_effector"
                                              target="_blank">Known SPI-2 effectors identified</a></li>
-                        <li class="last"><a href="http://patricbrc.org/patric/html/S_enterica_effector.html"
+                        <li class="last"><a href="/content/S_enterica_effector"
                                             target="_blank">Novel secreted effectors identified</a></li>
                     </ul>
                 </li>
@@ -160,7 +154,7 @@
                                         target="_blank">PNNL_0008</a></li>
                 <li class="last">Genes of Interest:
                     <ul>
-                        <li class="last first"><a href="http://patricbrc.org/patric/html/S_enterica_SPI-2_TTSS.html"
+                        <li class="last first"><a href="/content/S_enterica_SPI-2_TTSS"
                                                   target="_blank">Proteins co-regulated with SPI-2 TTSS</a> (criteria –
                             Pattern and magnitude of expression similar to SPI-2 TTSS across all conditions).
                         </li>
