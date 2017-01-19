@@ -237,7 +237,7 @@ module.exports = {
 		var def = new defer()
 		// console.log("Execute MSA: ", params)
 		var query = params[0];
-		var opts = {req: req, user: req.user, token:req.header.authorization}
+		var opts = {req: req, user: req.user, token:req.headers.authorization}
 
 
 		when(runQuery(query,opts), function(sequences){
