@@ -21,6 +21,7 @@ var defaults =  {
 		"pathway",
 		"pathway_ref",
 		"ppi",
+		"pig",
 		"protein_family_ref",
 		"sp_gene",
 		"sp_gene_evidence",
