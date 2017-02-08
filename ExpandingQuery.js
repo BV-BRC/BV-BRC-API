@@ -60,7 +60,7 @@ function getWorkspaceObject(id, opts){
 	return def.promise;
 }
 
-function getSubQuery(core, query, field, opts){
+function runJoinQuery(core, query, field, opts){
 	var def = new Deferred();
 
 	when(query, function(subquery){
@@ -94,6 +94,31 @@ function getSubQuery(core, query, field, opts){
 			def.reject(false);
 		});
 	});
+	return def.promise;
+}
+
+function runSubQuery(core, query, opts){
+	// TODO: make this function more generic and merge with runJoinQuery
+	const def = new Deferred();
+
+	Request.get({
+		url: distributeURL + core + "/?" + query,
+		json: true,
+		headers: {
+			'Accept': "application/json",
+			'Content-Type': "application/rqlquery+x-www-form-urlencoded",
+			'Authorization': (opts && opts.req && opts.req.headers["authorization"]) ? opts.req.headers["authorization"] : ""
+		}
+	}, function(err, resObj, results){
+		if(err){
+			def.reject(err);
+		}
+		if(results.length == 0){
+			def.resolve([]);
+		}
+		def.resolve(results);
+	});
+
 	return def.promise;
 }
 
@@ -155,7 +180,7 @@ var LazyWalk = exports.LazyWalk = function(term, opts){
 						return "";
 					}else if(term.name == "join" && term.args.length == 3){
 						// args: core, query, field
-						return when(getSubQuery(term.args[0], term.args[1], term.args[2], opts), function(ids){
+						return when(runJoinQuery(term.args[0], term.args[1], term.args[2], opts), function(ids){
 							return "in(" + term.args[2] + ",(" + ids.join(",") + "))";
 						}, function(err){
 							debug("Error in sub query", err);
@@ -176,6 +201,24 @@ var LazyWalk = exports.LazyWalk = function(term, opts){
 						});
 
 						return "or(" + queries.join(',') + ")";
+					}else if(term.name == "secondDegreeInteraction"){
+						var featureId = term.args[0];
+
+						query = "or(eq(feature_id_a," + featureId + "),eq(feature_id_b," + featureId + "))&select(feature_id_a,feature_id_b)";
+
+						return when(runSubQuery("ppi", query), function(results){
+
+							const feature_ids = results.map(function(f){
+								return [f.feature_id_a, f.feature_id_b];
+							}).reduce(function(a, b){
+								return a.concat(b);
+							});
+
+							return "and(in(feature_id_a,(" + feature_ids.join(",") + ")),in(feature_id_b,(" + feature_ids.join(",") + ")))";
+						}, function(err){
+							debug("Error in 2ndDegree function call", err);
+							return "(NOT_A_VALID_ID)";
+						});
 					}else if(term.name == "GenomeGroup"){
 //							debug("call getWorkspaceObject(): ", term.args[0]);
 						return when(getWorkspaceObject(term.args[0], opts), function(ids){
