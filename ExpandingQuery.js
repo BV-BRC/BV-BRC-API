@@ -97,15 +97,14 @@ function runJoinQuery(core, query, field, opts){
 	return def.promise;
 }
 
-function runSubQuery(core, query, opts){
-	// TODO: make this function more generic and merge with runJoinQuery
+function runSDISubQuery(core, query, opts){
 	const def = new Deferred();
 
 	Request.get({
-		url: distributeURL + core + "/?" + query,
+		url: distributeURL + core + "/?" + query + "&facet((field,feature_id_a),(field,feature_id_b),(limit,-1),(mincount,1))&json(nl,map)&limit(1)",
 		json: true,
 		headers: {
-			'Accept': "application/json",
+			'Accept': "application/solr+json",
 			'Content-Type': "application/rqlquery+x-www-form-urlencoded",
 			'Authorization': (opts && opts.req && opts.req.headers["authorization"]) ? opts.req.headers["authorization"] : ""
 		}
@@ -113,10 +112,14 @@ function runSubQuery(core, query, opts){
 		if(err){
 			def.reject(err);
 		}
-		if(results.length == 0){
+
+		if(results['facet_counts']['facet_fields']['feature_id_a'] && results['facet_counts']['facet_fields']['feature_id_b']){
+			var data = Object.assign({}, results['facet_counts']['facet_fields']['feature_id_a'], results['facet_counts']['facet_fields']['feature_id_b']);
+
+			def.resolve(Object.keys(data));
+		}else{
 			def.resolve([]);
 		}
-		def.resolve(results);
 	});
 
 	return def.promise;
@@ -206,13 +209,9 @@ var LazyWalk = exports.LazyWalk = function(term, opts){
 
 						query = "or(eq(feature_id_a," + featureId + "),eq(feature_id_b," + featureId + "))&select(feature_id_a,feature_id_b)";
 
-						return when(runSubQuery("ppi", query), function(results){
+						return when(runSDISubQuery("ppi", query), function(feature_ids){
 
-							const feature_ids = results.map(function(f){
-								return [f.feature_id_a, f.feature_id_b];
-							}).reduce(function(a, b){
-								return a.concat(b);
-							});
+							// debug("feature_ids: ", feature_ids);
 
 							return "and(in(feature_id_a,(" + feature_ids.join(",") + ")),in(feature_id_b,(" + feature_ids.join(",") + ")))";
 						}, function(err){
