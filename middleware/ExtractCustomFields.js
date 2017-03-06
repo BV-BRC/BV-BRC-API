@@ -89,6 +89,7 @@ module.exports = function(req, res, next){
 					"laboratory_typing_method", "laboratory_typing_method_version", "laboratory_typing_platform", "vendor",
 					"testing_standard", "testing_standard_year", "score"
 				];
+				break;
 			case "sp_gene":
 				req.fieldHeader = [
 					"Evidence", "Property", "Source", "Genome Name", "PATRIC ID", "RefSeq Locus Tag", "Alt Locus Tag", "Source ID",
