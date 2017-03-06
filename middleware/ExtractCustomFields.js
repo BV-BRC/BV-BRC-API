@@ -78,16 +78,16 @@ module.exports = function(req, res, next){
 				break;
 			case "genome_amr":
 				req.fieldHeader = [
-					"Genome ID", "Genome Name", "Antibiotic", "Resistant Phenotype",
-					"Measurement Sign", "Measurement Value", "Measurement Unit",
+					"Taxon ID", "Genome ID", "Genome Name", "Antibiotic", "Resistant Phenotype",
+					"Measurement", "Measurement Sign", "Measurement Value", "Measurement Unit",
 					"Laboratory Typing Method", "Laboratory Typing Method Version", "Laboratory Typing Platform", "Vendor",
-					"Testing Standard", "Testing Standard Year", "Score"
+					"Testing Standard", "Testing Standard Year", "Source"
 				];
 				req.fieldSelection = [
-					"genome_id", "genome_name", "antibiotic", "resistant_phenotype",
-					"measurement_sign", "measurement_value", "measurement_unit",
+					"taxon_id", "genome_id", "genome_name", "antibiotic", "resistant_phenotype",
+					"measurement", "measurement_sign", "measurement_value", "measurement_unit",
 					"laboratory_typing_method", "laboratory_typing_method_version", "laboratory_typing_platform", "vendor",
-					"testing_standard", "testing_standard_year", "score"
+					"testing_standard", "testing_standard_year", "source"
 				];
 				break;
 			case "sp_gene":
