@@ -76,6 +76,19 @@ module.exports = function(req, res, next){
 					"gc_content", "length", "release_date", "version"
 				];
 				break;
+			case "genome_amr":
+				req.fieldHeader = [
+					"Genome ID", "Genome Name", "Antibiotic", "Resistant Phenotype",
+					"Measurement Sign", "Measurement Value", "Measurement Unit",
+					"Laboratory Typing Method", "Laboratory Typing Method Version", "Laboratory Typing Platform", "Vendor",
+					"Testing Standard", "Testing Standard Year", "Score"
+				];
+				req.fieldSelection = [
+					"genome_id", "genome_name", "antibiotic", "resistant_phenotype",
+					"measurement_sign", "measurement_value", "measurement_unit",
+					"laboratory_typing_method", "laboratory_typing_method_version", "laboratory_typing_platform", "vendor",
+					"testing_standard", "testing_standard_year", "score"
+				];
 			case "sp_gene":
 				req.fieldHeader = [
 					"Evidence", "Property", "Source", "Genome Name", "PATRIC ID", "RefSeq Locus Tag", "Alt Locus Tag", "Source ID",
