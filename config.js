@@ -4,6 +4,7 @@ var defaults =  {
 	"http_port": 3001,
 
 	collections: [
+		"antibiotics",
 		"enzyme_class_ref",
 		"gene_ontology_ref",
 		"genome",
