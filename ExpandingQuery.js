@@ -116,6 +116,7 @@ function runSDISubQuery(core, query, opts){
 		if(results['facet_counts']['facet_fields']['feature_id_a'] && results['facet_counts']['facet_fields']['feature_id_b']){
 			var data = Object.assign({}, results['facet_counts']['facet_fields']['feature_id_a'], results['facet_counts']['facet_fields']['feature_id_b']);
 
+			// debug("runSDISubQuery result: ", Object.keys(data).length);
 			def.resolve(Object.keys(data));
 		}else{
 			def.resolve([]);
@@ -213,7 +214,7 @@ var LazyWalk = exports.LazyWalk = function(term, opts){
 
 							// debug("feature_ids: ", feature_ids);
 
-							return "and(in(feature_id_a,(" + feature_ids.join(",") + ")),in(feature_id_b,(" + feature_ids.join(",") + ")))";
+							return "and(in(feature_id_a,(" + feature_ids.join(",") + ")),in(feature_id_b,(" + feature_ids.join(",") + ")),or(eq(feature_id_a," + featureId + "),eq(feature_id_b," + featureId +")))";
 						}, function(err){
 							debug("Error in 2ndDegree function call", err);
 							return "(NOT_A_VALID_ID)";
@@ -326,7 +327,7 @@ var ResolveQuery = exports.ResolveQuery = function(query, opts, clearCache){
 	//walk the parsed query and lazily resolve any subqueries/joins	
 	return when(LazyWalk(query, opts), function(finalQuery){
 		//finalQuery will be a new string query	
-		debug("Final Query: " + finalQuery);
+		// debug("Final Query: " + finalQuery);
 		if(opts && opts.req.queryCache && clearCache){
 			delete opts.req.queryCache;
 		}
@@ -385,7 +386,7 @@ var Walk = exports.Walk = function(term, expansions){
 exports.ExpandQuery = function(query, expansions){
 	expansions = expansions || _expansions || {};
 	//normalize to object with RQL's parser
-	debug("ResolveQuery: ", query);
+	// debug("ResolveQuery: ", query);
 
 	if(typeof query == "string"){
 		query = Query(query);
