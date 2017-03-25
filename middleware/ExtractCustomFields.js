@@ -133,6 +133,7 @@ module.exports = function(req, res, next){
 					"organism", "strain", "mutant", "condition", "timepoint", "release_date"
 				];
 				break;
+			case "interaction":
 			case "ppi":
 				req.fieldHeader = [
 					"Interactor A ID", "Interactor A Type", "Interactor A Desc",
