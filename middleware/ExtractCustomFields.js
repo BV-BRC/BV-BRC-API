@@ -136,17 +136,17 @@ module.exports = function(req, res, next){
 			case "ppi":
 				req.fieldHeader = [
 					"Interactor A ID", "Interactor A Type", "Interactor A Desc",
-					"Domain A", "Taxon ID A", "Genome ID A", "RefSeq Locus Tag A", "gene A",
+					"Domain A", "Taxon ID A", "Genome ID A", "Genome Name A", "RefSeq Locus Tag A", "gene A",
 					"Interactor B ID", "Interactor B Type", "Interactor B Desc",
-					"Domain B", "Taxon ID B", "Genome ID B", "RefSeq Locus Tag B", "gene B",
+					"Domain B", "Taxon ID B", "Genome ID B", "Genome Name B", "RefSeq Locus Tag B", "gene B",
 					"Category", "Interaction Type", "Detection Method", "Evidence",
 					"PMID", "Source DB", "Source ID", "Score"
 				];
 				req.fieldSelection = [
 					"interactor_a", "interactor_type_a", "interactor_desc_a",
-					"domain_a", "taxon_id_a", "genome_id_a", "refseq_locus_tag_a", "gene_a",
+					"domain_a", "taxon_id_a", "genome_id_a", "genome_name_a", "refseq_locus_tag_a", "gene_a",
 					"interactor_b", "interactor_type_b", "interactor_desc_b",
-					"domain_b", "taxon_id_b", "genome_id_b", "refseq_locus_tag_b", "gene_b",
+					"domain_b", "taxon_id_b", "genome_id_b", "genome_name_b", "refseq_locus_tag_b", "gene_b",
 					"category", "interaction_type", "detection_method", "evidence",
 					"pmid", "source_db", "source_id", "score"
 				];
