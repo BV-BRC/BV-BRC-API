@@ -18,7 +18,8 @@ function runQuery(query,opts){
 		url: distributeURL + "genome_feature/",
 		headers: {
 			"content-type": "application/rqlquery+x-www-form-urlencoded",
-			accept: "application/json"
+			"accept": "application/json",
+            "Authorization": opts.token || ""
 		},
 		body: query
 	}, function(err,r,body){
@@ -236,7 +237,7 @@ module.exports = {
 		var def = new defer()
 		// console.log("Execute MSA: ", params)
 		var query = params[0];
-		var opts = {req: req, user: req.user}
+		var opts = {req: req, user: req.user, token:req.headers.authorization}
 
 
 		when(runQuery(query,opts), function(sequences){

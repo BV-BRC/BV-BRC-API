@@ -4,6 +4,7 @@ var defaults =  {
 	"http_port": 3001,
 
 	collections: [
+		"antibiotics",
 		"enzyme_class_ref",
 		"gene_ontology_ref",
 		"genome",
@@ -21,6 +22,7 @@ var defaults =  {
 		"pathway",
 		"pathway_ref",
 		"ppi",
+		"pig",
 		"protein_family_ref",
 		"sp_gene",
 		"sp_gene_evidence",

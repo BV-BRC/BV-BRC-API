@@ -1,0 +1,1681 @@
+<div class='dlp'>
+    <h2>
+        Salmonella enterica Periplasmic Identified Proteins
+    </h2>
+
+    <section class='main' role='main'>
+
+        <table class="p3basic striped far2x">
+            <tr>
+                <th>
+                    Genome
+                </th>
+                <th>
+                    Locus Tag
+                </th>
+                <th>
+                    RefSeq Locus Tag
+                </th>
+                <th>
+                    Product Description
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_4901
+                </td>
+                <td>
+                    PSLT046
+                </td>
+                <td>
+                    Carbonic anhydrase (EC 4.2.1.1)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0084
+                </td>
+                <td>
+                    STM0081
+                </td>
+                <td>
+                    Probable secreted protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0085
+                </td>
+                <td>
+                    STM0082
+                </td>
+                <td>
+                    Probable secreted protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0095
+                </td>
+                <td>
+                    STM0092
+                </td>
+                <td>
+                    Survival protein SurA precursor (Peptidyl-prolyl cis-trans isomerase SurA) (EC 5.2.1.8)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0111
+                </td>
+                <td>
+                    STM0108
+                </td>
+                <td>
+                    Iron(III)-binding periplasmic protein SfuA / Thiamin ABC transporter, substrate-binding component
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0178
+                </td>
+                <td>
+                    STM0168
+                </td>
+                <td>
+                    Blue copper oxidase CueO precursor
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0236
+                </td>
+                <td>
+                    STM0223
+                </td>
+                <td>
+                    Membrane-associated zinc metalloprotease
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0238
+                </td>
+                <td>
+                    STM0225
+                </td>
+                <td>
+                    Outer membrane protein H precursor
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0326
+                </td>
+                <td>
+                    STM0307
+                </td>
+                <td>
+                    Probable secreted protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0387
+                </td>
+                <td>
+                    STM0366
+                </td>
+                <td>
+                    FIG00639237: hypothetical protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0408
+                </td>
+                <td>
+                    STM0384
+                </td>
+                <td>
+                    Phosphate starvation-inducible protein PsiF
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0528
+                </td>
+                <td>
+                    STM0494
+                </td>
+                <td>
+                    UDP-sugar hydrolase (EC 3.6.1.45); 5'-nucleotidase (EC 3.1.3.5)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0540
+                </td>
+                <td>
+                    STM0506
+                </td>
+                <td>
+                    Arylesterase precursor (EC 3.1.1.2)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0544
+                </td>
+                <td>
+                    STM0510
+                </td>
+                <td>
+                    Methionine ABC transporter substrate-binding protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0626
+                </td>
+                <td>
+                    STM0594
+                </td>
+                <td>
+                    Ferric enterobactin-binding periplasmic protein FepB (TC 3.A.1.14.2)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0650
+                </td>
+                <td>
+                    STM0617
+                </td>
+                <td>
+                    Ribonuclease I precursor (EC 3.1.27.6)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0701
+                </td>
+                <td>
+                    STM0665
+                </td>
+                <td>
+                    Glutamate Aspartate periplasmic binding protein precursor GltI (TC 3.A.1.3.4)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0784
+                </td>
+                <td>
+                    STM0748
+                </td>
+                <td>
+                    tolB protein precursor, periplasmic protein involved in the tonb-independent uptake of group A
+                    colicins
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0790
+                </td>
+                <td>
+                    STM0759
+                </td>
+                <td>
+                    Probable secreted protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0814
+                </td>
+                <td>
+                    STM0781
+                </td>
+                <td>
+                    Molybdenum ABC transporter, periplasmic molybdenum-binding protein ModA (TC 3.A.1.8.1)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0864
+                </td>
+                <td>
+                    STM0830
+                </td>
+                <td>
+                    Glutamine ABC transporter, periplasmic glutamine-binding protein (TC 3.A.1.3.2)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0874
+                </td>
+                <td>
+                    STM0837
+                </td>
+                <td>
+                    L,D-transpeptidase YbiS
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0886
+                </td>
+                <td>
+                    STM0849
+                </td>
+                <td>
+                    Dipeptide-binding ABC transporter, periplasmic substrate-binding component (TC 3.A.1.5.2); Putative
+                    hemin-binding lipoprotein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0926
+                </td>
+                <td>
+                    STM0887
+                </td>
+                <td>
+                    Arginine ABC transporter, periplasmic arginine-binding protein ArtJ
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0929
+                </td>
+                <td>
+                    STM0890
+                </td>
+                <td>
+                    Arginine ABC transporter, periplasmic arginine-binding protein ArtI
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1013
+                </td>
+                <td>
+                    STM0961
+                </td>
+                <td>
+                    Outer membrane lipoprotein carrier protein LolA
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1105
+                </td>
+                <td>
+                    STM1044
+                </td>
+                <td>
+                    Superoxide dismutase [Cu-Zn] precursor (EC 1.15.1.1)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1182
+                </td>
+                <td>
+                    STM1117
+                </td>
+                <td>
+                    Glucose-1-phosphatase (EC 3.1.3.10)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1188
+                </td>
+                <td>
+                    STM1123
+                </td>
+                <td>
+                    Putative secreted protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1217
+                </td>
+                <td>
+                    STM1150
+                </td>
+                <td>
+                    Glucans biosynthesis protein G precursor
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1240
+                </td>
+                <td>
+                    STM1172
+                </td>
+                <td>
+                    Negative regulator of flagellin synthesis FlgM
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1241
+                </td>
+                <td>
+                    STM1173
+                </td>
+                <td>
+                    Flagellar basal-body P-ring formation protein FlgA
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1244
+                </td>
+                <td>
+                    STM1176
+                </td>
+                <td>
+                    Flagellar basal-body rod modification protein FlgD
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1291
+                </td>
+                <td>
+                    STM1222
+                </td>
+                <td>
+                    ABC transporter, periplasmic spermidine putrescine-binding protein PotD (TC 3.A.1.11.1)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1320
+                </td>
+                <td>
+                    STM1249
+                </td>
+                <td>
+                    Periplasmic lysozyme inhibitor of c-type lysozyme
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1333
+                </td>
+                <td>
+                    STM1255
+                </td>
+                <td>
+                    Nickel ABC transporter, periplasmic nickel-binding protein nikA2 (TC 3.A.1.5.3)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1340
+                </td>
+                <td>
+                    STM1263
+                </td>
+                <td>
+                    Candidate zinc-binding lipoprotein ZinT
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1346
+                </td>
+                <td>
+                    STM1269
+                </td>
+                <td>
+                    Periplasmic chorismate mutase I precursor (EC 5.4.99.5)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1381
+                </td>
+                <td>
+                    STM1300
+                </td>
+                <td>
+                    FIG00638396: hypothetical protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1390
+                </td>
+                <td>
+                    STM1308
+                </td>
+                <td>
+                    Periplasmic protein related to spheroblast formation
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1523
+                </td>
+                <td>
+                    STM1440
+                </td>
+                <td>
+                    Superoxide dismutase [Cu-Zn] precursor (EC 1.15.1.1)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1561
+                </td>
+                <td>
+                    STM1478
+                </td>
+                <td>
+                    Protein ydgH precursor
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1570
+                </td>
+                <td>
+                    STM1485
+                </td>
+                <td>
+                    Acid shock protein precursor
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1578
+                </td>
+                <td>
+                    STM1493
+                </td>
+                <td>
+                    Putative ABC transporter periplasmic binding protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1585
+                </td>
+                <td>
+                    STM1500
+                </td>
+                <td>
+                    FIG00639146: hypothetical protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1602
+                </td>
+                <td>
+                    STM1515
+                </td>
+                <td>
+                    Putative periplasmic protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1653
+                </td>
+                <td>
+                    STM1562
+                </td>
+                <td>
+                    Putative secreted protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1677
+                </td>
+                <td>
+                    STM1586
+                </td>
+                <td>
+                    FIG00638561: hypothetical protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1690
+                </td>
+                <td>
+                    STM1599
+                </td>
+                <td>
+                    D-alanyl-D-alanine dipeptidase
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1713
+                </td>
+                <td>
+                    STM1622
+                </td>
+                <td>
+                    Glucans biosynthesis protein D precursor
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1773
+                </td>
+                <td>
+                    STM1679
+                </td>
+                <td>
+                    Periplasmic Murein Peptide-Binding Protein MppA
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1780
+                </td>
+                <td>
+                    STM1686
+                </td>
+                <td>
+                    Phage shock protein E precursor
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1843
+                </td>
+                <td>
+                    STM1746.S
+                </td>
+                <td>
+                    Oligopeptide ABC transporter, periplasmic oligopeptide-binding protein OppA (TC 3.A.1.5.1)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1895
+                </td>
+                <td>
+                    STM1796
+                </td>
+                <td>
+                    Trehalase (EC 3.2.1.28); Periplasmic trehalase precursor (EC 3.2.1.28)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1986
+                </td>
+                <td>
+                    STM1873
+                </td>
+                <td>
+                    Putative periplasmic or exported protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1994
+                </td>
+                <td>
+                    STM1881
+                </td>
+                <td>
+                    Putative exported protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_2005
+                </td>
+                <td>
+                    STM1891
+                </td>
+                <td>
+                    Zinc ABC transporter, periplasmic-binding protein ZnuA
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_2028
+                </td>
+                <td>
+                    STM1912
+                </td>
+                <td>
+                    Flagellar protein FlhE
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_2069
+                </td>
+                <td>
+                    STM1954
+                </td>
+                <td>
+                    Cystine ABC transporter, periplasmic cystine-binding protein FliY
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_2273
+                </td>
+                <td>
+                    STM2148
+                </td>
+                <td>
+                    Uncharacterized protein YohN precursor
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_2277
+                </td>
+                <td>
+                    STM2152
+                </td>
+                <td>
+                    probable fimbrial chain protein stcA
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_2291
+                </td>
+                <td>
+                    STM2165
+                </td>
+                <td>
+                    Osmoprotectant ABC transporter binding protein YehZ
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_2292
+                </td>
+                <td>
+                    STM2166
+                </td>
+                <td>
+                    Periplasmic beta-glucosidase (EC 3.2.1.21)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_2317
+                </td>
+                <td>
+                    STM2190
+                </td>
+                <td>
+                    Galactose/methyl galactoside ABC transport system, D-galactose-binding periplasmic protein MglB (TC
+                    3.A.1.2.3)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_2393
+                </td>
+                <td>
+                    STM2259
+                </td>
+                <td>
+                    Periplasmic nitrate reductase precursor (EC 1.7.99.4)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_2396
+                </td>
+                <td>
+                    STM2262
+                </td>
+                <td>
+                    Proteinase inhibitor I11, ecotin precursor
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_2415
+                </td>
+                <td>
+                    STM2282
+                </td>
+                <td>
+                    Glycerophosphoryl diester phosphodiesterase, periplasmic (EC 3.1.4.46)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_2430
+                </td>
+                <td>
+                    STM2296
+                </td>
+                <td>
+                    Polymyxin resistance protein PmrG; Ais protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_2491
+                </td>
+                <td>
+                    STM2354
+                </td>
+                <td>
+                    Histidine ABC transporter, histidine-binding periplasmic protein precursor HisJ (TC 3.A.1.3.1)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_2492
+                </td>
+                <td>
+                    STM2355
+                </td>
+                <td>
+                    Lysine-arginine-ornithine-binding periplasmic protein precursor (TC 3.A.1.3.1)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_2503
+                </td>
+                <td>
+                    STM2364
+                </td>
+                <td>
+                    DedD protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_2522
+                </td>
+                <td>
+                    STM2383
+                </td>
+                <td>
+                    Murein endopeptidase
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_2582
+                </td>
+                <td>
+                    STM2444
+                </td>
+                <td>
+                    Sulfate and thiosulfate binding protein CysP
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_2588
+                </td>
+                <td>
+                    STM2450
+                </td>
+                <td>
+                    N-acetylmuramoyl-L-alanine amidase (EC 3.5.1.28)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_2756
+                </td>
+                <td>
+                    STM2610
+                </td>
+                <td>
+                    FIG01045439: hypothetical protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_2940
+                </td>
+                <td>
+                    STM2786
+                </td>
+                <td>
+                    Tricarboxylate transport protein TctC
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_3017
+                </td>
+                <td>
+                    STM2861
+                </td>
+                <td>
+                    Manganese ABC transporter, periplasmic-binding protein SitA
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_3090
+                </td>
+                <td>
+                    STM2936
+                </td>
+                <td>
+                    Alkaline phosphatase isozyme conversion protein precursor (EC 3.4.11.-)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_3223
+                </td>
+                <td>
+                    STM3043
+                </td>
+                <td>
+                    Thiol:disulfide interchange protein DsbC
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_3248
+                </td>
+                <td>
+                    STM3065
+                </td>
+                <td>
+                    Protein of unknown function DUF541
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_3278
+                </td>
+                <td>
+                    STM3093
+                </td>
+                <td>
+                    Extracellular deoxyribonuclease Dns (EC 3.1.21.-)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_3291
+                </td>
+                <td>
+                    STM3106
+                </td>
+                <td>
+                    L-asparaginase (EC 3.5.1.1)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_3293
+                </td>
+                <td>
+                    STM3107
+                </td>
+                <td>
+                    FIG004016: Uncharacterized protein YggN
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_3360
+                </td>
+                <td>
+                    STM3169
+                </td>
+                <td>
+                    TRAP-type C4-dicarboxylate transport system, periplasmic component
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_3367
+                </td>
+                <td>
+                    STM3176
+                </td>
+                <td>
+                    Protein ygiW precursor
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_3380
+                </td>
+                <td>
+                    STM3187
+                </td>
+                <td>
+                    UPF0441 protein ygiB
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_3424
+                </td>
+                <td>
+                    STM3228
+                </td>
+                <td>
+                    Periplasmic protein YqjC
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_3511
+                </td>
+                <td>
+                    STM3310
+                </td>
+                <td>
+                    Uncharacterized ABC transporter, auxiliary component YrbC
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_3650
+                </td>
+                <td>
+                    STM3453
+                </td>
+                <td>
+                    FKBP-type peptidyl-prolyl cis-trans isomerase FkpA precursor (EC 5.2.1.8)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_3669
+                </td>
+                <td>
+                    STM3472
+                </td>
+                <td>
+                    Peptidyl-prolyl cis-trans isomerase PpiA precursor (EC 5.2.1.8)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_3755
+                </td>
+                <td>
+                    STM3552
+                </td>
+                <td>
+                    FIG00638953: hypothetical protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_3760
+                </td>
+                <td>
+                    STM3557
+                </td>
+                <td>
+                    Glycerol-3-phosphate ABC transporter, periplasmic glycerol-3-phosphate-binding protein (TC
+                    3.A.1.1.3)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_3767
+                </td>
+                <td>
+                    STM3564
+                </td>
+                <td>
+                    leucine-specific binding protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_3770
+                </td>
+                <td>
+                    STM3567
+                </td>
+                <td>
+                    Branched-chain amino acid ABC transporter, amino acid-binding protein (TC 3.A.1.4.1)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_3799
+                </td>
+                <td>
+                    STM3595
+                </td>
+                <td>
+                    Putative phosphatase
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_3803
+                </td>
+                <td>
+                    STM3598
+                </td>
+                <td>
+                    L-asparaginase (EC 3.5.1.1)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_3819
+                </td>
+                <td>
+                    STM3613
+                </td>
+                <td>
+                    Protein YhjJ, putative peptidase
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_3839
+                </td>
+                <td>
+                    STM3630
+                </td>
+                <td>
+                    Dipeptide-binding ABC transporter, periplasmic substrate-binding component (TC 3.A.1.5.2)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_3861
+                </td>
+                <td>
+                    STM3650
+                </td>
+                <td>
+                    Putative periplasmic or exported protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_3993
+                </td>
+                <td>
+                    STM3774
+                </td>
+                <td>
+                    probable secreted protein STY4010
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_4086
+                </td>
+                <td>
+                    STM3857
+                </td>
+                <td>
+                    Phosphate ABC transporter, periplasmic phosphate-binding protein PstS (TC 3.A.1.7.1)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_4114
+                </td>
+                <td>
+                    STM3884
+                </td>
+                <td>
+                    Ribose ABC transport system, periplasmic ribose-binding protein RbsB (TC 3.A.1.2.1)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_4211
+                </td>
+                <td>
+                    STM3997
+                </td>
+                <td>
+                    Periplasmic thiol:disulfide interchange protein DsbA
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_4297
+                </td>
+                <td>
+                    STM4077
+                </td>
+                <td>
+                    Autoinducer 2 (AI-2) ABC transport system, periplasmic AI-2 binding protein LsrB
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_4449
+                </td>
+                <td>
+                    STM4229
+                </td>
+                <td>
+                    Maltose/maltodextrin ABC transporter, substrate binding periplasmic protein MalE
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_4452
+                </td>
+                <td>
+                    STM4232
+                </td>
+                <td>
+                    Maltose operon periplasmic protein MalM
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_4469
+                </td>
+                <td>
+                    STM4249
+                </td>
+                <td>
+                    NMN phosphatase (EC 3.1.3.5); Class B acid phosphatase precursor (EC 3.1.3.2)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_4506
+                </td>
+                <td>
+                    STM4284
+                </td>
+                <td>
+                    Putative exported protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_4542
+                </td>
+                <td>
+                    STM4319
+                </td>
+                <td>
+                    Nonspecific acid phosphatase precursor (EC 3.1.3.2)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_4578
+                </td>
+                <td>
+                    STM4351
+                </td>
+                <td>
+                    Arginine ABC transporter, periplasmic arginine-binding protein ArtI
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_4582
+                </td>
+                <td>
+                    STM4358
+                </td>
+                <td>
+                    N-acetylmuramoyl-L-alanine amidase (EC 3.5.1.28)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_4628
+                </td>
+                <td>
+                    STM4403
+                </td>
+                <td>
+                    2',3'-cyclic-nucleotide 2'-phosphodiesterase (EC 3.1.4.16)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_4669
+                </td>
+                <td>
+                    STM4439
+                </td>
+                <td>
+                    Soluble cytochrome b562
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_4708
+                </td>
+                <td>
+                    STM4472
+                </td>
+                <td>
+                    putative exported protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_4744
+                </td>
+                <td>
+                    STM4505
+                </td>
+                <td>
+                    Putative inner membrane or exported
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_4785
+                </td>
+                <td>
+                    STM4541
+                </td>
+                <td>
+                    Phosphoglycerol transferase I (EC 2.7.8.20)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_4786
+                </td>
+                <td>
+                    STM4542
+                </td>
+                <td>
+                    Putative glycoprotein/receptor
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_4803
+                </td>
+                <td>
+                    STM4561
+                </td>
+                <td>
+                    Osmotically inducible protein OsmY
+                </td>
+            </tr>
+        </table>
+    </section>
+</div>

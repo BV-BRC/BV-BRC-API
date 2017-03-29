@@ -1,0 +1,96 @@
+<div class='dlp'>
+    <h2>
+        Salmonella enterica Moonlighting Identified Proteins
+    </h2>
+
+    <section class='main'>
+
+        <table class="p3basic striped far2x">
+            <tr>
+                <th>
+                    Genome
+                </th>
+                <th>
+                    Locus Tag
+                </th>
+                <th>
+                    RefSeq Locus Tag
+                </th>
+                <th>
+                    Product Description
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0240
+                </td>
+                <td>
+                    STM0227
+                </td>
+                <td>
+                    (3R)-hydroxymyristoyl-[acyl carrier protein] dehydratase (EC 4.2.1.-)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0865
+                </td>
+                <td>
+                    STM0831
+                </td>
+                <td>
+                    Non-specific DNA-binding protein Dps / Iron-binding ferritin-like antioxidant protein / Ferroxidase
+                    (EC 1.16.3.1)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1177
+                </td>
+                <td>
+                    STM1112
+                </td>
+                <td>
+                    DnaJ-class molecular chaperone CbpA
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_2196
+                </td>
+                <td>
+                    STM2074
+                </td>
+                <td>
+                    Histidinol-phosphatase (EC 3.1.3.15) / Imidazoleglycerol-phosphate dehydratase (EC 4.2.1.19)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_2793
+                </td>
+                <td>
+                    STM2643
+                </td>
+                <td>
+                    ATP-dependent RNA helicase SrmB
+                </td>
+            </tr>
+        </table>
+    </section>
+</div>

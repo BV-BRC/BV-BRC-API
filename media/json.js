@@ -39,6 +39,9 @@ module.exports = {
 				res.status(404);
 			}
 			res.end();
+		}else if(req.call_method == "schema"){
+            res.send(JSON.stringify(res.results));
+            res.end();
 		}else{
 			if(!res.results || !res.results.doc){
 				res.status(404)

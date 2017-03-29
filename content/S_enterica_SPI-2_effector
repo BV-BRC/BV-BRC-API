@@ -1,0 +1,293 @@
+<div class='dlp'>
+    <h2>
+        Salmonella enterica Known SPI-2 effectors identified
+    </h2>
+
+    <section class='main' role='main'>
+
+        <table class="p3basic striped far2x">
+            <tr>
+                <th>
+                    Genome
+                </th>
+                <th>
+                    Locus Tag
+                </th>
+                <th>
+                    RefSeq Locus Tag
+                </th>
+                <th>
+                    Product Description
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_4889
+                </td>
+                <td>
+                    PSLT038
+                </td>
+                <td>
+                    27.5 kDa virulence protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_0834
+                </td>
+                <td>
+                    STM0800
+                </td>
+                <td>
+                    invasion plasmid antigen / internalin, putative
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1025
+                </td>
+                <td>
+                    STM0972
+                </td>
+                <td>
+                    FIG01045244: hypothetical protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1115
+                </td>
+                <td>
+                    STM1051
+                </td>
+                <td>
+                    Secreted effector protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1152
+                </td>
+                <td>
+                    STM1088
+                </td>
+                <td>
+                    FIG01046201: hypothetical protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1294
+                </td>
+                <td>
+                    STM1224
+                </td>
+                <td>
+                    SifA protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1482
+                </td>
+                <td>
+                    STM1398
+                </td>
+                <td>
+                    Secretion system effector SseB
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1484
+                </td>
+                <td>
+                    STM1400
+                </td>
+                <td>
+                    Secretion system effector SseC
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1485
+                </td>
+                <td>
+                    STM1401
+                </td>
+                <td>
+                    Secretion system effector SseD
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1489
+                </td>
+                <td>
+                    STM1405
+                </td>
+                <td>
+                    Secretion system effector SseG
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1674
+                </td>
+                <td>
+                    STM1583
+                </td>
+                <td>
+                    Putative cytoplasmic protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1693
+                </td>
+                <td>
+                    STM1602
+                </td>
+                <td>
+                    secreted effector protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1723
+                </td>
+                <td>
+                    STM1631
+                </td>
+                <td>
+                    Secreted effector J SseJ
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_1793
+                </td>
+                <td>
+                    STM1698
+                </td>
+                <td>
+                    Putative inner membrane protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_2261
+                </td>
+                <td>
+                    STM2137
+                </td>
+                <td>
+                    putative cytoplasmic protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_2374
+                </td>
+                <td>
+                    STM2241
+                </td>
+                <td>
+                    Secreted effector protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_2421
+                </td>
+                <td>
+                    STM2287
+                </td>
+                <td>
+                    Putative cytoplasmic protein
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_2931
+                </td>
+                <td>
+                    STM2780
+                </td>
+                <td>
+                    Similar to pipB
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+                </td>
+                <td>
+                    VBISalEnt20916_3021
+                </td>
+                <td>
+                    STM2865
+                </td>
+                <td>
+                    Type III secretion injected virulence protein (YopP,YopJ, induces apoptosis, prevents cytokine
+                    induction, inhibits NFkb activation)
+                </td>
+            </tr>
+        </table>
+    </section>
+</div>
+

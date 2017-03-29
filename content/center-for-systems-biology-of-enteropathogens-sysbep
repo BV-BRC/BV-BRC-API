@@ -41,15 +41,14 @@
                                             target="_blank">PeptideAtlas, accession PASS00551</a></li>
                 <li class="last">Genes of Interest:
                     <ul>
-                        <li class="first"><a href="http://patricbrc.org/patric/html/S_enterica_CYT.html"
-                                             target="_blank">Cytoplasmic identified proteins</a></li>
-                        <li><a href="http://patricbrc.org/patric/html/S_enterica_IM.html" target="_blank">Inner membrane
+                        <li class="first"><a href="/content/S_enterica_CYT" target="_blank">Cytoplasmic identified proteins</a></li>
+                        <li><a href="/content/S_enterica_IM" target="_blank">Inner membrane
                             identified proteins</a></li>
-                        <li><a href="http://patricbrc.org/patric/html/S_enterica_PERI.html" target="_blank">Periplasmic
+                        <li><a href="/content/S_enterica_PERI" target="_blank">Periplasmic
                             identified proteins</a></li>
-                        <li><a href="http://patricbrc.org/patric/html/S_enterica_OM.html" target="_blank">Outer membrane
+                        <li><a href="/content/S_enterica_OM" target="_blank">Outer membrane
                             identified proteins</a></li>
-                        <li class="last"><a href="http://patricbrc.org/patric/html/S_enterica_moonlighting.html"
+                        <li class="last"><a href="/content/S_enterica_moonlighting"
                                             target="_blank">Promising moonlighting candidate proteins (known cytoplasmic
                             proteins observed in the OM)</a></li>
                     </ul>
@@ -61,22 +60,11 @@
                 required for virulence were analyzed in a sample-matched fashion to facilitate analysis of the <em>Salmonella</em>
                 metabolic model.</p>
             <ul>
-                <li class="first">Metabolomics Data <a href="http://omics.pnl.gov/view/publication_1053.html"
-
-                                                       target="_blank">PNNL_1053</a></li>
-                <li>Proteomics Data&nbsp;<a href="http://omics.pnl.gov/view/publication_1054.html"
-
-                                            target="_blank">PNNL_1054</a>,&nbsp;<a
-                        href="http://omics.pnl.gov/view/publication_1055.html"
-
-                        target="_blank">PNNL_1055</a></li>
                 <li>Transcriptomics Data&nbsp;Series GSE25441&nbsp;at <a
                         href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE25441"
-
                         target="_blank">GEO</a> and at <a
-                        href="http://patricbrc.org/portal/portal/patric/SingleExperiment?cType=taxon&amp;cId=590&amp;eid=483361">PATRIC</a>
+                        href="/view/ExperimentComparison/483361#view_tab=overview">PATRIC</a>
                 </li>
-                <li class="last">Genes of Interest: TBD</li>
             </ul>
             <p><strong>Systems analysis of <em>Salmonella</em> regulatory mutants</strong></p>
             <p>Sample-matched multi-omic measurements of fourteen virulence-essential regulator mutants were coupled
@@ -100,11 +88,11 @@
                         href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE38378"
 
                         target="_blank">GEO</a> and at <a
-                        href="http://patricbrc.org/portal/portal/patric/SingleExperiment?cType=taxon&amp;cId=590&amp;eid=867640">PATRIC</a>
+                        href="/view/ExperimentComparison/867640#view_tab=overview">PATRIC</a>
                 </li>
                 <li class="last">Genes of Interest:
                     <ul>
-                        <li class="first"><a href="http://patricbrc.org/patric/html/S_enterica_pathogenesis.html"
+                        <li class="first"><a href="/content/S_enterica_pathogenesis"
                                              target="_blank">Broader list of pathogenesis related proteins</a></li>
                         <li>Network predicted virulence factors secreted into host cytoplasm</li>
                         <li class="last">Validated translocated effectors required for virulence</li>
@@ -130,13 +118,12 @@
                     </ul>
                 </li>
                 <li>Proteomics Data: <a href="http://omics.pnl.gov/view/publication_1026.html"
-
                                         target="_blank">PNNL_1026</a></li>
                 <li class="last">Genes of Interest:
                     <ul>
-                        <li class="first"><a href="http://patricbrc.org/patric/html/S_enterica_SPI-2_effector.html"
+                        <li class="first"><a href="/content/S_enterica_SPI-2_effector"
                                              target="_blank">Known SPI-2 effectors identified</a></li>
-                        <li class="last"><a href="http://patricbrc.org/patric/html/S_enterica_effector.html"
+                        <li class="last"><a href="/content/S_enterica_effector"
                                             target="_blank">Novel secreted effectors identified</a></li>
                     </ul>
                 </li>
@@ -155,12 +142,12 @@
                             Grown in a Low Mg/pH Medium</a></li>
                     </ul>
                 </li>
-                <li>Proteomics Data: <a href="http://omics.pnl.gov/view/publication_0008.html"
+                <li>Proteomics Data: <a href="http://www.ncbi.nlm.nih.gov/pubmed/19953200"
 
                                         target="_blank">PNNL_0008</a></li>
                 <li class="last">Genes of Interest:
                     <ul>
-                        <li class="last first"><a href="http://patricbrc.org/patric/html/S_enterica_SPI-2_TTSS.html"
+                        <li class="last first"><a href="/content/S_enterica_SPI-2_TTSS"
                                                   target="_blank">Proteins co-regulated with SPI-2 TTSS</a> (criteria –
                             Pattern and magnitude of expression similar to SPI-2 TTSS across all conditions).
                         </li>
@@ -185,7 +172,7 @@
                     </ul>
                 </li>
                 <li class="last">Raw Data and Collated Peptide Identification Information: <a
-                        href="http://omics.pnl.gov/view/publication_1039.html"
+                        href="http://www.ncbi.nlm.nih.gov/pubmed/21867535"
 
                         target="_blank">PNNL_1039</a></li>
             </ul>
@@ -209,14 +196,14 @@
                             virulence mechanisms.</a></li>
                     </ul>
                 </li>
-                <li>Proteomics Data&nbsp;<a href="http://omics.pnl.gov/view/publication_1034.html"
+                <li>Proteomics Data&nbsp;<a href="http://www.ncbi.nlm.nih.gov/pubmed/23147219"
 
                                             target="_blank">PNNL_1034</a></li>
                 <li>Transcriptomics Data&nbsp;Series GSE30634&nbsp;at <a
                         href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=gse30634"
 
                         target="_blank">GEO</a> and at <a
-                        href="http://patricbrc.org/portal/portal/patric/SingleExperiment?cType=taxon&amp;cId=629&amp;eid=482123">PATRIC</a>
+                        href="/view/ExperimentComparison/969586#view_tab=overview">PATRIC</a>
                 </li>
                 <li class="last">Genes of Interest:
                     <ul>
@@ -239,7 +226,7 @@
                             computed optimal growth from genome-scale models.</a></li>
                     </ul>
                 </li>
-                <li class="last">Proteomics Data&nbsp;<a href="http://omics.pnl.gov/view/publication_1019.html"
+                <li class="last">Proteomics Data&nbsp;<a href="http://www.ncbi.nlm.nih.gov/pubmed/20664636"
                                                          target="_blank">PNNL_1019</a></li>
             </ul>
             <p></p>
@@ -261,7 +248,7 @@
                             product expression at genome scale.</a></li>
                     </ul>
                 </li>
-                <li class="last">Proteomics Data&nbsp;<a href="http://omics.pnl.gov/view/publication_1063.html"
+                <li class="last">Proteomics Data&nbsp;<a href="http://www.ncbi.nlm.nih.gov/pubmed/22760628"
                                                          target="_blank">PNNL_1063</a></li>
             </ul>
         </div>
@@ -285,12 +272,12 @@
                             elucidates metabolic immunomodulators of macrophage activation</a></li>
                     </ul>
                 </li>
-                <li>Metabolomics Data&nbsp;<a href="http://omics.pnl.gov/view/publication_1066.html"
+                <li>Metabolomics Data&nbsp;<a href="http://www.ncbi.nlm.nih.gov/pubmed/22735334"
                                               target="_blank">PNNL_1066</a><a
                         href="http://omics.pnl.gov/view/publication_1063.html"
                         target="_blank"><br/>
                 </a></li>
-                <li>Proteomics Data&nbsp;<a href="http://omics.pnl.gov/view/publication_1065.html"
+                <li>Proteomics Data&nbsp;<a href="http://www.ncbi.nlm.nih.gov/pubmed/22735334"
                                             target="_blank">PNNL_1065</a></li>
                 <li class="last">Transcriptomics Data Series GSE35237&nbsp;at&nbsp;<a
                         href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE35237"

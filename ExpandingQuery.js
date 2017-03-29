@@ -60,7 +60,7 @@ function getWorkspaceObject(id, opts){
 	return def.promise;
 }
 
-function getSubQuery(core, query, field, opts){
+function runJoinQuery(core, query, field, opts){
 	var def = new Deferred();
 
 	when(query, function(subquery){
@@ -94,6 +94,35 @@ function getSubQuery(core, query, field, opts){
 			def.reject(false);
 		});
 	});
+	return def.promise;
+}
+
+function runSDISubQuery(core, query, opts){
+	const def = new Deferred();
+
+	Request.get({
+		url: distributeURL + core + "/?" + query + "&facet((field,feature_id_a),(field,feature_id_b),(limit,-1),(mincount,1))&json(nl,map)&limit(1)",
+		json: true,
+		headers: {
+			'Accept': "application/solr+json",
+			'Content-Type': "application/rqlquery+x-www-form-urlencoded",
+			'Authorization': (opts && opts.req && opts.req.headers["authorization"]) ? opts.req.headers["authorization"] : ""
+		}
+	}, function(err, resObj, results){
+		if(err){
+			def.reject(err);
+		}
+
+		if(results['facet_counts']['facet_fields']['feature_id_a'] && results['facet_counts']['facet_fields']['feature_id_b']){
+			var data = Object.assign({}, results['facet_counts']['facet_fields']['feature_id_a'], results['facet_counts']['facet_fields']['feature_id_b']);
+
+			// debug("runSDISubQuery result: ", Object.keys(data).length);
+			def.resolve(Object.keys(data));
+		}else{
+			def.resolve([]);
+		}
+	});
+
 	return def.promise;
 }
 
@@ -155,10 +184,39 @@ var LazyWalk = exports.LazyWalk = function(term, opts){
 						return "";
 					}else if(term.name == "join" && term.args.length == 3){
 						// args: core, query, field
-						return when(getSubQuery(term.args[0], term.args[1], term.args[2], opts), function(ids){
+						return when(runJoinQuery(term.args[0], term.args[1], term.args[2], opts), function(ids){
 							return "in(" + term.args[2] + ",(" + ids.join(",") + "))";
 						}, function(err){
 							debug("Error in sub query", err);
+							return "(NOT_A_VALID_ID)";
+						});
+					}else if(term.name == "descendants"){
+						// debug("call descendants(): ", term.args);
+						var queries = [];
+						term.args.forEach(function(taxId){
+							var p1 = encodeURIComponent('(*,' + taxId + ')');
+							var p2 = encodeURIComponent('(*,' + taxId + ',*)');
+							queries.push("eq(taxid_a," + taxId + ")");
+							queries.push("eq(taxid_b," + taxId + ")");
+							queries.push("eq(taxpath_a," + p1 + ")");
+							queries.push("eq(taxpath_a," + p2 + ")");
+							queries.push("eq(taxpath_b," + p1 + ")");
+							queries.push("eq(taxpath_b," + p2 + ")");
+						});
+
+						return "or(" + queries.join(',') + ")";
+					}else if(term.name == "secondDegreeInteraction"){
+						var featureId = term.args[0];
+
+						query = "or(eq(feature_id_a," + featureId + "),eq(feature_id_b," + featureId + "))&select(feature_id_a,feature_id_b)";
+
+						return when(runSDISubQuery("ppi", query), function(feature_ids){
+
+							// debug("feature_ids: ", feature_ids);
+
+							return "and(in(feature_id_a,(" + feature_ids.join(",") + ")),in(feature_id_b,(" + feature_ids.join(",") + ")),or(eq(feature_id_a," + featureId + "),eq(feature_id_b," + featureId +")))";
+						}, function(err){
+							debug("Error in 2ndDegree function call", err);
 							return "(NOT_A_VALID_ID)";
 						});
 					}else if(term.name == "GenomeGroup"){
@@ -269,7 +327,7 @@ var ResolveQuery = exports.ResolveQuery = function(query, opts, clearCache){
 	//walk the parsed query and lazily resolve any subqueries/joins	
 	return when(LazyWalk(query, opts), function(finalQuery){
 		//finalQuery will be a new string query	
-		debug("Final Query: " + finalQuery);
+		// debug("Final Query: " + finalQuery);
 		if(opts && opts.req.queryCache && clearCache){
 			delete opts.req.queryCache;
 		}
@@ -328,7 +386,7 @@ var Walk = exports.Walk = function(term, expansions){
 exports.ExpandQuery = function(query, expansions){
 	expansions = expansions || _expansions || {};
 	//normalize to object with RQL's parser
-	debug("ResolveQuery: ", query);
+	// debug("ResolveQuery: ", query);
 
 	if(typeof query == "string"){
 		query = Query(query);

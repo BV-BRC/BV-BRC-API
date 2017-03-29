@@ -76,6 +76,20 @@ module.exports = function(req, res, next){
 					"gc_content", "length", "release_date", "version"
 				];
 				break;
+			case "genome_amr":
+				req.fieldHeader = [
+					"Taxon ID", "Genome ID", "Genome Name", "Antibiotic", "Resistant Phenotype",
+					"Measurement", "Measurement Sign", "Measurement Value", "Measurement Unit",
+					"Laboratory Typing Method", "Laboratory Typing Method Version", "Laboratory Typing Platform", "Vendor",
+					"Testing Standard", "Testing Standard Year", "Source"
+				];
+				req.fieldSelection = [
+					"taxon_id", "genome_id", "genome_name", "antibiotic", "resistant_phenotype",
+					"measurement", "measurement_sign", "measurement_value", "measurement_unit",
+					"laboratory_typing_method", "laboratory_typing_method_version", "laboratory_typing_platform", "vendor",
+					"testing_standard", "testing_standard_year", "source"
+				];
+				break;
 			case "sp_gene":
 				req.fieldHeader = [
 					"Evidence", "Property", "Source", "Genome Name", "PATRIC ID", "RefSeq Locus Tag", "Alt Locus Tag", "Source ID",
@@ -117,6 +131,25 @@ module.exports = function(req, res, next){
 				req.fieldSelection = [
 					"eid", "pid", "expname", "genes", "sig_log_ratio", "sig_z_score", "pmid", "accession",
 					"organism", "strain", "mutant", "condition", "timepoint", "release_date"
+				];
+				break;
+			case "interaction":
+			case "ppi":
+				req.fieldHeader = [
+					"Interactor A ID", "Interactor A Type", "Interactor A Desc",
+					"Domain A", "Taxon ID A", "Genome ID A", "Genome Name A", "RefSeq Locus Tag A", "gene A",
+					"Interactor B ID", "Interactor B Type", "Interactor B Desc",
+					"Domain B", "Taxon ID B", "Genome ID B", "Genome Name B", "RefSeq Locus Tag B", "gene B",
+					"Category", "Interaction Type", "Detection Method", "Evidence",
+					"PMID", "Source DB", "Source ID", "Score"
+				];
+				req.fieldSelection = [
+					"interactor_a", "interactor_type_a", "interactor_desc_a",
+					"domain_a", "taxon_id_a", "genome_id_a", "genome_name_a", "refseq_locus_tag_a", "gene_a",
+					"interactor_b", "interactor_type_b", "interactor_desc_b",
+					"domain_b", "taxon_id_b", "genome_id_b", "genome_name_b", "refseq_locus_tag_b", "gene_b",
+					"category", "interaction_type", "detection_method", "evidence",
+					"pmid", "source_db", "source_id", "score"
 				];
 				break;
 			default:
