@@ -3,6 +3,17 @@
     <section class="main">
         <p>If you use PATRIC web resources to assist in research publications or proposals please cite as:</p>
         <div class="data-box">
+            <p>Alice R. Wattam, James J. Davis, Rida Assaf, Sébastien Boisvert, Thomas Brettin, Christopher Bun,
+                Neal Conrad, Emily M. Dietrich, Terry Disz, Joseph L. Gabbard, Svetlana Gerdes, Christopher S. Henry,
+                Ronald W. Kenyon, Dustin Machi, Chunhong Mao, Eric K. Nordberg, Gary J. Olsen, Daniel E. Murphy-Olson,
+                Robert Olson, Ross Overbeek, Bruce Parrello, Gordon D. Pusch, Maulik Shukla, Veronika Vonstein,
+                Andrew Warren, Fangfang Xia, Hyunseung Yoo, Rick L. Stevens;
+                <b>"Improvements to PATRIC, the all-bacterial Bioinformatics Database and Analysis Resource Center."</b>
+                <i>Nucleic Acids Res</i> 2017; 45 (D1): D535-D542.
+                doi: <a href="https://doi.org/10.1093/nar/gkw1017" target="_blank">10.1093/nar/gkw1017</a>
+                PMID: <a href="https://www.ncbi.nlm.nih.gov/pubmed/27899627" target="_blank">27899627</a>
+            </p>
+            <!--
             <p>Wattam, A.R., D. Abraham, O. Dalay, T.L. Disz, T. Driscoll, J.L. Gabbard, J.J. Gillespie, R. Gough, D.
                 Hix, R. Kenyon, D. Machi, C. Mao, E.K. Nordberg, R. Olson, R. Overbeek, G.D. Pusch, M. Shukla, J.
                 Schulman, R.L. Stevens, D.E. Sullivan, V. Vonstein, A. Warren, R. Will, M.J.C. Wilson, H. Seung Yoo, C.
@@ -11,6 +22,7 @@
                 doi:<a href="http://nar.oxfordjournals.org/content/early/2013/11/12/nar.gkt1099.full" target="_blank">10.1093/nar/gkt1099</a>.
                 PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/24225323" target="_blank">24225323</a>.
             </p>
+            -->
         </div>
     </section>
 </div>
