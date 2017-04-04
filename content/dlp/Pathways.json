@@ -5,42 +5,42 @@
                 "total": 142,
                 "pathogen": "Bacillus",
                 "dist": [
-                    29,
-                    38,
-                    51,
-                    22,
-                    2
+                    25,
+                    40,
+                    52,
+                    24,
+                    1
                 ]
             },
             {
-                "total": 126,
+                "total": 131,
                 "pathogen": "Bartonella",
                 "dist": [
-                    53,
-                    26,
-                    35,
-                    12,
-                    0
+                    41,
+                    28,
+                    37,
+                    22,
+                    3
                 ]
             },
             {
                 "total": 104,
                 "pathogen": "Borrelia",
                 "dist": [
-                    70,
-                    14,
+                    69,
                     15,
-                    5,
+                    13,
+                    7,
                     0
                 ]
             },
             {
-                "total": 136,
+                "total": 135,
                 "pathogen": "Brucella",
                 "dist": [
-                    127,
-                    4,
-                    4,
+                    122,
+                    7,
+                    5,
                     1,
                     0
                 ]
@@ -49,10 +49,10 @@
                 "total": 144,
                 "pathogen": "Burkholderia",
                 "dist": [
-                    55,
-                    62,
-                    23,
-                    4,
+                    45,
+                    66,
+                    30,
+                    3,
                     0
                 ]
             },
@@ -60,43 +60,43 @@
                 "total": 137,
                 "pathogen": "Campylobacter",
                 "dist": [
-                    30,
-                    27,
-                    39,
-                    34,
-                    7
+                    28,
+                    22,
+                    37,
+                    41,
+                    9
                 ]
             },
             {
                 "total": 138,
                 "pathogen": "Chlamydia",
                 "dist": [
-                    11,
-                    17,
-                    31,
-                    39,
-                    40
+                    12,
+                    12,
+                    33,
+                    46,
+                    35
                 ]
             },
             {
-                "total": 141,
+                "total": 143,
                 "pathogen": "Clostridium",
                 "dist": [
-                    17,
-                    25,
-                    43,
-                    52,
+                    18,
+                    23,
+                    45,
+                    53,
                     4
                 ]
             },
             {
-                "total": 130,
+                "total": 132,
                 "pathogen": "Coxiella",
                 "dist": [
-                    86,
-                    29,
-                    14,
-                    1,
+                    59,
+                    39,
+                    28,
+                    6,
                     0
                 ]
             },
@@ -104,43 +104,43 @@
                 "total": 103,
                 "pathogen": "Ehrlichia",
                 "dist": [
-                    98,
-                    3,
+                    97,
+                    4,
                     2,
                     0,
                     0
                 ]
             },
             {
-                "total": 141,
+                "total": 142,
                 "pathogen": "Escherichia",
                 "dist": [
-                    62,
-                    45,
-                    27,
-                    6,
+                    52,
+                    50,
+                    30,
+                    9,
                     1
                 ]
             },
             {
-                "total": 131,
+                "total": 134,
                 "pathogen": "Francisella",
                 "dist": [
-                    75,
-                    44,
-                    9,
-                    3,
+                    71,
+                    47,
+                    11,
+                    5,
                     0
                 ]
             },
             {
-                "total": 133,
+                "total": 132,
                 "pathogen": "Helicobacter",
                 "dist": [
                     36,
-                    34,
-                    36,
-                    23,
+                    28,
+                    46,
+                    18,
                     4
                 ]
             },
@@ -148,87 +148,87 @@
                 "total": 136,
                 "pathogen": "Listeria",
                 "dist": [
-                    43,
-                    31,
-                    38,
-                    22,
-                    2
+                    46,
+                    32,
+                    39,
+                    18,
+                    1
                 ]
             },
             {
-                "total": 142,
+                "total": 143,
                 "pathogen": "Mycobacterium",
                 "dist": [
-                    22,
-                    41,
-                    61,
-                    13,
+                    21,
+                    45,
+                    56,
+                    16,
                     5
                 ]
             },
             {
-                "total": 122,
+                "total": 123,
                 "pathogen": "Rickettsia",
                 "dist": [
-                    80,
-                    27,
-                    13,
-                    2,
+                    77,
+                    28,
+                    15,
+                    3,
                     0
                 ]
             },
             {
-                "total": 138,
+                "total": 139,
                 "pathogen": "Salmonella",
                 "dist": [
-                    77,
-                    36,
-                    15,
-                    9,
-                    1
+                    56,
+                    49,
+                    18,
+                    14,
+                    2
                 ]
             },
             {
                 "total": 140,
                 "pathogen": "Shigella",
                 "dist": [
-                    78,
+                    68,
                     46,
-                    12,
-                    4,
-                    0
+                    21,
+                    3,
+                    2
                 ]
             },
             {
                 "total": 139,
                 "pathogen": "Staphylococcus",
                 "dist": [
-                    21,
-                    33,
+                    19,
+                    34,
                     42,
                     38,
-                    5
+                    6
                 ]
             },
             {
                 "total": 141,
                 "pathogen": "Streptococcus",
                 "dist": [
-                    19,
-                    19,
+                    17,
+                    18,
                     35,
-                    40,
-                    28
+                    42,
+                    29
                 ]
             },
             {
-                "total": 141,
+                "total": 142,
                 "pathogen": "Vibrio",
                 "dist": [
-                    41,
-                    46,
-                    41,
-                    12,
+                    38,
+                    40,
+                    38,
+                    25,
                     1
                 ]
             },
@@ -236,10 +236,10 @@
                 "total": 141,
                 "pathogen": "Yersinia",
                 "dist": [
-                    90,
-                    38,
-                    13,
-                    0,
+                    69,
+                    47,
+                    23,
+                    2,
                     0
                 ]
             }
@@ -255,7 +255,7 @@
                 "link": "/view/Genome/83332.12#view_tab=pathways",
                 "popularData": [
                     {
-                        "gene_count": "82",
+                        "gene_count": "81",
                         "gene_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "name": "Purine metabolism",
                         "name_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
@@ -263,23 +263,15 @@
                         "ec_count": "46"
                     },
                     {
-                        "gene_count": "37",
+                        "gene_count": "33",
                         "gene_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
                         "name": "Porphyrin and chlorophyll metabolism",
                         "name_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
                         "ec_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
-                        "ec_count": "30"
-                    },
-                    {
-                        "gene_count": "45",
-                        "gene_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
-                        "name": "Arginine and proline metabolism",
-                        "name_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
-                        "ec_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
                         "ec_count": "29"
                     },
                     {
-                        "gene_count": "49",
+                        "gene_count": "47",
                         "gene_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "name": "Pyrimidine metabolism",
                         "name_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
@@ -287,7 +279,23 @@
                         "ec_count": "28"
                     },
                     {
-                        "gene_count": "39",
+                        "gene_count": "43",
+                        "gene_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
+                        "name": "Arginine and proline metabolism",
+                        "name_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
+                        "ec_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
+                        "ec_count": "27"
+                    },
+                    {
+                        "gene_count": "36",
+                        "gene_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
+                        "name": "Pyruvate metabolism",
+                        "name_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
+                        "ec_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
+                        "ec_count": "26"
+                    },
+                    {
+                        "gene_count": "38",
                         "gene_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
                         "name": "Glycine, serine and threonine metabolism",
                         "name_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
@@ -303,20 +311,20 @@
                         "ec_count": "24"
                     },
                     {
-                        "gene_count": "35",
-                        "gene_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
-                        "name": "Pyruvate metabolism",
-                        "name_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
-                        "ec_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
-                        "ec_count": "24"
+                        "gene_count": "24",
+                        "gene_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
+                        "name": "Aminoacyl-tRNA biosynthesis",
+                        "name_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
+                        "ec_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
+                        "ec_count": "23"
                     },
                     {
-                        "gene_count": "95",
+                        "gene_count": "88",
                         "gene_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00280))",
                         "name": "Valine, leucine and isoleucine degradation",
                         "name_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00280))",
                         "ec_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00280))",
-                        "ec_count": "23"
+                        "ec_count": "22"
                     },
                     {
                         "gene_count": "31",
@@ -324,15 +332,7 @@
                         "name": "Amino sugar and nucleotide sugar metabolism",
                         "name_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "ec_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
-                        "ec_count": "23"
-                    },
-                    {
-                        "gene_count": "24",
-                        "gene_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
-                        "name": "Aminoacyl-tRNA biosynthesis",
-                        "name_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
-                        "ec_link": "/view/Genome/83332.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
-                        "ec_count": "23"
+                        "ec_count": "22"
                     }
                 ]
             },
@@ -341,7 +341,7 @@
                 "link": "/view/Genome/511145.12#view_tab=pathways",
                 "popularData": [
                     {
-                        "gene_count": "101",
+                        "gene_count": "96",
                         "gene_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "name": "Purine metabolism",
                         "name_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
@@ -349,31 +349,31 @@
                         "ec_count": "62"
                     },
                     {
-                        "gene_count": "53",
+                        "gene_count": "49",
                         "gene_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
                         "name": "Arginine and proline metabolism",
                         "name_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
                         "ec_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
-                        "ec_count": "41"
+                        "ec_count": "39"
                     },
                     {
-                        "gene_count": "85",
+                        "gene_count": "69",
                         "gene_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "name": "Amino sugar and nucleotide sugar metabolism",
                         "name_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "ec_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
-                        "ec_count": "39"
+                        "ec_count": "38"
                     },
                     {
-                        "gene_count": "61",
+                        "gene_count": "59",
                         "gene_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "name": "Pyrimidine metabolism",
                         "name_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "ec_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
-                        "ec_count": "36"
+                        "ec_count": "37"
                     },
                     {
-                        "gene_count": "44",
+                        "gene_count": "43",
                         "gene_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
                         "name": "Pyruvate metabolism",
                         "name_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
@@ -381,7 +381,7 @@
                         "ec_count": "29"
                     },
                     {
-                        "gene_count": "35",
+                        "gene_count": "30",
                         "gene_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00040))",
                         "name": "Pentose and glucuronate interconversions",
                         "name_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00040))",
@@ -389,23 +389,23 @@
                         "ec_count": "26"
                     },
                     {
-                        "gene_count": "38",
+                        "gene_count": "34",
+                        "gene_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
+                        "name": "Porphyrin and chlorophyll metabolism",
+                        "name_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
+                        "ec_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
+                        "ec_count": "26"
+                    },
+                    {
+                        "gene_count": "35",
                         "gene_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
                         "name": "Glycine, serine and threonine metabolism",
                         "name_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
                         "ec_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
-                        "ec_count": "26"
-                    },
-                    {
-                        "gene_count": "79",
-                        "gene_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00051))",
-                        "name": "Fructose and mannose metabolism",
-                        "name_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00051))",
-                        "ec_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00051))",
                         "ec_count": "25"
                     },
                     {
-                        "gene_count": "75",
+                        "gene_count": "62",
                         "gene_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00500))",
                         "name": "Starch and sucrose metabolism",
                         "name_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00500))",
@@ -413,12 +413,12 @@
                         "ec_count": "25"
                     },
                     {
-                        "gene_count": "38",
-                        "gene_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
-                        "name": "Porphyrin and chlorophyll metabolism",
-                        "name_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
-                        "ec_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
-                        "ec_count": "25"
+                        "gene_count": "34",
+                        "gene_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
+                        "name": "Pentose phosphate pathway",
+                        "name_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
+                        "ec_link": "/view/Genome/511145.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
+                        "ec_count": "24"
                     }
                 ]
             },
@@ -427,23 +427,15 @@
                 "link": "/view/Genome/99287.12#view_tab=pathways",
                 "popularData": [
                     {
-                        "gene_count": "98",
+                        "gene_count": "94",
                         "gene_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "name": "Purine metabolism",
                         "name_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "ec_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
-                        "ec_count": "58"
+                        "ec_count": "59"
                     },
                     {
-                        "gene_count": "69",
-                        "gene_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
-                        "name": "Arginine and proline metabolism",
-                        "name_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
-                        "ec_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
-                        "ec_count": "42"
-                    },
-                    {
-                        "gene_count": "96",
+                        "gene_count": "76",
                         "gene_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "name": "Amino sugar and nucleotide sugar metabolism",
                         "name_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
@@ -451,31 +443,39 @@
                         "ec_count": "42"
                     },
                     {
-                        "gene_count": "47",
+                        "gene_count": "64",
+                        "gene_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
+                        "name": "Arginine and proline metabolism",
+                        "name_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
+                        "ec_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
+                        "ec_count": "41"
+                    },
+                    {
+                        "gene_count": "44",
                         "gene_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
                         "name": "Porphyrin and chlorophyll metabolism",
                         "name_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
                         "ec_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
-                        "ec_count": "35"
+                        "ec_count": "36"
                     },
                     {
-                        "gene_count": "61",
+                        "gene_count": "58",
                         "gene_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "name": "Pyrimidine metabolism",
                         "name_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "ec_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
-                        "ec_count": "32"
+                        "ec_count": "33"
                     },
                     {
-                        "gene_count": "57",
+                        "gene_count": "56",
                         "gene_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
                         "name": "Pyruvate metabolism",
                         "name_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
                         "ec_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
-                        "ec_count": "30"
+                        "ec_count": "31"
                     },
                     {
-                        "gene_count": "40",
+                        "gene_count": "37",
                         "gene_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00040))",
                         "name": "Pentose and glucuronate interconversions",
                         "name_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00040))",
@@ -483,7 +483,7 @@
                         "ec_count": "27"
                     },
                     {
-                        "gene_count": "88",
+                        "gene_count": "63",
                         "gene_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00051))",
                         "name": "Fructose and mannose metabolism",
                         "name_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00051))",
@@ -491,7 +491,7 @@
                         "ec_count": "26"
                     },
                     {
-                        "gene_count": "36",
+                        "gene_count": "37",
                         "gene_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
                         "name": "Pentose phosphate pathway",
                         "name_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
@@ -499,7 +499,7 @@
                         "ec_count": "25"
                     },
                     {
-                        "gene_count": "30",
+                        "gene_count": "29",
                         "gene_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00250))",
                         "name": "Alanine, aspartate and glutamate metabolism",
                         "name_link": "/view/Genome/99287.12#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00250))",
@@ -518,7 +518,7 @@
                         "name": "Purine metabolism",
                         "name_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "ec_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
-                        "ec_count": "59"
+                        "ec_count": "60"
                     },
                     {
                         "gene_count": "57",
@@ -529,7 +529,15 @@
                         "ec_count": "39"
                     },
                     {
-                        "gene_count": "83",
+                        "gene_count": "63",
+                        "gene_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
+                        "name": "Pyrimidine metabolism",
+                        "name_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
+                        "ec_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
+                        "ec_count": "37"
+                    },
+                    {
+                        "gene_count": "85",
                         "gene_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "name": "Amino sugar and nucleotide sugar metabolism",
                         "name_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
@@ -537,20 +545,12 @@
                         "ec_count": "36"
                     },
                     {
-                        "gene_count": "62",
-                        "gene_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
-                        "name": "Pyrimidine metabolism",
-                        "name_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
-                        "ec_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
-                        "ec_count": "35"
-                    },
-                    {
-                        "gene_count": "45",
+                        "gene_count": "46",
                         "gene_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
                         "name": "Pyruvate metabolism",
                         "name_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
                         "ec_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
-                        "ec_count": "29"
+                        "ec_count": "30"
                     },
                     {
                         "gene_count": "36",
@@ -558,10 +558,18 @@
                         "name": "Pentose and glucuronate interconversions",
                         "name_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00040))",
                         "ec_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00040))",
+                        "ec_count": "27"
+                    },
+                    {
+                        "gene_count": "38",
+                        "gene_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
+                        "name": "Porphyrin and chlorophyll metabolism",
+                        "name_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
+                        "ec_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
                         "ec_count": "26"
                     },
                     {
-                        "gene_count": "77",
+                        "gene_count": "78",
                         "gene_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00500))",
                         "name": "Starch and sucrose metabolism",
                         "name_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00500))",
@@ -569,15 +577,7 @@
                         "ec_count": "25"
                     },
                     {
-                        "gene_count": "36",
-                        "gene_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
-                        "name": "Porphyrin and chlorophyll metabolism",
-                        "name_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
-                        "ec_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
-                        "ec_count": "25"
-                    },
-                    {
-                        "gene_count": "86",
+                        "gene_count": "87",
                         "gene_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00051))",
                         "name": "Fructose and mannose metabolism",
                         "name_link": "/view/Genome/198215.6#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00051))",
@@ -604,7 +604,7 @@
                         "name": "Purine metabolism",
                         "name_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "ec_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
-                        "ec_count": "53"
+                        "ec_count": "54"
                     },
                     {
                         "gene_count": "66",
@@ -628,7 +628,7 @@
                         "name": "Pyrimidine metabolism",
                         "name_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "ec_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
-                        "ec_count": "31"
+                        "ec_count": "32"
                     },
                     {
                         "gene_count": "37",
@@ -636,10 +636,18 @@
                         "name": "Pentose and glucuronate interconversions",
                         "name_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00040))",
                         "ec_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00040))",
+                        "ec_count": "29"
+                    },
+                    {
+                        "gene_count": "35",
+                        "gene_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
+                        "name": "Pyruvate metabolism",
+                        "name_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
+                        "ec_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
                         "ec_count": "28"
                     },
                     {
-                        "gene_count": "34",
+                        "gene_count": "35",
                         "gene_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
                         "name": "Glycine, serine and threonine metabolism",
                         "name_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
@@ -647,12 +655,12 @@
                         "ec_count": "27"
                     },
                     {
-                        "gene_count": "34",
-                        "gene_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
-                        "name": "Pyruvate metabolism",
-                        "name_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
-                        "ec_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
-                        "ec_count": "27"
+                        "gene_count": "42",
+                        "gene_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00680))",
+                        "name": "Methane metabolism",
+                        "name_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00680))",
+                        "ec_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00680))",
+                        "ec_count": "23"
                     },
                     {
                         "gene_count": "33",
@@ -668,14 +676,6 @@
                         "name": "Alanine, aspartate and glutamate metabolism",
                         "name_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00250))",
                         "ec_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00250))",
-                        "ec_count": "22"
-                    },
-                    {
-                        "gene_count": "27",
-                        "gene_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00270))",
-                        "name": "Cysteine and methionine metabolism",
-                        "name_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00270))",
-                        "ec_link": "/view/Genome/214092.21#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00270))",
                         "ec_count": "22"
                     }
                 ]
@@ -701,23 +701,23 @@
                         "ec_count": "33"
                     },
                     {
-                        "gene_count": "49",
+                        "gene_count": "50",
                         "gene_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "name": "Pyrimidine metabolism",
                         "name_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "ec_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
-                        "ec_count": "29"
+                        "ec_count": "30"
                     },
                     {
-                        "gene_count": "32",
+                        "gene_count": "33",
                         "gene_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
                         "name": "Arginine and proline metabolism",
                         "name_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
                         "ec_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
-                        "ec_count": "27"
+                        "ec_count": "28"
                     },
                     {
-                        "gene_count": "95",
+                        "gene_count": "98",
                         "gene_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "name": "Amino sugar and nucleotide sugar metabolism",
                         "name_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
@@ -741,7 +741,7 @@
                         "ec_count": "21"
                     },
                     {
-                        "gene_count": "26",
+                        "gene_count": "27",
                         "gene_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00270))",
                         "name": "Cysteine and methionine metabolism",
                         "name_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00270))",
@@ -749,19 +749,19 @@
                         "ec_count": "20"
                     },
                     {
-                        "gene_count": "102",
+                        "gene_count": "30",
+                        "gene_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
+                        "name": "Pyruvate metabolism",
+                        "name_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
+                        "ec_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
+                        "ec_count": "20"
+                    },
+                    {
+                        "gene_count": "106",
                         "gene_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00010))",
                         "name": "Glycolysis / Gluconeogenesis",
                         "name_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00010))",
                         "ec_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00010))",
-                        "ec_count": "19"
-                    },
-                    {
-                        "gene_count": "22",
-                        "gene_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00400))",
-                        "name": "Phenylalanine, tyrosine and tryptophan biosynthesis",
-                        "name_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00400))",
-                        "ec_link": "/view/Genome/169963.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00400))",
                         "ec_count": "19"
                     }
                 ]
@@ -776,15 +776,15 @@
                         "name": "Purine metabolism",
                         "name_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "ec_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
-                        "ec_count": "47"
+                        "ec_count": "48"
                     },
                     {
-                        "gene_count": "52",
+                        "gene_count": "54",
                         "gene_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "name": "Pyrimidine metabolism",
                         "name_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "ec_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
-                        "ec_count": "31"
+                        "ec_count": "33"
                     },
                     {
                         "gene_count": "39",
@@ -803,15 +803,15 @@
                         "ec_count": "26"
                     },
                     {
-                        "gene_count": "35",
+                        "gene_count": "36",
                         "gene_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
                         "name": "Pyruvate metabolism",
                         "name_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
                         "ec_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00620))",
-                        "ec_count": "25"
+                        "ec_count": "26"
                     },
                     {
-                        "gene_count": "46",
+                        "gene_count": "47",
                         "gene_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "name": "Amino sugar and nucleotide sugar metabolism",
                         "name_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
@@ -827,7 +827,7 @@
                         "ec_count": "23"
                     },
                     {
-                        "gene_count": "48",
+                        "gene_count": "49",
                         "gene_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00010))",
                         "name": "Glycolysis / Gluconeogenesis",
                         "name_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00010))",
@@ -843,12 +843,12 @@
                         "ec_count": "21"
                     },
                     {
-                        "gene_count": "20",
-                        "gene_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
-                        "name": "Pentose phosphate pathway",
-                        "name_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
-                        "ec_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
-                        "ec_count": "18"
+                        "gene_count": "23",
+                        "gene_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00720))",
+                        "name": "Reductive carboxylate cycle (CO2 fixation)",
+                        "name_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00720))",
+                        "ec_link": "/view/Genome/158879.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00720))",
+                        "ec_count": "19"
                     }
                 ]
             },
@@ -873,7 +873,7 @@
                         "ec_count": "28"
                     },
                     {
-                        "gene_count": "75",
+                        "gene_count": "76",
                         "gene_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
                         "name": "Amino sugar and nucleotide sugar metabolism",
                         "name_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
@@ -905,15 +905,15 @@
                         "ec_count": "20"
                     },
                     {
-                        "gene_count": "65",
+                        "gene_count": "68",
                         "gene_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00010))",
                         "name": "Glycolysis / Gluconeogenesis",
                         "name_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00010))",
                         "ec_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00010))",
-                        "ec_count": "18"
+                        "ec_count": "19"
                     },
                     {
-                        "gene_count": "65",
+                        "gene_count": "66",
                         "gene_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00052))",
                         "name": "Galactose metabolism",
                         "name_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00052))",
@@ -929,7 +929,7 @@
                         "ec_count": "17"
                     },
                     {
-                        "gene_count": "59",
+                        "gene_count": "60",
                         "gene_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00500))",
                         "name": "Starch and sucrose metabolism",
                         "name_link": "/view/Genome/373153.27#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00500))",
@@ -959,7 +959,7 @@
                         "ec_count": "37"
                     },
                     {
-                        "gene_count": "38",
+                        "gene_count": "39",
                         "gene_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
                         "name": "Porphyrin and chlorophyll metabolism",
                         "name_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00860))",
@@ -1007,20 +1007,20 @@
                         "ec_count": "25"
                     },
                     {
+                        "gene_count": "59",
+                        "gene_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00280))",
+                        "name": "Valine, leucine and isoleucine degradation",
+                        "name_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00280))",
+                        "ec_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00280))",
+                        "ec_count": "23"
+                    },
+                    {
                         "gene_count": "25",
                         "gene_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
                         "name": "Aminoacyl-tRNA biosynthesis",
                         "name_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
                         "ec_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00970))",
                         "ec_count": "23"
-                    },
-                    {
-                        "gene_count": "24",
-                        "gene_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
-                        "name": "Pentose phosphate pathway",
-                        "name_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
-                        "ec_link": "/view/Genome/224914.11#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
-                        "ec_count": "21"
                     }
                 ]
             },
@@ -1029,12 +1029,20 @@
                 "link": "/view/Genome/85962.8#view_tab=pathways",
                 "popularData": [
                     {
-                        "gene_count": "34",
+                        "gene_count": "35",
                         "gene_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "name": "Purine metabolism",
                         "name_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "ec_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00230))",
                         "ec_count": "27"
+                    },
+                    {
+                        "gene_count": "19",
+                        "gene_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
+                        "name": "Amino sugar and nucleotide sugar metabolism",
+                        "name_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
+                        "ec_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
+                        "ec_count": "23"
                     },
                     {
                         "gene_count": "25",
@@ -1045,7 +1053,7 @@
                         "ec_count": "23"
                     },
                     {
-                        "gene_count": "30",
+                        "gene_count": "31",
                         "gene_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
                         "name": "Pyrimidine metabolism",
                         "name_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00240))",
@@ -1053,27 +1061,19 @@
                         "ec_count": "22"
                     },
                     {
-                        "gene_count": "19",
-                        "gene_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
-                        "name": "Amino sugar and nucleotide sugar metabolism",
-                        "name_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
-                        "ec_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00520))",
-                        "ec_count": "22"
-                    },
-                    {
-                        "gene_count": "18",
-                        "gene_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
-                        "name": "Arginine and proline metabolism",
-                        "name_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
-                        "ec_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
-                        "ec_count": "16"
-                    },
-                    {
                         "gene_count": "16",
                         "gene_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
                         "name": "Glycine, serine and threonine metabolism",
                         "name_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
                         "ec_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00260))",
+                        "ec_count": "15"
+                    },
+                    {
+                        "gene_count": "17",
+                        "gene_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
+                        "name": "Arginine and proline metabolism",
+                        "name_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
+                        "ec_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00330))",
                         "ec_count": "15"
                     },
                     {
@@ -1085,7 +1085,15 @@
                         "ec_count": "15"
                     },
                     {
-                        "gene_count": "32",
+                        "gene_count": "15",
+                        "gene_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00540))",
+                        "name": "Lipopolysaccharide biosynthesis",
+                        "name_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00540))",
+                        "ec_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00540))",
+                        "ec_count": "15"
+                    },
+                    {
+                        "gene_count": "30",
                         "gene_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00680))",
                         "name": "Methane metabolism",
                         "name_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00680))",
@@ -1098,14 +1106,6 @@
                         "name": "Pentose phosphate pathway",
                         "name_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
                         "ec_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00030))",
-                        "ec_count": "14"
-                    },
-                    {
-                        "gene_count": "14",
-                        "gene_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=genes&filter=and(eq(annotation,PATRIC),eq(pathway_id,00564))",
-                        "name": "Glycerophospholipid metabolism",
-                        "name_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=pathways&filter=and(eq(annotation,PATRIC),eq(pathway_id,00564))",
-                        "ec_link": "/view/Genome/85962.8#view_tab=pathways&sub_tab=ec_numbers&filter=and(eq(annotation,PATRIC),eq(pathway_id,00564))",
                         "ec_count": "14"
                     }
                 ]
