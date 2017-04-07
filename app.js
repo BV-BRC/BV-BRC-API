@@ -10,6 +10,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var hpiSearchRouter = require("./routes/hpiSearchRouter");
 var dataTypeRouter = require("./routes/dataType");
 var downloadRouter = require("./routes/download");
 var multiQueryRouter = require("./routes/multiQuery");
@@ -140,6 +141,10 @@ app.use("/jbrowse/", [
 
 app.use("/query", [
 	multiQueryRouter
+]);
+
+app.use("/hpiSearch", [
+	hpiSearchRouter
 ]);
 
 app.param("dataType", function(req, res, next, dataType){
