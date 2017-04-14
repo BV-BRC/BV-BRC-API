@@ -33,62 +33,84 @@ router.use(httpParams);
 router.use(authMiddleware);
 
 
+// handle GET hpiSearch/
+// Not sure what to return here
+router.get("/", [
+	bodyParser.urlencoded({extended: true}),
+	function(req, res, next){
+    debug("req.body: ", req.body);
+    debug("CALL_PARAMS: ", req.call_params);
+		res.write("--- acknowledged GET for hpiSearch \n");
+    res.end();
+	}
+])
+
 // handle POST hpiSearch/
+// Given an input set of Host IDs and match parameters, return matching experiments and ID lists
+// curl -H "Content-Type: application/json" -X POST "http://localhost:3001/hpiSearch" -d @tmp.json
 router.post("/", [
 	bodyParser.urlencoded({extended: true}),
 	function(req, res, next){
-		debug("req.body: ", req.body);
-    res.write("--- acknowledged POST for hpiSearch");
+    debug("req.body: ", req.body);
+    debug("CALL_PARAMS: ", req.call_params);
+    res.write("--- acknowledged POST for hpiSearch \n");
     res.end();
 	}
 ])
 
 // GET hpiSearch/experiment
+// Maybe a 404 or a list of all experiment ids
 router.get("/experiment", [
 	function(req, res, next){
 		// next(); // for passing control to the next middleware function
     debug("req.body: ", req.body);
-    res.write("--- acknowledged GET for hpiSearch/experiemnt");
+    debug("CALL_PARAMS: ", req.call_params);
+    res.write("--- acknowledged GET for hpiSearch/experiemnt \n");
     res.end();
 	}
 ]);
 
 // GET hpiSearch/experiment/{experimentIdentifier}
-router.get("/experiment", [
+router.get("/experiment/:id", [
 	function(req, res, next){
 		// next(); // for passing control to the next middleware function
-    debug("req.body: ", req.body);
-    res.write("--- acknowledged GET for hpiSearch/experiemnt/{experimentIdentifier}");
+    ddebug("req.body: ", req.body);
+    debug("CALL_PARAMS: ", req.call_params);
+    res.write("--- acknowledged GET for hpiSearch/experiemnt/{experimentIdentifier} \n");
     res.end();
 	}
 ]);
 
 // GET hpiSearch/experiment/{experimentIdentifier}/idList/{listIdentifier}
-router.get("/experiment", [
+router.get("/experiment/:id/idList/:id_list", [
 	function(req, res, next){
 		// next(); // for passing control to the next middleware function
     debug("req.body: ", req.body);
-    res.write("--- acknowledged GET for hpiSearch/experiemnt/{experimentIdentifier}/idList/{listIdentifier}");
+    debug("CALL_PARAMS: ", req.call_params);
+    res.write("--- acknowledged GET for hpiSearch/experiemnt/{experimentIdentifier}/idList/{listIdentifier} \n");
     res.end();
 	}
 ]);
 
+//XXX this one is busted
 // GET hpiSearch/experiment/{experimentIdentifier}/idList/{listIdentifier}/ids<?includeOrthologs="human">
-router.get("/experiment", [
+router.get("/experiment/:id/idList/:id_list/ids<>", [
 	function(req, res, next){
 		// next(); // for passing control to the next middleware function
     debug("req.body: ", req.body);
-    res.write("--- acknowledged GET for hpiSearch/experiemnt/{experimentIdentifier}/idList/{listIdentifier}/ids<?includeOrthologs=\"human\">");
+    debug("CALL_PARAMS: ", req.call_params);
+    res.write("--- acknowledged GET for hpiSearch/experiemnt/{experimentIdentifier}/idList/{listIdentifier}/ids<?includeOrthologs=\"human\"> \n");
     res.end();
 	}
 ]);
 
 // GET hpiSearch/api
-router.get("/experiment", [
+router.get("/api", [
 	function(req, res, next){
 		// next(); // for passing control to the next middleware function
     debug("req.body: ", req.body);
-    res.write("--- acknowledged GET for hpiSearch/api");
+    debug("CALL_PARAMS: ", req.call_params);
+    res.write("--- acknowledged GET for hpiSearch/api \n");
     res.end();
 	}
 ]);
