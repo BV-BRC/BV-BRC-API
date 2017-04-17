@@ -2,6 +2,13 @@
     "featuredExperiment": {
         "data": [
             {
+                "organism": "Mycobacterium tuberculosis",
+                "link": "/view/ExperimentComparison/2000000",
+                "accession": "GSE59086",
+                "title": "Mapping and manipulating the M. tuberculosis transcriptome using a transcription factor overexpression-derived regulatory network",
+                "pmid": "25232098"
+            },
+            {
                 "organism": "Pseudomonas aeruginosa",
                 "link": "/view/ExperimentComparison/1223795",
                 "accession": "GSE49759",
@@ -13,13 +20,6 @@
                 "link": "/view/ExperimentComparison/1201089",
                 "accession": "GSE43024",
                 "title": "Transcriptional profiles of Campylobacter jejuni NCTC 11168 to 0.125mg/L erythromycin treatment",
-                "pmid": "23767761"
-            },
-            {
-                "organism": "Campylobacter jejuni",
-                "link": "/view/ExperimentComparison/1224258",
-                "accession": "GSE43023",
-                "title": "Transcriptional profiles of Campylobacter jejuni NCTC 11168 to 4mg/L erythromycin treatment",
                 "pmid": "23767761"
             }
         ]
@@ -576,7 +576,7 @@
                 "label": "Salmonella enterica"
             },
             {
-                "count": 45,
+                "count": 46,
                 "label": "Mycobacterium tuberculosis"
             },
             {

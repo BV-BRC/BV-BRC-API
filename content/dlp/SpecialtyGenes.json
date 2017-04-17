@@ -39,6 +39,11 @@
                         "description": "Antibiotic Resistance: CARD"
                     },
                     {
+                        "data": 19,
+                        "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Antibiotic Resistance: PATRIC"
+                    },
+                    {
                         "data": 76,
                         "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
                         "description": "Drug Target: DrugBank"
@@ -47,6 +52,11 @@
                         "data": 33,
                         "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,TTD)",
                         "description": "Drug Target: TTD"
+                    },
+                    {
+                        "data": 215,
+                        "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Essential Gene: PATRIC"
                     },
                     {
                         "data": 34,
@@ -107,6 +117,11 @@
                         "description": "Antibiotic Resistance: CARD"
                     },
                     {
+                        "data": 32,
+                        "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Antibiotic Resistance: PATRIC"
+                    },
+                    {
                         "data": 388,
                         "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
                         "description": "Drug Target: DrugBank"
@@ -115,6 +130,11 @@
                         "data": 86,
                         "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,TTD)",
                         "description": "Drug Target: TTD"
+                    },
+                    {
+                        "data": 222,
+                        "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Essential Gene: PATRIC"
                     },
                     {
                         "data": 55,
@@ -175,6 +195,11 @@
                         "description": "Antibiotic Resistance: CARD"
                     },
                     {
+                        "data": 30,
+                        "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Antibiotic Resistance: PATRIC"
+                    },
+                    {
                         "data": 356,
                         "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
                         "description": "Drug Target: DrugBank"
@@ -183,6 +208,11 @@
                         "data": 80,
                         "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,TTD)",
                         "description": "Drug Target: TTD"
+                    },
+                    {
+                        "data": 211,
+                        "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Essential Gene: PATRIC"
                     },
                     {
                         "data": 56,
@@ -241,6 +271,11 @@
                         "data": 57,
                         "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,CARD)",
                         "description": "Antibiotic Resistance: CARD"
+                    },
+                    {
+                        "data": 35,
+                        "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Antibiotic Resistance: PATRIC"
                     },
                     {
                         "data": 390,
@@ -311,6 +346,11 @@
                         "description": "Antibiotic Resistance: CARD"
                     },
                     {
+                        "data": 24,
+                        "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Antibiotic Resistance: PATRIC"
+                    },
+                    {
                         "data": 167,
                         "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
                         "description": "Drug Target: DrugBank"
@@ -319,6 +359,11 @@
                         "data": 45,
                         "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,TTD)",
                         "description": "Drug Target: TTD"
+                    },
+                    {
+                        "data": 209,
+                        "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Essential Gene: PATRIC"
                     },
                     {
                         "data": 58,
@@ -384,6 +429,11 @@
                         "description": "Drug Target: DrugBank"
                     },
                     {
+                        "data": 229,
+                        "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Essential Gene: PATRIC"
+                    },
+                    {
                         "data": 25,
                         "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,Human)",
                         "description": "Human Homolog: Human"
@@ -442,6 +492,11 @@
                         "description": "Antibiotic Resistance: CARD"
                     },
                     {
+                        "data": 6,
+                        "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Antibiotic Resistance: PATRIC"
+                    },
+                    {
                         "data": 29,
                         "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
                         "description": "Drug Target: DrugBank"
@@ -450,6 +505,11 @@
                         "data": 16,
                         "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,TTD)",
                         "description": "Drug Target: TTD"
+                    },
+                    {
+                        "data": 219,
+                        "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Essential Gene: PATRIC"
                     },
                     {
                         "data": 21,
@@ -563,6 +623,11 @@
                         "description": "Antibiotic Resistance: ARDB"
                     },
                     {
+                        "data": 8,
+                        "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Antibiotic Resistance: PATRIC"
+                    },
+                    {
                         "data": 2,
                         "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
                         "description": "Drug Target: DrugBank"
@@ -571,6 +636,11 @@
                         "data": 1,
                         "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,TTD)",
                         "description": "Drug Target: TTD"
+                    },
+                    {
+                        "data": 224,
+                        "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Essential Gene: PATRIC"
                     },
                     {
                         "data": 81,
@@ -626,6 +696,11 @@
                         "description": "Antibiotic Resistance: CARD"
                     },
                     {
+                        "data": 3,
+                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Antibiotic Resistance: PATRIC"
+                    },
+                    {
                         "data": 13,
                         "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
                         "description": "Drug Target: DrugBank"
@@ -634,6 +709,11 @@
                         "data": 6,
                         "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,TTD)",
                         "description": "Drug Target: TTD"
+                    },
+                    {
+                        "data": 205,
+                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Essential Gene: PATRIC"
                     },
                     {
                         "data": 17,

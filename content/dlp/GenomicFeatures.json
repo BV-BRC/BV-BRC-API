@@ -6,27 +6,27 @@
                 "popularName": "Mycobacterium tuberculosis H37Rv",
                 "proteinSummary": [
                     {
-                        "data": 1109,
+                        "data": 1167,
                         "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(product,hypothetical+protein))",
                         "description": "Unknown functions"
                     },
                     {
-                        "data": 3258,
+                        "data": 3200,
                         "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),ne(product,hypothetical+protein))",
                         "description": "Functional assignments"
                     },
                     {
-                        "data": 1068,
+                        "data": 1064,
                         "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(ec,*))",
                         "description": "EC assignments"
                     },
                     {
-                        "data": 963,
+                        "data": 956,
                         "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(go,*))",
                         "description": "GO assignments"
                     },
                     {
-                        "data": 855,
+                        "data": 845,
                         "link": "/view/Genome/83332.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pathway,*))",
                         "description": "Pathways assignments"
                     },
@@ -108,6 +108,11 @@
                         "description": "Antibiotic Resistance: CARD"
                     },
                     {
+                        "data": 19,
+                        "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Antibiotic Resistance: PATRIC"
+                    },
+                    {
                         "data": 76,
                         "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
                         "description": "Drug Target: DrugBank"
@@ -116,6 +121,11 @@
                         "data": 33,
                         "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,TTD)",
                         "description": "Drug Target: TTD"
+                    },
+                    {
+                        "data": 215,
+                        "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Essential Gene: PATRIC"
                     },
                     {
                         "data": 34,
@@ -143,27 +153,27 @@
                 "popularName": "Escherichia coli str. K-12 substr. MG1655",
                 "proteinSummary": [
                     {
-                        "data": 456,
+                        "data": 374,
                         "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(product,hypothetical+protein))",
                         "description": "Unknown functions"
                     },
                     {
-                        "data": 4093,
+                        "data": 4175,
                         "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),ne(product,hypothetical+protein))",
                         "description": "Functional assignments"
                     },
                     {
-                        "data": 1294,
+                        "data": 1273,
                         "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(ec,*))",
                         "description": "EC assignments"
                     },
                     {
-                        "data": 1139,
+                        "data": 1135,
                         "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(go,*))",
                         "description": "GO assignments"
                     },
                     {
-                        "data": 983,
+                        "data": 933,
                         "link": "/view/Genome/511145.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pathway,*))",
                         "description": "Pathways assignments"
                     },
@@ -245,6 +255,11 @@
                         "description": "Antibiotic Resistance: CARD"
                     },
                     {
+                        "data": 32,
+                        "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Antibiotic Resistance: PATRIC"
+                    },
+                    {
                         "data": 388,
                         "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
                         "description": "Drug Target: DrugBank"
@@ -253,6 +268,11 @@
                         "data": 86,
                         "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,TTD)",
                         "description": "Drug Target: TTD"
+                    },
+                    {
+                        "data": 222,
+                        "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Essential Gene: PATRIC"
                     },
                     {
                         "data": 55,
@@ -280,27 +300,27 @@
                 "popularName": "Salmonella enterica subsp. enterica serovar Typhimurium str. LT2",
                 "proteinSummary": [
                     {
-                        "data": 664,
+                        "data": 682,
                         "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(product,hypothetical+protein))",
                         "description": "Unknown functions"
                     },
                     {
-                        "data": 4308,
+                        "data": 4290,
                         "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),ne(product,hypothetical+protein))",
                         "description": "Functional assignments"
                     },
                     {
-                        "data": 1329,
+                        "data": 1298,
                         "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(ec,*))",
                         "description": "EC assignments"
                     },
                     {
-                        "data": 1186,
+                        "data": 1163,
                         "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(go,*))",
                         "description": "GO assignments"
                     },
                     {
-                        "data": 1003,
+                        "data": 954,
                         "link": "/view/Genome/99287.12#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pathway,*))",
                         "description": "Pathways assignments"
                     },
@@ -382,6 +402,11 @@
                         "description": "Antibiotic Resistance: CARD"
                     },
                     {
+                        "data": 30,
+                        "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Antibiotic Resistance: PATRIC"
+                    },
+                    {
                         "data": 356,
                         "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
                         "description": "Drug Target: DrugBank"
@@ -390,6 +415,11 @@
                         "data": 80,
                         "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,TTD)",
                         "description": "Drug Target: TTD"
+                    },
+                    {
+                        "data": 211,
+                        "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Essential Gene: PATRIC"
                     },
                     {
                         "data": 56,
@@ -417,27 +447,27 @@
                 "popularName": "Shigella flexneri 2a str. 2457T",
                 "proteinSummary": [
                     {
-                        "data": 503,
+                        "data": 636,
                         "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(product,hypothetical+protein))",
                         "description": "Unknown functions"
                     },
                     {
-                        "data": 4628,
+                        "data": 4495,
                         "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),ne(product,hypothetical+protein))",
                         "description": "Functional assignments"
                     },
                     {
-                        "data": 1283,
+                        "data": 1267,
                         "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(ec,*))",
                         "description": "EC assignments"
                     },
                     {
-                        "data": 1129,
+                        "data": 1126,
                         "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(go,*))",
                         "description": "GO assignments"
                     },
                     {
-                        "data": 965,
+                        "data": 919,
                         "link": "/view/Genome/198215.6#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pathway,*))",
                         "description": "Pathways assignments"
                     },
@@ -519,6 +549,11 @@
                         "description": "Antibiotic Resistance: CARD"
                     },
                     {
+                        "data": 35,
+                        "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Antibiotic Resistance: PATRIC"
+                    },
+                    {
                         "data": 390,
                         "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
                         "description": "Drug Target: DrugBank"
@@ -554,27 +589,27 @@
                 "popularName": "Yersinia pestis CO92",
                 "proteinSummary": [
                     {
-                        "data": 870,
+                        "data": 917,
                         "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(product,hypothetical+protein))",
                         "description": "Unknown functions"
                     },
                     {
-                        "data": 3796,
+                        "data": 3749,
                         "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),ne(product,hypothetical+protein))",
                         "description": "Functional assignments"
                     },
                     {
-                        "data": 1092,
+                        "data": 1065,
                         "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(ec,*))",
                         "description": "EC assignments"
                     },
                     {
-                        "data": 1033,
+                        "data": 997,
                         "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(go,*))",
                         "description": "GO assignments"
                     },
                     {
-                        "data": 839,
+                        "data": 799,
                         "link": "/view/Genome/214092.21#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pathway,*))",
                         "description": "Pathways assignments"
                     },
@@ -656,6 +691,11 @@
                         "description": "Antibiotic Resistance: CARD"
                     },
                     {
+                        "data": 24,
+                        "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Antibiotic Resistance: PATRIC"
+                    },
+                    {
                         "data": 167,
                         "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
                         "description": "Drug Target: DrugBank"
@@ -664,6 +704,11 @@
                         "data": 45,
                         "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,TTD)",
                         "description": "Drug Target: TTD"
+                    },
+                    {
+                        "data": 209,
+                        "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Essential Gene: PATRIC"
                     },
                     {
                         "data": 58,
@@ -691,27 +736,27 @@
                 "popularName": "Listeria monocytogenes EGD-e",
                 "proteinSummary": [
                     {
-                        "data": 586,
+                        "data": 541,
                         "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(product,hypothetical+protein))",
                         "description": "Unknown functions"
                     },
                     {
-                        "data": 2341,
+                        "data": 2386,
                         "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),ne(product,hypothetical+protein))",
                         "description": "Functional assignments"
                     },
                     {
-                        "data": 821,
+                        "data": 803,
                         "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(ec,*))",
                         "description": "EC assignments"
                     },
                     {
-                        "data": 881,
+                        "data": 842,
                         "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(go,*))",
                         "description": "GO assignments"
                     },
                     {
-                        "data": 643,
+                        "data": 618,
                         "link": "/view/Genome/169963.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pathway,*))",
                         "description": "Pathways assignments"
                     },
@@ -798,6 +843,11 @@
                         "description": "Drug Target: DrugBank"
                     },
                     {
+                        "data": 229,
+                        "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Essential Gene: PATRIC"
+                    },
+                    {
                         "data": 25,
                         "link": "/view/Genome/169963.11#view_tab=specialtyGenes&filter=eq(source,Human)",
                         "description": "Human Homolog: Human"
@@ -823,27 +873,27 @@
                 "popularName": "Staphylococcus aureus subsp. aureus N315",
                 "proteinSummary": [
                     {
-                        "data": 626,
+                        "data": 599,
                         "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(product,hypothetical+protein))",
                         "description": "Unknown functions"
                     },
                     {
-                        "data": 2108,
+                        "data": 2135,
                         "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),ne(product,hypothetical+protein))",
                         "description": "Functional assignments"
                     },
                     {
-                        "data": 761,
+                        "data": 753,
                         "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(ec,*))",
                         "description": "EC assignments"
                     },
                     {
-                        "data": 805,
+                        "data": 783,
                         "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(go,*))",
                         "description": "GO assignments"
                     },
                     {
-                        "data": 579,
+                        "data": 573,
                         "link": "/view/Genome/158879.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pathway,*))",
                         "description": "Pathways assignments"
                     },
@@ -925,6 +975,11 @@
                         "description": "Antibiotic Resistance: CARD"
                     },
                     {
+                        "data": 6,
+                        "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Antibiotic Resistance: PATRIC"
+                    },
+                    {
                         "data": 29,
                         "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
                         "description": "Drug Target: DrugBank"
@@ -933,6 +988,11 @@
                         "data": 16,
                         "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,TTD)",
                         "description": "Drug Target: TTD"
+                    },
+                    {
+                        "data": 219,
+                        "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Essential Gene: PATRIC"
                     },
                     {
                         "data": 21,
@@ -955,27 +1015,27 @@
                 "popularName": "Streptococcus pneumoniae D39",
                 "proteinSummary": [
                     {
-                        "data": 391,
+                        "data": 429,
                         "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(product,hypothetical+protein))",
                         "description": "Unknown functions"
                     },
                     {
-                        "data": 1814,
+                        "data": 1776,
                         "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),ne(product,hypothetical+protein))",
                         "description": "Functional assignments"
                     },
                     {
-                        "data": 645,
+                        "data": 608,
                         "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(ec,*))",
                         "description": "EC assignments"
                     },
                     {
-                        "data": 662,
+                        "data": 621,
                         "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(go,*))",
                         "description": "GO assignments"
                     },
                     {
-                        "data": 493,
+                        "data": 454,
                         "link": "/view/Genome/373153.27#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pathway,*))",
                         "description": "Pathways assignments"
                     },
@@ -1087,27 +1147,27 @@
                 "popularName": "Brucella melitensis bv. 1 str. 16M",
                 "proteinSummary": [
                     {
-                        "data": 780,
+                        "data": 802,
                         "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(product,hypothetical+protein))",
                         "description": "Unknown functions"
                     },
                     {
-                        "data": 2719,
+                        "data": 2697,
                         "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),ne(product,hypothetical+protein))",
                         "description": "Functional assignments"
                     },
                     {
-                        "data": 986,
+                        "data": 973,
                         "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(ec,*))",
                         "description": "EC assignments"
                     },
                     {
-                        "data": 977,
+                        "data": 951,
                         "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(go,*))",
                         "description": "GO assignments"
                     },
                     {
-                        "data": 788,
+                        "data": 771,
                         "link": "/view/Genome/224914.11#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pathway,*))",
                         "description": "Pathways assignments"
                     },
@@ -1184,6 +1244,11 @@
                         "description": "Antibiotic Resistance: ARDB"
                     },
                     {
+                        "data": 8,
+                        "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Antibiotic Resistance: PATRIC"
+                    },
+                    {
                         "data": 2,
                         "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
                         "description": "Drug Target: DrugBank"
@@ -1192,6 +1257,11 @@
                         "data": 1,
                         "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,TTD)",
                         "description": "Drug Target: TTD"
+                    },
+                    {
+                        "data": 224,
+                        "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Essential Gene: PATRIC"
                     },
                     {
                         "data": 81,
@@ -1219,27 +1289,27 @@
                 "popularName": "Helicobacter pylori 26695",
                 "proteinSummary": [
                     {
-                        "data": 473,
+                        "data": 480,
                         "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(product,hypothetical+protein))",
                         "description": "Unknown functions"
                     },
                     {
-                        "data": 1201,
+                        "data": 1194,
                         "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),ne(product,hypothetical+protein))",
                         "description": "Functional assignments"
                     },
                     {
-                        "data": 489,
+                        "data": 480,
                         "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(ec,*))",
                         "description": "EC assignments"
                     },
                     {
-                        "data": 493,
+                        "data": 477,
                         "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(go,*))",
                         "description": "GO assignments"
                     },
                     {
-                        "data": 365,
+                        "data": 355,
                         "link": "/view/Genome/85962.8#view_tab=features&filter=and(eq(annotation,PATRIC),eq(feature_type,CDS),eq(pathway,*))",
                         "description": "Pathways assignments"
                     },
@@ -1311,6 +1381,11 @@
                         "description": "Antibiotic Resistance: CARD"
                     },
                     {
+                        "data": 3,
+                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Antibiotic Resistance: PATRIC"
+                    },
+                    {
                         "data": 13,
                         "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,DrugBank)",
                         "description": "Drug Target: DrugBank"
@@ -1319,6 +1394,11 @@
                         "data": 6,
                         "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,TTD)",
                         "description": "Drug Target: TTD"
+                    },
+                    {
+                        "data": 205,
+                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "Essential Gene: PATRIC"
                     },
                     {
                         "data": 17,

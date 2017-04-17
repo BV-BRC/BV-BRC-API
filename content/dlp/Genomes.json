@@ -2,35 +2,25 @@
     "top5_1": {
         "data": [
             {
-                "m_label": "human,_homo_sapiens",
-                "icon": "/patric/images/hosts/human.png",
-                "reported": 962,
+                "reported": 3722,
                 "label": "Human, Homo sapiens",
-                "value": 37061
+                "value": 41501
             },
             {
-                "m_label": "cattle,_bos_taurus",
-                "icon": "/patric/images/hosts/cow.png",
+                "label": "Homo sapiens",
+                "value": 2481
+            },
+            {
                 "label": "Cattle, Bos taurus",
-                "value": 641
+                "value": 765
             },
             {
-                "m_label": "pig",
-                "icon": "/patric/images/flags/Pig.png",
                 "label": "Pig",
-                "value": 548
+                "value": 551
             },
             {
-                "m_label": "thale_cress,_arabidopsis_thaliana",
-                "icon": "/patric/images/flags/Thale-cress,-Arabidopsis-thaliana.png",
-                "label": "Thale cress, Arabidopsis thaliana",
-                "value": 472
-            },
-            {
-                "m_label": "bovine",
-                "icon": "/patric/images/hosts/cow.png",
                 "label": "Bovine",
-                "value": 374
+                "value": 545
             }
         ],
         "chart_title": "Bacterial Host",
@@ -40,35 +30,25 @@
     "top5_2": {
         "data": [
             {
-                "m_label": "united_states",
-                "icon": "/patric/images/flags/United-States.png",
-                "reported": 6222,
+                "reported": 6443,
                 "label": "United States",
-                "value": 19187
+                "value": 22370
             },
             {
-                "m_label": "united_kingdom",
-                "icon": "/patric/images/flags/United-Kingdom.png",
                 "label": "United Kingdom",
-                "value": 4148
+                "value": 4295
             },
             {
-                "m_label": "thailand",
-                "icon": "/patric/images/flags/Thailand.png",
                 "label": "Thailand",
-                "value": 3587
+                "value": 3615
             },
             {
-                "m_label": "netherlands",
-                "icon": "/patric/images/flags/Netherlands.png",
                 "label": "Netherlands",
-                "value": 3229
+                "value": 3257
             },
             {
-                "m_label": "china",
-                "icon": "/patric/images/flags/China.png",
                 "label": "China",
-                "value": 2128
+                "value": 2416
             }
         ],
         "chart_title": "Isolation Country",
@@ -78,34 +58,34 @@
     "numberGenomes": {
         "data": [
             {
-                "wgs": 2889,
-                "year": 2011,
-                "complete": 1828
-            },
-            {
-                "wgs": 6364,
+                "wgs": 6362,
                 "year": 2012,
-                "complete": 2276
+                "complete": 2272
             },
             {
-                "wgs": 14025,
+                "wgs": 13994,
                 "year": 2013,
-                "complete": 2774
+                "complete": 2770
             },
             {
-                "wgs": 27281,
+                "wgs": 27157,
                 "year": 2014,
-                "complete": 3788
+                "complete": 3787
             },
             {
-                "wgs": 52613,
+                "wgs": 52527,
                 "year": 2015,
-                "complete": 5348
+                "complete": 5353
             },
             {
-                "wgs": 66907,
+                "wgs": 79565,
                 "year": 2016,
-                "complete": 6577
+                "complete": 7437
+            },
+            {
+                "wgs": 83404,
+                "year": 2017,
+                "complete": 8098
             }
         ],
         "chart_title": "Number of Bacterial Genomes"
@@ -134,7 +114,7 @@
                         "link": "/view/Genome/83332.12#view_tab=features"
                     },
                     "experiments": {
-                        "data": 47,
+                        "data": 48,
                         "link": "/view/Genome/83332.12#view_tab=transcriptomics",
                         "picture": "/patric/images/icon-popular-experiment.png"
                     },
@@ -179,7 +159,7 @@
                         "link": "/view/Genome/511145.12#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     "pathways": {
-                        "data": 136,
+                        "data": 134,
                         "link": "/view/Genome/511145.12#view_tab=pathways"
                     }
                 },
@@ -215,7 +195,7 @@
                         "link": "/view/Genome/99287.12#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     "pathways": {
-                        "data": 136,
+                        "data": 130,
                         "link": "/view/Genome/99287.12#view_tab=pathways"
                     }
                 },
@@ -323,7 +303,7 @@
                         "link": "/view/Genome/169963.11#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     "pathways": {
-                        "data": 127,
+                        "data": 125,
                         "link": "/view/Genome/169963.11#view_tab=pathways"
                     }
                 },
@@ -431,7 +411,7 @@
                         "link": "/view/Genome/224914.11#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     "pathways": {
-                        "data": 138,
+                        "data": 137,
                         "link": "/view/Genome/224914.11#view_tab=pathways"
                     }
                 },
@@ -467,7 +447,7 @@
                         "link": "/view/Genome/85962.8#view_tab=proteinFamilies&params={\"family_type\":\"plfam\"}"
                     },
                     "pathways": {
-                        "data": 117,
+                        "data": 116,
                         "link": "/view/Genome/85962.8#view_tab=pathways"
                     }
                 },
@@ -488,12 +468,6 @@
                 "reported": "8%",
                 "label": "Complete",
                 "value": 8
-            },
-            {
-                "m_label": "gsc_plasmid",
-                "reported": "0%",
-                "label": "Plasmid",
-                "value": 0
             }
         ],
         "chart_title": "Genome Status"

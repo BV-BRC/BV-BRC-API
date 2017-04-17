@@ -29,6 +29,11 @@
                 ],
                 "specialtyGenes": [
                     {
+                        "data": 19,
+                        "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "PATRIC"
+                    },
+                    {
                         "data": 11,
                         "link": "/view/Genome/83332.12#view_tab=specialtyGenes&filter=eq(source,CARD)",
                         "description": "CARD"
@@ -72,6 +77,11 @@
                         "description": "CARD"
                     },
                     {
+                        "data": 32,
+                        "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "PATRIC"
+                    },
+                    {
                         "data": 24,
                         "link": "/view/Genome/511145.12#view_tab=specialtyGenes&filter=eq(source,ARDB)",
                         "description": "ARDB"
@@ -108,6 +118,11 @@
                         "data": 51,
                         "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,CARD)",
                         "description": "CARD"
+                    },
+                    {
+                        "data": 30,
+                        "link": "/view/Genome/99287.12#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "PATRIC"
                     },
                     {
                         "data": 18,
@@ -148,6 +163,11 @@
                         "description": "CARD"
                     },
                     {
+                        "data": 35,
+                        "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "PATRIC"
+                    },
+                    {
                         "data": 25,
                         "link": "/view/Genome/198215.6#view_tab=specialtyGenes&filter=eq(source,ARDB)",
                         "description": "ARDB"
@@ -180,6 +200,11 @@
                     }
                 ],
                 "specialtyGenes": [
+                    {
+                        "data": 24,
+                        "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "PATRIC"
+                    },
                     {
                         "data": 20,
                         "link": "/view/Genome/214092.21#view_tab=specialtyGenes&filter=eq(source,CARD)",
@@ -265,6 +290,11 @@
                         "data": 20,
                         "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,ARDB)",
                         "description": "ARDB"
+                    },
+                    {
+                        "data": 6,
+                        "link": "/view/Genome/158879.11#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "PATRIC"
                     }
                 ]
             },
@@ -333,6 +363,11 @@
                 ],
                 "specialtyGenes": [
                     {
+                        "data": 8,
+                        "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "PATRIC"
+                    },
+                    {
                         "data": 1,
                         "link": "/view/Genome/224914.11#view_tab=specialtyGenes&filter=eq(source,ARDB)",
                         "description": "ARDB"
@@ -365,6 +400,11 @@
                     }
                 ],
                 "specialtyGenes": [
+                    {
+                        "data": 3,
+                        "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,PATRIC)",
+                        "description": "PATRIC"
+                    },
                     {
                         "data": 2,
                         "link": "/view/Genome/85962.8#view_tab=specialtyGenes&filter=eq(source,CARD)",
