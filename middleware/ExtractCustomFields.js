@@ -19,13 +19,13 @@ module.exports = function(req, res, next){
 					"Genome", "Genome ID", "Accession", "PATRIC ID", "RefSeq Locus Tag", "Alt Locus Tag",
 					"Feature ID", "Annotation", "Feature Type", "Start", "End", "Length", "Strand", "FIGfam ID",
 					"PATRIC genus-specific families (PLfams)", "PATRIC cross-genus families (PGfams)", "Protein ID",
-					"AA Length", "Gene Symbol", "Product"
+					"AA Length", "Gene Symbol", "Product", "GO"
 				];
 				req.fieldSelection = [
 					"genome_name", "genome_id", "accession", "patric_id", "refseq_locus_tag", "alt_locus_tag",
 					"feature_id", "annotation", "feature_type", "start", "end", "na_length", "strand", "figfam_id",
 					"plfam_id", "pgfam_id",
-					"protein_id", "aa_length", "gene", "product"
+					"protein_id", "aa_length", "gene", "product", "go"
 				];
 				break;
 			case "genome":
