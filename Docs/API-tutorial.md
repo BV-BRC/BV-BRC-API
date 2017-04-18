@@ -1,6 +1,6 @@
 # PATRIC Data API Tutorial
 
-This document will demonstrate API usages. 
+This document demonstrates PATRIC Data API use cases. You can use `curl` or any client software such as [Chrome plugin REST client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo).
 
 
 
@@ -14,26 +14,30 @@ For example, querying genome information for [Mycobacterium tuberculosis H37Rv g
 
 ```
 $ curl -H "Accept: application/json" \
--H "Content-Type: application/x-www-form-urlencoded" \ https://www.alpha.patricbrc.org/api/genome/83332.12
+-H "Content-Type: application/x-www-form-urlencoded" \
+https://www.alpha.patricbrc.org/api/genome/83332.12
 ```
 
 Returns a json.
 
 ```
-{"plasmids":0,"contigs":0,"publication":"9634230,12368430",,,"bioproject_accession":"PRJNA224","document_type":"genome","assembly_accession":"GCA_000195955.2","_version_":1552608979231703000}
+{"plasmids":0,"contigs":0,"publication":"9634230,12368430",,,
+"assembly_accession":"GCA_000195955.2","_version_":1552608979231703000}
 ```
 
 ### RQL
 
 ```
 $ curl -H "Accept: application/json" \
--H "Content-Type: application/rqlquery+x-www-form-urlencoded" \ https://www.alpha.patricbrc.org/api/genome/?eq%28genome_id,83332.12%29
+-H "Content-Type: application/rqlquery+x-www-form-urlencoded" \
+https://www.alpha.patricbrc.org/api/genome/?eq%28genome_id,83332.12%29
 ```
 
 Returns a json, but in array. This is correct behavior, since a **query** may or may not return multiple records.
 
 ```
-[{"plasmids":0,"contigs":0,"publication":"9634230,12368430",,,"bioproject_accession":"PRJNA224","document_type":"genome","assembly_accession":"GCA_000195955.2"}]
+[{"plasmids":0,"contigs":0,"publication":"9634230,12368430",,,
+"bioproject_accession":"PRJNA224","document_type":"genome","assembly_accession":"GCA_000195955.2"}]
 ```
 
 Also, please note that we have changed Content-Type to "application/**rqlquery+**www-form-urlencoded". This is how to tell API what my query type is.
@@ -50,13 +54,18 @@ https://www.alpha.patricbrc.org/api/genome/
 ### Apache Solr style
 
 ```
-$ curl -H "Accept: application/json" -H "Content-Type: application/solrquery+x-www-form-urlencoded" https://www.alpha.patricbrc.org/api/genome/?q=genome_id:83332.12
+$ curl -H "Accept: application/json" \
+-H "Content-Type: application/solrquery+x-www-form-urlencoded" \
+https://www.alpha.patricbrc.org/api/genome/?q=genome_id:83332.12
 ```
 
 OR
 
 ```
-$ curl -H "Accept: application/json" -H "Content-Type: application/solrquery+x-www-form-urlencoded" -X POST -d "q=genome_id:83332.12" https://www.alpha.patricbrc.org/api/genome/
+$ curl -H "Accept: application/json" \
+-H "Content-Type: application/solrquery+x-www-form-urlencoded" \
+-X POST -d "q=genome_id:83332.12" \
+https://www.alpha.patricbrc.org/api/genome/
 ```
 
 This queries should return the same result to what we have using RQL.
@@ -76,7 +85,8 @@ For more details on Apache solr query syntax, please refer [Standard Query Parse
 ```
 $ curl -H "Accept: application/solr+json" \
 -H "Content-Type: application/solrquery+x-www-form-urlencoded" \
--X POST -d "q=genome_id:83332.12&rows=0&facet=true&facet.field=annotation&json.nl=map" \ https://www.alpha.patricbrc.org/api/genome_feature/
+-X POST -d "q=genome_id:83332.12&rows=0&facet=true&facet.field=annotation&json.nl=map" \
+https://www.alpha.patricbrc.org/api/genome_feature/
 ```
 
 Now we have a little bit different query. Let me explain one by one.
