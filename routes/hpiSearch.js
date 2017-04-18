@@ -8,11 +8,18 @@ screens / population-level evolutionary analysis /etc) supported by other BRCs
 might be of interest (i.e. yield a similar set of results)
 
 
-GET
-curl 'http://localhost:3001/hpiSearch/'
+GETs
+curl 'http://localhost:3001/hpiSearch'
+curl 'http://localhost:3001/hpiSearch/hpiSearch/experiment'
+curl 'http://localhost:3001/hpiSearch/hpiSearch/experiment/543'
+curl 'http://localhost:3001/hpiSearch/hpiSearch/experiment/543/idList'
+curl 'http://localhost:3001/hpiSearch/hpiSearch/experiment/543/idList/543,21'
+curl 'http://localhost:3001/hpiSearch/hpiSearch/experiment/543/idList/543,21/ids'
+curl 'http://localhost:3001/hpiSearch/hpiSearch/experiment/543/idList/543,21/ids?includeOrthologs="human"'
+curl 'http://localhost:3001/hpiSearch/api'
 
 POST
-curl 'http://localhost:3001/hpiSearch/' --data-binary 'eq(type,test)' --compressed
+curl -H "Content-Type: application/json" -X POST "http://localhost:3001/hpiSearch" -d '{ "type": "input string", "idSource": "id source input string", "ids": ["id 1", "id 2", "id 3"], "threshold": 0.5, "thresholdType": "a number", "additionalFlags": { "key1": "value1", "key2": "value2" } }'
 
 */
 
@@ -32,27 +39,29 @@ var querystring = require("querystring");
 router.use(httpParams);
 router.use(authMiddleware);
 
-
 // handle GET hpiSearch/
 // Not sure what to return here
 router.get("/", [
 	bodyParser.urlencoded({extended: true}),
 	function(req, res, next){
-    debug("req.body: ", req.body);
-    debug("CALL_PARAMS: ", req.call_params);
 		res.write("--- acknowledged GET for hpiSearch \n");
     res.end();
 	}
 ])
 
-// handle POST hpiSearch/
+// POST hpiSearch/
 // Given an input set of Host IDs and match parameters, return matching experiments and ID lists
-// curl -H "Content-Type: application/json" -X POST "http://localhost:3001/hpiSearch" -d @tmp.json
+// curl -H "Content-Type: application/json" -X POST "http://localhost:3001/hpiSearch" -d '{ "type": "input string", "idSource": "id source input string", "ids": ["id 1", "id 2", "id 3"], "threshold": 0.5, "thresholdType": "a number", "additionalFlags": { "key1": "value1", "key2": "value2" } }'
 router.post("/", [
-	bodyParser.urlencoded({extended: true}),
+	bodyParser.json(),
 	function(req, res, next){
     debug("req.body: ", req.body);
-    debug("CALL_PARAMS: ", req.call_params);
+    // req.body.type
+    // req.body.idSource
+    // req.body.ids
+    // req.body.threshold
+    // req.body.thresholdType
+    // req.body.additionalFlags
     res.write("--- acknowledged POST for hpiSearch \n");
     res.end();
 	}
@@ -61,62 +70,62 @@ router.post("/", [
 // GET hpiSearch/experiment
 // Maybe a 404 or a list of all experiment ids
 router.get("/experiment", [
+  bodyParser.urlencoded({extended: true}),
 	function(req, res, next){
-		// next(); // for passing control to the next middleware function
-    debug("req.body: ", req.body);
-    debug("CALL_PARAMS: ", req.call_params);
     res.write("--- acknowledged GET for hpiSearch/experiemnt \n");
     res.end();
 	}
 ]);
 
 // GET hpiSearch/experiment/{experimentIdentifier}
+// The details of an experiment, as showin in the primary endpoint
 router.get("/experiment/:id", [
+  bodyParser.urlencoded({extended: true}),
 	function(req, res, next){
-		// next(); // for passing control to the next middleware function
-    ddebug("req.body: ", req.body);
-    debug("CALL_PARAMS: ", req.call_params);
+    debug("req.params: ", req.params);
+    // req.params.id
     res.write("--- acknowledged GET for hpiSearch/experiemnt/{experimentIdentifier} \n");
     res.end();
 	}
 ]);
 
 // GET hpiSearch/experiment/{experimentIdentifier}/idList/{listIdentifier}
+// The details of an experiment, as shown in the primary endpoint
 router.get("/experiment/:id/idList/:id_list", [
+  bodyParser.urlencoded({extended: true}),
 	function(req, res, next){
-		// next(); // for passing control to the next middleware function
-    debug("req.body: ", req.body);
-    debug("CALL_PARAMS: ", req.call_params);
+    debug("req.params: ", req.params);
+    // req.params.id
+    // req.params.id_list
     res.write("--- acknowledged GET for hpiSearch/experiemnt/{experimentIdentifier}/idList/{listIdentifier} \n");
     res.end();
 	}
 ]);
 
-//XXX this one is busted
 // GET hpiSearch/experiment/{experimentIdentifier}/idList/{listIdentifier}/ids<?includeOrthologs="human">
-router.get("/experiment/:id/idList/:id_list/ids<>", [
+// Return the ids for the idList.  If the optional includeOrthologs parameter is supplied,
+// return a second column with lorthologous ids from that organism
+router.get("/experiment/:id/idList/:id_list/ids", [
+  bodyParser.urlencoded({extended: true}),
 	function(req, res, next){
-		// next(); // for passing control to the next middleware function
-    debug("req.body: ", req.body);
-    debug("CALL_PARAMS: ", req.call_params);
-    res.write("--- acknowledged GET for hpiSearch/experiemnt/{experimentIdentifier}/idList/{listIdentifier}/ids<?includeOrthologs=\"human\"> \n");
+    debug("req.params: ", req.params);
+    debug("req.query: ", req.query)
+    // req.params.id
+    // req.params.id_list
+    // req.query.includeOrthologs
+    res.write("--- acknowledged GET for hpiSearch/experiemnt/{experimentIdentifier}/idList/{listIdentifier}/ids \n");
     res.end();
 	}
 ]);
 
 // GET hpiSearch/api
+// Supplies information specific to this BRC's implementation of the API
 router.get("/api", [
+  bodyParser.urlencoded({extended: true}),
 	function(req, res, next){
-		// next(); // for passing control to the next middleware function
-    debug("req.body: ", req.body);
-    debug("CALL_PARAMS: ", req.call_params);
     res.write("--- acknowledged GET for hpiSearch/api \n");
     res.end();
 	}
 ]);
-
-
-
-
 
 module.exports = router;
