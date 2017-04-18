@@ -30,7 +30,7 @@ Returns a json.
 ```
 $ curl -H "Accept: application/json" \
 -H "Content-Type: application/rqlquery+x-www-form-urlencoded" \
-https://www.alpha.patricbrc.org/api/genome/?eq%28genome_id,83332.12%29
+"https://www.alpha.patricbrc.org/api/genome/?eq(genome_id,83332.12)"
 ```
 
 Returns a json, but in array. This is correct behavior, since a **query** may or may not return multiple records.
@@ -47,7 +47,7 @@ As we have more and more conditions or IDs, we may need to **POST** instead of G
 ```
 $ curl -H "Accept: application/json" \
 -H "Content-Type: application/rqlquery+x-www-form-urlencoded" \
--X POST -d "eq%28genome_id,83332.12%29" \
+-X POST -d "eq(genome_id,83332.12)" \
 https://www.alpha.patricbrc.org/api/genome/
 ```
 
