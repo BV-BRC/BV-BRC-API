@@ -9,8 +9,8 @@
             <p>Publication:&nbsp;<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5241402/"
                                     title="PMC5241402">PMC5241402</a></p>
             <p>For decades, identifying the regions of a bacterial chromosome that are necessary for viability has relied 
-        		on mapping integration sites in libraries of random transposon mutants to find loci that are unable to 
-        		sustain insertion. To date, these studies have analyzed subsaturated libraries, necessitating the 
+        	on mapping integration sites in libraries of random transposon mutants to find loci that are unable to 
+        	sustain insertion. To date, these studies have analyzed subsaturated libraries, necessitating the 
         		application of statistical methods to estimate the likelihood that a gap in transposon coverage is the 
         		result of biological selection and not the stochasticity of insertion. As a result, the essentiality of 
         		many genomic features, particularly small ones, could not be reliably assessed. We sought to overcome this 
