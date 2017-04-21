@@ -27,7 +27,7 @@
 		(the reference sequence for the coordinates was &nbsp;<a href="https://www.ncbi.nlm.nih.gov/protein/NC_000962.3" 
 		title="NC_000962.3">NC_000962.3</a>).</p>
 				
-		{INSERT POINTER TO WIG FILE HERE}
+		{INSERT POINTER TO WIG FILE HER
 				
 	      <p>The following Excel file provides a spreadsheet with essentiality calls for each ORF, performed using the HMM 
 		 in Transit.  The categories are:
