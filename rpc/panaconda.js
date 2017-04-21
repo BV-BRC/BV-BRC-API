@@ -1,0 +1,111 @@
+var defer = require('promised-io/promise').defer;
+var when = require('promised-io/promise').when;
+var debug = require('debug')('p3api-server:msa');
+var ChildProcess = require("child_process");
+var config = require("../config");
+var request = require('request');
+var distributeURL = config.get("distributeURL");
+var Temp = require('temp');
+var fs = require('fs-extra');
+
+function runQuery(query,opts){
+	debug("Query: ", query)
+	var def = new defer();
+
+	debug("Send Request to distributeURL: ", distributeURL + "genome_feature");
+	debug("runQuery: ", query);
+	request.post({
+		url: distributeURL + "genome_feature/",
+		headers: {
+			"content-type": "application/rqlquery+x-www-form-urlencoded",
+			"accept": "text/tsv",
+            "Authorization": opts.token || ""
+		},
+		body: query
+	}, function(err,r,body){
+		//debug("Distribute RESULTS: ", body);
+
+		if (err){
+			return def.reject(err);
+		}
+
+		//if (body && typeof body=="string"){
+		//	body = JSON.parse(body)
+		//}
+		def.resolve(body);
+	});
+
+	return def.promise;
+}
+
+
+function buildGraph(annotations,opts){
+	var def = new defer();
+	var d = [];
+	var errorClosed;
+
+	debug("Run Panaconda");
+	var child = ChildProcess.spawn("python", ["/Users/anwarren/projects/git_repos/cid_work/p3api/pangenome_graphs/fam_to_graph.py", "--"+opts.alpha, "--layout"],{
+		stdio: [
+			'pipe',
+			'pipe', // pipe child's stdout to parent
+      		'pipe'
+      	]
+    });
+
+	child.stdout.on("data", function(data){
+		debug("Panaconda done");
+		d.push(data.toString());
+	})
+
+	child.stderr.on("data", function(errData){
+		debug("Panaconda STDERR Data: ", errData.toString());
+	})
+
+	child.on("error", function(err){
+		errorClosed = true;
+		def.reject(err);
+	})
+
+	child.on('close', function(code){
+		debug("Panaconda Process closed.", code);
+		if (!errorClosed) {
+			def.resolve(d.join(""));
+		}
+	})
+
+	child.stdin.write(annotations,"utf8");
+	child.stdin.end();
+	
+	return def.promise;
+}
+
+
+module.exports = {
+	requireAuthentication: false,
+	validate: function(params,req,res){
+		//validate parameters here 
+		return params && params[0] && params[1] && params[0].length>1 && params[1].length>1;
+	},
+	execute: function(params,req,res){
+		var def = new defer()
+		// console.log("Execute MSA: ", params)
+		var query = params[0];
+        var alpha = params[1];
+		var opts = {req: req, user: req.user, token:req.headers.authorization, alpha:alpha}
+
+
+		when(runQuery(query,opts), function(annotations){
+			when(buildGraph(annotations,opts), function(graph){
+                    def.resolve({
+                        graph: graph
+                    })
+			}, function(err){
+			def.reject("Failure to build pg-graph: " + err);
+		    })
+		}, function(err){
+			def.reject("Unable To retreive annotations for pg-graph: " + err);
+		});
+		return def.promise;
+	}
+}
