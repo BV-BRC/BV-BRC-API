@@ -45,7 +45,8 @@ function buildGraph(annotations,opts){
 	var errorClosed;
 
 	debug("Run Panaconda");
-	var child = ChildProcess.spawn("python", ["/Users/anwarren/projects/git_repos/cid_work/p3api/pangenome_graphs/fam_to_graph.py", "--"+opts.alpha, "--layout"],{
+	var child = ChildProcess.spawn("python", ["/Users/anwarren/projects/git_repos/cid_work/p3api/pangenome_graphs/fam_to_graph.py",
+            "--"+opts.alpha, "--layout", "--ksize",opts.ksize,"--diversity",opts.diversity,"--context",opts.context],{
 		stdio: [
 			'pipe',
 			'pipe', // pipe child's stdout to parent
@@ -92,7 +93,10 @@ module.exports = {
 		// console.log("Execute MSA: ", params)
 		var query = params[0];
         var alpha = params[1];
-		var opts = {req: req, user: req.user, token:req.headers.authorization, alpha:alpha}
+        var ksize = params[2];
+        var context = params[3];
+        var diversity = params[4];
+		var opts = {req: req, user: req.user, token:req.headers.authorization, alpha:alpha, ksize:ksize, context:context, diversity:diversity}
 
 
 		when(runQuery(query,opts), function(annotations){
