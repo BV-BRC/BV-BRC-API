@@ -1,4 +1,4 @@
-var maxLimit=25000;
+var maxLimit=2500000;
 var defaultLimit=25;
 var downloadLimit=2500000
 module.exports = function(req,res,next){
