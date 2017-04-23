@@ -12,7 +12,7 @@ module.exports = function(req, res, next) {
 			debug("Resolved Query: ", q);
 			if (q=="()") { q = ""; }
 			var rq = rql(q);
-			req.call_params[0] = rq.toSolr({maxRequestLimit: 25000, defaultLimit: 25}) 
+			req.call_params[0] = rq.toSolr({maxRequestLimit: 2500000, defaultLimit: 25}) 
 			//debug("Converted Solr Query: ", req.call_params[0]);
 			req.queryType="solr";
 			next();
