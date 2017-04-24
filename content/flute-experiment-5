@@ -147,6 +147,79 @@
                 </tbody>
             </table>
 
+            <p><strong>Conditional Essentials:</strong></p>
+			<p> The target (KO) genes below link to .dat files that provide lists of 
+			associated conditional essentials.  The significant hits are those with Adjusted_pval<0.05.
+			
+            <table border="0" cellspacing="0" cellpadding="0">
+                <tbody>
+                <tr>
+                    <td valign="top" width="138" class="first"><b>Target (KO) Gene</b></td>
+                    <td valign="top" width="500" class="first"><b>Conditional Essentials</b></td>
+                </tr>
+                <tr>
+                    <td valign="top" width="138" class="first">Rv3594</td>
+                    <td valign="top" width="500" class="first"><a 
+                    href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/resampling_H37Rv_vs_delta_Rv3594_TTR.dat">
+                    resampling_H37Rv_vs_delta_Rv3594_TTR.dat</a></td>
+                </tr>
+                <tr>
+                    <td valign="top" width="138" class="first">Rv3717</td>
+                    <td valign="top" width="500" class="first"><a 
+                    href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/resampling_H37Rv_vs_delta_Rv3717_TTR.dat">
+                    resampling_H37Rv_vs_delta_Rv3717_TTR.dat</a></td>
+                </tr>
+                <tr>
+                    <td valign="top" width="138" class="first">Rv3811</td>
+                    <td valign="top" width="500" class="first"><a 
+                    href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/resampling_H37Rv_vs_delta_Rv3811_TTR.dat">
+                    resampling_H37Rv_vs_delta_Rv3811_TTR.dat</a></td>
+                </tr>
+                <tr>
+                    <td valign="top" width="138" class="first">Rv0307c</td>
+                    <td valign="top" width="500" class="first"><a 
+                    href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/resampling_H37Rv_Rv0307c_day0_s10000_pc0.00.dat">
+                    resampling_H37Rv_Rv0307c_day0_s10000_pc0.00.dat</a></td>
+                </tr>
+                <tr>
+                    <td valign="top" width="138" class="first">Rv3916c</td>
+                    <td valign="top" width="500" class="first"><a 
+                    href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/resampling_H37Rv_Rv3916c_day0_s10000_pc0.00.dat">
+                    resampling_H37Rv_Rv3916c_day0_s10000_pc0.00.dat</a></td>
+                </tr>
+                <tr>
+                    <td valign="top" width="138" class="first">Rv0950</td>
+                    <td valign="top" width="500" class="first"><a 
+                    href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/resampling_H37Rv_Rv0950_day0_s10000_pc0.00.dat">
+                    resampling_H37Rv_Rv0950_day0_s10000_pc0.00.dat</a></td>
+                </tr>
+                <tr>
+                    <td valign="top" width="138" class="first">Rv1096</td>
+                    <td valign="top" width="500" class="first"><a 
+                    href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/resampling_H37Rv_Rv1096_day0_s10000_pc0.00.dat">
+                    resampling_H37Rv_Rv1096_day0_s10000_pc0.00.dat</a></td>
+                </tr>
+                <tr>
+                    <td valign="top" width="138" class="first">Rv3684</td>
+                    <td valign="top" width="500" class="first"><a 
+                    href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/resampling_H37Rv_Rv3684_day0_s10000_pc0.00.dat">
+                    resampling_H37Rv_Rv3684_day0_s10000_pc0.00.dat</a></td>
+                </tr>
+                <tr>
+                    <td valign="top" width="138" class="first">Rv0954</td>
+                    <td valign="top" width="500" class="first"><a 
+                    href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/resampling_WT_Rv0954_s10000_pc0.00.dat">
+                    resampling_WT_Rv0954_s10000_pc0.00.dat</a></td>
+                </tr>
+                <tr>
+                    <td valign="top" width="138" class="first">Rv3671c</td>
+                    <td valign="top" width="500" class="first"><a 
+                    href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/resampling_WT_marP_s10000_pc0.00_1.dat">
+                    resampling_WT_marP_s10000_pc0.00_1.dat</a></td>
+                </tr>
+                </tbody>
+            </table>
+
             <p><strong>Methods references:</strong></p>
 
 			<ol>
