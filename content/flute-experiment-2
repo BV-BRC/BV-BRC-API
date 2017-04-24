@@ -46,28 +46,18 @@
                 DeJesus, M.A., Ambadipudi, C., Baker, R., Sassetti, C., and Ioerger,&nbsp;T.R. (2015). TRANSIT – a
                 Software Tool for Himar1 TnSeq Analysis. PLOS&nbsp;Computational Biology, to appear.</p>
             <p><strong>Results Dataset:&nbsp;&nbsp;<a
-                    href="http://brcdownloads.patricbrc.org/BRC_Mirrors/FLUTE/resampling_dPonA1_wt.xlsx">resampling_dPonA1_wt.xlsx</a></strong>
-            </p>
+                    href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_2/resampling_dPonA1_wt.xlsx">
+                    resampling_dPonA1_wt.xlsx</a></strong></p>
+
             <p><strong>Conditional Essentials:</strong></p>
-            <div>
-                <div>
-                    <div>
-                        <div>
-                            <div>The following genes are indicated as conditional essentials based on&nbsp;statistical
-                                analysis (resampling) output using Transit software (<a
-                                        href="http://saclab.tamu.edu/essentiality/transit/"
-                                        >http://saclab.tamu.edu/essentiality/transit/</a>).
-                                In this method,&nbsp;for each ORF (e.g., Rv0001) Transit calculates to determine whether&nbsp;the
-                                essentiality of the gene significantly increase or decreases. The adjusted p-value uses
-                                the Benjamini-Hochberg correction for multiple tests, with a threshold of &lt;0.05 for
-                                significance.
-                            </div>
-                            <div></div>
-                            <div><strong>resampling_dPonA1_wt data set</strong></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+            <p>The following genes are indicated as conditional essentials based on&nbsp;statistical
+            analysis (resampling) output using Transit software (<a href="http://saclab.tamu.edu/essentiality/transit/">
+            http://saclab.tamu.edu/essentiality/transit/</a>). In this method,&nbsp;for each ORF (e.g., Rv0001) Transit 
+            calculates to determine whether the essentiality of the gene significantly increase or decreases. The adjusted 
+            p-value uses the Benjamini-Hochberg correction for multiple tests, with a threshold of &lt;0.05 for significance.</p>
+           
+            <p><strong>resampling_dPonA1_wt data set</strong></p>
             <div>
                 <table style="height: 1761px;" width="538">
                     <tbody>
