@@ -59,6 +59,62 @@
             <p class="p1">Data sets and additional information can be found <a
                     href="/content/flute-experiment-2">here</a>.</p>
 
+
+            <h3 class="ribbon-title"><strong>Comprehensive Essentiality Analysis of the Mycobacterium tuberculosis Genome via Saturating Transposon Mutagenesis</strong></h3>
+            <p>Publication:&nbsp;<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5241402/" title="PMC5241402">PMC5241402</a></p>
+            <p>For decades, identifying the regions of a bacterial chromosome that are necessary for viability has relied 
+        	on mapping integration sites in libraries of random transposon mutants to find loci that are unable to 
+        	sustain insertion. To date, these studies have analyzed subsaturated libraries, necessitating the 
+        	application of statistical methods to estimate the likelihood that a gap in transposon coverage is the 
+        	result of biological selection and not the stochasticity of insertion. As a result, the essentiality of 
+        	many genomic features, particularly small ones, could not be reliably assessed. We sought to overcome this 
+        	limitation by creating a completely saturated transposon library in <em>Mycobacterium tuberculosis</em>. In 
+        	assessing the composition of this highly saturated library by deep sequencing, we discovered that a 
+        	previously unknown sequence bias of the <em>Himar1</em> element rendered approximately 9% of potential TA 
+        	dinucleotide insertion sites less permissible for insertion. We used a hidden Markov model of essentiality 
+        	that accounted for this unanticipated bias, allowing us to confidently evaluate the essentiality of 
+        	features that contained as few as 2 TA sites, including open reading frames (ORF), experimentally 
+        	identified noncoding RNAs, methylation sites, and promoters. In addition, several essential regions 
+        	that did not correspond to known features were identified, suggesting uncharacterized functions that 
+        	are necessary for growth. This work provides an authoritative catalog of essential regions of the <em>M. 
+        	tuberculosis</em> genome and a statistical framework for applying saturating mutagenesis to other bacteria.
+            <p>Data sets and additional information can be found <a href="/content/flute-experiment-3">here</a>.</p>
+
+
+            <h3 class="ribbon-title"><strong>Statistical analysis of genetic interactions in Tn-Seq data</strong></h3>
+            <p>Publication:&nbsp;<a href="https://www.ncbi.nlm.nih.gov/pubmed/28334803"
+                                    title="PMID 28334803">PMID 28334803</a></p>
+            <p>Tn-Seq is an experimental method for probing the functions of genes through 
+            construction of complex random transposon insertion libraries and 
+            quantification of each mutant's abundance using next-generation sequencing. 
+            An important emerging application of Tn-Seq is for identifying genetic 
+            interactions, which involves comparing Tn mutant libraries generated in 
+            different genetic backgrounds (e.g. wild-type strain versus knockout strain). 
+            Several analytical methods have been proposed for analyzing Tn-Seq data to 
+            identify genetic interactions, including estimating relative fitness ratios 
+            and fitting a generalized linear model. However, these have limitations which 
+            necessitate an improved approach. We present a hierarchical Bayesian method 
+            for identifying genetic interactions through quantifying the statistical 
+            significance of changes in enrichment. The analysis involves a four-way 
+            comparison of insertion counts across datasets to identify transposon mutants 
+            that differentially affect bacterial fitness depending on genetic background. 
+            Our approach was applied to Tn-Seq libraries made in isogenic strains of 
+            <em>Mycobacterium tuberculosis</em> lacking three different genes of unknown 
+            function previously shown to be necessary for optimal fitness during infection. 
+            By analyzing the libraries subjected to selection in mice, we were able to 
+            distinguish several distinct classes of genetic interactions for each target 
+            gene that shed light on their functions and roles during infection.</p>
+            <p>Data sets and additional information can be found <a href="/content/flute-experiment-4">here</a>.</p>
+
+
+            <h3 class="ribbon-title"><strong>TnSeq datasets for 10 knockouts in Mtb</strong></h3>
+            <p>In this experiment, knockout strains for 10 genes in <em>Mycobacterium 
+            tuberculosis</em> H37Rv and assayed by TnSeq to identify conditional essentials 
+            (compared to WT, using the resampling statistical method in Transit). The 
+            target genes (knockedout) are: Rv3594, Rv3717, Rv3811, Rv0307c, Rv3916c, 
+            Rv0950, Rv1096, Rv3684, Rv0954, and Rv3671c.</p>
+            <p>Data sets and additional information can be found <a href="/content/flute-experiment-5">here</a>.</p>
+
         </div>
     </section>
 </div>
