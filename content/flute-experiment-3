@@ -27,7 +27,8 @@
 		(the reference sequence for the coordinates was &nbsp;<a href="https://www.ncbi.nlm.nih.gov/protein/NC_000962.3" 
 		title="NC_000962.3">NC_000962.3</a>).</p>
 				
-		{INSERT POINTER TO WIG FILE HER
+		<p><a href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_3/14_replicates_combined.wig">
+		14_replicates_combined.wig</a>
 				
 	      <p>The following Excel file provides a spreadsheet with essentiality calls for each ORF, performed using the HMM 
 		 in Transit.  The categories are:
@@ -40,7 +41,8 @@
 				<li>uncertain (for short empty genes)</li> 
 			</ul> 
 
-		{INSERT POINTER TO EXCEL FILE HERE}
+		<p><a href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_3/mBioTableS3.xlsx">
+		mBioTableS3.xlsx</a>
 
         </div>
     </section>
