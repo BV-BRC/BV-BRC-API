@@ -1,7 +1,7 @@
 
 <div class="dlp">
     <h2>
-        Flute Experiment 5
+        FLUTE Experiment 5
     </h2>
     <section class="main">
         <div class="data-box">
@@ -234,6 +234,10 @@
 				Computational Biology</em>, 11(10):e1004401. <a href=
 				"https://www.ncbi.nlm.nih.gov/pubmed/26447887">PMID 26447887</a>.
 			</ol>
+
+            <p><strong>Downloads:</strong></p>
+		<p>All files are available from FTP:<a href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/">
+			ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/</a>.
 
         </div>
     </section>
