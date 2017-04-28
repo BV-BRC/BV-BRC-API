@@ -28,6 +28,8 @@ var defaults =  {
 		"sp_gene_evidence",
 		"sp_gene_ref",
 		"structured_assertion",
+		"subsystem",
+		"subsystem_ref",
 		"taxonomy",
 		"transcriptomics_experiment",
 		"transcriptomics_gene",
