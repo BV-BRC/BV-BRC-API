@@ -59,31 +59,31 @@
                 <tr>
                     <td valign="top" width="319" class="first">Dataset 1</td>
                     <td valign="top" width="319" class="last"><a
-                            href="http://brcdownloads.patricbrc.org/BRC_Mirrors/FLUTE/glycerol_H37Rv_rep1.wig">glycerol_H37Rv_rep1.wig</a>
+                            href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_1/glycerol_H37Rv_rep1.wig">glycerol_H37Rv_rep1.wig</a>
                     </td>
                 </tr>
                 <tr>
                     <td valign="top" width="319" class="first">Dataset 2</td>
                     <td valign="top" width="319" class="last"><a
-                            href="http://brcdownloads.patricbrc.org/BRC_Mirrors/FLUTE/glycerol_H37Rv_rep2.wig">glycerol_H37Rv_rep2.wig</a>
+                            href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_1/glycerol_H37Rv_rep2.wig">glycerol_H37Rv_rep2.wig</a>
                     </td>
                 </tr>
                 <tr>
                     <td valign="top" width="319" class="first">Dataset 3</td>
                     <td valign="top" width="319" class="last"><a
-                            href="http://brcdownloads.patricbrc.org/BRC_Mirrors/FLUTE/cholesterol_H37Rv_rep1.wig">cholesterol_H37Rv_rep1.wig</a>
+                            href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_1/cholesterol_H37Rv_rep1.wig">cholesterol_H37Rv_rep1.wig</a>
                     </td>
                 </tr>
                 <tr>
                     <td valign="top" width="319" class="first">Dataset 4</td>
                     <td valign="top" width="319" class="last"><a
-                            href="http://brcdownloads.patricbrc.org/BRC_Mirrors/FLUTE/cholesterol_H37Rv_rep2.wig">cholesterol_H37Rv_rep2.wig</a>
+                            href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_1/cholesterol_H37Rv_rep2.wig">cholesterol_H37Rv_rep2.wig</a>
                     </td>
                 </tr>
                 <tr>
                     <td valign="top" width="319" class="first">Dataset 5</td>
                     <td valign="top" width="319" class="last"><a
-                            href="http://brcdownloads.patricbrc.org/BRC_Mirrors/FLUTE/cholesterol_H37Rv_rep3.wig">cholesterol_H37Rv_rep3.wig</a>
+                            href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_1/cholesterol_H37Rv_rep3.wig">cholesterol_H37Rv_rep3.wig</a>
                     </td>
                 </tr>
                 </tbody>

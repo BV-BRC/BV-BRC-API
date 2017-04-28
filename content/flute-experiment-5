@@ -1,0 +1,244 @@
+
+<div class="dlp">
+    <h2>
+        FLUTE Experiment 5
+    </h2>
+    <section class="main">
+        <div class="data-box">
+
+            <h3><strong>TnSeq datasets for 10 knockouts in Mtb</strong></h3>
+
+            <p>In this experiment, knockout strains for 10 genes in <em>Mycobacterium 
+            tuberculosis</em> H37Rv and assayed by TnSeq to identify conditional essentials 
+            (compared to WT; using the resampling statistical method in Transit). The 
+            target genes (knockedout) are: Rv3594, Rv3717, Rv3811, Rv0307c, Rv3916c, 
+            Rv0950, Rv1096, Rv3684, Rv0954, and Rv3671c.</p>
+
+			<p>The raw sequence data was deposited in SRA under accession number SRP101586.</p> 
+
+			<p>For each target, there are 1-4 replicates, as indicated in the spreadsheet 
+			below</p>
+
+			<a href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/SRA_metadata_U19_TnSeq_Mar2017.xlsx">SRA_metadata_U19_TnSeq_Mar2017.xlsx</a>
+
+            <p><strong>TnSeq Datasets:</strong></p>
+			<p> The .wig files below for each sample contain the transposon insertion 
+			counts at TA sites. The reference sequence for the coordinates was <a href="https://www.ncbi.nlm.nih.gov/protein/NC_000962.3">
+			NC_000962.3</a>
+            <table border="0" cellspacing="0" cellpadding="0">
+                <tbody>
+                <tr>
+                    <td valign="top" width="38" class="first"><b>ID</b></td>
+                    <td valign="top" width="450" class="first"><b>Title</b></td>
+                    <td valign="top" width="150" class="last"><b>Wig file</b></td>
+                </tr>
+                <tr>
+                    <td valign="top" width="38" class="first">1</td>
+                    <td valign="top" width="500" class="first">TnSeq library of knockout of Rv3594</td>
+                    <td valign="top" width="100" class="last"><a
+                            href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/delta_Rv3594_TnSeq.wig">delta_Rv3594_TnSeq.wig</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" width="38" class="first">2</td>
+                    <td valign="top" width="500" class="first">TnSeq library of knockout of Rv3717</td>
+                    <td valign="top" width="100" class="last"><a
+                            href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/delta_Rv3717_TnSeq_1.wig">delta_Rv3717_TnSeq_1.wig</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" width="38" class="first">3</td>
+                    <td valign="top" width="500" class="first">TnSeq library of knockout of Rv3811</td>
+                    <td valign="top" width="100" class="last"><a
+                            href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/delta_Rv3811_TnSeq.wig">delta_Rv3811_TnSeq.wig</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" width="38" class="first">4</td>
+                    <td valign="top" width="500" class="first">TnSeq library of knockout of Rv0307c, replicate 1</td>
+                    <td valign="top" width="100" class="last"><a
+                            href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/Rv0307c_day0_rep1.wig">Rv0307c_day0_rep1.wig</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" width="38" class="first">5</td>
+                    <td valign="top" width="500" class="first">TnSeq library of knockout of Rv0307c, replicate 2</td>
+                    <td valign="top" width="100" class="last"><a
+                            href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/Rv0307c_day0_rep2.wig">Rv0307c_day0_rep2.wig</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" width="38" class="first">6</td>
+                    <td valign="top" width="500" class="first">TnSeq library of knockout of Rv3916c, replicate 1</td>
+                    <td valign="top" width="100" class="last"><a
+                            href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/Rv3916c_day0_rep1.wig">Rv3916c_day0_rep1.wig</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" width="38" class="first">7</td>
+                    <td valign="top" width="500" class="first">TnSeq library of knockout of Rv3916c, replicate 2</td>
+                    <td valign="top" width="100" class="last"><a
+                            href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/Rv3916c_day0_rep2.wig">Rv3916c_day0_rep1.wig</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" width="38" class="first">8</td>
+                    <td valign="top" width="500" class="first">TnSeq library of knockout of Rv0950</td>
+                    <td valign="top" width="100" class="last"><a
+                            href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/TnSeq_Mtb_Rv0950ko.wig">TnSeq_Mtb_Rv0950ko.wig</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" width="38" class="first">9</td>
+                    <td valign="top" width="500" class="first">TnSeq library of knockout of Rv1096</td>
+                    <td valign="top" width="100" class="last"><a
+                            href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/TnSeq_Mtb_Rv1096ko.wig">TnSeq_Mtb_Rv1096ko.wig</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" width="38" class="first">10</td>
+                    <td valign="top" width="500" class="first">TnSeq library of knockout of Rv3684</td>
+                    <td valign="top" width="100" class="last"><a
+                            href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/TnSeq_Mtb_Rv3684ko.wig">TnSeq_Mtb_Rv3684ko.wig</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" width="38" class="first">11</td>
+                    <td valign="top" width="500" class="first">TnSeq library of knockout of Rv0954, replicate 1</td>
+                    <td valign="top" width="100" class="last"><a
+                            href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/delta_Rv0954_1.wig">delta_Rv0954_1.wig</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" width="38" class="first">12</td>
+                    <td valign="top" width="500" class="first">TnSeq library of knockout of Rv0954, replicate 2</td>
+                    <td valign="top" width="100" class="last"><a
+                            href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/delta_Rv0954_2.wig">delta_Rv0954_2.wig</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" width="38" class="first">13</td>
+                    <td valign="top" width="500" class="first">TnSeq library of knockout of Rv3671c, replicate 1</td>
+                    <td valign="top" width="100" class="last"><a
+                            href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/marP1.wig">marP1.wig</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" width="38" class="first">14</td>
+                    <td valign="top" width="500" class="first">TnSeq library of knockout of Rv3671c, replicate 2</td>
+                    <td valign="top" width="100" class="last"><a
+                            href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/marP2.wig">marP2.wig</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" width="38" class="first">15</td>
+                    <td valign="top" width="500" class="first">TnSeq library of knockout of Rv3671c, replicate 3</td>
+                    <td valign="top" width="100" class="last"><a
+                            href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/marP3.wig">marP3.wig</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" width="38" class="first">16</td>
+                    <td valign="top" width="500" class="first">TnSeq library of knockout of Rv3671c, replicate 4</td>
+                    <td valign="top" width="100" class="last"><a
+                            href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/marP4.wig">marP4.wig</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <p><strong>Conditional Essentials:</strong></p>
+			<p> The target (KO) genes below link to .dat files that provide lists of 
+			associated conditional essentials.  The significant hits are those with Adjusted_pval<0.05.
+			
+            <table border="0" cellspacing="0" cellpadding="0">
+                <tbody>
+                <tr>
+                    <td valign="top" width="138" class="first"><b>Target (KO) Gene</b></td>
+                    <td valign="top" width="500" class="first"><b>Conditional Essentials</b></td>
+                </tr>
+                <tr>
+                    <td valign="top" width="138" class="first">Rv3594</td>
+                    <td valign="top" width="500" class="first"><a 
+                    href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/resampling_H37Rv_vs_delta_Rv3594_TTR.dat">
+                    resampling_H37Rv_vs_delta_Rv3594_TTR.dat</a></td>
+                </tr>
+                <tr>
+                    <td valign="top" width="138" class="first">Rv3717</td>
+                    <td valign="top" width="500" class="first"><a 
+                    href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/resampling_H37Rv_vs_delta_Rv3717_TTR.dat">
+                    resampling_H37Rv_vs_delta_Rv3717_TTR.dat</a></td>
+                </tr>
+                <tr>
+                    <td valign="top" width="138" class="first">Rv3811</td>
+                    <td valign="top" width="500" class="first"><a 
+                    href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/resampling_H37Rv_vs_delta_Rv3811_TTR.dat">
+                    resampling_H37Rv_vs_delta_Rv3811_TTR.dat</a></td>
+                </tr>
+                <tr>
+                    <td valign="top" width="138" class="first">Rv0307c</td>
+                    <td valign="top" width="500" class="first"><a 
+                    href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/resampling_H37Rv_Rv0307c_day0_s10000_pc0.00.dat">
+                    resampling_H37Rv_Rv0307c_day0_s10000_pc0.00.dat</a></td>
+                </tr>
+                <tr>
+                    <td valign="top" width="138" class="first">Rv3916c</td>
+                    <td valign="top" width="500" class="first"><a 
+                    href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/resampling_H37Rv_Rv3916c_day0_s10000_pc0.00.dat">
+                    resampling_H37Rv_Rv3916c_day0_s10000_pc0.00.dat</a></td>
+                </tr>
+                <tr>
+                    <td valign="top" width="138" class="first">Rv0950</td>
+                    <td valign="top" width="500" class="first"><a 
+                    href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/resampling_H37Rv_Rv0950_day0_s10000_pc0.00.dat">
+                    resampling_H37Rv_Rv0950_day0_s10000_pc0.00.dat</a></td>
+                </tr>
+                <tr>
+                    <td valign="top" width="138" class="first">Rv1096</td>
+                    <td valign="top" width="500" class="first"><a 
+                    href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/resampling_H37Rv_Rv1096_day0_s10000_pc0.00.dat">
+                    resampling_H37Rv_Rv1096_day0_s10000_pc0.00.dat</a></td>
+                </tr>
+                <tr>
+                    <td valign="top" width="138" class="first">Rv3684</td>
+                    <td valign="top" width="500" class="first"><a 
+                    href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/resampling_H37Rv_Rv3684_day0_s10000_pc0.00.dat">
+                    resampling_H37Rv_Rv3684_day0_s10000_pc0.00.dat</a></td>
+                </tr>
+                <tr>
+                    <td valign="top" width="138" class="first">Rv0954</td>
+                    <td valign="top" width="500" class="first"><a 
+                    href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/resampling_WT_Rv0954_s10000_pc0.00.dat">
+                    resampling_WT_Rv0954_s10000_pc0.00.dat</a></td>
+                </tr>
+                <tr>
+                    <td valign="top" width="138" class="first">Rv3671c</td>
+                    <td valign="top" width="500" class="first"><a 
+                    href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/resampling_WT_marP_s10000_pc0.00_1.dat">
+                    resampling_WT_marP_s10000_pc0.00_1.dat</a></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <p><strong>Methods references:</strong></p>
+
+			<ol>
+				<li>Long, J.E., DeJesus, M., Ward, D., Baker, R.E., Ioerger, T.R. and 
+				Sassetti, C.M. (2015). Identifying essential genes in <em>Mycobacterium 
+				tuberculosis</em> by global phenotypic profiling. in: Methods in <a href=
+				"http://www.springer.com/biomed/human+genetics/book/978-1-4939-2397-7"><em>Molecular 
+				Biology: Gene Essentiality</em></a>, (Long Jason Lu, ed.), vol. 1279.</li>
+			
+				<li>DeJesus, M.A., Ambadipudi, C., Baker, R., Sassetti, C., and Ioerger, 
+				T.R. (2015). TRANSIT a Software Tool for Himar1 TnSeq Analysis. <em>PLOS 
+				Computational Biology</em>, 11(10):e1004401. <a href=
+				"https://www.ncbi.nlm.nih.gov/pubmed/26447887">PMID 26447887</a>.
+			</ol>
+
+            <p><strong>Downloads:</strong></p>
+		<p>All files are available from FTP:<a href="ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/">
+			ftp://ftp.patricbrc.org/BRC_Mirrors/FLUTE/Experiment_5/</a>.
+
+        </div>
+    </section>
+</div>
