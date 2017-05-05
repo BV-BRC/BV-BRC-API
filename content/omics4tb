@@ -105,7 +105,33 @@
                     href="/content/omics4tb-chip-seq-experiments">ChIP-Seq</a>, <a
                     href="/content/omics4tb-tfoe-expression-experiments">Expression Data</a>, <a
                     href="http://networks.systemsbiology.net/mtb/">Network Model</a>.</p>
-
+                    
+             <h4 class="ribbon-title">MiR-155-regulated molecular network orchestrates cell fate in the innate and adaptive immune response to Mycobacterium tuberculosis.</h4>
+             <p>Publication: PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/27681624">27681624</a>Proc Natl Acad Sci U S A. 2016 Oct 11;113(41):E6172-E6181. Epub 2016 Sep 28.</p>
+             <p>The regulation of host-pathogen interactions during Mycobacterium tuberculosis (Mtb) infection remains unresolved. 
+                 MicroRNAs (miRNAs) are important regulators of the immune system, and so we used a systems biology approach to construct 
+                an miRNA regulatory network activated in macrophages during Mtb infection. Our network comprises 77 putative miRNAs that 
+                are associated with temporal gene expression signatures in macrophages early after Mtb infection. In this study, we demonstrate 
+                a dual role for one of these regulators, miR-155. On the one hand, miR-155 maintains the survival of Mtb-infected macrophages, 
+                thereby providing a niche favoring bacterial replication; on the other hand, miR-155 promotes the survival and function of 
+                Mtb-specific T cells, enabling an effective adaptive immune response. MiR-155-induced cell survival is mediated through the 
+                SH2 domain-containing inositol 5-phosphatase 1 (SHIP1)/protein kinase B (Akt) pathway. Thus, dual regulation of the same cell 
+                survival pathway in innate and adaptive immune cells leads to vastly different outcomes with respect to bacterial containment.
+             </p>
+             
+             <h4 class="ribbon-title">Network analysis identifies Rv0324 and Rv0880 as regulators of bedaquiline tolerance in Mycobacterium tuberculosis.</h4>
+             <p>Publication: PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/27573104">27573104</a>Nat Microbiol. 2016 Jun 6;1(8):16078.</p>
+             <p>The resilience of Mycobacterium tuberculosis (MTB) emerges from its ability to effectively counteract immunological, environmental 
+                and antitubercular challenges. Here, we demonstrate that MTB can tolerate drug treatment by adopting a tolerant state that can 
+                be deciphered through systems analysis of its transcriptional responses. Specifically, we demonstrate how treatment with the 
+                antitubercular drug bedaquiline activates a regulatory network that coordinates multiple resistance mechanisms to push MTB into 
+                a tolerant state. Disruption of this network, by knocking out its predicted transcription factors, Rv0324 and Rv0880, significantly 
+                increased bedaquiline killing and enabled the discovery of a second drug, pretomanid, that potentiated killing by bedaquiline. 
+                We demonstrate that the synergistic effect of this combination emerges, in part, through disruption of the tolerance network. 
+                We discuss how this network strategy also predicts drug combinations with antagonistic interactions, potentially accelerating 
+                the discovery of new effective combination drug regimens for tuberculosis.
+                </p>
+             <p></p>
         </div>
     </section>
 </div>
