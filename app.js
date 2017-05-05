@@ -143,7 +143,7 @@ app.use("/query", [
 	multiQueryRouter
 ]);
 
-app.use("/hpiSearch", [
+app.use("/hpi/search", [
 	hpiSearchRouter
 ]);
 
