@@ -15,6 +15,12 @@
             <p><strong>Funding source:</strong>&nbsp;NIH NIAID U19 AI106761</p>
             <p><strong>&nbsp;</strong><strong>Project home page:</strong>&nbsp;<a href="http://www.omics4tb.org">http://www.omics4tb.org</a>
             </p>
+            
+            <p><strong>Project data:</strong>
+            <a href="ftp://ftp.patricbrc.org/BRC_Mirrors/Omics4TB/">PATRIC FTP Site</a>, 
+            <a href="https://www.patricbrc.org/workspace/PATRIC@patricbrc.org/home/Special%20Collections/NIAID%20Systems%20Biology%20Centers/Omics4TB">PATRIC Public Workspace</a>
+            </p> 
+            
             <p><strong>Project objectives:</strong>&nbsp;<em>Mycobacterium tuberculosis</em> causes ~9 million new cases
                 of active disease and 1.4 million deaths each year, and our tools to combat tuberculosis (TB) disease
                 are universally outdated and overmatched. This project combines separate advances in systems biology and
@@ -107,7 +113,7 @@
                     href="http://networks.systemsbiology.net/mtb/">Network Model</a>.</p>
                     
              <h4 class="ribbon-title">MiR-155-regulated molecular network orchestrates cell fate in the innate and adaptive immune response to Mycobacterium tuberculosis.</h4>
-             <p>Publication: PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/27681624">27681624</a>Proc Natl Acad Sci U S A. 2016 Oct 11;113(41):E6172-E6181. Epub 2016 Sep 28.</p>
+             <p>Publication: PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/27681624">27681624</a> <em>Proc Natl Acad Sci U S A. 2016 Oct 11;113(41):E6172-E6181. Epub 2016 Sep 28.</em></p>
              <p>The regulation of host-pathogen interactions during Mycobacterium tuberculosis (Mtb) infection remains unresolved. 
                  MicroRNAs (miRNAs) are important regulators of the immune system, and so we used a systems biology approach to construct 
                 an miRNA regulatory network activated in macrophages during Mtb infection. Our network comprises 77 putative miRNAs that 
@@ -120,7 +126,7 @@
              </p>
              
              <h4 class="ribbon-title">Network analysis identifies Rv0324 and Rv0880 as regulators of bedaquiline tolerance in Mycobacterium tuberculosis.</h4>
-             <p>Publication: PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/27573104">27573104</a>Nat Microbiol. 2016 Jun 6;1(8):16078.</p>
+             <p>Publication: PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/27573104">27573104</a> <em>Nat Microbiol. 2016 Jun 6;1(8):16078.</em></p>
              <p>The resilience of Mycobacterium tuberculosis (MTB) emerges from its ability to effectively counteract immunological, environmental 
                 and antitubercular challenges. Here, we demonstrate that MTB can tolerate drug treatment by adopting a tolerant state that can 
                 be deciphered through systems analysis of its transcriptional responses. Specifically, we demonstrate how treatment with the 
