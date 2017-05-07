@@ -73,9 +73,9 @@
 
             <h4 class="ribbon-title">A high-resolution network model for global gene regulation in Mycobacterium
                 tuberculosis.</h4>
-            <p>Publication:&nbsp;&nbsp; PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/25232098">25232098</a>&nbsp;
+                <p>Publication:&nbsp;&nbsp; PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/25232098">25232098</a>&nbsp;
                 <em>Nucleic Acids Res.&nbsp;2014 Oct;42(18):11291-303</em></p>
-            <p>The resilience of <em>Mycobacterium tuberculosis</em> (MTB) is largely due to its ability to effectively
+                <p>The resilience of <em>Mycobacterium tuberculosis</em> (MTB) is largely due to its ability to effectively
                 counteract and even take advantage of the hostile environments of a host. In order to accelerate the
                 discovery and characterization of these adaptive mechanisms, we have mined a compendium of 2325 publicly
                 available transcriptome profiles of MTB to decipher a predictive, systems-scale gene regulatory network
@@ -90,7 +90,8 @@
                 are essential to host-pathogen interactions. These and other insights underscore the power of a
                 rational, model-driven approach to unearth novel MTB biology that operates under some but not all phases
                 of infection.</p>
-            <p>Data sets and additional information can be found <a
+                
+                <p>Data sets and additional information can be found <a
                     href="http://networks.systemsbiology.net/mtb/">here</a>.</p>
 
             <h4 class="ribbon-title">A comprehensive map of genome-wide gene regulation in Mycobacterium tuberculosis.</h4>
@@ -111,20 +112,7 @@
                     href="/content/omics4tb-chip-seq-experiments">ChIP-Seq</a>, <a
                     href="/content/omics4tb-tfoe-expression-experiments">Expression Data</a>, <a
                     href="http://networks.systemsbiology.net/mtb/">Network Model</a>.</p>
-                    
-             <h4 class="ribbon-title">MiR-155-regulated molecular network orchestrates cell fate in the innate and adaptive immune response to Mycobacterium tuberculosis.</h4>
-             <p>Publication: PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/27681624">27681624</a> <em>Proc Natl Acad Sci U S A. 2016 Oct 11;113(41):E6172-E6181. Epub 2016 Sep 28.</em></p>
-             <p>The regulation of host-pathogen interactions during Mycobacterium tuberculosis (Mtb) infection remains unresolved. 
-                 MicroRNAs (miRNAs) are important regulators of the immune system, and so we used a systems biology approach to construct 
-                an miRNA regulatory network activated in macrophages during Mtb infection. Our network comprises 77 putative miRNAs that 
-                are associated with temporal gene expression signatures in macrophages early after Mtb infection. In this study, we demonstrate 
-                a dual role for one of these regulators, miR-155. On the one hand, miR-155 maintains the survival of Mtb-infected macrophages, 
-                thereby providing a niche favoring bacterial replication; on the other hand, miR-155 promotes the survival and function of 
-                Mtb-specific T cells, enabling an effective adaptive immune response. MiR-155-induced cell survival is mediated through the 
-                SH2 domain-containing inositol 5-phosphatase 1 (SHIP1)/protein kinase B (Akt) pathway. Thus, dual regulation of the same cell 
-                survival pathway in innate and adaptive immune cells leads to vastly different outcomes with respect to bacterial containment.
-             </p>
-             
+          
              <h4 class="ribbon-title">Network analysis identifies Rv0324 and Rv0880 as regulators of bedaquiline tolerance in Mycobacterium tuberculosis.</h4>
              <p>Publication: PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/27573104">27573104</a> <em>Nat Microbiol. 2016 Jun 6;1(8):16078.</em></p>
              <p>The resilience of Mycobacterium tuberculosis (MTB) emerges from its ability to effectively counteract immunological, environmental 
@@ -137,7 +125,23 @@
                 We discuss how this network strategy also predicts drug combinations with antagonistic interactions, potentially accelerating 
                 the discovery of new effective combination drug regimens for tuberculosis.
                 </p>
-             <p></p>
+                <p>Data sets and additional information can be found 
+                <a href="/content/omics4tb-mtb-bedaquiline-tolerance">here</a>.</p>
+          
+             <h4 class="ribbon-title">MiR-155-regulated molecular network orchestrates cell fate in the innate and adaptive immune response to Mycobacterium tuberculosis.</h4>
+             <p>Publication: PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/27681624">27681624</a> <em>Proc Natl Acad Sci U S A. 2016 Oct 11;113(41):E6172-E6181. Epub 2016 Sep 28.</em></p>
+             <p>The regulation of host-pathogen interactions during Mycobacterium tuberculosis (Mtb) infection remains unresolved. 
+                 MicroRNAs (miRNAs) are important regulators of the immune system, and so we used a systems biology approach to construct 
+                an miRNA regulatory network activated in macrophages during Mtb infection. Our network comprises 77 putative miRNAs that 
+                are associated with temporal gene expression signatures in macrophages early after Mtb infection. In this study, we demonstrate 
+                a dual role for one of these regulators, miR-155. On the one hand, miR-155 maintains the survival of Mtb-infected macrophages, 
+                thereby providing a niche favoring bacterial replication; on the other hand, miR-155 promotes the survival and function of 
+                Mtb-specific T cells, enabling an effective adaptive immune response. MiR-155-induced cell survival is mediated through the 
+                SH2 domain-containing inositol 5-phosphatase 1 (SHIP1)/protein kinase B (Akt) pathway. Thus, dual regulation of the same cell 
+                survival pathway in innate and adaptive immune cells leads to vastly different outcomes with respect to bacterial containment.
+                </p>
+                <p>Data sets and additional information can be found 
+                <a href="/content/omics4tb-macrophage-mtb_infection">here</a>.</p>  
         </div>
     </section>
 </div>
