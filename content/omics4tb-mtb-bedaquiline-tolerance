@@ -75,8 +75,8 @@
                 </tr>
                 </tbody>
             </table>
-        
-            <p>The same dataset is also available from 
+            <p></p>
+            <p><b>Dataset:</b>The gene expression dataset is also available from 
             <a href="/workspace/PATRIC@patricbrc.org/home/Special%20Collections/NIAID%20Systems%20Biology%20Centers/Omics4TB/MTB%20bedaquiline%20tolerance">
             PATRIC workspace</a>, which allows users to view the gene
                 expression data as an interactive and dynamic gene list and heat map.</p>
