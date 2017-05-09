@@ -109,7 +109,14 @@ router.get("/experiment/:id", [
   function(req, res, next){
 		req.call_collection = "transcriptomics_experiment";
 		req.call_method = "query";
-    req.call_params = ["&q=eid:" + req.params.id];
+
+    // check if the id is a number or not (number=eid, not=accession)
+    if (!isNaN(req.params.id) && parseInt(Number(req.params.id)) == req.params.id) {
+      req.call_params = ["&q=eid:" + req.params.id];
+    } else {
+      req.call_params = ["&q=accession:" + req.params.id];
+    }
+    
 		req.queryType = "solr";
 		next();
 	},
@@ -170,11 +177,17 @@ router.get("/api", [
 
     // for each input type, provide the necessary info
     var gene_input = {
-      'name': 'gene',
-      'displayName': 'Gene',
-      'description': '<description goes here>',
-      'idSources': ['PATRIC'],
+      'name': 'genes',
+      'displayName': 'Gene List',
+      'description': 'A list of genes to match against experiments',
+      'idSources': ['NCBI GEO Accession', 'PATRIC'],
       'thresholdTypes': [{
+        'name': 'percent_matched',
+        'displayName': 'Percent Matched',
+        'description': 'Percent of provided genes matched to the genes in an experiment',
+        'min': 0.0,
+        'max': 100.0
+      },{
         'name': 'log_ratio',
         'displayName': 'Log Ratio',
         'description': 'A differential expression value specified as log2 (test/control)',
