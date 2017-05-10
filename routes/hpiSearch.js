@@ -150,8 +150,14 @@ router.get("/experiment/:id/idList/:id_list", [
       req.call_params = ["&q=accession:" + req.params.id];
     }
 
-    // put together the id_list portion of the query string 'samples:(*GSM432865* OR *GSM432861*)'
-    req.call_params[0] = req.call_params[0] + "+AND+samples:(*" + req.params.id_list.replace(',', '*+OR+*') + "*)";
+    // accept either a list of accessions or sample ids
+    if (!isNaN(req.params.id_list) && parseInt(Number(req.params.id_list)) == req.params.id_list) {
+      // this was a sample id (which has a gene list)
+      req.call_params[0] = req.call_params[0] + ["+AND+pid:" + req.params.id_list];
+    } else {
+      // put together the id_list portion of the query string 'samples:(*GSM432865* OR *GSM432861*)'
+      req.call_params[0] = req.call_params[0] + "+AND+samples:(*" + req.params.id_list.replace(',', '*+OR+*') + "*)";
+    }    
 
 		req.queryType = "solr";
 		next();
