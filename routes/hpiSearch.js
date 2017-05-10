@@ -116,7 +116,7 @@ router.get("/experiment/:id", [
     } else {
       req.call_params = ["&q=accession:" + req.params.id];
     }
-    
+
 		req.queryType = "solr";
 		next();
 	},
@@ -140,12 +140,34 @@ router.get("/experiment/:id", [
 router.get("/experiment/:id/idList/:id_list", [
   bodyParser.urlencoded({extended: true}),
 	function(req, res, next){
-    debug("req.params: ", req.params);
-    // req.params.id
-    // req.params.id_list
-    res.write("--- acknowledged GET for hpi/search/experiemnt/{experimentIdentifier}/idList/{listIdentifier} \n");
+    req.call_collection = "transcriptomics_sample";
+		req.call_method = "query";
+
+    // check if the id is a number or not (number=eid, not=accession)
+    if (!isNaN(req.params.id) && parseInt(Number(req.params.id)) == req.params.id) {
+      req.call_params = ["&q=eid:" + req.params.id];
+    } else {
+      req.call_params = ["&q=accession:" + req.params.id];
+    }
+
+    // put together the id_list portion of the query string 'samples:(*GSM432865* OR *GSM432861*)'
+    req.call_params[0] = req.call_params[0] + "+AND+samples:(*" + req.params.id_list.replace(',', '*+OR+*') + "*)";
+
+		req.queryType = "solr";
+		next();
+
+	},
+  //DecorateQuery
+  Limiter,
+  APIMethodHandler,
+  function(req, res, next){
+    if(res.results && res.results.response && res.results.response.docs){
+			res.json(res.results.response.docs);
+		}else{
+      res.write("--- acknowledged GET for hpi/search/experiemnt/{experimentIdentifier}/idList/{listIdentifier} \n");
+    }
     res.end();
-	}
+  }
 ]);
 
 // GET hpi/search/experiment/{experimentIdentifier}/idList/{listIdentifier}/ids<?includeOrthologs="human">
@@ -154,14 +176,38 @@ router.get("/experiment/:id/idList/:id_list", [
 router.get("/experiment/:id/idList/:id_list/ids", [
   bodyParser.urlencoded({extended: true}),
 	function(req, res, next){
-    debug("req.params: ", req.params);
-    debug("req.query: ", req.query)
-    // req.params.id
-    // req.params.id_list
-    // req.query.includeOrthologs
-    res.write("--- acknowledged GET for hpi/search/experiemnt/{experimentIdentifier}/idList/{listIdentifier}/ids \n");
+    req.call_collection = "transcriptomics_sample";
+    req.call_method = "query";
+
+    // check if the id is a number or not (number=eid, not=accession)
+    if (!isNaN(req.params.id) && parseInt(Number(req.params.id)) == req.params.id) {
+      req.call_params = ["&q=eid:" + req.params.id];
+    } else {
+      req.call_params = ["&q=accession:" + req.params.id];
+    }
+
+    // put together the id_list portion of the query string 'samples:(*GSM432865* OR *GSM432861*)'
+    req.call_params[0] = req.call_params[0] + "+AND+samples:(*" + req.params.id_list.replace(',', '*+OR+*') + "*)";
+
+    req.queryType = "solr";
+    next();
+	},
+  //DecorateQuery
+  Limiter,
+  APIMethodHandler,
+  function(req, res, next){
+    if(res.results && res.results.response && res.results.response.docs){
+      var samples = res.results.response.docs.map(function(d){
+				return {
+					pid: d.pid
+				}
+			});
+			res.json(samples);
+		}else{
+      res.write("--- acknowledged GET for hpi/search/experiemnt/{experimentIdentifier}/idList/{listIdentifier}/ids \n");
+    }
     res.end();
-	}
+  }
 ]);
 
 // GET hpi/search/api
