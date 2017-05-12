@@ -70,15 +70,8 @@ router.post('/', [
 
   // Step 1: Assemble the list of matching genes
 	function(req, res, next){
-    debug('req.body: ', req.body);
-    // req.body.type
-    // req.body.idSource
-    // req.body.ids
-    // req.body.threshold
-    // req.body.thresholdType
-    // req.body.organism
-    // req.body.additionalFlags
-
+    //debug('req.body: ', req.body);
+    
     req.call_collection = 'transcriptomics_gene';
 		req.call_method = 'query';
 
@@ -210,77 +203,58 @@ router.post('/', [
     if (res.results && res.results.response && res.results.response.docs) {
 
       // prepare the output for the experiments
-      var exp_map = [];
+      var exp_map = {};
       for (i in res.results.response.docs){
         var exp = res.results.response.docs[i];
-        exp_map.push({exp.eid, exp.map(function(d){
-          return {
-            experimentIdentifier: d.accession,
-            displayName: d.title,
+
+        var exp_trans = {
+            experimentIdentifier: exp.accession,
+            displayName: exp.title,
             type: 'transcriptomics',
-            description: d.description,
-            uri: PATRIC_URL + '/view/ExperimentComparison/' + d.eid,
-            species: d.organism,
-            genomeVersion: d.genome_ids,
+            description: exp.description,
+            uri: PATRIC_URL + '/view/ExperimentComparison/' + exp.eid,
+            species: exp.organism,
+            genomeVersion: exp.genome_ids,
             validIdCount: 'TBD',
             experimentSignificance: 0.0,
             significanceType: req.body.thresholdType,
-            idLists: []
-          }
-        })});
-      }
+            idLists: [],
+          };
 
-      //
-      // var experiments = res.results.response.docs.map(function(d){
-      //   return {
-      //     experimentIdentifier: d.accession,
-      //     displayName: d.title,
-      //     type: 'transcriptomics',
-      //     description: d.description,
-      //     uri: PATRIC_URL + '/view/ExperimentComparison/' + d.eid,
-      //     species: d.organism,
-      //     genomeVersion: d.genome_ids,
-      //     validIdCount: 'TBD',
-      //     experimentSignificance: 0.0,
-      //     significanceType: req.body.thresholdType,
-      //     idLists: []
-      //   }
-      // });
-      //
+        exp_map[exp['eid']] = exp_trans;
+
+      }
 
       // prepare and attach samples to experiments
-      for (j in req.samples){
-        var sample = req.samples[j];
-        exp_map[sample.eid].idLists.push(
-          sample.map(function(d){
-            return {
-              listIdentifier: d.pid,
-              displayName: d.expname,
-              description: d.expname,
-              uri: PATRIC_URL + '/view/ExperimentComparison/' + d.eid + '#view_tab=comparisons',
+      for (i in req.samples){
+        var sample = req.samples[i];
+        var exp = exp_map[sample['eid']];
+
+        var sample_trans = {
+          listIdentifier: sample.pid,
+              displayName: sample.expname,
+              description: sample.expname,
+              uri: PATRIC_URL + '/view/ExperimentComparison/' + sample.eid + '#view_tab=comparisons',
               type: INPUT_TYPE_GENE,
               provenance: 'TBD',
-              significance: 'TBD'
-            }
-          }
-        ));
+              significance: 'TBD',
+        };
+
+        exp.idLists.push(sample_trans);
+
       }
 
-      // // prepare the samples and attach them to the experiments
-      // var samples = req.samples.map(function(d){
-      //   return {
-      //     listIdentifier: d.pid,
-      //     displayName: d.expname,
-      //     description: d.expname,
-      //     uri: PATRIC_URL + '/view/ExperimentComparison/' + d.eid + '#view_tab=comparisons',
-      //     type: INPUT_TYPE_GENE,
-      //     provenance: 'TBD',
-      //     significance: 'TBD'
-      //   }
-      // });
+      // output the whole shebang
+      var experiments = [];
+      for (var k in exp_map) {
+        // use hasOwnProperty to filter out keys from the Object.prototype
+        if (exp_map.hasOwnProperty(k)) {
+            experiments.push(exp_map[k]);
+        }
+      }
 
       // output the experiments
-      res.write(JSON.stringify(exp_map.values()));
+      res.write(JSON.stringify(experiments));
 
     }else{
       res.write('--- acknowledged POST for hpi/search \n');
