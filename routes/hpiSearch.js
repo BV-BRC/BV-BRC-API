@@ -40,7 +40,7 @@ var Limiter = require('../middleware/Limiter');
 
 // constants and magic words
 const INPUT_TYPE_GENE = 'gene';
-const ID_SOURCE_PATRIC = 'patric';
+//const ID_SOURCE_PATRIC = 'patric';
 const ID_SOURCE_ALT_LOCUS_TAG = 'alt_locus_tag';
 const THRESHOLD_PERCENT = 'percent_matched';
 const THRESHOLD_LOG_RATIO = 'log_ratio';
@@ -71,25 +71,29 @@ router.post('/', [
   // Step 1: Assemble the list of matching genes
 	function(req, res, next){
     //debug('req.body: ', req.body);
-    
+
     req.call_collection = 'transcriptomics_gene';
 		req.call_method = 'query';
 
     if (req.body.type != INPUT_TYPE_GENE){
       // return 422
+      res.write('422: unrecognized input type');
+      res.end();
     }
 
     var query = [];
     // accept a list of feature_ids or alt_locus_tags
     switch(req.body.idSource){
-			case ID_SOURCE_PATRIC:
-        query.push('&q=feature_id:');
-        break;
+			// case ID_SOURCE_PATRIC:
+      //   query.push('&q=feature_id:');
+      //   break;
       case ID_SOURCE_ALT_LOCUS_TAG:
         query.push('&q=alt_locus_tag:');
         break;
       default:
         // return 422
+        res.write('422: unrecognized input type');
+        res.end();
         break;
     }
 
@@ -125,7 +129,7 @@ router.post('/', [
       // add the ids to the query
       var pids = [];
       for (var i in res.results.facet_counts.facet_fields.pid){
-        if(i % 2 === 0) { // index is even
+        if(i % 2 === 0) { // ids are even, counts are odd
           pids.push(res.results.facet_counts.facet_fields.pid[i]);
         }
       }
@@ -145,8 +149,7 @@ router.post('/', [
 
       next();
     } else {
-      // no results XXX bail?
-      res.write('--- acknowledged POST for hpi/search \n');
+      res.write('500: Internal error');
       res.end();
     }
 
@@ -159,6 +162,11 @@ router.post('/', [
   function(req, res, next){
 
     if (res.results && res.results.response && res.results.response.docs) {
+
+      // XXX Apply the thresholding: mod(log_ratio) >= 1
+      for (i in res.results.response.docs) {
+        debug('sample[',i,']:', res.resulsts.response.docs[i])
+      }
 
       // stash the samples in the request
       req.samples = res.results.response.docs;
@@ -186,7 +194,7 @@ router.post('/', [
 
       next();
 		}else{
-      res.write('--- acknowledged POST for hpi/search \n');
+      res.write('500: Internal error');
       res.end();
     }
 
@@ -231,7 +239,7 @@ router.post('/', [
         var exp = exp_map[sample['eid']];
 
         var sample_trans = {
-          listIdentifier: sample.pid,
+              listIdentifier: sample.pid,
               displayName: sample.expname,
               description: sample.expname,
               uri: PATRIC_URL + '/view/ExperimentComparison/' + sample.eid + '#view_tab=comparisons',
@@ -257,7 +265,7 @@ router.post('/', [
       res.write(JSON.stringify(experiments));
 
     }else{
-      res.write('--- acknowledged POST for hpi/search \n');
+      res.write('500: Internal error');
     }
     res.end();
   }
@@ -270,7 +278,7 @@ router.get('/experiment', [
   function(req, res, next){
 		req.call_collection = 'transcriptomics_experiment';
 		req.call_method = 'query';
-		req.call_params = ['&q=*:*&rows=25000']; // default is 25 rows; add &rows=1000 to adjust
+		req.call_params = ['&q=condition:"host response"&rows=25000'];
 		req.queryType = 'solr';
 		next();
 	},
@@ -282,7 +290,7 @@ router.get('/experiment', [
     if(res.results && res.results.response && res.results.response.docs){
 			var experiments = res.results.response.docs.map(function(d){
 				return {
-					eid: d.eid
+					experimentIdentifier: d.eid
 				}
 			});
 			res.json(experiments);
@@ -298,8 +306,10 @@ router.get('/experiment', [
 // The details of an experiment, as showin in the primary endpoint
 router.get('/experiment/:id', [
   bodyParser.urlencoded({extended: true}),
+
+  // Step 1: get the samples for the eid
   function(req, res, next){
-		req.call_collection = 'transcriptomics_experiment';
+		req.call_collection = 'transcriptomics_sample';
 		req.call_method = 'query';
 
     // check if the id is a number or not (number=eid, not=accession)
@@ -315,10 +325,73 @@ router.get('/experiment/:id', [
 	//DecorateQuery,
 	//Limiter,
 	APIMethodHandler,
+
+  function(req, res, next) {
+
+    if(res.results && res.results.response && res.results.response.docs){
+
+      // stash the samples in the request
+      req.samples = res.results.response.docs.map(function(d){
+				return {
+          experimentIdentifier: d.eid,
+          listIdentifier: d.pid,
+          accession: d.accession,
+          expname: d.expname,
+          description: d.description,
+          accession: d.accession,
+          genes: d.genes,
+          organism: d.organism,
+          sig_log_ratio: d.sig_log_ratio,
+          expmean: d.expmean,
+          date_inserted: d.date_inserted,
+          date_modified: d.date_modified,
+				}
+			});
+
+  		req.call_collection = 'transcriptomics_experiment';
+  		req.call_method = 'query';
+
+      // check if the id is a number or not (number=eid, not=accession)
+      if (!isNaN(req.params.id) && parseInt(Number(req.params.id)) == req.params.id) {
+        req.call_params = ['&q=eid:' + req.params.id];
+      } else {
+        req.call_params = ['&q=accession:' + req.params.id];
+      }
+
+  		req.queryType = 'solr';
+  		next();
+    } else {
+      res.write('500: Internal error');
+      res.end();
+    }
+	},
+	//DecorateQuery,
+	//Limiter,
+	APIMethodHandler,
 	function(req, res, next){
 
     if(res.results && res.results.response && res.results.response.docs){
-			res.json(res.results.response.docs);
+
+      // this mapping is because we want to show 'experimentIdentifier' vs 'eid'
+      var experiments = res.results.response.docs.map(function(d){
+				return {
+					experimentIdentifier: d.eid,
+          title: d.title,
+          description: d.description,
+          accession: d.accession,
+          samples: req.samples,
+          genes: d.genes,
+          genome_ids: d.genome_ids,
+          organism: d.organism,
+          pmid: d.pmid,
+          date_inserted: d.date_inserted,
+          date_modified: d.date_modified,
+          institution: d.institution,
+          author: d.author,
+          condition: d.condition
+				}
+			});
+			res.json(experiments);
 		}else{
       res.write('--- acknowledged GET for hpi/search/experiemnt/{experimentIdentifier} \n');
     }
@@ -353,7 +426,25 @@ router.get('/experiment/:id/idList/:id_list', [
   APIMethodHandler,
   function(req, res, next){
     if(res.results && res.results.response && res.results.response.docs){
-			res.json(res.results.response.docs);
+
+      // this mapping is because we want to show 'experimentIdentifier' vs 'eid' and 'listIdentifier' vs 'pid'
+      var samples = res.results.response.docs.map(function(d){
+				return {
+					experimentIdentifier: d.eid,
+          listIdentifier: d.pid,
+          accession: d.accession,
+          expname: d.expname,
+          description: d.description,
+          accession: d.accession,
+          genes: d.genes,
+          organism: d.organism,
+          sig_log_ratio: d.sig_log_ratio,
+          expmean: d.expmean,
+          date_inserted: d.date_inserted,
+          date_modified: d.date_modified,
+				}
+			});
+			res.json(samples);
 		}else{
       res.write('--- acknowledged GET for hpi/search/experiemnt/{experimentIdentifier}/idList/{listIdentifier} \n');
     }
@@ -377,7 +468,7 @@ router.get('/experiment/:id/idList/:id_list/ids', [
       req.call_params = ['&q=accession:' + req.params.id];
     }
 
-    // accept a sample id (which corresponds to a list of genes)
+    // accept a sample id (which corresponds to a list of genes
     req.call_params[0] = req.call_params[0] + ['+AND+pid:' + req.params.id_list];
 
     // set the row limit
@@ -392,7 +483,6 @@ router.get('/experiment/:id/idList/:id_list/ids', [
     if(res.results && res.results.response && res.results.response.docs){
       var samples = res.results.response.docs.map(function(d){
 				return {
-					patric_id: d.feature_id,
           alt_locus_tag: d.alt_locus_tag
 				}
 			});
@@ -420,7 +510,7 @@ router.get('/api', [
       'name': INPUT_TYPE_GENE,
       'displayName': 'Gene List',
       'description': 'A list of genes to match against experiments',
-      'idSources': [ID_SOURCE_PATRIC, ID_SOURCE_ALT_LOCUS_TAG],
+      'idSources': [ID_SOURCE_ALT_LOCUS_TAG],
       'thresholdTypes': [{
         'name': THRESHOLD_PERCENT,
         'displayName': 'Percent Matched',
