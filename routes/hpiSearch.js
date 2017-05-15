@@ -125,14 +125,45 @@ router.post('/', [
   		req.call_method = 'query';
 
       var query = [];
-
-      // add the ids to the query
       var pids = [];
-      for (var i in res.results.facet_counts.facet_fields.pid){
-        if(i % 2 === 0) { // ids are even, counts are odd
-          pids.push(res.results.facet_counts.facet_fields.pid[i]);
-        }
+
+      switch(req.body.thresholdType){
+  			case THRESHOLD_PERCENT:
+          var threshold = Math.floor(req.body.threshold * req.body.ids.length);
+
+          for (var i=0; i < res.results.facet_counts.facet_fields.pid.length; i+=2) {
+            // check the odd indices for count and apply thresholding
+            var pid = res.results.facet_counts.facet_fields.pid[i];
+            var count = res.results.facet_counts.facet_fields.pid[i+1];
+            if (count >= threshold) {
+              pids.push(pid);
+            }
+          }
+
+          break;
+        case THRESHOLD_LOG_RATIO:
+
+          for (var i=0; i < res.results.facet_counts.facet_fields.pid.length; i+=2) {
+            // check the odd indices for count and apply thresholding
+            var pid = res.results.facet_counts.facet_fields.pid[i];
+            var count = res.results.facet_counts.facet_fields.pid[i+1];
+            var lg_ratio = Math.log2(count) / Math.log2(req.body.ids.length);
+            if (lg_ratio >= req.body.threshold) {
+              pids.push(pid);
+            }
+          }
+
+          break;
+        default:
+          // return 422
+          res.write('422: unrecognized input type');
+          res.end();
+          break;
       }
+
+      // apply threshold and add the ids to the query
+
+
       query.push('&q=pid:(' + pids.join('+OR+') + ')');
 
       // facet on experiment
@@ -149,7 +180,8 @@ router.post('/', [
 
       next();
     } else {
-      res.write('500: Internal error');
+      var empty = []
+      res.write(JSON.stringify(empty));
       res.end();
     }
 
@@ -162,11 +194,6 @@ router.post('/', [
   function(req, res, next){
 
     if (res.results && res.results.response && res.results.response.docs) {
-
-      // XXX Apply the thresholding: mod(log_ratio) >= 1
-      for (i in res.results.response.docs) {
-        debug('sample[',i,']:', res.resulsts.response.docs[i])
-      }
 
       // stash the samples in the request
       req.samples = res.results.response.docs;
@@ -194,7 +221,8 @@ router.post('/', [
 
       next();
 		}else{
-      res.write('500: Internal error');
+      var empty = []
+      res.write(JSON.stringify(empty));
       res.end();
     }
 
@@ -265,7 +293,8 @@ router.post('/', [
       res.write(JSON.stringify(experiments));
 
     }else{
-      res.write('500: Internal error');
+      var empty = []
+      res.write(JSON.stringify(empty));
     }
     res.end();
   }
