@@ -123,36 +123,25 @@ router.post('/', [
 
       req.call_collection = 'transcriptomics_sample';
   		req.call_method = 'query';
-
       var query = [];
       var pids = [];
 
+      // apply threshold and add the ids to the query
+      var thresh_eval = null;
+      var thresh = null;
+
       switch(req.body.thresholdType){
   			case THRESHOLD_PERCENT:
-          var threshold = Math.floor(req.body.threshold * req.body.ids.length);
-
-          for (var i=0; i < res.results.facet_counts.facet_fields.pid.length; i+=2) {
-            // check the odd indices for count and apply thresholding
-            var pid = res.results.facet_counts.facet_fields.pid[i];
-            var count = res.results.facet_counts.facet_fields.pid[i+1];
-            if (count >= threshold) {
-              pids.push(pid);
-            }
-          }
-
+          thresh = Math.floor(req.body.threshold * req.body.ids.length);
+          thresh_eval = (count, threshold) => {
+            if (count >= threshold) { return true } else { return false }
+           };
           break;
         case THRESHOLD_LOG_RATIO:
-
-          for (var i=0; i < res.results.facet_counts.facet_fields.pid.length; i+=2) {
-            // check the odd indices for count and apply thresholding
-            var pid = res.results.facet_counts.facet_fields.pid[i];
-            var count = res.results.facet_counts.facet_fields.pid[i+1];
-            var lg_ratio = Math.log2(count) / Math.log2(req.body.ids.length);
-            if (lg_ratio >= req.body.threshold) {
-              pids.push(pid);
-            }
-          }
-
+          thresh = req.body.threshold;
+          thresh_eval = (count, threshold) => { 
+            if ((Math.log2(count) / Math.log2(req.body.ids.length)) >= threshold) { return true } else { return false }
+           };
           break;
         default:
           // return 422
@@ -161,8 +150,14 @@ router.post('/', [
           break;
       }
 
-      // apply threshold and add the ids to the query
-
+      for (var i=0; i < res.results.facet_counts.facet_fields.pid.length; i+=2) {
+        // check the odd indices for count and apply thresholding
+        var pid = res.results.facet_counts.facet_fields.pid[i];
+        var count = res.results.facet_counts.facet_fields.pid[i+1];
+        if (thresh_eval(count, thresh)) {
+          pids.push(pid);
+        }
+      }
 
       query.push('&q=pid:(' + pids.join('+OR+') + ')');
 
