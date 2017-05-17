@@ -259,8 +259,10 @@ router.post('/', [
 
             // XXX using log_ratio filter, we toss out the genes that were 'insignificant' to start, so there may be more valid ids in the list, just not significant
             validIdCount: req.validIdCount, // max of gene ids in any sample we found
+
+            // XXX no idea what this is meant to convey for our data
             experimentSignificance: 0.0,
-            significanceType: req.body.thresholdType,
+            significanceType: 'TBD',
             idLists: [],
           };
 
@@ -280,7 +282,7 @@ router.post('/', [
               description: sample.expname,
               uri: PATRIC_URL + '/view/ExperimentComparison/' + sample.eid + '#view_tab=comparisons',
               type: INPUT_TYPE_GENE,
-              provenance: exp_provenance,
+              provenance: exp_provenance, // this should belong at the experiment level (and get rid of exp_provenance_map)
               significance: sample.sig_z_score,
         };
 
