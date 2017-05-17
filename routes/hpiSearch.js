@@ -12,9 +12,9 @@ GETs
 curl 'http://localhost:3001/hpi/search'
 curl 'http://localhost:3001/hpi/search/experiment'
 curl 'http://localhost:3001/hpi/search/experiment/GSE79731'
-curl 'http://localhost:3001/hpi/search/experiment/GSE79731/idList/100000211'
-curl 'http://localhost:3001/hpi/search/experiment/GSE79731/idList/100000211/ids'
-curl 'http://localhost:3001/hpi/search/experiment/GSE79731/idList/100000211/ids?includeOrthologs='human''
+curl 'http://localhost:3001/hpi/search/experiment/GSE79731/id-list/100000211'
+curl 'http://localhost:3001/hpi/search/experiment/GSE79731/id-list/100000211/ids'
+curl 'http://localhost:3001/hpi/search/experiment/GSE79731/id-list/100000211/ids?includeOrthologs='human''
 curl 'http://localhost:3001/hpi/search/api'
 
 POST
@@ -282,7 +282,7 @@ router.post('/', [
               description: sample.expname,
               uri: PATRIC_URL + '/view/ExperimentComparison/' + sample.eid + '#view_tab=comparisons',
               type: INPUT_TYPE_GENE,
-              provenance: exp_provenance, // this should belong at the experiment level (and get rid of exp_provenance_map)
+              provenance: exp_provenance, // XXX this should belong at the experiment level (and get rid of exp_provenance_map)
               significance: sample.sig_z_score,
         };
 
@@ -439,9 +439,9 @@ router.get('/experiment/:id', [
 	}
 ]);
 
-// GET hpi/search/experiment/{experimentIdentifier}/idList/{listIdentifier}
+// GET hpi/search/experiment/{experimentIdentifier}/id-list/{listIdentifier}
 // The details of an experiment, as shown in the primary endpoint
-router.get('/experiment/:id/idList/:id_list', [
+router.get('/experiment/:id/id-list/:id_list', [
   bodyParser.urlencoded({extended: true}),
 	function(req, res, next){
     req.call_collection = 'transcriptomics_sample';
@@ -485,16 +485,16 @@ router.get('/experiment/:id/idList/:id_list', [
 			});
 			res.json(samples);
 		}else{
-      res.write('--- acknowledged GET for hpi/search/experiemnt/{experimentIdentifier}/idList/{listIdentifier} \n');
+      res.write('--- acknowledged GET for hpi/search/experiemnt/{experimentIdentifier}/id-list/{listIdentifier} \n');
     }
     res.end();
   }
 ]);
 
-// GET hpi/search/experiment/{experimentIdentifier}/idList/{listIdentifier}/ids<?includeOrthologs='human'>
-// Return the ids for the idList.  If the optional includeOrthologs parameter is supplied,
+// GET hpi/search/experiment/{experimentIdentifier}/id-list/{listIdentifier}/ids<?includeOrthologs='human'>
+// Return the ids for the id-list.  If the optional includeOrthologs parameter is supplied,
 // return a second column with lorthologous ids from that organism
-router.get('/experiment/:id/idList/:id_list/ids', [
+router.get('/experiment/:id/id-list/:id_list/ids', [
   bodyParser.urlencoded({extended: true}),
 	function(req, res, next){
     req.call_collection = 'transcriptomics_gene';
@@ -527,7 +527,7 @@ router.get('/experiment/:id/idList/:id_list/ids', [
 			});
 			res.json(samples);
 		}else{
-      res.write('--- acknowledged GET for hpi/search/experiemnt/{experimentIdentifier}/idList/{listIdentifier}/ids \n');
+      res.write('--- acknowledged GET for hpi/search/experiemnt/{experimentIdentifier}/id-list/{listIdentifier}/ids \n');
     }
     res.end();
   }
