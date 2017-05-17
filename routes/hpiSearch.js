@@ -244,6 +244,7 @@ router.post('/', [
 
       // prepare the output for the experiments
       var exp_map = {};
+      var exp_provenance_map = {};
       for (i in res.results.response.docs){
         var exp = res.results.response.docs[i];
 
@@ -264,13 +265,14 @@ router.post('/', [
           };
 
         exp_map[exp['eid']] = exp_trans;
-
+        exp_provenance_map[exp['eid']] = exp.author + ' from ' + exp.institution;
       }
 
       // prepare and attach samples to experiments
       for (i in req.samples){
         var sample = req.samples[i];
         var exp = exp_map[sample['eid']];
+        var exp_provenance = exp_provenance_map[sample['eid']];
 
         var sample_trans = {
               listIdentifier: sample.pid,
@@ -278,8 +280,8 @@ router.post('/', [
               description: sample.expname,
               uri: PATRIC_URL + '/view/ExperimentComparison/' + sample.eid + '#view_tab=comparisons',
               type: INPUT_TYPE_GENE,
-              provenance: 'TBD',
-              significance: 'TBD',
+              provenance: exp_provenance,
+              significance: sample.sig_z_score,
         };
 
         exp.idLists.push(sample_trans);
