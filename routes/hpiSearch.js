@@ -100,6 +100,13 @@ router.post('/', [
     // add the ids to the query
     query.push('(' + req.body.ids.join('+OR+') + ')');
 
+    // if we're using min log_ratio
+    if (req.body.thresholdType == THRESHOLD_LOG_RATIO) {
+      var pos_thresh = Math.abs(req.body.threshold);
+      var neg_thresh = -1.0 * Math.abs(req.body.threshold);
+      query.push('AND (log_ratio:['+pos_thresh+' TO *] OR log_ratio:[* TO '+neg_thresh+'])');
+    }
+
     // facet on sample
     query.push('&facet.field=pid&facet.mincount=1&facet=on');
 
@@ -125,6 +132,7 @@ router.post('/', [
   		req.call_method = 'query';
       var query = [];
       var pids = [];
+      var validIdCount = 0;
 
       // apply threshold and add the ids to the query
       var thresh_eval = null;
@@ -132,16 +140,13 @@ router.post('/', [
 
       switch(req.body.thresholdType){
   			case THRESHOLD_PERCENT:
-          thresh = Math.floor(req.body.threshold * req.body.ids.length);
+          thresh = Math.floor((req.body.threshold/100.0) * req.body.ids.length);
           thresh_eval = (count, threshold) => {
             if (count >= threshold) { return true } else { return false }
            };
           break;
         case THRESHOLD_LOG_RATIO:
-          thresh = req.body.threshold;
-          thresh_eval = (count, threshold) => { 
-            if ((Math.log2(count) / Math.log2(req.body.ids.length)) >= threshold) { return true } else { return false }
-           };
+          thresh_eval = (count, threshold) => { return true };
           break;
         default:
           // return 422
@@ -156,6 +161,7 @@ router.post('/', [
         var count = res.results.facet_counts.facet_fields.pid[i+1];
         if (thresh_eval(count, thresh)) {
           pids.push(pid);
+          if (count > validIdCount) validIdCount = count;
         }
       }
 
@@ -173,9 +179,12 @@ router.post('/', [
       // // stash the genes in the request
       // req.genes = res.results.response.docs;
 
+      // stash the pid_count_map in the request
+      req.validIdCount = validIdCount;
+
       next();
     } else {
-      var empty = []
+      var empty = [];
       res.write(JSON.stringify(empty));
       res.end();
     }
@@ -216,7 +225,7 @@ router.post('/', [
 
       next();
 		}else{
-      var empty = []
+      var empty = [];
       res.write(JSON.stringify(empty));
       res.end();
     }
@@ -246,7 +255,9 @@ router.post('/', [
             uri: PATRIC_URL + '/view/ExperimentComparison/' + exp.eid,
             species: exp.organism,
             genomeVersion: exp.genome_ids,
-            validIdCount: 'TBD',
+
+            // XXX using log_ratio filter, we toss out the genes that were 'insignificant' to start, so there may be more valid ids in the list, just not significant
+            validIdCount: req.validIdCount, // max of gene ids in any sample we found
             experimentSignificance: 0.0,
             significanceType: req.body.thresholdType,
             idLists: [],
@@ -288,7 +299,7 @@ router.post('/', [
       res.write(JSON.stringify(experiments));
 
     }else{
-      var empty = []
+      var empty = [];
       res.write(JSON.stringify(empty));
     }
     res.end();
