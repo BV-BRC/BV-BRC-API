@@ -42,6 +42,7 @@ var Limiter = require('../middleware/Limiter');
 const INPUT_TYPE_GENE = 'gene';
 //const ID_SOURCE_PATRIC = 'patric';
 const ID_SOURCE_ALT_LOCUS_TAG = 'alt_locus_tag';
+const ID_SOURCE_ENSEMBL = 'ensembl';
 const THRESHOLD_PERCENT = 'percent_matched';
 const THRESHOLD_LOG_RATIO = 'log_ratio';
 const FLAG_ORTHOLOGY = 'useOrthology';
@@ -88,6 +89,9 @@ router.post('/', [
       //   query.push('&q=feature_id:');
       //   break;
       case ID_SOURCE_ALT_LOCUS_TAG:
+        query.push('&q=alt_locus_tag:');
+        break;
+      case ID_SOURCE_ENSEMBL:
         query.push('&q=alt_locus_tag:');
         break;
       default:
@@ -510,8 +514,12 @@ router.get('/experiment/:id/id-list/:id_list/ids', [
     // accept a sample id (which corresponds to a list of genes
     req.call_params[0] = req.call_params[0] + ['+AND+pid:' + req.params.id_list];
 
+
+    //apply a default log ratio of >= abs(1.0)
+    req.call_params[0] = req.call_params[0] + '+AND+(log_ratio:[1.0+TO+*]+OR+log_ratio:[*+TO+-1.0])&sort=log_ratio+desc';
+
     // set the row limit
-    req.call_params[0] = req.call_params[0] + ['&rows=25000'];
+    req.call_params[0] = req.call_params[0] + ['&rows=100000'];
 
     req.queryType = 'solr';
     next();
@@ -549,7 +557,7 @@ router.get('/api', [
       'name': INPUT_TYPE_GENE,
       'displayName': 'Gene List',
       'description': 'A list of genes to match against experiments',
-      'idSources': [ID_SOURCE_ALT_LOCUS_TAG],
+      'idSources': [ID_SOURCE_ENSEMBL],
       'thresholdTypes': [{
         'name': THRESHOLD_PERCENT,
         'displayName': 'Percent Matched',
