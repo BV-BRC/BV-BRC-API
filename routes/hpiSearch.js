@@ -524,7 +524,7 @@ router.get('/experiment/:id/id-list/:id_list/ids', [
     req.queryType = 'solr';
     next();
 	},
-  Limiter,
+  //Limiter,
   APIMethodHandler,
   function(req, res, next){
     if(res.results && res.results.response && res.results.response.docs){
