@@ -1,23 +1,93 @@
 <div class="dlp">
 	<span>Data</span>
-    <h2>Antibiotic Resistance</h2>
+    	<h2>Antibiotic Resistance</h2>
 	<section class="main">
-		<!-- Section: Data -->
-		<div class="data-tab" id="tab1">
-			<h3></h3>
-				<div class='large'>
-					<p>Antibiotic Resistance refers to the ability of bacteria to develop resistance to antibiotics through gene mutation or acquisition of antibiotic resistance genes. We collect known antibiotic resistance genes from reputed external databases and publications and map them to homologous genes in PATRIC using BLASTP. For more information see <a href="http://enews.patricbrc.org/faqs/specialty-genes-faqs/" target="_blank">Specialty Genes FAQs</a>.</p>
-					<p>We also incorporate antibiotic susceptibility testing results as additional genome metadata. Summary filterable AMR metadata are available from PATRIC genome lists (see <a title="AMR and Clinical Metadata" href="http://enews.patricbrc.org/faqs/antimicrobial-resistance-and-other-clinical-metadata/" target="_blank">Antimicrobial Resistance and Other Clinical Metadata</a>). Additional AMR data (including panel data when provided), are available for <a title="AMR metadata download" href="ftp://ftp.patricbrc.org/BRC_Mirrors/AMR/PATRIC_genomes_AMR.xlsx" target="_blank">download</a>.</p>
-					<p>Genus-specific AMR genome sets that contain more than 100 antimicrobial resistant and susceptible genomes for a given antibiotic are available from the <a href="ftp://ftp.patricbrc.org/patric2/current_release/AMR_genome_sets" target="_blank">FTP site.</a></p>
+	
+	<!-- Section: Data -->
+	<div class="data-tab" id="tab1">
+		<h3></h3>
+		<div class='large'>		
+			<p>Antibiotics are a type of drugs used in the treatment and prevention of bacterial infections.
+			Antimicrobial Resistance (AMR) refers to the ability of bacteria to resist the effects of antibiotics 
+			that are commonly used to treat them. Resistance arises through one of three ways: natural resistance 
+			in certain types of bacteria, genetic mutation, or by one species acquiring resistance from another. 
+      PATRIC provides a variety of data and analysis tools to help researchers study AMR and its genetic determinants.       
+      This includes AMR phenotype data for the bacterial genomes as well as genes and intergenic regions associated with AMR.
+			</p>
+			
+			<p>We also incorporate antibiotic susceptibility testing results as additional genome metadata. Summary filterable 
+			AMR metadata are available from PATRIC genome lists (see <a title="AMR and Clinical Metadata" 
+			href="http://enews.patricbrc.org/faqs/antimicrobial-resistance-and-other-clinical-metadata/" target="_blank">
+			Antimicrobial Resistance and Other Clinical Metadata</a>). Additional AMR data (including panel data when provided), 
+			are available for <a title="AMR metadata download" href="ftp://ftp.patricbrc.org/BRC_Mirrors/AMR/PATRIC_genomes_AMR.xlsx" 
+			target="_blank">download</a>.</p>
+			
+			<p>Genus-specific AMR genome sets that contain more than 100 antimicrobial resistant and susceptible genomes for a 
+			given antibiotic are available from the <a href="ftp://ftp.patricbrc.org/patric2/current_release/AMR_genome_sets" 
+			target="_blank">FTP site.</a></p>
                 </div>
+		
+	<!-- Section: What do we mean by -->
+	<div class="data-box" id="dlp-features-data">
+                <h3 class="ribbon-title">What do we mean by ...</h3>
+                <br/>
+                <div class="data-box">
+                    <h4>Antibiotics:</h4>
+                    <p>Antibiotics a type of antimicrobial drugs used in the treatment and prevention of bacterial infections. 
+										They may either kill or inhibit the growth of bacteria. PATRIC provides basic information about commonly 
+										used antibiotics, inlcuding their chemical and physical properties of antibiotics, pharmacology, and 
+										mechanism of action. In addition, each antibiotic is linked to other relevant data available in PATRIC, 
+										such as genomes with AMR phenotypes, AMR genes, and AMR regions. Examples: </p>
+                    <ul>
+                        <li><a href="/view/Antibiotic/?eq(antibiotic_name,methicillin)">amikacin</a></li>
+                        <li><a href="/view/Antibiotic/?eq(antibiotic_name,ethambutol)">ethambutol</a></li>
+												<li><a href="/view/Antibiotic/?eq(antibiotic_name,isoniazid)">isoniazid</a></li>
+												<li><a href="/view/Antibiotic/?eq(antibiotic_name,rifampoin)">rifampoin</a></li>
+												<li><a href="/view/Antibiotic/?eq(antibiotic_name,streptomycin)">streptomycin</a></li>
+                    </ul>
+										<a href="/view/AntibioticList/?keyword(*)">View all antibiotics</a>
+                </div>
+                <div class="data-box">
+                    <h4>AMR Phenotypes:</h4>
+                    <p>AMR phenotypes refers to the resistance or susceptibility of a given organism to one or more antibiotics. 
+										PATRIC collects AMR phenotype data generated using antimicrobial susceptibility testing methods (AST) 
+										from published studies and collaborators. In addition, we also provide predicted AMR phenotypes using machine learning 
+										classifiers. See AMR phenotype data select genera: </p>
+                    <ul>
+                        <li><a href="/view/Taxonomy/1763#view_tab=amr">Mycobacterium</a></li>
+                        <li><a href="/view/Taxonomy/1279#view_tab=amr">Staphylococcus</a></li>
+                        <li><a href="/view/Taxonomy/1301#view_tab=amr">Streptococcus</a></li>
+                        <li><a href="/view/Taxonomy/469#view_tab=amr">Acinetobacter</a></li>
+                        <li><a href="/view/Taxonomy/286#view_tab=amr">Pseudomonas</a></li>
+                    </ul>
+										<a href="/view/Taxonomy/2#view_tab=amr">View all AMR phenotype data</a>
+                </div>
+                <div class="data-box">
+                    <h4>AMR Genes:</h4>
+                    <p>AMR gene means blah blah blah</p>
+                    <ul>
+                        <li>ARDB</li>
+                        <li>CARD</li>
+                        <li>PATRIC AMR</li>
+                    </ul>
+                </div>
+                <div class="data-box">
+                    <h4>AMR Regions</h4>
+                    <p>AMR regions means blah blah blah</p>
+                    <ul>
+                        <li>Virulence factors</li>
+                    </ul>
+                </div>
+                <div class="clear"></div>
+            </div>
 
-			<!-- popular genomes -->
-			<div class="data-box popular-box tabbed hover-tabs no-underline-links">
-				<h3 class="ribbon-title">Select Genomes</h3>
-				<div class="group">
-				</div>
-			</div>
+	<!-- popular genomes -->
+	<div class="data-box popular-box tabbed hover-tabs no-underline-links">
+		<h3 class="ribbon-title">Select Genomes</h3>
+		<div class="group">
 		</div>
+	</div>
+	</div>
 
 		<!-- Section: Tools -->
 
