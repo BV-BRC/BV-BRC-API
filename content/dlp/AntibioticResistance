@@ -31,7 +31,7 @@
 	<div class="data-box" id="dlp-features-data">
                 <h3 class="ribbon-title">What do we mean by ...</h3>
                 <br/>
-                <div class="data-box">
+                <div class="data-box-lg">
                     <h4>Antibiotics:</h4>
                     <p>Antibiotics a type of antimicrobial drugs used in the treatment and prevention of bacterial infections. 
 										They may either kill or inhibit the growth of bacteria. PATRIC provides basic information about commonly 
@@ -47,7 +47,7 @@
                     </ul>
 										<a href="/view/AntibioticList/?keyword(*)">View all antibiotics</a>
                 </div>
-                <div class="data-box">
+                <div class="data-box-lg">
                     <h4>AMR Phenotypes:</h4>
                     <p>AMR phenotypes refers to the resistance or susceptibility of a given organism to one or more antibiotics. 
 										PATRIC collects AMR phenotype data generated using antimicrobial susceptibility testing methods (AST) 
@@ -62,7 +62,7 @@
                     </ul>
 										<a href="/view/Taxonomy/2#view_tab=amr">View all AMR phenotype data</a>
                 </div>
-                <div class="data-box">
+                <div class="data-box-lg">
                     <h4>AMR Genes:</h4>
                     <p>AMR gene means blah blah blah</p>
                     <ul>
@@ -71,7 +71,7 @@
                         <li>PATRIC AMR</li>
                     </ul>
                 </div>
-                <div class="data-box">
+                <div class="data-box-lg">
                     <h4>AMR Regions</h4>
                     <p>AMR regions means blah blah blah</p>
                     <ul>
