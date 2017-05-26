@@ -1,6 +1,6 @@
 <div class="dlp">
 	<span>Data</span>
-    	<h2>Antibiotic Resistance</h2>
+    	<h2>Antimicrobial Resistance (AMR)</h2>
 	<section class="main">
 	
 	<!-- Section: Data -->
@@ -14,18 +14,7 @@
       PATRIC provides a variety of data and analysis tools to help researchers study AMR and its genetic determinants.       
       This includes AMR phenotype data for the bacterial genomes as well as genes and intergenic regions associated with AMR.
 			</p>
-			
-			<p>We also incorporate antibiotic susceptibility testing results as additional genome metadata. Summary filterable 
-			AMR metadata are available from PATRIC genome lists (see <a title="AMR and Clinical Metadata" 
-			href="http://enews.patricbrc.org/faqs/antimicrobial-resistance-and-other-clinical-metadata/" target="_blank">
-			Antimicrobial Resistance and Other Clinical Metadata</a>). Additional AMR data (including panel data when provided), 
-			are available for <a title="AMR metadata download" href="ftp://ftp.patricbrc.org/BRC_Mirrors/AMR/PATRIC_genomes_AMR.xlsx" 
-			target="_blank">download</a>.</p>
-			
-			<p>Genus-specific AMR genome sets that contain more than 100 antimicrobial resistant and susceptible genomes for a 
-			given antibiotic are available from the <a href="ftp://ftp.patricbrc.org/patric2/current_release/AMR_genome_sets" 
-			target="_blank">FTP site.</a></p>
-                </div>
+	</div>
 		
 	<!-- Section: What do we mean by -->
 	<div class="data-box" id="dlp-features-data">
@@ -33,11 +22,11 @@
                 <br/>
                 <div class="data-box-lg">
                     <h4>Antibiotics:</h4>
-                    <p>Antibiotics a type of antimicrobial drugs used in the treatment and prevention of bacterial infections. 
-										They may either kill or inhibit the growth of bacteria. PATRIC provides basic information about commonly 
-										used antibiotics, inlcuding their chemical and physical properties of antibiotics, pharmacology, and 
-										mechanism of action. In addition, each antibiotic is linked to other relevant data available in PATRIC, 
-										such as genomes with AMR phenotypes, AMR genes, and AMR regions. Examples: </p>
+                    <p>Antibiotics are a type of antimicrobial drugs used in the treatment and prevention of bacterial infections. 
+										PATRIC provides basic information about commonly 
+										used antibiotics, inlcuding their chemical and physical properties, pharmacology, and mechanism of action. 
+										In addition, each antibiotic is linked to other relevant data available in PATRIC, such as
+										AMR phenotypes for genomes, AMR genes, and AMR regions. Below are some examples: </p>
                     <ul>
                         <li><a href="/view/Antibiotic/?eq(antibiotic_name,methicillin)">amikacin</a></li>
                         <li><a href="/view/Antibiotic/?eq(antibiotic_name,ethambutol)">ethambutol</a></li>
@@ -49,10 +38,10 @@
                 </div>
                 <div class="data-box-lg">
                     <h4>AMR Phenotypes:</h4>
-                    <p>AMR phenotypes refers to the resistance or susceptibility of a given organism to one or more antibiotics. 
+                    <p>AMR phenotypes refer to the resistance or susceptibility of a given organism to one or more antibiotics. 
 										PATRIC collects AMR phenotype data generated using antimicrobial susceptibility testing methods (AST) 
-										from published studies and collaborators. In addition, we also provide predicted AMR phenotypes using machine learning 
-										classifiers. See AMR phenotype data select genera: </p>
+										from published studies and collaborators. In addition, we also provide predicted AMR phenotypes using 
+										machine learning classifiers. See AMR phenotype data select genera: </p>
                     <ul>
                         <li><a href="/view/Taxonomy/1763#view_tab=amr">Mycobacterium</a></li>
                         <li><a href="/view/Taxonomy/1279#view_tab=amr">Staphylococcus</a></li>
@@ -64,19 +53,24 @@
                 </div>
                 <div class="data-box-lg">
                     <h4>AMR Genes:</h4>
-                    <p>AMR gene means blah blah blah</p>
+                    <p>AMR gene refere to the genes impicated in or associated with the resistance to one or more antibiotics. 
+										The resistance may result from the presence or absense of a gene or specific murations acquired sponteniously 
+										or through evolution over time. We integrate and map known antibiotic resistance genes from the following sources:</p>
                     <ul>
-                        <li>ARDB</li>
-                        <li>CARD</li>
-                        <li>PATRIC AMR</li>
+                        <li><a href="/view/Taxonomy/2#view_tab=specialtyGenes&filter=and(or(eq(property,%22Antibiotic%20Resistance%22)),eq(source,%22ARDB%22))">ARDB</a></li>
+                        <li><a href="/view/Taxonomy/2#view_tab=specialtyGenes&filter=and(or(eq(property,%22Antibiotic%20Resistance%22)),eq(source,%22CARD%22))">CARD</a></li>
+												<li><a href="/view/Taxonomy/2#view_tab=specialtyGenes&filter=and(or(eq(property,%22Antibiotic%20Resistance%22)),eq(source,%22NDARO%22))">NDARO<></li>
+                        <li><a href="/view/Taxonomy/2#view_tab=specialtyGenes&filter=and(or(eq(property,%22Antibiotic%20Resistance%22)),eq(source,%22PATRIC%22))">PATRIC AMR</li>
                     </ul>
+										<a href="/view/Taxonomy/2#view_tab=specialtyGenes&filter=eq(property,%22Antibiotic%20Resistance%22)">View all AMR genes</a>
                 </div>
                 <div class="data-box-lg">
-                    <h4>AMR Regions</h4>
-                    <p>AMR regions means blah blah blah</p>
-                    <ul>
-                        <li>Virulence factors</li>
-                    </ul>
+                    <h4>AMR Regions:</h4>
+                    <p>AMR regions refer to the small genomic regions impicated in or associated with the resistance to one or more antibiotics.
+										The AMR regions are computationally predicted using machine learning classifiers used to predict AMR phenotypes. They may map 
+										to existing genes or intergenic regions and may help identify new AMR genes or understand AMR mechanisms.   
+										</p>
+										<a href="https://www.patricbrc.org/view/FeatureList/?keyword(classifier_predicted_region)#view_tab=features&filter=or(eq(annotation,%22PATRIC%22))">View all AMR regions</a>
                 </div>
                 <div class="clear"></div>
             </div>
