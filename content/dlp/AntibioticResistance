@@ -28,7 +28,7 @@
 										In addition, each antibiotic is linked to other relevant data available in PATRIC, such as
 										AMR phenotypes for genomes, AMR genes, and AMR regions. Below are some examples: </p>
                     <ul>
-                        <li><a href="/view/Antibiotic/?eq(antibiotic_name,methicillin)">amikacin</a></li>
+                        <li><a href="/view/Antibiotic/?eq(antibiotic_name,amikacin)">amikacin</a></li>
                         <li><a href="/view/Antibiotic/?eq(antibiotic_name,ethambutol)">ethambutol</a></li>
 												<li><a href="/view/Antibiotic/?eq(antibiotic_name,isoniazid)">isoniazid</a></li>
 												<li><a href="/view/Antibiotic/?eq(antibiotic_name,rifampoin)">rifampoin</a></li>
@@ -57,10 +57,10 @@
 										The resistance may result from the presence or absense of a gene or specific murations acquired sponteniously 
 										or through evolution over time. We integrate and map known antibiotic resistance genes from the following sources:</p>
                     <ul>
-                        <li><a href="/view/Taxonomy/2#view_tab=specialtyGenes&filter=and(or(eq(property,%22Antibiotic%20Resistance%22)),eq(source,%22ARDB%22))">ARDB</a></li>
-                        <li><a href="/view/Taxonomy/2#view_tab=specialtyGenes&filter=and(or(eq(property,%22Antibiotic%20Resistance%22)),eq(source,%22CARD%22))">CARD</a></li>
-												<li><a href="/view/Taxonomy/2#view_tab=specialtyGenes&filter=and(or(eq(property,%22Antibiotic%20Resistance%22)),eq(source,%22NDARO%22))">NDARO<></li>
-                        <li><a href="/view/Taxonomy/2#view_tab=specialtyGenes&filter=and(or(eq(property,%22Antibiotic%20Resistance%22)),eq(source,%22PATRIC%22))">PATRIC AMR</li>
+                        <li><a href="/view/Taxonomy/2#view_tab=specialtyGenes&filter=and(eq(property,%22Antibiotic%20Resistance%22),eq(source,%22ARDB%22))">ARDB</a></li>
+                        <li><a href="/view/Taxonomy/2#view_tab=specialtyGenes&filter=and(eq(property,%22Antibiotic%20Resistance%22),eq(source,%22CARD%22))">CARD</a></li>
+												<li><a href="/view/Taxonomy/2#view_tab=specialtyGenes&filter=and(eq(property,%22Antibiotic%20Resistance%22),eq(source,%22NDARO%22))">NDARO<></li>
+                        <li><a href="/view/Taxonomy/2#view_tab=specialtyGenes&filter=and(eq(property,%22Antibiotic%20Resistance%22),eq(source,%22PATRIC%22))">PATRIC AMR</li>
                     </ul>
 										<a href="/view/Taxonomy/2#view_tab=specialtyGenes&filter=eq(property,%22Antibiotic%20Resistance%22)">View all AMR genes</a>
                 </div>
@@ -70,7 +70,7 @@
 										The AMR regions are computationally predicted using machine learning classifiers used to predict AMR phenotypes. They may map 
 										to existing genes or intergenic regions and may help identify new AMR genes or understand AMR mechanisms.   
 										</p>
-										<a href="https://www.patricbrc.org/view/FeatureList/?keyword(classifier_predicted_region)#view_tab=features&filter=or(eq(annotation,%22PATRIC%22))">View all AMR regions</a>
+										<a href="/view/FeatureList/?eq(feature_type,classifier_predicted_region)#view_tab=features&filter=or(eq(annotation,%22PATRIC%22))">View all AMR regions</a>
                 </div>
                 <div class="clear"></div>
             </div>
