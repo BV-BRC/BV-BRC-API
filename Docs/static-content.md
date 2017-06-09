@@ -41,7 +41,7 @@ $ brew install git node@6 nginx
 
 ### Configure local domain
 
-add a line below in  `/var/hosts` file
+add a line below in  `/etc/hosts` file
 
 ```
 127.0.0.1	www.patric.local
