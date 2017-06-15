@@ -50,6 +50,9 @@ function buildFasta(sequences,opts){
 			fasta_id = o.feature_id;
 		}
 		var row = ">" + fasta_id + " [" + o.genome_id + "]\n" + o.aa_sequence + "\n"; 
+        if (opts.alignType == "dna"){
+		    row = ">" + fasta_id + " [" + o.genome_id + "]\n" + o.na_sequence + "\n";
+        }
 		fasta.push(row)
 	})
 
@@ -192,7 +195,12 @@ function runFastTree(input,opts){
 	// console.log("GBlocks Temp File Input: ", tempName)
 
 	fs.outputFile(tempName,input,function(err){
-		var child = ChildProcess.spawn("FastTree_LG",["-gamma","-nosupport",tempName],{
+        var runOpts = ["-gamma","-nosupport"];
+        if (opts.alignType == "dna"){
+            runOpts.push("-nt");
+        }
+        runOpts.push(tempName);
+		var child = ChildProcess.spawn("FastTree_LG",runOpts,{
 			stdio: [
 				'pipe',
 				'pipe', // pipe child's stdout to parent
@@ -237,7 +245,11 @@ module.exports = {
 		var def = new defer()
 		// console.log("Execute MSA: ", params)
 		var query = params[0];
-		var opts = {req: req, user: req.user, token:req.headers.authorization}
+        var alignType = "protein";
+        if (params.length > 1){
+            alignType = params[1];
+        }
+		var opts = {req: req, user: req.user, token:req.headers.authorization, alignType:alignType}
 
 
 		when(runQuery(query,opts), function(sequences){
