@@ -51,7 +51,7 @@ function buildFasta(sequences,opts){
 		}
 		var row = ">" + fasta_id + " [" + o.genome_id + "]\n" + o.aa_sequence + "\n"; 
         if (opts.alignType == "dna"){
-		    row = ">" + fasta_id + " [" + o.genome_id + "]\n" + o.aa_sequence + "\n";
+		    row = ">" + fasta_id + " [" + o.genome_id + "]\n" + o.na_sequence + "\n";
         }
 		fasta.push(row)
 	})
