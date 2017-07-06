@@ -10,10 +10,12 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var hpiSearchRouter = require("./routes/hpiSearch");
 var dataTypeRouter = require("./routes/dataType");
 var downloadRouter = require("./routes/download");
 var multiQueryRouter = require("./routes/multiQuery");
 var contentRouter = require("./routes/content");
+var previewRouter = require("./routes/preview");
 var rpcHandler = require("./routes/rpcHandler");
 var jbrowseRouter = require("./routes/JBrowse");
 var indexer = require("./routes/indexer");
@@ -126,6 +128,9 @@ app.use("/stats", function(req, res, next){
 app.use("/content", [
 	contentRouter
 ])
+app.use("/preview", [
+	previewRouter
+])
 
 app.use("/testTimeout", function(req,res,next){
 	setTimeout(function(){
@@ -140,6 +145,10 @@ app.use("/jbrowse/", [
 
 app.use("/query", [
 	multiQueryRouter
+]);
+
+app.use("/hpi/search", [
+	hpiSearchRouter
 ]);
 
 app.param("dataType", function(req, res, next, dataType){

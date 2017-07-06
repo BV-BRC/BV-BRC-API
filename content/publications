@@ -3,13 +3,65 @@
     <section class="main">
 
         <div class="data-box">
+            <h4 class="ribbon-title">2017</h4>
+            <p>Al Dahouk S, Köhler S, Occhialini A, Jiménez de Bagüés MP, Hammerl JA, Eisenberg T, Vergnaud G, Cloeckaert A, 
+            	Zygmunt MS, Whatmore AM, Melzer F, Drees KP, Foster JT, Wattam AR, Scholz HC. 
+            	&#8220;<strong><em>Brucella</em> spp. of amphibians comprise genomically diverse motile strains competent for replication 
+            	in macrophages and survival in mammalian hosts.</strong>&#8221; Sci Rep. 2017 Mar 16;7:44420.
+                PMID:<a href="https://www.ncbi.nlm.nih.gov/pubmed/?term=28300153">28300153</a>.
+                PMCID:<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5353553/">PMC5353553</a>.
+            </p>
+ 
+            <p>Kumar P, Kaushik A, Bell DT, Chauhan V, Xia F, Stevens RL, Lamichhane G. 
+            	&#8220;<strong>Mutation in an Unannotated Protein Confers Carbapenem Resistance in <em>Mycobacterium tuberculosis.</em></strong>&#8221; 
+            	Antimicrob Agents Chemother. 2017 Feb 23;61(3). pii: e02234-16. Print 2017 Mar.
+                PMID:<a href="https://www.ncbi.nlm.nih.gov/pubmed/?term=28069655">28069655</a>.
+                PMCID:<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5328524/">PMC5328524 [Available on 2017-08-23]</a>.
+            </p>
+ 
+            <p>Viana MV, Wattam AR, Govil Batra D, Boisvert S, Brettin TS, Frace M, Xia F, Azevedo V, Tiller R, Hoffmaster AR. 
+            	&#8220;<strong>Genome Sequences of Two <em>Brucella suis</em> Strains Isolated from the Same Patient, 8 Years Apart.</strong>&#8221; 
+            	Genome Announc. 2017 Mar 2;5(9). pii: e01687-16. 
+                PMID:<a href="https://www.ncbi.nlm.nih.gov/pubmed/?term=28254974">28254974</a>.
+                PMCID:<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5334581/">PMC5334581</a>.
+            </p>
+ 
+            <p>Viana MV, Wattam AR, Govil Batra D, Boisvert S, Brettin TS, Frace M, Xia F, Azevedo V, Tiller R, Hoffmaster AR. 
+            	&#8220;<strong>Genome Sequences of Three <em>Brucella canis</em> Strains Isolated from Humans and a Dog.</strong>&#8221; 
+            	Genome Announc. 2017 Feb 23;5(8). pii: e01688-16. 
+                PMID:<a href="https://www.ncbi.nlm.nih.gov/pubmed/?term=28232424">28232424</a>.
+                PMCID:<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5323635/">PMC5323635</a>.
+            </p>
+ 
+            <p>Wattam AR, Davis JJ, Assaf R, Boisvert S, Brettin T, Bun C, Conrad N, Dietrich EM, Disz T, Gabbard JL, Gerdes S, Henry CS, Kenyon RW, Machi D, Mao C, 
+            	Nordberg EK, Olsen GJ, Murphy-Olson DE, Olson R, Overbeek R, Parrello B, Pusch GD, Shukla M, Vonstein V, Warren A, Xia F, Yoo H, Stevens RL. 
+            	&#8220;<strong>Improvements to PATRIC, the all-bacterial Bioinformatics Database and Analysis Resource Center.</strong>&#8221; 
+            	Nucleic Acids Res. 2017 Jan 4;45(D1):D535-D542. Epub 2016 Nov 29.
+                PMID:<a href="https://www.ncbi.nlm.nih.gov/pubmed/?term=27899627">27899627</a>.
+                PMCID:<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5210524/">PMC5210524</a>.
+            </p>
+ 
             <h4 class="ribbon-title">2016</h4>
+            <p>Davis, J. J., Boisvert S, Brettin T, Kenyon RW, Mao C, Olson R, Overbeek R, Santerre J, Shukla M, Wattam AR, Will R, Xia F, Stevens R. 
+            	&#8220;<strong>Antimicrobial Resistance Prediction in PATRIC and RAST.</strong>&#8221; 
+            	Sci Rep (2016) 6:27930. 
+                PMID:<a href="https://www.ncbi.nlm.nih.gov/pubmed/?term=27297683">27297683</a>.
+                PMCID:<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4906388/">PMC4906388</a>.
+            </p>
+ 
             <p>Davis, J. J., S. Gerdes, G. J. Olsen, R. Olson, G. D. Pusch, M. Shukla, V. Vonstein, A. R. Wattam, and H.
                 Yoo. &#8220;<strong>PATtyFams: Protein families for the microbial genomes in the PATRIC
                     database.</strong>&#8221;
                 Frontiers in Microbiology 7 (2016): 118. PMID:<a
-                        href="http://www.ncbi.nlm.nih.gov/pubmed/?term=PATtyFams%3A+Protein+Families+for+the+Microbial+Genomes+in+the+PATRIC+Database">26903996</a>.
+                        href="https://www.ncbi.nlm.nih.gov/pubmed/?term=26903996">26903996</a>.
                 PMCID:<a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4744870/">PMC4744870</a>.
+            </p>
+
+            <p>Smith C, Stringer AM, Mao C, Palumbo MJ, Wade JT. 
+            	&#8220;<strong>Network for <em>Salmonella enterica</em> Serovar Typhimurium Invasion.</strong>&#8221; 
+            	MBio. 2016 Sep 6;7(5). pii: e01024-16. 
+                PMID:<a href="https://www.ncbi.nlm.nih.gov/pubmed/?term=27601571">27601571</a>.
+                PMCID:<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5013294/">PMC5013294</a>.
             </p>
 
             <h4 class="ribbon-title">2015</h4>
