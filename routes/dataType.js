@@ -14,6 +14,7 @@ var Limiter = require("../middleware/Limiter");
 var ContentRange = require("../middleware/content-range");
 var APIMethodHandler = require("../middleware/APIMethodHandler");
 var cacheMiddleware = require("../middleware/cache");
+var patchMiddleware = require("../middleware/patch");
 var httpParams = require("../middleware/http-params");
 var solrjs = require("solrjs");
 var media = require("../middleware/media");
@@ -88,6 +89,22 @@ router.get("*", function(req, res, next){
 	next();
 })
 
+
+// patch/update objects
+router.patch("/:target_id", [
+	bodyParser.json({type: ["application/jsonpatch+json"], limit: "100mb"}),
+	patchMiddleware
+])	
+
+
+//same thing as patch, but done over a post for clients that cannot issue the patch http verb
+router.post("/:target_id", [
+	bodyParser.json({type: ["application/jsonpatch+json"], limit: "100mb"}),
+	patchMiddleware
+])	
+
+
+
 router.post("*", [
 	bodyParser.json({type: ["application/jsonrpc+json"], limit: "30mb"}),
 	bodyParser.json({type: ["application/json"], limit: "30mb"}),
@@ -126,7 +143,7 @@ router.post("*", [
 			req.call_params = [decodeURIComponent(body.rql)]
 			req.queryType = "rql";
 		}else if(body.solr){
-			req.call_params = [decodeURIComponent(body.sorl)];
+			req.call_params = [decodeURIComponent(body.solr)];
 			req.queryType = "solr";
 		}else{
 			return next();
