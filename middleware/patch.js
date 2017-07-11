@@ -129,9 +129,13 @@ module.exports = function(req,res,next){
         when(solr.get(target_id), function(sresults){
                 if(sresults && sresults.doc){
                         var results = sresults.doc;
+		
+//			userModifiableProperties.forEach(function(prop){
+//				if (!results[prop]) { results[prop]=""; }
+//			});
 //			console.log("results: ", results);
                         if(req.user && ((results.owner == req.user) || (results.user_write.indexOf(req.user) >= 0))){
-				//console.log("Got Results: ", results);
+				console.log("Current Obj: ", results);
 				//console.log("Patch: ", patch);
 				
 				if (patch.some(function(p){
@@ -139,18 +143,31 @@ module.exports = function(req,res,next){
 					//console.log("Patch Path Parts: ", parts);	
 					return (userModifiableProperties.indexOf(parts[1])<0)
 				})){
-					return next(new Error("Patch contains non-modifiable properties"));
+					res.status(406).send("Patch contains non-modifiable properties");
+//					return next(new Error("Patch contains non-modifiable properties"));
 				}
 
-				jsonpatch.apply(results,patch);
+				console.log("PATCH: ", patch);
 
+				try {
+					jsonpatch.apply(results,patch);
+				}catch(err){
+					res.status(406).send("Error in patching: " + err);
+					return;
+//					return next(err);
+				}
+
+				console.log("Patched Results: ", results);
 				delete results._version_;
 
 				when(postDocs([results],collection), function(r){
 					//console.log("r: ", r);
 					res.sendStatus(201);
 				}, function(err){
-					next(new Error("Error applying update patch: " + err));
+
+					res.status(406).send("Error storing patched document" + err);
+					return;
+				//	next(new Error("Error applying update patch: " + err));
 				});
 //				console.log("PATCHED RESULTS: ", results);
 
@@ -166,6 +183,8 @@ module.exports = function(req,res,next){
 		}
 	}, function(err){
 		console.log("Error retrieving " + collection  + " with id " + target_id);
+		res.status(406).send("Error retrieving target");
+		res.end();
 	});
 }
 
