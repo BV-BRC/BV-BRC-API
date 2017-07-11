@@ -16,7 +16,7 @@ function processSubsystem(ssState, options){
 		fq: "subsystem_id:[* TO *]",
 		rows: 0,
 		facet: true,
-		'json.facet': '{stat:{type:field,field:subsystem_id,sort:index,limit:-1,facet:{description:{type:field,field:subsystem_name}}},dist:{type:field,field:genome_id,limit:-1,facet:{families:{type:field,field:subsystem_id,limit:-1,sort:{index:asc}}}}}'
+		'json.facet': '{stat:{type:field,field:subsystem_id,sort:index,limit:-1,facet:{description:{type:field,field:subsystem_name},families:{type:field,field:genome_id,limit:-1,sort:{index:asc}}}}}'
 	};
 	const q = Object.keys(query).map(p => p + "=" + query[p]).join("&");
 
@@ -41,9 +41,7 @@ function processSubsystem(ssState, options){
 			return def.resolve([]);
 		}
 		const familyStat = response.facets.stat.buckets;
-
-		const familyIdList = [];
-		familyStat.filter(el => el.val != "").forEach(el => familyIdList.push(el.val));
+		const familyIdList = familyStat.filter(el => el.val != "").map(el => el.val);
 
 		const fetchSize = 5000;
 		const steps = Math.ceil(familyIdList.length / fetchSize);
@@ -78,14 +76,11 @@ function processSubsystem(ssState, options){
 		all(allRequests).then(function(body){
 			debug("subsystem_ref took", (Date.now() - q2St) / 1000, "s");
 
-			let res = [];
-			body.forEach(function(r){
-				res = res.concat(r);
-			});
+			let res = body.reduce((r, b) => {
+				return r.concat(b);
+			}, []);
 			*/
 
-			// const genomeFamilyDist = sub_response.facets.stat.buckets;
-			const genomeFamilyDist = response.facets.dist.buckets;
 			const familyGenomeCount = {};
 			const familyGenomeIdCountMap = {};
 			const familyGenomeIdSet = {};
@@ -93,18 +88,15 @@ function processSubsystem(ssState, options){
 			const genome_ids = ssState.genomeIds;
 			genome_ids.forEach((genomeId, idx) => genomePosMap[genomeId] = idx);
 
-			genomeFamilyDist.forEach((genome) =>{
-				const genomeId = genome.val;
-				const genomePos = genomePosMap[genomeId];
-				const familyBuckets = genome.families.buckets;
+			familyStat.forEach((family) =>{
+				const familyId = family.val;
 
-				familyBuckets.filter(bucket => bucket.val != "").forEach((bucket) =>{
-					const familyId = bucket.val;
+				family.families.buckets.forEach((bucket) => {
+					const genomeId = bucket.val;
+					const genomeCount = (bucket.count < 10)? '0' + bucket.count.toString(16) : bucket.count.toString(16);
+					const genomePos = genomePosMap[genomeId];
 
-					let genomeCount = bucket.count.toString(16);
-					if(genomeCount.length < 2) genomeCount = '0' + genomeCount;
-
-					if(familyId in familyGenomeIdCountMap){
+					if(familyGenomeIdCountMap.hasOwnProperty(familyId)){
 						familyGenomeIdCountMap[familyId][genomePos] = genomeCount;
 					}
 					else{
@@ -113,23 +105,17 @@ function processSubsystem(ssState, options){
 						familyGenomeIdCountMap[familyId] = genomeIdCount;
 					}
 
-					if(familyId in familyGenomeIdSet){
-						familyGenomeIdSet[familyId].push(genomeId);
+					if(familyGenomeIdSet.hasOwnProperty(familyId)){
+						familyGenomeIdSet[familyId].add(genomeId);
 					}
 					else{
-						const genomeIds = new Array(genome_ids.length);
-						genomeIds.push(genomeId);
-						familyGenomeIdSet[familyId] = genomeIds;
+						familyGenomeIdSet[familyId] = new Set([genomeId]);
 					}
 				});
 			});
 
 			Object.keys(familyGenomeIdCountMap).forEach(familyId =>{
-				const hashSet = {};
-				familyGenomeIdSet[familyId].forEach(function(value){
-					hashSet[value] = true;
-				});
-				familyGenomeCount[familyId] = Object.keys(hashSet).length;
+				familyGenomeCount[familyId] = familyGenomeIdSet[familyId].size;
 			});
 
 			const familyRefHash = {};
@@ -143,7 +129,7 @@ function processSubsystem(ssState, options){
 			})
 
 			const data = [];
-			familyStat.filter(el => el.val != "").forEach(el =>{
+			familyStat.filter(el => el.val !== "").forEach(el =>{
 				const familyId = el.val;
 				const featureCount = el.count;
 

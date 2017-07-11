@@ -22,7 +22,7 @@ function processProteinFamily(pfState, options){
 		facet: true,
 		'facet.method': 'fcs',
 		'facet.threads': 48,
-		'json.facet': '{stat:{type:field,field:' + familyId + ',sort:index,limit:-1,facet:{aa_length_min:"min(aa_length)",aa_length_max:"max(aa_length)",aa_length_mean:"avg(aa_length)",ss:"sumsq(aa_length)",sum:"sum(aa_length)"}},dist:{type:field,field:genome_id,limit:-1,facet:{families:{type:field,field:' + familyId + ',limit:-1,sort:{index:asc}}}}}'
+		'json.facet': '{stat:{type:field,field:' + familyId + ',sort:index,limit:-1,facet:{aa_length_min:"min(aa_length)",aa_length_max:"max(aa_length)",aa_length_mean:"avg(aa_length)",ss:"sumsq(aa_length)",sum:"sum(aa_length)",families:{type:field,field:genome_id,limit:-1,sort:{index:asc}}}}}'
 	};
 	const q = Object.keys(query).map(p => p + "=" + query[p]).join("&");
 
@@ -47,9 +47,7 @@ function processProteinFamily(pfState, options){
 			return def.resolve([]);
 		}
 		const familyStat = response.facets.stat.buckets;
-
-		const familyIdList = [];
-		familyStat.filter(el => el.val != "").forEach(el => familyIdList.push(el.val));
+		const familyIdList = familyStat.filter(el => el.val != "").map(el => el.val);
 
 		const fetchSize = 5000;
 		const steps = Math.ceil(familyIdList.length / fetchSize);
@@ -83,13 +81,10 @@ function processProteinFamily(pfState, options){
 		all(allRequests).then(function(body){
 			debug("protein_family_ref took", (Date.now() - q2St) / 1000, "s");
 
-			let res = [];
-			body.forEach(function(r){
-				res = res.concat(r);
-			});
+			const res = body.reduce((r, b) => {
+				return r.concat(b);
+			}, [])
 
-			// const genomeFamilyDist = sub_response.facets.stat.buckets;
-			const genomeFamilyDist = response.facets.dist.buckets;
 			const familyGenomeCount = {};
 			const familyGenomeIdCountMap = {};
 			const familyGenomeIdSet = {};
@@ -97,18 +92,15 @@ function processProteinFamily(pfState, options){
 			const genome_ids = pfState.genomeIds;
 			genome_ids.forEach((genomeId, idx) => genomePosMap[genomeId] = idx);
 
-			genomeFamilyDist.forEach((genome) =>{
-				const genomeId = genome.val;
-				const genomePos = genomePosMap[genomeId];
-				const familyBuckets = genome.families.buckets;
+			familyStat.filter(el => el.val !== "").forEach((family) => {
+				const familyId = family.val;
 
-				familyBuckets.filter(bucket => bucket.val != "").forEach((bucket) =>{
-					const familyId = bucket.val;
+				family.families.buckets.forEach((bucket) => {
+					const genomeId = bucket.val;
+					const genomeCount = (bucket.count < 10)? '0' + bucket.count.toString(16) : bucket.count.toString(16);
+					const genomePos = genomePosMap[genomeId];
 
-					let genomeCount = bucket.count.toString(16);
-					if(genomeCount.length < 2) genomeCount = '0' + genomeCount;
-
-					if(familyId in familyGenomeIdCountMap){
+					if(familyGenomeIdCountMap.hasOwnProperty(familyId)){
 						familyGenomeIdCountMap[familyId][genomePos] = genomeCount;
 					}
 					else{
@@ -117,23 +109,17 @@ function processProteinFamily(pfState, options){
 						familyGenomeIdCountMap[familyId] = genomeIdCount;
 					}
 
-					if(familyId in familyGenomeIdSet){
-						familyGenomeIdSet[familyId].push(genomeId);
+					if(familyGenomeIdSet.hasOwnProperty(familyId)){
+						familyGenomeIdSet[familyId].add(genomeId);
 					}
 					else{
-						const genomeIds = new Array(genome_ids.length);
-						genomeIds.push(genomeId);
-						familyGenomeIdSet[familyId] = genomeIds;
+						familyGenomeIdSet[familyId] = new Set([genomeId]);
 					}
 				});
 			});
 
-			Object.keys(familyGenomeIdCountMap).forEach(familyId =>{
-				const hashSet = {};
-				familyGenomeIdSet[familyId].forEach(function(value){
-					hashSet[value] = true;
-				});
-				familyGenomeCount[familyId] = Object.keys(hashSet).length;
+			Object.keys(familyGenomeIdCountMap).forEach(familyId => {
+				familyGenomeCount[familyId] = familyGenomeIdSet[familyId].size;
 			});
 
 			const familyRefHash = {};
@@ -144,7 +130,7 @@ function processProteinFamily(pfState, options){
 			});
 
 			const data = [];
-			familyStat.filter(el => el.val != "").forEach(el =>{
+			familyStat.filter(el => el.val !== "").forEach(el =>{
 				const familyId = el.val;
 				const featureCount = el.count;
 				let std = 0;
