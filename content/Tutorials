@@ -106,6 +106,16 @@
                             Guide: BLAST Service</a></h4>
                         <p>This document provides step-by-step instructions for locating and using PATRIC's BLAST tool.
                         </p></li>
+                    <li class="clear">
+                        <figure class="figure-right"><a
+                                href="/public/pdfs/Workshop-Similar-Genome-Finder.pdf"><img
+                                src="/public/patric/images/workshop-pdf-icon.jpg"
+                                alt="Workshop Guide: Similar Genome Finder"></a></figure>
+                        <h4 class="bold"><a
+                                href="/public/pdfs/Workshop-Similar-Genome-Finder.pdf">Workshop
+                            Guide: Similar Genome Finder</a></h4>
+                        <p>This document provides step-by-step instructions for locating and using PATRIC's Similar Genome Finder tool.
+                        </p></li>
                 </ul>
             </div>
             <div class="left" style="width: 311px">
