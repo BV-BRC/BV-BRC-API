@@ -161,6 +161,15 @@
                             Guide: Variation Analysis Service</a></h4>
                         <p>This document provides step-by-step instructions for following submitting a variant analysis
                             job and examining the results in PATRIC.</p></li>
+                    <li class="clear">
+                        <figure class="figure-right"><a
+                                href="/public/pdfs/Workshop-CLI.pdf"><img
+                                src="/public/patric/images/workshop-pdf-icon.jpg"
+                                alt="Workshop Guide: Command Line Interface"></a></figure>
+                        <h4 class="bold"><a
+                                href="/public/pdfs/Workshop-Variation-Service.pdf">Workshop
+                            Guide: Command Line Interface</a></h4>
+                        <p>This document provides step-by-step instructions for using Command Line Interface that PATRIC provides.</p></li>
                 </ul>
             </div>
             <div class="clear"></div>
