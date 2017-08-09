@@ -111,7 +111,7 @@ function processProteinFamily(pfState, options){
 			
 			data.forEach(row => {
 				const fid = row[familyId]
-				if (fid === "") return;
+				if (fid === "" || fid === undefined) return;
 
 				if (totalFamilyIdDict.hasOwnProperty(fid)){
 
