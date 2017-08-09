@@ -75,10 +75,9 @@ function processProteinFamily(pfState, options){
 		const subDef = Deferred()
 
 		const query = {
-			q: "genome_id:" + genomeIds[i],
-			fq: "annotation:PATRIC AND feature_type:CDS AND " + familyId + ":[* TO *]",
+			q: "genome_id:" + genomeIds[i] + " AND annotation:PATRIC AND feature_type:CDS",
 			rows: 25000,
-			fl: familyId + ",aa_length"
+			fl: "pgfam_id,plfam_id,figfam_id,aa_length"
 		};
 
 		request.post({
