@@ -4,6 +4,7 @@ const debug = require('debug')('p3api-server:ProteinFamily');
 const request = require('request');
 const config = require("../config");
 const distributeURL = config.get("distributeURL");
+const currentContext = 10;
 const all = require('promised-io/promise').all;
 
 function fetchFamilyDescriptions(familyType, familyIdList){
