@@ -62,6 +62,16 @@
                         <p>This document provides step-by-step instructions examining antimicrobial resistance data
                             in PATRIC.
                         </p></li>
+                    <li class="clear">
+                        <figure class="figure-right"><a
+                                href="/public/pdfs/Workshop-Phylogenetic-Trees.pdf"><img
+                                src="/public/patric/images/workshop-pdf-icon.jpg"
+                                alt="Workshop Guide: Phylogenetic Tree Building"></a></figure>
+                        <h4 class="bold"><a
+                                href="/public/pdfs/Workshop-Phylogenetic-Trees.pdf">Workshop
+                            Guide: Phylogenetic Tree Building</a></h4>
+                        <p>This document provides step-by-step instructions building Phylogenetic tree in PATRIC.</p>
+                    </li>
                 </ul>
             </div>
             <div class="left" style="margin-right: 17px; width: 311px">
