@@ -2,188 +2,228 @@
     <h2>Tutorials</h2>
 
     <section class="main">
-        <!--<div class="data-box">-->
-
-        <div id="pdf_tutorials">
-            <h3 class="section-title normal-case far"><span
-                    class="wrap">Step-by-Step PDF Tutorials</span></h3>
+        <div class="far2x">
+            <h3 class="section-title normal-case far"><span class="wrap">Step-by-Step PDF Tutorials</span></h3>
             <div class="left" style="margin-right: 17px; width: 311px">
-                <ul id="column_pt_0" class="no-decoration no-underline-links">
+                <ul class="no-decoration no-underline-links">
                     <li class="clear">
-                        <figure class="figure-right"><a
-                                href="/public/pdfs/Workshop-Genome-Assembly.pdf"><img
-                                src="/public/patric/images/workshop-pdf-icon.jpg"
-                                alt="Workshop Guide: Genome Assembly"></a></figure>
-                        <h4 class="bold"><a
-                                href="/public/pdfs/Workshop-Genome-Assembly.pdf">Workshop
-                            Guide: Genome Assembly</a></h4>
-                        <p>This document provides step-by-step instructions for submitting an assembly job and examining
-                            the results in PATRIC.</p></li>
+                        <figure class="figure-right"><a href="/public/pdfs/Workshop-Genome-Groups.pdf"><i class="fa fa-3x icon-file-pdf"></i></a></figure>
+                        <h4 class="bold"><a href="/public/pdfs/Workshop-Genome-Groups.pdf">Genome Groups</a></h4>
+                        <p>This document provides step-by-step instructions for creating genome groups that will be used for downstream analysis.</p>
+                    </li>
 
                     <li class="clear">
-                        <figure class="figure-right"><a
-                                href="/public/pdfs/Workshop-Protein-Family-Sorter.pdf"><img
-                                src="/public/patric/images/workshop-pdf-icon.jpg"
-                                alt="Workshop Guide: Protein Family Sorter"></a></figure>
-                        <h4 class="bold"><a
-                                href="/public/pdfs/Workshop-Protein-Family-Sorter.pdf">Workshop
-                            Guide: Protein Family Sorter</a></h4>
-                        <p>This document provides step-by-step instructions for analyzing the proteomes of genome(s) in
-                            PATRIC.</p></li>
+                        <figure class="figure-right"><a href="/public/pdfs/Workshop-Transcriptomics.pdf"><i class="fa fa-3x icon-file-pdf"></i></a></figure>
+                        <h4 class="bold"><a href="/public/pdfs/Workshop-Transcriptomics.pdf">Transcriptomics Page</a></h4>
+                        <p>This document provides step-by-step instructions analyzing transcriptomic data that is available in PATRIC.
+                        </p>
+                    </li>
+                </ul>
+            </div>
+            <div class="left" style="margin-right: 17px; width: 311px">
+                <ul class="no-decoration no-underline-links">
                     <li class="clear">
-                        <figure class="figure-right"><a
-                                href="/public/pdfs/Workshop-RNA-Seq-Submission.pdf"><img
-                                src="/public/patric/images/workshop-pdf-icon.jpg"
-                                alt="Workshop Guide: RNA-Seq Data Submission"></a></figure>
-                        <h4 class="bold"><a
-                                href="/public/pdfs/Workshop-RNA-Seq-Submission.pdf">Workshop
-                            Guide: RNA-Seq Data Submission</a></h4>
-                        <p>This document provides step-by-step instructions for submitting a RNA-Seq job and examining
-                            the results in PATRIC.</p></li>
+                        <figure class="figure-right"><a href="/public/pdfs/Workshop-Antimicrobial-Resistance.pdf"><i class="fa fa-3x icon-file-pdf"></i></a></figure>
+                        <h4 class="bold"><a href="/public/pdfs/Workshop-Antimicrobial-Resistance.pdf">Antimicrobial Resistance</a></h4>
+                        <p>This document provides step-by-step instructions examining antimicrobial resistance data in PATRIC.</p>
+                    </li>
+                </ul>
+            </div>
+            <div class="left" style="width: 311px">
+                <ul class="no-decoration no-underline-links">
                     <li class="clear">
-                        <figure class="figure-right"><a
-                                href="/public/pdfs/Workshop-Pathway-Comparison.pdf"><img
-                                src="/public/patric/images/workshop-pdf-icon.jpg"
-                                alt="Workshop Guide: Comparing Pathways"></a></figure>
-                        <h4 class="bold"><a
-                                href="/public/pdfs/Workshop-Pathway-Comparison.pdf">Workshop
-                            Guide: Comparing Pathways</a></h4>
-                        <p>This document provides step-by-step instructions analyzing pathways associated with genomes
-                            in PATRIC.
-                        </p></li>
+                        <figure class="figure-right"><a href="/public/pdfs/Workshop-CLI.pdf"><i class="fa fa-3x icon-file-pdf"></i></a></figure>
+                        <h4 class="bold"><a href="/public/pdfs/Workshop-CLI.pdf">Command Line Interface</a></h4>
+                        <p>This document provides step-by-step instructions for using Command Line Interface that PATRIC provides.</p>
+                    </li>
+                </ul>
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="far2x">
+            <h3 class="section-title normal-case far"><span class="wrap">Step-by-Step PDF Tutorials for Services</span></h3>
+            <div class="left" style="margin-right: 17px; width: 311px">
+                <h3>Genomics</h3>
+                <ul class="no-decoration no-underline-links">
                     <li class="clear">
-                        <figure class="figure-right"><a
-                                href="/public/pdfs/Workshop-Antimicrobial-Resistance.pdf"><img
-                                src="/public/patric/images/workshop-pdf-icon.jpg"
-                                alt="Workshop Guide: Antimicrobial Resistance"></a></figure>
-                        <h4 class="bold"><a
-                                href="/public/pdfs/Workshop-Antimicrobial-Resistance.pdf">Workshop
-                            Guide: Antimicrobial Resistance</a></h4>
-                        <p>This document provides step-by-step instructions examining antimicrobial resistance data
-                            in PATRIC.
-                        </p></li>
+                        <figure class="figure-right"><a href="/public/pdfs/Workshop-Genome-Assembly.pdf"><i class="fa fa-3x icon-file-pdf"></i></a></figure>
+                        <h4 class="bold"><a href="/public/pdfs/Workshop-Genome-Assembly.pdf">Genome Assembly</a></h4>
+                        <p>This document provides step-by-step instructions for submitting an assembly job and examining
+                            the results in PATRIC.</p>
+                    </li>
+
                     <li class="clear">
-                        <figure class="figure-right"><a
-                                href="/public/pdfs/Workshop-Phylogenetic-Trees.pdf"><img
-                                src="/public/patric/images/workshop-pdf-icon.jpg"
-                                alt="Workshop Guide: Phylogenetic Tree Building"></a></figure>
-                        <h4 class="bold"><a
-                                href="/public/pdfs/Workshop-Phylogenetic-Trees.pdf">Workshop
-                            Guide: Phylogenetic Tree Building</a></h4>
+                        <figure class="figure-right"><a href="/public/pdfs/Workshop-Genome-Annotation.pdf"><i class="fa fa-3x icon-file-pdf"></i></a></figure>
+                        <h4 class="bold"><a href="/public/pdfs/Workshop-Genome-Annotation.pdf">Genome Annotation</a></h4>
+                        <p>This document provides step-by-step instructions for submitting an annotation job and
+                            examining the results in PATRIC.</p>
+                    </li>
+
+                    <li class="clear">
+                        <figure class="figure-right"><a href="/public/pdfs/Workshop-Private-Genome.pdf"><i class="fa fa-3x icon-file-pdf"></i></a></figure>
+                        <h4 class="bold"><a href="/public/pdfs/Workshop-Private-Genome.pdf">Private Genome</a></h4>
+                        <p>This document demonstrates finding and examining data associated with a private genome that
+                            has been annotated in PATRIC.</p>
+                    </li>
+
+                    <li class="clear">
+                        <figure class="figure-right"><a href="/public/pdfs/Workshop-BLAST-Service.pdf"><i class="fa fa-3x icon-file-pdf"></i></a></figure>
+                        <h4 class="bold"><a href="/public/pdfs/Workshop-BLAST-Service.pdf">BLAST Service</a></h4>
+                        <p>This document provides step-by-step instructions for locating and using PATRIC's BLAST tool.
+                        </p>
+                    </li>
+
+                    <li class="clear">
+                        <figure class="figure-right"><a href="/public/pdfs/Workshop-Similar-Genome-Finder.pdf"><i class="fa fa-3x icon-file-pdf"></i></a></figure>
+                        <h4 class="bold"><a href="/public/pdfs/Workshop-Similar-Genome-Finder.pdf">Similar Genome Finder</a></h4>
+                        <p>This document provides step-by-step instructions for locating and using PATRIC's Similar Genome Finder tool.
+                        </p>
+                    </li>
+
+                    <li class="clear">
+                        <figure class="figure-right"><a href="/public/pdfs/Workshop-Variation-Service.pdf"><i class="fa fa-3x icon-file-pdf"></i></a></figure>
+                        <h4 class="bold"><a href="/public/pdfs/Workshop-Variation-Service.pdf">Variation Analysis Service</a></h4>
+                        <p>This document provides step-by-step instructions for following submitting a variant analysis
+                            job and examining the results in PATRIC.</p>
+                    </li>
+
+                    <li class="clear">
+                        <figure class="figure-right"><a href="/public/pdfs/Workshop-Phylogenetic-Trees.pdf"><i class="fa fa-3x icon-file-pdf"></i></a></figure>
+                        <h4 class="bold"><a href="/public/pdfs/Workshop-Phylogenetic-Trees.pdf">Phylogenetic Tree Building</a></h4>
                         <p>This document provides step-by-step instructions building Phylogenetic tree in PATRIC.</p>
                     </li>
                 </ul>
             </div>
             <div class="left" style="margin-right: 17px; width: 311px">
-                <ul id="column_pt_1" class="no-decoration no-underline-links">
+                <h3>Transcriptomics</h3>
+                <ul class="no-decoration no-underline-links">
                     <li class="clear">
-                        <figure class="figure-right"><a
-                                href="/public/pdfs/Workshop-Genome-Annotation.pdf"><img
-                                src="/public/patric/images/workshop-pdf-icon.jpg"
-                                alt="Workshop Guide: Genome Annotation"></a></figure>
-                        <h4 class="bold"><a
-                                href="/public/pdfs/Workshop-Genome-Annotation.pdf">Workshop
-                            Guide: Genome Annotation</a></h4>
-                        <p>This document provides step-by-step instructions for submitting an annotation job and
-                            examining the results in PATRIC.</p></li>
-                    <li class="clear">
-                        <figure class="figure-right"><a
-                                href="/public/pdfs/Workshop-Genome-Groups.pdf"><img
-                                src="/public/patric/images/workshop-pdf-icon.jpg"
-                                alt="Workshop Guide: Genome Groups"></a></figure>
-                        <h4 class="bold"><a
-                                href="/public/pdfs/Workshop-Genome-Groups.pdf">Workshop
-                            Guide: Genome Groups</a></h4>
-                        <p>This document provides step-by-step instructions for creating genome groups that will be used
-                            for downstream analysis.</p></li>
-                    <li class="clear">
-                        <figure class="figure-right"><a
-                                href="/public/pdfs/Workshop-Expression-Import.pdf"><img
-                                src="/public/patric/images/workshop-pdf-icon.jpg"
-                                alt="Workshop Guide: Expression Import"></a></figure>
-                        <h4 class="bold"><a
-                                href="/public/pdfs/Workshop-Expression-Import.pdf">Workshop
-                            Guide: Expression Import</a></h4>
+                        <figure class="figure-right"><a href="/public/pdfs/Workshop-Expression-Import.pdf"><i class="fa fa-3x icon-file-pdf"></i></a></figure>
+                        <h4 class="bold"><a href="/public/pdfs/Workshop-Expression-Import.pdf">Expression Import</a></h4>
                         <p>This document provides step-by-step instructions for loading expression data into PATRIC for
-                            downstream analysis.</p></li>
+                            downstream analysis.</p>
+                    </li>
+
                     <li class="clear">
-                        <figure class="figure-right"><a
-                                href="/public/pdfs/Workshop-BLAST-Service.pdf"><img
-                                src="/public/patric/images/workshop-pdf-icon.jpg"
-                                alt="Workshop Guide: BLAST Service"></a></figure>
-                        <h4 class="bold"><a
-                                href="/public/pdfs/Workshop-BLAST-Service.pdf">Workshop
-                            Guide: BLAST Service</a></h4>
-                        <p>This document provides step-by-step instructions for locating and using PATRIC's BLAST tool.
-                        </p></li>
+                        <figure class="figure-right"><a href="/public/pdfs/Workshop-RNA-Seq-Submission.pdf"><i class="fa fa-3x icon-file-pdf"></i></a></figure>
+                        <h4 class="bold"><a href="/public/pdfs/Workshop-RNA-Seq-Submission.pdf">RNA-Seq Data Submission</a></h4>
+                        <p>This document provides step-by-step instructions for submitting a RNA-Seq job and examining
+                            the results in PATRIC.</p>
+                    </li>
+                </ul>
+
+                <h3>Protein Tools</h3>
+                <ul class="no-decoration no-underline-links">
                     <li class="clear">
-                        <figure class="figure-right"><a
-                                href="/public/pdfs/Workshop-Similar-Genome-Finder.pdf"><img
-                                src="/public/patric/images/workshop-pdf-icon.jpg"
-                                alt="Workshop Guide: Similar Genome Finder"></a></figure>
-                        <h4 class="bold"><a
-                                href="/public/pdfs/Workshop-Similar-Genome-Finder.pdf">Workshop
-                            Guide: Similar Genome Finder</a></h4>
-                        <p>This document provides step-by-step instructions for locating and using PATRIC's Similar Genome Finder tool.
-                        </p></li>
+                        <figure class="figure-right"><a href="/public/pdfs/Workshop-Protein-Family-Sorter.pdf"><i class="fa fa-3x icon-file-pdf"></i></a></figure>
+                        <h4 class="bold"><a href="/public/pdfs/Workshop-Protein-Family-Sorter.pdf">Protein Family Sorter</a></h4>
+                        <p>This document provides step-by-step instructions for analyzing the proteomes of genome(s) in PATRIC.</p>
+                    </li>
+
+                    <li class="clear">
+                        <figure class="figure-right"><a href="/public/pdfs/Workshop-Proteome-Comparison.pdf"><i class="fa fa-3x icon-file-pdf"></i></a></figure>
+                        <h4 class="bold"><a href="/public/pdfs/Workshop-Proteome-Comparison.pdf">Proteome Comparison</a></h4>
+                        <p>This document provides step-by-step instructions for doing a bi-directional BLASTP analysis
+                            comparing up to 10 genomes in PATRIC.</p>
+                    </li>
                 </ul>
             </div>
             <div class="left" style="width: 311px">
-                <ul id="column_pt_2" class="no-decoration no-underline-links">
+                <h3>Metabolomics</h3>
+                <ul class="no-decoration no-underline-links">
                     <li class="clear">
-                        <figure class="figure-right"><a
-                                href="/public/pdfs/Workshop-Proteome-Comparison.pdf"><img
-                                src="/public/patric/images/workshop-pdf-icon.jpg"
-                                alt="Workshop Guide: Proteome Comparison"></a></figure>
-                        <h4 class="bold"><a
-                                href="/public/pdfs/Workshop-Proteome-Comparison.pdf">Workshop
-                            Guide: Proteome Comparison</a></h4>
-                        <p>This document provides step-by-step instructions for doing a bi-directional BLASTP analysis
-                            comparing up to 10 genomes in PATRIC.</p></li>
-                    <li class="clear">
-                        <figure class="figure-right"><a
-                                href="/public/pdfs/Workshop-Private-Genome.pdf"><img
-                                src="/public/patric/images/workshop-pdf-icon.jpg"
-                                alt="Workshop Guide: Private Genome"></a></figure>
-                        <h4 class="bold"><a
-                                href="/public/pdfs/Workshop-Private-Genome.pdf">Workshop
-                            Guide: Private Genome</a></h4>
-                        <p>This document demonstrates finding and examining data associated with a private genome that
-                            has been annotated in PATRIC.</p></li>
-                    <li class="clear">
-                        <figure class="figure-right"><a
-                                href="/public/pdfs/Workshop-Transcriptomics.pdf"><img
-                                src="/public/patric/images/workshop-pdf-icon.jpg"
-                                alt="Workshop Guide: Transcriptomics Page"></a></figure>
-                        <h4 class="bold"><a
-                                href="/public/pdfs/Workshop-Transcriptomics.pdf">Workshop
-                            Guide: Transcriptomics Page</a></h4>
-                        <p>This document provides step-by-step instructions analyzing transcriptomic data that is
-                            available in PATRIC.
-                        </p></li>
-                    <li class="clear">
-                        <figure class="figure-right"><a
-                                href="/public/pdfs/Workshop-Variation-Service.pdf"><img
-                                src="/public/patric/images/workshop-pdf-icon.jpg"
-                                alt="Workshop Guide: Variation Service"></a></figure>
-                        <h4 class="bold"><a
-                                href="/public/pdfs/Workshop-Variation-Service.pdf">Workshop
-                            Guide: Variation Analysis Service</a></h4>
-                        <p>This document provides step-by-step instructions for following submitting a variant analysis
-                            job and examining the results in PATRIC.</p></li>
-                    <li class="clear">
-                        <figure class="figure-right"><a
-                                href="/public/pdfs/Workshop-CLI.pdf"><img
-                                src="/public/patric/images/workshop-pdf-icon.jpg"
-                                alt="Workshop Guide: Command Line Interface"></a></figure>
-                        <h4 class="bold"><a
-                                href="/public/pdfs/Workshop-CLI.pdf">Workshop
-                            Guide: Command Line Interface</a></h4>
-                        <p>This document provides step-by-step instructions for using Command Line Interface that PATRIC provides.</p></li>
+                        <figure class="figure-right"><a href="/public/pdfs/Workshop-Pathway-Comparison.pdf"><i class="fa fa-3x icon-file-pdf"></i></a></figure>
+                        <h4 class="bold"><a href="/public/pdfs/Workshop-Pathway-Comparison.pdf">Comparing Pathways</a></h4>
+                        <p>This document provides step-by-step instructions analyzing pathways associated with genomes
+                            in PATRIC.</p>
+                    </li>
                 </ul>
             </div>
             <div class="clear"></div>
         </div>
-        <!--</div>-->
+
+        <div class="far2x">
+            <h3 class="section-title normal-case far"><span class="wrap">Workshop Slides</span></h3>
+            <div class="left" style="margin-right: 17px; width: 311px">
+                <h3>Day 1</h3>
+                <ul class="no-decoration no-underline-links">
+                    <li class="clear">
+                        <figure class="figure-right"><a href="/public/pdfs/PATRIC_Aug_2017_Introduction.pdf"><i class="fa fa-3x icon-file-pdf"></i></a></figure>
+                        <h4 class="bold"><a href="/public/pdfs/PATRIC_Aug_2017_Introduction.pdf">Introduction</a></h4>
+                        <p>&nbsp;</p>
+                    </li>
+                    <li class="clear">
+                        <h4 class="bold">Assemble a Genome in PATRIC and Data Upload</h4>
+                        <p><i>preparing material</i></p>
+                    </li>
+                    <li class="clear">
+                        <h4 class="bold">Annotate a Genome in PATRIC Using RASTtk</h4>
+                        <p><i>preparing material</i></p>
+                    </li>
+                    <li class="clear">
+                        <h4 class="bold">Proteomic Comparison</h4>
+                        <p><i>preparing material</i></p>
+                    </li>
+                    <li class="clear">
+                        <h4 class="bold">Comparative Genomics: Protein Families and Pathways</h4>
+                        <p><i>preparing material</i></p>
+                    </li>
+                    <li class="clear">
+                        <h4 class="bold">Running PATRIC's tree building service</h4>
+                        <p><i>preparing material</i></p>
+                    </li>
+                </ul>
+            </div>
+            <div class="left" style="margin-right: 17px; width: 311px">
+                <h3>Day 2</h3>
+                <ul class="no-decoration no-underline-links">
+                    <li class="clear">
+                        <h4 class="bold">BLAST at PATRIC</h4>
+                        <p><i>preparing material</i></p>
+                    </li>
+                    <li class="clear">
+                        <h4 class="bold">Similar Genome Finder service</h4>
+                        <p><i>preparing material</i></p>
+                    </li>
+                    <li class="clear">
+                        <figure class="figure-right"><a href="/public/pdfs/PATRIC_Aug_2017_RNA-Seq.pdf"><i class="fa fa-3x icon-file-pdf"></i></a></figure>
+                        <h4 class="bold"><a href="/public/pdfs/PATRIC_Aug_2017_RNA-Seq.pdf">RNA-Seq Pipeline, Downloading Data into PATRIC and Differential Expression</a></h4>
+                        <p>&nbsp;</p>
+                    </li>
+                    <li class="clear">
+                        <h4 class="bold">Expression import service</h4>
+                        <p><i>preparing material</i></p>
+                    </li>
+                    <li class="clear">
+                        <h4 class="bold">Comparative transcriptomics: Exploring public expression data and private data in PATRIC</h4>
+                        <p><i>preparing material</i></p>
+                    </li>
+                    <li class="clear">
+                        <h4 class="bold">SNP and MNP Variation service</h4>
+                        <p><i>preparing material</i></p>
+                    </li>
+                    <li class="clear">
+                        <figure class="figure-right"><a href="/public/pdfs/PATRIC_Aug_2017_TN-Seq.pdf"><i class="fa fa-3x icon-file-pdf"></i></a></figure>
+                        <h4 class="bold"><a href="/public/pdfs/PATRIC_Aug_2017_TN-Seq.pdf">Tn-Seq service</a></h4>
+                        <p>&nbsp;</p>
+                    </li>
+                    <li class="clear">
+                        <h4 class="bold">Building a metabolic model</h4>
+                        <p><i>preparing material</i></p>
+                    </li>
+                </ul>
+            </div>
+            <div class="left" style="width: 311px">
+                <h3>Day 3</h3>
+                <ul class="no-decoration no-underline-links">
+                    <li class="clear">
+                        <h4 class="bold">Introduction to PATRIC command line interface</h4>
+                        <p><i>preparing material</i></p>
+                    </li>
+                </ul>
+            </div>
+            <div class="clear"></div>
+        </div>
     </section>
 </div>
