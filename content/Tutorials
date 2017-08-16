@@ -141,24 +141,25 @@
                         <p>&nbsp;</p>
                     </li>
                     <li class="clear">
-                        <h4 class="bold">Assemble a Genome in PATRIC and Data Upload</h4>
-                        <p><i>preparing material</i></p>
+                        <figure class="figure-right"><a href="/public/pdfs/PATRIC_Aug_2017_Assembly.pdf"><i class="fa fa-3x icon-file-pdf"></i></a></figure>
+                        <h4 class="bold"><a href="/public/pdfs/PATRIC_Aug_2017_Assembly.pdf">Assemble a Genome in PATRIC and Data Upload</a></h4>
+                        <p>&nbsp;</p>
                     </li>
                     <li class="clear">
                         <h4 class="bold">Annotate a Genome in PATRIC Using RASTtk</h4>
-                        <p><i>preparing material</i></p>
+                        <p><i>Live demo</i></p>
                     </li>
                     <li class="clear">
                         <h4 class="bold">Proteomic Comparison</h4>
-                        <p><i>preparing material</i></p>
+                        <p><i>Live demo</i></p>
                     </li>
                     <li class="clear">
                         <h4 class="bold">Comparative Genomics: Protein Families and Pathways</h4>
-                        <p><i>preparing material</i></p>
+                        <p><i>Live demo</i></p>
                     </li>
                     <li class="clear">
                         <h4 class="bold">Running PATRIC's tree building service</h4>
-                        <p><i>preparing material</i></p>
+                        <p><i>Live demo</i></p>
                     </li>
                 </ul>
             </div>
@@ -167,28 +168,22 @@
                 <ul class="no-decoration no-underline-links">
                     <li class="clear">
                         <h4 class="bold">BLAST at PATRIC</h4>
-                        <p><i>preparing material</i></p>
+                        <p><i>Live demo</i></p>
                     </li>
                     <li class="clear">
                         <h4 class="bold">Similar Genome Finder service</h4>
-                        <p><i>preparing material</i></p>
+                        <p><i>Live demo</i></p>
                     </li>
                     <li class="clear">
                         <figure class="figure-right"><a href="/public/pdfs/PATRIC_Aug_2017_RNA-Seq.pdf"><i class="fa fa-3x icon-file-pdf"></i></a></figure>
                         <h4 class="bold"><a href="/public/pdfs/PATRIC_Aug_2017_RNA-Seq.pdf">RNA-Seq Pipeline, Downloading Data into PATRIC and Differential Expression</a></h4>
                         <p>&nbsp;</p>
                     </li>
+
                     <li class="clear">
-                        <h4 class="bold">Expression import service</h4>
-                        <p><i>preparing material</i></p>
-                    </li>
-                    <li class="clear">
-                        <h4 class="bold">Comparative transcriptomics: Exploring public expression data and private data in PATRIC</h4>
-                        <p><i>preparing material</i></p>
-                    </li>
-                    <li class="clear">
-                        <h4 class="bold">SNP and MNP Variation service</h4>
-                        <p><i>preparing material</i></p>
+                        <figure class="figure-right"><a href="/public/pdfs/PATRIC_Aug_2017_Variation.pdf"><i class="fa fa-3x icon-file-pdf"></i></a></figure>
+                        <h4 class="bold"><a href="/public/pdfs/PATRIC_Aug_2017_Variation.pdf">SNP and MNP Variation service</a></h4>
+                        <p>&nbsp;</p>
                     </li>
                     <li class="clear">
                         <figure class="figure-right"><a href="/public/pdfs/PATRIC_Aug_2017_TN-Seq.pdf"><i class="fa fa-3x icon-file-pdf"></i></a></figure>
