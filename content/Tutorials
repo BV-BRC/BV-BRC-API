@@ -127,6 +127,12 @@
                         <p>This document provides step-by-step instructions for doing a bi-directional BLASTP analysis
                             comparing up to 10 genomes in PATRIC.</p>
                     </li>
+
+                    <li class="clear">
+                        <figure class="figure-right"><a href="/public/pdfs/Workshop-Proteome-Comparison-Excel-formatting.pdf"><i class="fa fa-3x icon-file-pdf"></i></a></figure>
+                        <h4 class="bold"><a href="/public/pdfs/Workshop-Proteome-Comparison-Excel-formatting.pdf">Excel formatting for Proteome Comparison</a></h4>
+                        <p>This document provides step-by-step instructions for excel formatting for Proteome Comparison analysis.</p>
+                    </li>
                 </ul>
             </div>
             <div class="left" style="width: 311px">
@@ -218,6 +224,7 @@
                 <h3>Day 3</h3>
                 <ul class="no-decoration no-underline-links">
                     <li class="clear">
+                        <figure class="figure-right"><a href="https://github.com/PATRIC3/PATRIC-distribution" target="_blank"><i class="fa fa-3x icon-link"></i></a></figure>
                         <h4 class="bold">Introduction to PATRIC command line interface</h4>
                         <p><i>preparing material</i></p>
                     </li>
