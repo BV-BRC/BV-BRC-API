@@ -150,7 +150,8 @@
                         <p><i>Live demo</i></p>
                     </li>
                     <li class="clear">
-                        <h4 class="bold">Proteomic Comparison</h4>
+                        <figure class="figure-right"><a href="/public/pdfs/PATRIC_ProteomeComparison.pdf"><i class="fa fa-3x icon-file-pdf"></i></a></figure>
+                        <h4 class="bold"><a href="/public/pdfs/PATRIC_ProteomeComparison.pdf">Proteomic Comparison</a></h4>
                         <p><i>Live demo</i></p>
                     </li>
                     <li class="clear">
@@ -191,7 +192,8 @@
                         <p>&nbsp;</p>
                     </li>
                     <li class="clear">
-                        <h4 class="bold">Building a metabolic model</h4>
+                        <figure class="figure-right"><a href="/public/pdfs/PATRIC_Metabolic_Modeling.pdf"><i class="fa fa-3x icon-file-pdf"></i></a></figure>
+                        <h4 class="bold"><a href="/public/pdfs/PATRIC_Metabolic_Modeling.pdf">Building a metabolic model</a></h4>
                         <p><i>preparing material</i></p>
                     </li>
                 </ul>
