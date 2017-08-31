@@ -1,0 +1,72 @@
+<div class="dlp">
+    <h2>Data Submission to PATRIC</h2>
+
+    <section class="main">
+        <div class="data-box">
+
+            <h3 class="ribbon-title">How to submit data to PATRIC</h3>
+            <p>PATRIC provides a repository of genomic and other data types, collected and integrated from multiple sources 
+                including public repositories, special studies, and individual researchers. There are two methods for 
+                depositing and making your data available in PATRIC: </p>
+            
+            <h4 class="ribbon-title">To make your data fully integrated and publicly available in PATRIC</h4>
+            <p>Please contact the PATRIC team at <a href="mailto:help@patricbrc.org">help@patricbrc.org</a> 
+                and we will work with you to incorporate your data along with the associated metadata
+                that will enhance its search-ability and enable advanced comparative analyses with other PATRIC data. 
+                Currently supported data types include those listed below. Other data types can potentially be included 
+                as downloadable files on the <a href="ftp://ftp.patricbrc.org/patric2">PATRIC FTP server</a>.
+            </p>
+            <ul>
+                <li>Genomes (annotated with the <a href="/app/Annotation">PATRIC Genome Annotation Service</a>)</li>
+                <li>Gene annotations, which will be associated with the corresponding gene in PATRIC as a structured assertion on the gene page</li>
+                <li>Expression data, including microarray, protein, and RNA-Seq</li>
+                <li>Tn-Seq data</li>
+                <li>Protein-protein interactions</li>
+            </ul>
+            
+            <h4 class="ribbon-title">To upload your data into a PATRIC workspace for analysis or sharing with other registered PATRIC users</h4>
+            <p><a href="https://user.patricbrc.org/register">Register at PATRIC</a> and log in. You will then be able to upload your data into a private workspace 
+                and use the analysis tools listed below. You can also create special workspace for sharing with specific 
+                other registered users, or share as a "<a href="/workspace/public">public workspace</a>" 
+                available to all other registered users who are logged in. </p>
+            <dl>
+                <dt><b>Genomics</b></dt>
+                <dd>
+                    <ul>
+                        <li><a href="/app/Assembly">Genome Assembly</a></li>
+                        <li><a href="/app/Annotation">Genome Annotation</a></li>
+                        <li><a href="/app/GenomeDistance">Similar Genome Finder</a></li>
+                        <li><a href="/app/Variation">Variation Analysis</a></li>
+                        <li><a href="/app/Tnseq">Tn-Seq Analysis</a></li>
+                        <li><a href="/app/PhylogeneticTree">Phylogenetic Tree Builder</a></li>
+                    </ul>
+                </dd>
+                <dt><b>Transcriptomics</b></dt>
+                <dd>
+                    <ul>
+                        <li><a href="/app/Expression">Expression Import</a></li>
+                        <li><a href="/app/Rnaseq">RNA-Seq Analysis</a></li>
+                    </ul>
+                </dd>
+                <dt><b>Protein Tools</b></dt>
+                <dd>
+                    <ul>
+                        <li><a href="/app/SeqComparison">Proteome Comparison</a></li>
+                    </ul>
+                </dd>
+                <dt><b>Metabolomics</b></dt>
+                <dd>
+                    <ul>
+                        <li><a href="/app/Reconstruct">Model Reconstruction</a></li>
+                    </ul>
+                </dd>
+                <dt><b>Data</b></dt>
+                <dd>
+                    <ul>
+                        <li><a href="/app/IDMapper">ID Mapper</a></li>
+                    </ul>
+                </dd>
+            </dl>
+        </div>
+    </section>
+</div>
