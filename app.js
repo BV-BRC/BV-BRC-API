@@ -39,9 +39,6 @@ app.set('views', [
 ]);
 app.set('view engine', 'ejs');
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(__dirname + '/public/favicon.ico'));
-
 var reqId = 0;
 
 var stats = null;
@@ -100,10 +97,6 @@ app.use(cors({
 	credential: true,
 	maxAge: 8200
 }));
-
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.use("/js", express.static(path.join(__dirname, 'public/js')));
 
 var collections = config.get("collections");
 
