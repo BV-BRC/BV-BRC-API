@@ -12,11 +12,11 @@ var streamQuery = function(req, res, next){
 	}
 
 	var query = req.call_params[0];
-	debug("querySOLR() req.params", req.call_params);
+	// debug("querySOLR() req.params", req.call_params);
 	var solr = new solrjs(SOLR_URL + "/" + req.call_collection);
 	debug("querySOLR() query: ", query);
 	when(solr.stream(query), function(results){
-		debug("APIMethodHandler solr.streamQuery results: ", results);
+		// debug("APIMethodHandler solr.streamQuery results: ", results);
 		res.results = results;
 		next();
 	}, function(err){
@@ -31,7 +31,7 @@ var querySOLR = function(req, res, next){
 	}
 
 	var query = req.call_params[0];
-	debug("querySOLR() req.params", req.call_params);
+	// debug("querySOLR() req.params", req.call_params);
 	var solr = new solrjs(SOLR_URL + "/" + req.call_collection);
 	debug("querySOLR() query: ", query);
 	when(solr.query(query), function(results){
@@ -80,26 +80,26 @@ var getSOLR = function(req, res, next){
 };
 
 var getSchema= function(req, res, next){
-    debug(SOLR_URL + "/" + req.call_collection +"/schema");
+	debug(SOLR_URL + "/" + req.call_collection +"/schema");
 	request.get({
 		url: SOLR_URL + "/" + req.call_collection +"/schema",
 		headers: {
 			accept:"application/json"
 		}
 	}, function(err, r, body){
-		//debug("Distribute RESULTS: ", body);
-        debug("schema results: "+body);
-		debug("r.headers: ", r.headers);
+		// debug("Distribute RESULTS: ", body);
+		// debug("schema results: "+body);
+		// debug("r.headers: ", r.headers);
 		if(err){
-            debug("Error in SOLR Get: ", err);
-            return next(err);
+			debug("Error in SOLR Get: ", err);
+			return next(err);
 		}
 
 		if(body && typeof body == "string"){
 			body = JSON.parse(body)
 		}
-        res.results=body;
-        next();
+		res.results=body;
+		next();
 	});
 };
 

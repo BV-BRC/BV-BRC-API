@@ -57,7 +57,7 @@ module.exports = {
 				})
 			});
 		}else if(req.call_method == "query"){
-			debug("query response: ", res.results);
+
 			if(res.results && res.results.response && res.results.response.docs){
 				if(!fields){
 					fields = Object.keys(res.results.response.docs[0]);
@@ -77,7 +77,7 @@ module.exports = {
 							return "";
 						}
 					});
-					// debug("row: ", row);
+
 					res.write(row.join(",") + "\n");
 				});
 				res.end();

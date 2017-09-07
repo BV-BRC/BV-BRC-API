@@ -11,7 +11,7 @@ var querySOLR = function(req, res, next){
 	}
 
 	var query = req.call_params[0];
-	debug("querySOLR() req.params", req.call_params);
+	// debug("querySOLR() req.params", req.call_params);
 	var solr = new solrjs(SOLR_URL + "/" + req.call_collection);
 	debug("querySOLR() query: ", query);
 	when(solr.query(query), function(results){

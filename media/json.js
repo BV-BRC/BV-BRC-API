@@ -8,12 +8,12 @@ module.exports = {
 		debug("application/json handler");
 		if(req.call_method == "stream"){
 			when(res.results, function(results){
-				debug("res.results: ", results);
+				// debug("res.results: ", results);
 				var docCount = 0;
 				res.write("[");
 				var head;
 				results.stream.pipe(es.mapSync(function(data){
-					debug("STREAM DATA: ", data);
+					// debug("STREAM DATA: ", data);
 					if(!head){
 						head = data;
 					}else{

@@ -31,7 +31,7 @@ function serializeRow(type, o){
 module.exports = {
 	contentType: "application/dna+fasta",
 	serialize: function(req, res, next){
-		debug("application/dna+fastahandler");
+		// debug("application/dna+fastahandler");
 
 		if(req.isDownload){
 			// res.set("content-disposition", "attachment; filename=patric_genomes.fasta");

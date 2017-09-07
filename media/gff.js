@@ -54,7 +54,7 @@ function serializeRow(type, o){
 module.exports = {
 	contentType: "application/gff",
 	serialize: function(req, res, next){
-		debug("application/sralign+dna+fasta");
+		// debug("application/gff");
 
 		if(req.isDownload){
 			res.attachment('PATRIC_' + req.call_collection + '.gff');
@@ -63,7 +63,7 @@ module.exports = {
 
 		if(req.call_method == "stream"){
 			when(res.results, function(results){
-				debug("res.results: ", results);
+				// debug("res.results: ", results);
 				var docCount = 0;
 				var head;
 
