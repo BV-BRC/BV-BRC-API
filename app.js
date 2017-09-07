@@ -32,12 +32,6 @@ app.set('etag', "strong");
 
 debug("APP MODE: ", app.get('env'));
 
-require("./enableMultipleViewRoots")(app);
-app.set('views', [
-	path.join(__dirname, 'views'),
-	path.join(__dirname, 'node_modules', "dme", "views")
-]);
-app.set('view engine', 'ejs');
 
 var reqId = 0;
 
