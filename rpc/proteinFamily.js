@@ -11,62 +11,84 @@ const RedisTTL = 60*60*24; // sec
 const currentContext = 5;
 const all = require('promised-io/promise').all;
 
+function fetchFamilyDescriptionBatch(familyIdList){
+	const def = Deferred()
+	const familyRefHash = {}
+
+	redisClient.mget(familyIdList, function(err, replies){
+
+		const missingIds = []
+		replies.forEach((reply, i) => {
+			if (reply == null) {
+				missingIds.push( familyIdList[i] )
+			} else {
+				familyRefHash[familyIdList[i]] = reply
+			}
+		})
+
+		if (missingIds.length == 0){
+			def.resolve(familyRefHash)
+		} 
+		else {
+			request.post({
+				url: distributeURL + 'protein_family_ref/',
+				json: true,
+				headers: {
+						'Accept': "application/json",
+						'Content-Type': "application/solrquery+x-www-form-urlencoded",
+						'Authorization': ""
+				},
+				body: 'q=family_id:(' + missingIds.join(' OR ') + ')&fl=family_id,family_product&rows=' + missingIds.length
+			}, function(error, resp, body){
+				if(error){
+					def.reject(error);
+				}
+
+				body.forEach(family => {
+					redisClient.set(family.family_id, family.family_product)
+					familyRefHash[family.family_id] = family.family_product
+				})
+
+				def.resolve(familyRefHash)
+			})
+		}
+	})
+
+	return def.promise
+}
+
 function fetchFamilyDescriptions(familyIdList){
-
-	const def = Deferred();
-	const fetchSize = 3000;
-	const steps = Math.ceil(familyIdList.length / fetchSize);
-	const allRequests = [];
-
-	const q2St = Date.now();
+	const def = Deferred()
+	const fetchSize = 3000
+	const steps = Math.ceil(familyIdList.length / fetchSize)
+	const allRequests = []
+	const qSt = Date.now()
 
 	for(let i = 0; i < steps; i++){
 		const subDef = Deferred();
 		const subFamilyIdList = familyIdList.slice(i * fetchSize, Math.min((i + 1) * fetchSize, familyIdList.length));
 
-		// debug("subFamilyList: ", subFamilyIdList.length, i*fetchSize, Math.min((i+1)*fetchSize, familyIdList.length));
-		request.post({
-			url: distributeURL + 'protein_family_ref/',
-			json: true,
-			headers: {
-				'Accept': "application/json",
-				'Content-Type': "application/solrquery+x-www-form-urlencoded",
-				'Authorization': ""
-			},
-			body: 'q=family_id:(' + subFamilyIdList.join(' OR ') + ')&fl=family_id,family_product&rows=' + subFamilyIdList.length
-		}, function(error, resp, body){
-			if(error){
-				subDef.reject(error);
-			}
-			subDef.resolve(body);
-		});
-		allRequests.push(subDef);
+		allRequests.push( fetchFamilyDescriptionBatch(subFamilyIdList) )
 	}
-	// debug("querying protein_family_ref: ", familyIdList.length);
 
-	all(allRequests).then(function(body){
-		debug("protein_family_ref took", (Date.now() - q2St) / 1000, "s");
+	debug("protein_family_ref checking cache took", (Date.now() - qSt) / 1000, "s")
 
-		const res = body.reduce((r, b) => {
-			return r.concat(b);
-		}, [])
+	all(allRequests).then(body => {
+		debug("protein_family_ref took", (Date.now() - qSt) / 1000, "s")
 
-		const familyRefHash = {};
-		res.forEach(function(el){
-			if(!familyRefHash.hasOwnProperty(el.family_id)){
-				familyRefHash[el.family_id] = el.family_product;
-			}
-		});
+		const familyRefHash = body.reduce((r, b) => {
+				return Object.assign(r,b);
+		}, {})
 
 		def.resolve(familyRefHash);
-	});
+	})
 
-	return def.promise;
+	return def.promise
 }
 
 function fetchFamilyDataByGenomeId(genomeId, options){
 	const def = Deferred()
-	const key = 'pfs_gf_' + genomeId
+	const key = 'pfs_' + genomeId
 
 	redisClient.get(key, function(err, familyData) {
 
@@ -88,8 +110,12 @@ function fetchFamilyDataByGenomeId(genomeId, options){
 				if(error){
 					def.reject(error);
 				}
-				redisClient.set(key, JSON.stringify(body), 'EX', RedisTTL);
-				def.resolve(body);
+				if (typeof body == "object") {
+					redisClient.set(key, JSON.stringify(body), 'EX', RedisTTL);
+					def.resolve(body);
+				} else {
+					def.reject(body)
+				}
 			});
 		} else {
 			redisClient.expire(key, RedisTTL)
@@ -110,7 +136,7 @@ function fetchFamilyData(familyType, genomeIdList, options){
 		allRequests.push(fetchFamilyDataByGenomeId(genomeId, options));
 	})
 
-	all(allRequests).then(function(body){
+	all(allRequests).then(body => {
 
 		debug("fetching family data took ", (Date.now() - qSt) / 1000, "s");
 
