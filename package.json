@@ -29,6 +29,7 @@
     "node-xlsx": "^0.6.0",
     "p3-user": "https://github.com/PATRIC3/p3_user.git",
     "promised-io": "~0.3.4",
+    "redis": "^2.8.0",
     "replify": "~1.2.0",
     "request": "~2.47.0",
     "rql": "^0.3.3",
