@@ -5,68 +5,365 @@
         <div class="data-box">
 
             <h4 class="ribbon-title">PATRIC 3</h4>
-| Institute/Conference                                                           | Location               | Date   | # Participants |
-|--------------------------------------------------------------------------------|------------------------|--------|----------------|
-| Indo-US Workshop on Genomics and Bioinformatics                                | Faridabad, India       | Sep-17 | 25             |
-| International Conference for Systems Biology (ISCB)                            | Blacksburg, VA         | Aug-17 | 8              |
-| Argonne National Laboratory                                                    | Argonne, IL            | Aug-17 | 30             |
-| Max Planck Institute of Marine Microbiology                                    | Bremen, Germany        | Aug-17 | 25             |
-| Universidad El Bosque                                                          | Bogotá, Colombia       | Aug-17 | 35             |
-| Siriraj Medical Research Building (SiMR), Siriraj Hospital, Mahidol University | Bangkok, Thailand      | Jul-17 | 40             |
-| University of Michigan                                                         | Ann Arbor, MI          | Jul-17 | 25             |
-| ASM Microbe                                                                    | New Orleans            | Jun-17 | 52             |
-| Virginia Tech Honors Course                                                    | Blacksburg, VA         | Jun-17 | 8              |
-| GLBIO 2017                                                                     | Chicago, IL            | May-17 | 20             |
-| Sloan Kettering Cancer Center                                                  | New York, NY           | May-17 | 20             |
-| North Carolina State University                                                | Raleigh, NC            | Mar-17 | 25             |
-| Argonne National Laboratory                                                    | Argonne, IL            | Dec-16 | 20             |
-| TWAS-ROESEAP Workshop                                                          | Bangkok, Thailand      | Dec-16 | 40             |
-| University of Florida                                                          | Gainesville, FL        | Oct-16 | 32             |
-| Argonne National Laboratory                                                    | Argonne, IL            | Jul-16 | 20             |
-| Biotechnology Educators Conference                                             | Blacksburg, VA         | Jul-16 | 30             |
-| ASM Microbe                                                                    | Boston, MA             | Jun-16 | 64             |
-| Sanford Burnham Prebys Medical Discovery Institute                             | San Diego, CA          | May-16 | 30             |
-| India International Center                                                     | New Delhi, India       | Jan-16 | 32             |
-| 2015 Brucellosis Conference                                                    | Chicago, IL            | Dec-15 | 12             |
-| University of Nebraska Medical Center                                          | Omaha, NE              | Sep-15 | 15             |
-| Mayo Clinic                                                                    | Rochester, MN          | Aug-15 | 8              |
-| Houston Methodist Research Institute                                           | Houston, TX            | Aug-15 | 28             |
-| University of Florida                                                          | Gainesville, FL        | Jul-15 | 35             |
-| San Diego State University                                                     | San Diego, CA          | Jul-15 | 22             |
-| Biotechnology Educators Conference                                             | Blacksburg, VA         | Jul-15 | 37             |
-| University of Chicago/ANL                                                      | Argonne, IL            | Jun-15 | 20             |
-| China (3 workshops)                                                            | Beijing, Shanghai      | Jun-15 | 130            |
-| Virginia Tech Research Center                                                  | Arlington, VA          | May-15 | 15             |
-| ISCB-Latin America X-Meeting in Bioinformatics1                                | Belo Horizonte, Brazil | Oct-14 | 40             |
-
+<table class="p3basic">
+<thead>
+<tr>
+<th>Institute/Conference</th>
+<th>Location</th>
+<th>Date</th>
+<th># Participants</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Indo-US Workshop on Genomics and Bioinformatics</td>
+<td>Faridabad, India</td>
+<td>Sep-17</td>
+<td>25</td>
+</tr>
+<tr>
+<td>International Conference for Systems Biology (ISCB)</td>
+<td>Blacksburg, VA</td>
+<td>Aug-17</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Argonne National Laboratory</td>
+<td>Argonne, IL</td>
+<td>Aug-17</td>
+<td>30</td>
+</tr>
+<tr>
+<td>Max Planck Institute of Marine Microbiology</td>
+<td>Bremen, Germany</td>
+<td>Aug-17</td>
+<td>25</td>
+</tr>
+<tr>
+<td>Universidad El Bosque</td>
+<td>Bogotá, Colombia</td>
+<td>Aug-17</td>
+<td>35</td>
+</tr>
+<tr>
+<td>Siriraj Medical Research Building (SiMR), Siriraj Hospital, Mahidol University</td>
+<td>Bangkok, Thailand</td>
+<td>Jul-17</td>
+<td>40</td>
+</tr>
+<tr>
+<td>University of Michigan</td>
+<td>Ann Arbor, MI</td>
+<td>Jul-17</td>
+<td>25</td>
+</tr>
+<tr>
+<td>ASM Microbe</td>
+<td>New Orleans</td>
+<td>Jun-17</td>
+<td>52</td>
+</tr>
+<tr>
+<td>Virginia Tech Honors Course</td>
+<td>Blacksburg, VA</td>
+<td>Jun-17</td>
+<td>8</td>
+</tr>
+<tr>
+<td>GLBIO 2017</td>
+<td>Chicago, IL</td>
+<td>May-17</td>
+<td>20</td>
+</tr>
+<tr>
+<td>Sloan Kettering Cancer Center</td>
+<td>New York, NY</td>
+<td>May-17</td>
+<td>20</td>
+</tr>
+<tr>
+<td>North Carolina State University</td>
+<td>Raleigh, NC</td>
+<td>Mar-17</td>
+<td>25</td>
+</tr>
+<tr>
+<td>Argonne National Laboratory</td>
+<td>Argonne, IL</td>
+<td>Dec-16</td>
+<td>20</td>
+</tr>
+<tr>
+<td>TWAS-ROESEAP Workshop</td>
+<td>Bangkok, Thailand</td>
+<td>Dec-16</td>
+<td>40</td>
+</tr>
+<tr>
+<td>University of Florida</td>
+<td>Gainesville, FL</td>
+<td>Oct-16</td>
+<td>32</td>
+</tr>
+<tr>
+<td>Argonne National Laboratory</td>
+<td>Argonne, IL</td>
+<td>Jul-16</td>
+<td>20</td>
+</tr>
+<tr>
+<td>Biotechnology Educators Conference</td>
+<td>Blacksburg, VA</td>
+<td>Jul-16</td>
+<td>30</td>
+</tr>
+<tr>
+<td>ASM Microbe</td>
+<td>Boston, MA</td>
+<td>Jun-16</td>
+<td>64</td>
+</tr>
+<tr>
+<td>Sanford Burnham Prebys Medical Discovery Institute</td>
+<td>San Diego, CA</td>
+<td>May-16</td>
+<td>30</td>
+</tr>
+<tr>
+<td>India International Center</td>
+<td>New Delhi, India</td>
+<td>Jan-16</td>
+<td>32</td>
+</tr>
+<tr>
+<td>2015 Brucellosis Conference</td>
+<td>Chicago, IL</td>
+<td>Dec-15</td>
+<td>12</td>
+</tr>
+<tr>
+<td>University of Nebraska Medical Center</td>
+<td>Omaha, NE</td>
+<td>Sep-15</td>
+<td>15</td>
+</tr>
+<tr>
+<td>Mayo Clinic</td>
+<td>Rochester, MN</td>
+<td>Aug-15</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Houston Methodist Research Institute</td>
+<td>Houston, TX</td>
+<td>Aug-15</td>
+<td>28</td>
+</tr>
+<tr>
+<td>University of Florida</td>
+<td>Gainesville, FL</td>
+<td>Jul-15</td>
+<td>35</td>
+</tr>
+<tr>
+<td>San Diego State University</td>
+<td>San Diego, CA</td>
+<td>Jul-15</td>
+<td>22</td>
+</tr>
+<tr>
+<td>Biotechnology Educators Conference</td>
+<td>Blacksburg, VA</td>
+<td>Jul-15</td>
+<td>37</td>
+</tr>
+<tr>
+<td>University of Chicago/ANL</td>
+<td>Argonne, IL</td>
+<td>Jun-15</td>
+<td>20</td>
+</tr>
+<tr>
+<td>China (3 workshops)</td>
+<td>Beijing, Shanghai</td>
+<td>Jun-15</td>
+<td>130</td>
+</tr>
+<tr>
+<td>Virginia Tech Research Center</td>
+<td>Arlington, VA</td>
+<td>May-15</td>
+<td>15</td>
+</tr>
+<tr>
+<td>ISCB-Latin America X-Meeting in Bioinformatics1</td>
+<td>Belo Horizonte, Brazil</td>
+<td>Oct-14</td>
+<td>40</td>
+</tr>
+</tbody>
+</table>
+<br><br>
 
             <h4 class="ribbon-title">PATRIC 2</h4>
-| Institute/Conference                                                            | Location              | Date   | # Participants |
-|---------------------------------------------------------------------------------|-----------------------|--------|----------------|
-| Nestle Institute of Health Sciences                                             | Lausanne, Switzerland | May-14 | 25             |
-| University of Montpellier                                                       | Montpellier, France   | May-14 | 25             |
-| University of Chicago                                                           | Chicago, IL           | May-14 | 33             |
-| Weill Cornell Medical College                                                   | New York, NY          | Feb-14 | 28             |
-| Albert Einstein College of Medicine                                             | New York, NY          | Feb-14 | 15             |
-| K-RITH                                                                          | Durban, South Africa  | Sep-13 | 30             |
-| Centers for Disease Control (CDC)                                               | Atlanta, GA           | Jul-13 | 29             |
-| NIH Office of Cyberinfrastructure and Computational Biology (OCICB)             | Bethesda, MD          | Apr-13 | 22             |
-| Colorado State University (CSU)                                                 | Fort Collins, CO      | Apr-13 | 57             |
-| Virginia Bioinformatics Institute (VBI) of Virginia Tech (VT)                   | Blacksburg, VA        | Mar-13 | 29             |
-| Johns Hopkins University (JHU)                                                  | Baltimore, MD         | Mar-13 | 24             |
-| Seattle Biomed                                                                  | Seattle, WA           | Feb-13 | 52             |
-| Pacific Northwest National Laboratory (PNNL)                                    | Richland, WA          | Feb-13 | 12             |
-| Louisiana State University National Hansens Disease (Leprosy) Clinical Center   | Baton Rouge, LA       | Jan-13 | 38             |
-| Brucellosis 2012 (65th) International Research Conference                       | Chicago, IL           | Dec-12 | 50             |
-| Global Consortium for Drug-resistant TB Diagnostics                             | Web-based workshop    | Nov-12 | 28             |
-| University of North Carolina, Duke University, North Carolina State             | Durham, NC            | Oct-12 | 50             |
-| Albert Einstein School of Medicine                                              | Bronx, NY             | Jun-12 | 29             |
-| Tuberculosis Community Annotation Annotation Project (TBCAP) Jamboree           | Arlington, VA         | Mar-12 | 20             |
-| Texas A&M College of Medicine Health Science Center                             | College Station, TX   | Feb-12 | 53             |
-| VT Genomics, Bioinformatics, and Computational Biology (GBCB) graduate program  | Blacksburg, VA        | Oct-11 | 24             |
-| UC Davis                                                                        | Davis, CA             | Apr-11 | 16             |
-| NIAID Office of Cyberinfrastructure and Computational Biology (OCICB)           | Bethesda, MD          | Feb-11 | 16             |
-| XX Latin-American Meeting on Microbiology                                       | Montevideo, Uruguay   | Sep-10 | 50             |
+<table class="p3basic">
+<thead>
+<tr>
+<th>Institute/Conference</th>
+<th>Location</th>
+<th>Date</th>
+<th># Participants</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nestle Institute of Health Sciences</td>
+<td>Lausanne, Switzerland</td>
+<td>May-14</td>
+<td>25</td>
+</tr>
+<tr>
+<td>University of Montpellier</td>
+<td>Montpellier, France</td>
+<td>May-14</td>
+<td>25</td>
+</tr>
+<tr>
+<td>University of Chicago</td>
+<td>Chicago, IL</td>
+<td>May-14</td>
+<td>33</td>
+</tr>
+<tr>
+<td>Weill Cornell Medical College</td>
+<td>New York, NY</td>
+<td>Feb-14</td>
+<td>28</td>
+</tr>
+<tr>
+<td>Albert Einstein College of Medicine</td>
+<td>New York, NY</td>
+<td>Feb-14</td>
+<td>15</td>
+</tr>
+<tr>
+<td>K-RITH</td>
+<td>Durban, South Africa</td>
+<td>Sep-13</td>
+<td>30</td>
+</tr>
+<tr>
+<td>Centers for Disease Control (CDC)</td>
+<td>Atlanta, GA</td>
+<td>Jul-13</td>
+<td>29</td>
+</tr>
+<tr>
+<td>NIH Office of Cyberinfrastructure and Computational Biology (OCICB)</td>
+<td>Bethesda, MD</td>
+<td>Apr-13</td>
+<td>22</td>
+</tr>
+<tr>
+<td>Colorado State University (CSU)</td>
+<td>Fort Collins, CO</td>
+<td>Apr-13</td>
+<td>57</td>
+</tr>
+<tr>
+<td>Virginia Bioinformatics Institute (VBI) of Virginia Tech (VT)</td>
+<td>Blacksburg, VA</td>
+<td>Mar-13</td>
+<td>29</td>
+</tr>
+<tr>
+<td>Johns Hopkins University (JHU)</td>
+<td>Baltimore, MD</td>
+<td>Mar-13</td>
+<td>24</td>
+</tr>
+<tr>
+<td>Seattle Biomed</td>
+<td>Seattle, WA</td>
+<td>Feb-13</td>
+<td>52</td>
+</tr>
+<tr>
+<td>Pacific Northwest National Laboratory (PNNL)</td>
+<td>Richland, WA</td>
+<td>Feb-13</td>
+<td>12</td>
+</tr>
+<tr>
+<td>Louisiana State University National Hansens Disease (Leprosy) Clinical Center</td>
+<td>Baton Rouge, LA</td>
+<td>Jan-13</td>
+<td>38</td>
+</tr>
+<tr>
+<td>Brucellosis 2012 (65th) International Research Conference</td>
+<td>Chicago, IL</td>
+<td>Dec-12</td>
+<td>50</td>
+</tr>
+<tr>
+<td>Global Consortium for Drug-resistant TB Diagnostics</td>
+<td>Web-based workshop</td>
+<td>Nov-12</td>
+<td>28</td>
+</tr>
+<tr>
+<td>University of North Carolina, Duke University, North Carolina State</td>
+<td>Durham, NC</td>
+<td>Oct-12</td>
+<td>50</td>
+</tr>
+<tr>
+<td>Albert Einstein School of Medicine</td>
+<td>Bronx, NY</td>
+<td>Jun-12</td>
+<td>29</td>
+</tr>
+<tr>
+<td>Tuberculosis Community Annotation Annotation Project (TBCAP) Jamboree</td>
+<td>Arlington, VA</td>
+<td>Mar-12</td>
+<td>20</td>
+</tr>
+<tr>
+<td>Texas A&amp;M College of Medicine Health Science Center</td>
+<td>College Station, TX</td>
+<td>Feb-12</td>
+<td>53</td>
+</tr>
+<tr>
+<td>VT Genomics, Bioinformatics, and Computational Biology (GBCB) graduate program</td>
+<td>Blacksburg, VA</td>
+<td>Oct-11</td>
+<td>24</td>
+</tr>
+<tr>
+<td>UC Davis</td>
+<td>Davis, CA</td>
+<td>Apr-11</td>
+<td>16</td>
+</tr>
+<tr>
+<td>NIAID Office of Cyberinfrastructure and Computational Biology (OCICB)</td>
+<td>Bethesda, MD</td>
+<td>Feb-11</td>
+<td>16</td>
+</tr>
+<tr>
+<td>XX Latin-American Meeting on Microbiology</td>
+<td>Montevideo, Uruguay</td>
+<td>Sep-10</td>
+<td>50</td>
+</tr>
+</tbody>
+</table>
+
+
         </div>
     </section>
 </div>
