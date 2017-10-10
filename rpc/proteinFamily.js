@@ -22,6 +22,7 @@ function fetchFamilyDescriptionBatch(familyIdList){
 			if (reply == null) {
 				missingIds.push( familyIdList[i] )
 			} else {
+				redisClient.expire(familyIdList[i], RedisTTL)
 				familyRefHash[familyIdList[i]] = reply
 			}
 		})
@@ -45,7 +46,7 @@ function fetchFamilyDescriptionBatch(familyIdList){
 				}
 
 				body.forEach(family => {
-					redisClient.set(family.family_id, family.family_product)
+					redisClient.set(family.family_id, family.family_product, 'EX', RedisTTL)
 					familyRefHash[family.family_id] = family.family_product
 				})
 
