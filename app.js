@@ -27,11 +27,14 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 var app = module.exports = express();
 
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+
 app.enable("etag");
 app.set('etag', "strong");
 
-debug("APP MODE: ", app.get('env'));
-
+// debug("APP MODE: ", app.get('env'));
 
 var reqId = 0;
 

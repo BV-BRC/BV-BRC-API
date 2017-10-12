@@ -57,6 +57,14 @@ var defaults =  {
 		"url": "http://localhost:8983/solr"
 	},
 
+	"redis": {
+		"host": "127.0.0.1",
+		"port": 6379,
+		"prefix": "",
+		"db": 2,
+		"pass": ""
+	},
+
 	"numWorkers": 0,
 
 	"cache": {

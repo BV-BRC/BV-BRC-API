@@ -2,116 +2,152 @@ const Deferred = require("promised-io/promise").Deferred;
 const when = require('promised-io/promise').when;
 const debug = require('debug')('p3api-server:ProteinFamily');
 const request = require('request');
-const config = require("../config");
-const distributeURL = config.get("distributeURL");
+const config = require('../config');
+const distributeURL = config.get('distributeURL');
+const redisOptions = config.get('redis');
+const redis = require("redis");
+const redisClient = redis.createClient(redisOptions);
+const RedisTTL = 60*60*24; // sec
 const currentContext = 5;
 const all = require('promised-io/promise').all;
 
-function fetchFamilyDescriptions(familyType, familyIdList){
+function fetchFamilyDescriptionBatch(familyIdList){
+	const def = Deferred()
+	const familyRefHash = {}
 
-	const def = Deferred();
-	const fetchSize = 5000;
-	const steps = Math.ceil(familyIdList.length / fetchSize);
-	const allRequests = [];
+	redisClient.mget(familyIdList, function(err, replies){
 
-	const q2St = Date.now();
+		const missingIds = []
+		replies.forEach((reply, i) => {
+			if (reply == null) {
+				missingIds.push( familyIdList[i] )
+			} else {
+				redisClient.expire(familyIdList[i], RedisTTL)
+				familyRefHash[familyIdList[i]] = reply
+			}
+		})
+
+		if (missingIds.length == 0){
+			def.resolve(familyRefHash)
+		} 
+		else {
+			request.post({
+				url: distributeURL + 'protein_family_ref/',
+				json: true,
+				headers: {
+						'Accept': "application/json",
+						'Content-Type': "application/solrquery+x-www-form-urlencoded",
+						'Authorization': ""
+				},
+				body: 'q=family_id:(' + missingIds.join(' OR ') + ')&fl=family_id,family_product&rows=' + missingIds.length
+			}, function(error, resp, body){
+				if(error){
+					def.reject(error);
+				}
+
+				body.forEach(family => {
+					redisClient.set(family.family_id, family.family_product, 'EX', RedisTTL)
+					familyRefHash[family.family_id] = family.family_product
+				})
+
+				def.resolve(familyRefHash)
+			})
+		}
+	})
+
+	return def.promise
+}
+
+function fetchFamilyDescriptions(familyIdList){
+	const def = Deferred()
+	const fetchSize = 3000
+	const steps = Math.ceil(familyIdList.length / fetchSize)
+	const allRequests = []
+	const qSt = Date.now()
 
 	for(let i = 0; i < steps; i++){
 		const subDef = Deferred();
 		const subFamilyIdList = familyIdList.slice(i * fetchSize, Math.min((i + 1) * fetchSize, familyIdList.length));
 
-		// debug("subFamilyList: ", subFamilyIdList.length, i*fetchSize, Math.min((i+1)*fetchSize, familyIdList.length));
-		request.post({
-			url: distributeURL + 'protein_family_ref/',
-			json: true,
-			headers: {
-				'Accept': "application/json",
-				'Content-Type': "application/solrquery+x-www-form-urlencoded",
-				'Authorization': ""
-			},
-			body: 'q=family_type:' + familyType + ' AND family_id:(' + subFamilyIdList.join(' OR ') + ')&fl=family_id,family_product&rows=' + subFamilyIdList.length
-		}, function(error, resp, body){
-			if(error){
-				subDef.reject(error);
-			}
-			subDef.resolve(body);
-		});
-		allRequests.push(subDef);
+		allRequests.push( fetchFamilyDescriptionBatch(subFamilyIdList) )
 	}
-	debug("querying protein_family_ref: ", familyIdList.length);
 
-	all(allRequests).then(function(body){
-		debug("protein_family_ref took", (Date.now() - q2St) / 1000, "s");
+	debug("protein_family_ref checking cache took", (Date.now() - qSt) / 1000, "s")
 
-		const res = body.reduce((r, b) => {
-			return r.concat(b);
-		}, [])
+	all(allRequests).then(body => {
+		debug("protein_family_ref took", (Date.now() - qSt) / 1000, "s")
 
-		const familyRefHash = {};
-		res.forEach(function(el){
-			if(!familyRefHash.hasOwnProperty(el.family_id)){
-				familyRefHash[el.family_id] = el.family_product;
-			}
-		});
+		const familyRefHash = body.reduce((r, b) => {
+				return Object.assign(r,b);
+		}, {})
 
 		def.resolve(familyRefHash);
-	});
+	})
 
-	return def.promise;
+	return def.promise
 }
 
-function processProteinFamily(pfState, options){
-	const def = new Deferred();
+function fetchFamilyDataByGenomeId(genomeId, options){
+	const def = Deferred()
+	const key = 'pfs_' + genomeId
 
-	// moved from MemoryStore implementation.
-	const familyType = pfState['familyType'];
-	const familyId = familyType + '_id';
+	redisClient.get(key, function(err, familyData) {
 
-	const genomeIds = pfState.genomeIds;
-	const numGenomeIds = genomeIds.length;
+		if (familyData == null) {
+
+			debug(`no cached data for ${key}`)
+
+			const query = `?q=genome_id:${genomeId} AND annotation:PATRIC AND feature_type:CDS&rows=25000&fl=pgfam_id,plfam_id,figfam_id,aa_length`
+
+			request.get({
+				url: distributeURL + 'genome_feature/' + query,
+				headers: {
+					'Accept': "application/json",
+					'Content-Type': "application/solrquery+x-www-form-urlencoded",
+					'Authorization': options.token || ""
+				},
+				json: true
+			}, function(error, resp, body){
+				if(error){
+					def.reject(error);
+				}
+				if (typeof body == "object") {
+					redisClient.set(key, JSON.stringify(body), 'EX', RedisTTL);
+					def.resolve(body);
+				} else {
+					def.reject(body)
+				}
+			});
+		} else {
+			redisClient.expire(key, RedisTTL)
+			def.resolve(JSON.parse(familyData));
+		}
+	})
+
+	return def.promise
+}
+
+function fetchFamilyData(familyType, genomeIdList, options){
+	const def = Deferred();
 	const allRequests = [];
+	const familyIdField = familyType + '_id';
 
 	const qSt = Date.now();
-	for(let i = 0; i < numGenomeIds; i++){
-		const subDef = Deferred()
+	genomeIdList.forEach(genomeId => {
+		allRequests.push(fetchFamilyDataByGenomeId(genomeId, options));
+	})
 
-		const query = {
-			q: "genome_id:" + genomeIds[i] + " AND annotation:PATRIC AND feature_type:CDS",
-			rows: 25000,
-			fl: "pgfam_id,plfam_id,figfam_id,aa_length"
-		};
+	all(allRequests).then(body => {
 
-		request.post({
-			url: distributeURL + 'genome_feature/',
-			headers: {
-				'Accept': "application/json",
-				'Content-Type': "application/solrquery+x-www-form-urlencoded",
-				'Authorization': options.token || ""
-			},
-			json: true,
-			body: Object.keys(query).map(p => p + "=" + query[p]).join("&")
-		}, function(error, resp, body){
-			if(error){
-				subDef.reject(error);
-			}
-			subDef.resolve(body);
-		})
-		allRequests.push(subDef);
-	}
-
-	debug("querying genome_feature: ", numGenomeIds);
-
-	all(allRequests).then(function(body){
-
-		debug("facet queries took ", (Date.now() - qSt) / 1000, "s");
+		debug("fetching family data took ", (Date.now() - qSt) / 1000, "s");
 
 		const totalFamilyIdDict = {};
 
 		body.forEach((data, i) => {
-			const genomeId = genomeIds[i];
+			const genomeId = genomeIdList[i];
 			
 			data.forEach(row => {
-				const fid = row[familyId]
+				const fid = row[familyIdField]
 				if (fid === "" || fid === undefined) return;
 
 				if (totalFamilyIdDict.hasOwnProperty(fid)){
@@ -130,10 +166,25 @@ function processProteinFamily(pfState, options){
 			})
 		})
 
+		def.resolve(totalFamilyIdDict)
+	});
+
+	return def.promise
+}
+
+function processProteinFamily(pfState, options){
+	const def = new Deferred();
+
+	// moved from MemoryStore implementation.
+	const familyType = pfState['familyType'];
+	const genomeIds = pfState.genomeIds;
+
+	when(fetchFamilyData(familyType, genomeIds, options), function(totalFamilyIdDict){
+
 		// debug(totalFamilyIdDict)
 		const familyIdList = Object.keys(totalFamilyIdDict);
 
-		when(fetchFamilyDescriptions(familyType, familyIdList), function(familyRefHash){
+		when(fetchFamilyDescriptions(familyIdList), function(familyRefHash){
 
 			const qSt = Date.now();
 			const data = [];
