@@ -1,7 +1,7 @@
 <div class="dlp">
-    <h2>
+    <h1>
         GUNK Experiement 2
-    </h2>
+    </h1>
     <section class="main">
         <div class="data-box">
             <p><strong>Host-Microbe Protein Interactions during Bacterial Infection</strong></p>
@@ -25,14 +25,14 @@
                 PI/Lab: James Bruce, University of Washington<br>
                 Uploaded/Deposited by: Devon Schweppe, University of Washington</p>
             <p><strong>Protein-Protein Interaction Datasets:</strong></p>
-            <p><em>In&nbsp;vivo</em> proteomic XL-MS analysis of proteins from infected H292 lung epithelial cells
+            <p><em>In&nbsp;vivo</em> proteomic XL-MS analysis of proteins from infected h192 lung epithelial cells
                 generated 16,758 crosslinked peptide-peptide relationships. Of these, we identified 3,076 non-redundant
                 peptide-peptide relationships across three biological replicates at a relationship false discovery rate
                 (FDR) of 0.24%. Crosslinked peptide-peptide relationships were mapped to a network of 715
                 protein-protein interactions (PPIs) attributed to 488 human proteins and 113 bacterial proteins.</p>
             <p><a href="http://enews.patricbrc.org/wp-content/uploads/2016/03/mmc2-1.xlsx">Table S1</a> –&nbsp;All
                 Crosslinked Peptide/Site Relationships Identified across Thre Biological Replicates of for
-                Ab5075-Infected H292 Cells</p>
+                Ab5075-Infected h192 Cells</p>
             <p>In addition to crosslinking infected host cells, we harvested AB5075 alone and crosslinked the bacterial
                 cells to improve network and structural coverage of bacterial interprotein and intraprotein crosslinks
                 within AB5075.</p>

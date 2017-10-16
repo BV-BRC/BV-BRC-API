@@ -1,7 +1,7 @@
 <div class="dlp">
-    <h2>
+    <h1>
         Center For Systems Biology of Enteropathogens Sysbep
-    </h2>
+    </h1>
     <section class="main">
         <div class="data-box">
 
@@ -252,7 +252,7 @@
                                                          target="_blank">PNNL_1063</a></li>
             </ul>
         </div>
-        <h2>Host Response Data</h2>
+        <h1>Host Response Data</h1>
         <div class="data-box">
 
             <h3 class="ribbon-title">Mouse Macrophage</h3>

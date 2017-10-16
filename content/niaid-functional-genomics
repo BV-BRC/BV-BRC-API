@@ -1,8 +1,5 @@
 <div class="dlp">
-    <span>Data</span>
-    <h2>
-        NIAID Functional Genomics
-    </h2>
+    <h1>NIAID Functional Genomics</h1>
     <section class="main">
         <div class="data-box">
             <p>The Functional Genomics Program for understanding the functions of uncharacterized genes in infectious
