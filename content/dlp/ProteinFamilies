@@ -1,6 +1,5 @@
 <div class="dlp">
-	<span>Data</span>
-    <h2>Protein Families</h2>
+  <h1>Protein Families</h1>
 	<section class="main">
 
 		<!-- Section: Data -->

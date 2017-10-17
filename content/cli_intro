@@ -1,5 +1,5 @@
 <div class="dlp">
- <H2>Introduction to the Patric Command Line Interface (CLI)</H2>
+ <h1>Introduction to the Patric Command Line Interface (CLI)</h1>
  <section class="main">
   <div class="data-box">
 
@@ -73,7 +73,7 @@ Here, we retrieved the id of all genomes in Patric, piped that output to get the
 <br>
 There are other ways to accomplish this, but the example serves to demonstrate what we mean by creating pipelines of commands and producing tables of information. 
 <br>
-<H2> Accessing Features</H2>
+<h1> Accessing Features</h1>
 If you want to look into the features of a genome, you would use the p3-get-genome-features command. p3-genome-features takes as input a set of genome ids. The following example uses the p3-echo command to generate input for p3-get-genome-features.
 <pre>
 <b>p3-echo -t genome.genome_id 282669.3 | p3-get-genome-features | head </b>

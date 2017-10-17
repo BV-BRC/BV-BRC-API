@@ -1,6 +1,5 @@
 <div class="dlp">
-    <span>Data</span>
-    <h2>NIAID Systems Biology</h2>
+    <h1>NIAID Systems Biology</h1>
     <section class="main">
     <div class="data-box">
         <p>The NIAID Systems Biology for Infectious Diseases Research Program develops and validates predictive models

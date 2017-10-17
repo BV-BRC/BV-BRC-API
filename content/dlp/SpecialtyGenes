@@ -1,6 +1,5 @@
 <div class="dlp">
-    <span>Data</span>
-    <h2>Specialty Genes</h2>
+  <h1>Specialty Genes</h1>
 	<section class="main">
 		<!-- Section: Data -->
 		<div class="data-tab" id="tab1">
