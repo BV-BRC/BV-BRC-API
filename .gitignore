@@ -8,3 +8,4 @@ dump.rdb
 p3api.conf
 p3api.sublime-workspace
 .idea/
+tests/data_files
