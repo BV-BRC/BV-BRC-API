@@ -70,7 +70,7 @@ var userModifiableProperties = [
 function postDocs(docs,type){
         var defs = [];
         var def = new defer();
-        var url = conf.get("solr").url + "/"+type+"/update?wt=json&overwrite=true&commit=true";
+        var url = conf.get("solr").url + "/"+type+"/update?wt=json&overwrite=true&softCommit=true";
         //console.log("POST URL: ", url, " #docs:", docs.length);
         Request(url, {
                 json: true,
