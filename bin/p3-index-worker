@@ -45,6 +45,7 @@ function postDocs(docs,type){
         var url = config.get("solr").url + "/"+type+"/update?wt=json&overwrite=true&commit=false";
         console.log("POST URL: ", url, " #docs:", docs.length);
         Request(url, {
+                timeout: 300000,
                 json: true,
                 method: "POST",
                 headers: { "content-type": "application/json", "accept":"application/json" },
@@ -142,7 +143,7 @@ function processQueue(queue){
 									if (err){
 										def.reject(err);
 									}
-									if (fileData && fileData.length<0) {
+									if (fileData && fileData.length == 0) {
 										console.log("Skipping Empty Data File: ", key, file.name,message.id);
 										def.resolve(true);
 										return;
