@@ -1,300 +1,307 @@
-#!/usr/bin/env node
-var config = require("../config");
-var Queue = require("file-queue").Queue;
-var defer = require('promised-io/promise').defer;
-var when = require('promised-io/promise').when;
-var All = require('promised-io/promise').all;
-var Path = require('path');
-var fs = require("fs-extra");
-var Request = require("request");
+#!/usr/bin/env node  --max-old-space-size=4096
+const config = require('../config')
+const Queue = require('file-queue').Queue
+const Defer = require('promised-io/promise').defer
+const when = require('promised-io/promise').when
+const All = require('promised-io/promise').all
+const Path = require('path')
+const fs = require('fs-extra')
+const Request = require('request')
+const JSONStream = require('JSONStream')
+const es = require('event-stream')
 
-console.log("Queue Directory: ", config.get("queueDirectory"));
+const queueDirectory = config.get('queueDirectory')
 
-var queue = new Queue(config.get("queueDirectory"), function(err) {
+console.log(`Queue Directory: ${queueDirectory}`);
+
+const queue = new Queue(queueDirectory, function(err) {
+    if (err) {
+      console.log(`error: ${err}`)
+      return
+    }
+    processQueue(queue);
+  })
+
+let completedHardCommit = false
+
+const publicCores = ['taxonomy']
+const IndexingCores = ['genome_feature', 'genome', 'sp_gene', 'pathway',
+    'genome_sequence', 'taxonomy', 'genome_amr',]
+
+process.on('message', (msg) => {
+  if (msg && msg.type == 'start') {
+    if (timer) {
+      cancelTimeout(timer);
+      delete timer;
+    }
+
+    processQueue(queue);
+  }
+})
+
+let timer
+
+function postDocs(filePath, type) {
+  const def = new Defer()
+  const url =
+  `${config.get('solr').url}/${type}/update?wt=json&overwrite=true&commit=false`
+
+  fs.createReadStream(filePath).pipe(
+      Request.post(url, (err, res, body) => {
+          if (err || body.error) {
+            console.log(`Error POSTing to ${type} - ${err || body.error.msg}`)
+            def.reject(err)
+            return def.promise
+          }
+
+          // console.log(`  Posted ${filePath} to ${type}`)
+          def.resolve(true)
+        })
+  )
+
+  return def.promise
+}
+
+function solrCommit(type) {
+  const def = new Defer()
+  const url = `${config.get('solr').url}/${type}/update?wt=json&softCommit=true`
+
+  Request(url, {json: true}, (err, response, body) => {
+      if (err) {
+        def.reject(err)
+        return def.promise
+      }
+      console.log(`Soft Committed ${type} (QTime: ${body.responseHeader.QTime})`)
+      def.resolve(true)
+    })
+
+  return def.promise
+}
+
+function processQueue(queue) {
+
+  queue.length((err, length) => {
+    if (length < 1) {
+      if (!completedHardCommit) {
+
+        console.log('Queue is Empty')
+        const defs = IndexingCores.map(core => solrCommit(core))
+        All(defs).then(() => {
+          completedHardCommit = true
+          setTimeout(() => {
+              processQueue(queue)
+            }, 5000)
+        })
+
+      } else {
+        setTimeout(() => {
+          processQueue(queue)
+        }, 5000)
+      }
+    } else {
+      completedHardCommit = false;
+      console.log(`Start processing queued items: ${length}`)
+
+      queue.tpop((err, message, commit, rollback) => {
+
         if (err) {
-                console.log("error: ", err);
-                return;
+          console.log(`Error popping message item. ${err}`)
+          return
         }
-	processQueue(queue);
-});
+        if (!message) {
+          console.log(`No Metadata for: ${message} Discarding Message.`)
+          if (commit) {
+            commit()
+          }
+          processQueue(queue)
+          return
+        }
 
-var maxLimit = config.get("indexImportLimits");
-var currentErrors=0;
-var completedHardCommit=false;
+        try {
+          console.log(`\nStart indexing ${message.id} User: ${message.user}`)
 
+          const containerPaths = []
+          const fileDefs = []
+          const beforeProcess = (new Date()).getTime()
 
-//var publicFree=['enzyme_class_ref', 'gene_ontology_ref', 'id_ref', 'misc_niaid_sgc', 'pathway_ref', 'ppi', 'protein_family_ref', 'sp_gene_evidence', 'sp_gene_ref', 'taxonomy', 'transcriptomics_experiment', 'transcriptomics_gene', 'transcriptomics_sample',"model_reaction","model_complex_role","model_compound","model_template_biomass","model_template_reaction"];
+          const genomeId = fs.readJsonSync(message.files.genome.path)[0]['genome_id']
 
-var publicFree=["taxonomy"];
+          Object.keys(message.files).forEach(core => {
 
-process.on('message', function(msg){
-	if (msg && msg.type=="start"){
-		if (timer) {
-			cancelTimeout(timer);
-			delete timer;
-		}
+              let files = message.files[core]
+              if (!(files instanceof Array)) {
+                files = [files];
+              }
+              files.forEach(file => {
+                if (!file.path) { return; }
 
-		processQueue(queue);
-	}
-});
-var timer;
-
-function postDocs(docs,type){
-        var defs = [];
-        var def = new defer();
-        var url = config.get("solr").url + "/"+type+"/update?wt=json&overwrite=true&commit=false";
-        console.log("POST URL: ", url, " #docs:", docs.length);
-        Request(url, {
-                timeout: 300000,
-                json: true,
-                method: "POST",
-                headers: { "content-type": "application/json", "accept":"application/json" },
-                body: docs
-        }, function(err,response,body){
-                if (err || body.error){
-                        console.log("Error POSTing to : " + type +" - " + ( err||body.error.msg));
-                        def.reject(err);
-                        return;
+                const filePathDir = Path.dirname(file.path)
+                if (!containerPaths.includes(filePathDir)) {
+                  containerPaths.push(filePathDir)
                 }
-             //   console.log("POST RESPONSE BODY: ", JSON.stringify(body));
-                def.resolve(true);
-        });
 
-        return def.promise;
+                const def = new Defer()
+
+                when(updateJSONStreamWithAccessControl(file.name, file.path, core, message.user), (res) => {
+
+                  if (res.status === 'skip') {
+                    def.resolve(true)
+                  } else if (res.status === 'saved') {
+                    when(postDocs(file.path, core), () => {
+                        def.resolve(true)
+                    }, (err) => {
+                      console.log(`Error POSTing documents to SOLR core : ${core}, ${err}`)
+                      def.reject(err)
+                    })
+                  } else {
+                    // Err
+                    def.reject(res)
+                  }
+                }, (err) => {
+                  def.reject(err)
+                })
+
+                fileDefs.push(def)
+              });
+            });
+
+          when(All(fileDefs), () => {
+
+            const afterProcess = (new Date()).getTime()
+            console.log(`  ${(afterProcess-beforeProcess)}ms elapsed for genome (${genomeId})`)
+
+            containerPaths.forEach(p => {
+              console.log(`Removing files from : ${p}`);
+              fs.removeSync(p);
+            });
+
+            when(updateHistory(message.id, 'indexed'), () => {
+              commit()
+              processQueue(queue)
+            });
+
+          }, (err) => {
+            console.error(`Error in fullfilling fileDefs: ${err}`)
+
+            when(updateHistory(message.id, 'error', err), () => {
+                commit()
+                processQueue(queue) // Resume
+              })
+          })
+
+        } catch (err) {
+          when(updateHistory(message.id, 'error', err), () => {
+              commit()
+              processQueue(queue) // Resume
+            })
+        }
+      })
+    }
+  })
 }
 
-function solrCommit(type,hard){
-	var def = new defer();
-	console.log("Begin " +(hard?"hard":"soft") + " Commit for ", type);
-	Request(config.get("solr").url + "/" + type + "/update?wt=json&" + (hard?"commit":"softCommit") + "=true",{},function(err,response,body){
-		if (err) { def.reject(err); return; }
-		console.log("COMMIT " + type + " RESPONSE BODY: ", JSON.stringify(body));
-		def.resolve(true);
-	});
-	return def.promise;
+function updateJSONStreamWithAccessControl(fileName, filePath, core, owner) {
+
+  const def = new Defer()
+
+  try {
+    let fileData = []
+    const st = (new Date()).getTime()
+
+    fs.createReadStream(filePath, {encoding: 'utf8'})
+    .pipe(JSONStream.parse('*'))
+    .pipe(es.mapSync(function(data) {
+        fileData.push(data)
+      }))
+    .on('close', () => {
+      const now = (new Date()).getTime()
+      console.log(`  Reading ${fileName}(${filePath}) took ${(now - st)}ms, ${fileData.length} rows`)
+
+      if (fileData.length == 0) {
+        // console.log(`  Skipping Empty ${fileName}(${filePath})`);
+        def.resolve({status: 'skip'})
+        return def.promise
+      }
+
+      let processingErrors = false;
+
+      if (!publicCores.includes(core)) {
+        fileData = fileData.map(item => {
+          if (!item.public) { item.public = false; }
+          if (!item.owner) {
+            item.owner = owner
+          } else if (item.owner != owner) {
+            if (!item.user_write || (item.user_write && !item.user_write.includes(owner))) {
+              processingErrors = `Item Owner ${item.owner} != Index User ${owner}`
+            }
+          }
+
+          if (!item.user_read) { item.user_read = []; }
+          if (!item.user_write) { item.user_write = []; }
+
+          if (item._version_) {
+            delete item._version_
+          }
+          return item
+        })
+      }
+
+      if (!processingErrors) {
+        // Update json file
+        const outfile = fs.createWriteStream(filePath)
+        es.readArray(fileData).pipe(JSONStream.stringify()).pipe(outfile)
+        .on('close', () => {
+            def.resolve({status: 'saved'})
+          })
+      } else {
+        // Console.log(`Processing Errors in ${core} ${processingErrors}`);
+        def.reject(processingErrors);
+      }
+    })
+  } catch (err) {
+    console.log(`Error updateJSONStreamWithAccessControl ${filePath}`)
+    def.reject(err)
+  }
+
+  return def.promise
 }
 
-function processQueue(queue){
-//	console.log("processQueue");
-	queue.length(function(err,length){
-		if (length < 1){
-			if (!completedHardCommit) {
-				var cores = ["genome_feature","genome","sp_gene","pathway","genome_sequence","taxonomy","genome_amr"];
-				console.log("Queue Emptied, Performing Hard Commits");
-				var defs = cores.map(function(name){
-					return solrCommit(name,true);
-				});
-				when(All(defs), function(){
-					completedHardCommit = true;
-					setTimeout(function(){
-						processQueue(queue);
-					},5000);
-				});
-			}else{
-				setTimeout(function(){
-					processQueue(queue);
-				},5000);
-			}
-		}else{
-			completedHardCommit = false;
-//			console.log("Processing " + length + " queue items");
-		
-			queue.tpop(function(err,message,commit,rollback){
-				var startTime=new Date();
-				if (err) {
-					console.log("error popping message item: ", err);
-					return;
-				}
-				if (!message){
-					console.log("No Metadata for: ", message, "Discarding Message.");
-					//rollbacks.push(rollback);
-					if (commit){
-						commit();
-					}
-					processQueue(queue);
-					return;
-				}else {
-					try {
-						console.log("Index ID: ", message.id, "type: ", message.type);
-						console.log("\tUser: ", message.user);
-						console.log("Opts: ", message.options);
-						var containerPaths=[];
-						var fileDefs = [];
-						var commitCollections=[];
-						Object.keys(message.files).forEach(function(key){
-							console.log("\tFiles[" + key + "]", message.files[key]);
-							if (key != message.type) {
-								commitCollections.push(key);
-							}
-							var files = message.files[key];
-							if (!(files instanceof Array)) {
-								files = [files];
-							}
-							files.forEach(function(file) {
-								if (!file.path) { return; }
-								console.log("File: ", file.name );
-								console.log("PATH: ", file.path);
-								var dir = Path.dirname(file.path);
-								if (containerPaths.indexOf(dir)<0) {
-									containerPaths.push(dir);
-								}
-								var def = new defer();
-								fs.readJson(file.path, function(err,fileData){
-									if (err){
-										def.reject(err);
-									}
-									if (fileData && fileData.length == 0) {
-										console.log("Skipping Empty Data File: ", key, file.name,message.id);
-										def.resolve(true);
-										return;
-									}	
-									console.log("Records To index for  ",key, ": ", fileData.length,file.name);
-								
-									var processingErrors=false;	
-									
-									if(publicFree.indexOf(key)<0){
+function updateHistory(id, state, msg) {
+  const def = new Defer()
+  const historyPath = Path.join(queueDirectory, 'history', id)
 
-										fileData = fileData.map(function(item){
-											if (!item.public) { item.public=false; }
-											if (!item.owner) { 
-												item.owner = message.user;
-											}else if (item.owner != message.user) {
-												if (!item.user_write || (item.user_write && (item.user_write.indexOf(message.user)<0))){
-													processingErrors="Item Owner ("+ item.owner+ ") !=  Index User (" + message.user+ ")";
-												}
-											}
-										
-											if (!item.user_read) { item.user_read = []; }
-											if (!item.user_write) { item.user_write = []; }
-	
-											if (item._version_){
-												delete item._version_;
-											}
-											return item;		
-										});
-									}
+  console.log(`Updating History ${historyPath}`);
 
-									if (!processingErrors) {
-										when(postDocs(fileData,key), function(results){
-											def.resolve(true);
-										}, function(err){
-											console.log("Error POSTing documents to SOLR core : ",key, err);
-											def.reject(err);
-										});
-									}else{
-										console.log("Processing Errors in ", key, processingErrors);
-										def.reject(processingErrors);
-									}
-							
-								});
-								fileDefs.push(def);
-							});
-						});
+  fs.readJson(historyPath, (err, data) => {
+    if (err) {
+      def.reject(err)
+      return def.promise
+    }
 
-						when(All(fileDefs), function(){
-							console.log("Container Paths: ", containerPaths);
-							var commitDefs=[]
-							console.log("SOLR Collections to Commit: ", commitCollections);
-							commitCollections.forEach(function(col){
-								commitDefs.push(solrCommit(col));
-							});
-							when(All(commitDefs), function(){
-								when(solrCommit(message.type),function() {
-									console.log("Final Commit of ", message.type, " Complete");
-									containerPaths.forEach(function(p){
-										console.log("Removing files from : ", p);
-										fs.removeSync(p);
-									});
-									console.log("Updating History: " + Path.join(config.get("queueDirectory"),"history",message.id));
-									fs.readJson(Path.join(config.get("queueDirectory"),"history",message.id), function(err,data){
-										if (err) {
-											console.log("Error Reading JSON History File: ", err);
-											data = {}
-										}
-										data.state="indexed",
-										data.indexCompletionTime = new Date();
-										fs.writeJson(Path.join(config.get("queueDirectory"),"history",message.id),data, function(err){
-											if (err) {
-												console.log("Error writing to history: ", message.id);
-											}
-											currentErrors=0;
-											commit();
-											processQueue(queue);
-										});
-									});
-								}, function(err){
-									fs.readJson(Path.join(config.get("queueDirectory"),"history",message.id), function(err,data){
-										data.state="error",
-										data.error = err;
-										fs.writeJson(Path.join(config.get("queueDirectory"),"history",message.id), function(err){
-											if (err) {
-												console.log("Error writing to history: ", message.id);
-											}
-											console.log("Error in final type commit: ", message.type, err);
-											rollback();
-											if (currentErrors < 3) {
-												processQueue(queue);
-											}
-										});
-									});
+    switch (state) {
+      case 'indexed':
+        data.state = state
+        data.indexCompletionTime = new Date()
+        break
+      case 'error':
+        data.state = state
+        data.error = msg
+        break
+      default:
+        data.state = state
+        break
+    }
 
-								});
-							}, function(err){
-								fs.readJson(Path.join(config.get("queueDirectory"),"history",message.id), function(err,data){
-									data.state="error",
-									data.error = err;
-									fs.writeJson(Path.join(config.get("queueDirectory"),"history",message.id), function(err){
-										if (err) {
-											console.log("Error writing to history: ", message.id);
-										}
-										console.log("Error in final type commit: ", message.type, err);
-										rollback();
-										if (currentErrors < 3) {
-											processQueue(queue);
-										}
-									});
-								});
-							});
-						}, function(err){
-							fs.readJson(Path.join(config.get("queueDirectory"),"history",message.id), function(err,data){
-								data.state="error",
-								data.error = err;
-								fs.writeJson(Path.join(config.get("queueDirectory"),"history",message.id), function(err){
-									if (err) {
-										console.log("Error writing to history: ", message.id);
-									}
-									console.log("Error in final type commit: ", message.type, err);
-									rollback();
-									if (currentErrors < 3) {
-										processQueue(queue);
-									}
-								});
-							});
+    fs.writeJson(historyPath, data, (err) => {
+      if (err) {
+        console.log(`Error writing to history: ${id}`);
+        def.reject(err)
+        return def.promise
+      }
 
-						});
-					} catch (err){
-						fs.readJson(Path.join(config.get("queueDirectory"),"history",message.id), function(err,data){
-							data.state="error",
-							data.error = err;
-							fs.writeJson(Path.join(config.get("queueDirectory"),"history",message.id), function(err){
-								if (err) {
-									console.log("Error writing to history: ", message.id);
-								}
-								console.log("Error in final type commit: ", message.type, err);
-								rollback();
-								if (currentErrors < 3) {
-									processQueue(queue);
-								}
-							});
-						});
-					}
-				}
-			});
-		}
-	});	
-};
+      def.resolve(true)
+    })
+  })
 
-
-
-
-
+  return def.promise
+}
