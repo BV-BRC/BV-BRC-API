@@ -21,13 +21,13 @@ if (require.main === module){
         .option('--token [value]', 'Token for private genome access')
         .parse(process.argv)
 
-    // if (!opts.genome_ids) {
-    //     console.error('Must supply genome ids')
-    //     opts.help()
-    // }
+    if (!opts.genome_ids) {
+        console.error('Must supply genome ids')
+        opts.help()
+    }
 
-    const genome_ids = '1763.134,83332.349,205918.41,83332.228'
-    // const genome_ids = opts.genome_ids || ''
+    // const genome_ids = '1763.134,83332.349,205918.41,83332.228'
+    const genome_ids = opts.genome_ids || ''
 
     genome_ids.split(',').forEach(genome_id =>{
         const reqs = keyCores.map(core => dataCall(core, genome_id))
