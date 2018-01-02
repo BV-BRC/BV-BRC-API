@@ -2,25 +2,25 @@
     "top5_1": {
         "data": [
             {
-                "reported": 3722,
+                "reported": 7482,
                 "label": "Human, Homo sapiens",
-                "value": 41501
+                "value": 53396
             },
             {
                 "label": "Homo sapiens",
-                "value": 2481
+                "value": 4988
             },
             {
-                "label": "Cattle, Bos taurus",
-                "value": 765
+                "label": "Bos taurus",
+                "value": 2570
             },
             {
-                "label": "Pig",
-                "value": 551
+                "label": "Pig, Sus scrofa",
+                "value": 1257
             },
             {
-                "label": "Bovine",
-                "value": 545
+                "label": "Chicken, Gallus gallus",
+                "value": 732
             }
         ],
         "chart_title": "Bacterial Host",
@@ -30,25 +30,25 @@
     "top5_2": {
         "data": [
             {
-                "reported": 6443,
+                "reported": 16646,
                 "label": "United States",
                 "value": 22370
             },
             {
+                "label": "USA",
+                "value": 11097
+            },
+            {
                 "label": "United Kingdom",
-                "value": 4295
-            },
-            {
-                "label": "Thailand",
-                "value": 3615
-            },
-            {
-                "label": "Netherlands",
-                "value": 3257
+                "value": 6022
             },
             {
                 "label": "China",
-                "value": 2416
+                "value": 4652
+            },
+            {
+                "label": "Thailand",
+                "value": 3810
             }
         ],
         "chart_title": "Isolation Country",
@@ -58,34 +58,34 @@
     "numberGenomes": {
         "data": [
             {
-                "wgs": 6362,
-                "year": 2012,
-                "complete": 2272
-            },
-            {
-                "wgs": 13994,
+                "wgs": 16349,
                 "year": 2013,
-                "complete": 2770
+                "complete": 2764
             },
             {
-                "wgs": 27157,
+                "wgs": 29453,
                 "year": 2014,
-                "complete": 3787
+                "complete": 3786
             },
             {
-                "wgs": 52527,
+                "wgs": 54823,
                 "year": 2015,
-                "complete": 5353
+                "complete": 5351
             },
             {
-                "wgs": 79565,
+                "wgs": 81996,
                 "year": 2016,
-                "complete": 7437
+                "complete": 7530
             },
             {
-                "wgs": 83404,
+                "wgs": 119127,
                 "year": 2017,
-                "complete": 8098
+                "complete": 10275
+            },
+            {
+                "wgs": 119127,
+                "year": 2018,
+                "complete": 10275
             }
         ],
         "chart_title": "Number of Bacterial Genomes"
@@ -459,15 +459,21 @@
         "data": [
             {
                 "m_label": "gsc_shotgun_sequence",
-                "reported": "92%",
+                "reported": "86%",
                 "label": "Whole Genome Shotgun",
-                "value": 92
+                "value": 86
+            },
+            {
+                "m_label": "gsc_plasmid",
+                "reported": "7%",
+                "label": "Plasmid",
+                "value": 7
             },
             {
                 "m_label": "gsc_complete",
-                "reported": "8%",
+                "reported": "7%",
                 "label": "Complete",
-                "value": 8
+                "value": 7
             }
         ],
         "chart_title": "Genome Status"
