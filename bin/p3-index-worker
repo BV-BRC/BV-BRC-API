@@ -85,18 +85,18 @@ function processQueue(queue) {
       if (!completedHardCommit) {
 
         console.log('Queue is Empty')
-        const defs = IndexingCores.map(core => solrCommit(core))
-        All(defs).then(() => {
+        // const defs = IndexingCores.map(core => solrCommit(core))
+        // All(defs).then(() => {
           completedHardCommit = true
           setTimeout(() => {
               processQueue(queue)
             }, 5000)
-        })
+        // })
 
       } else {
         setTimeout(() => {
           processQueue(queue)
-        }, 5000)
+        }, 15000)
       }
     } else {
       completedHardCommit = false;
@@ -150,7 +150,7 @@ function processQueue(queue) {
                     when(postDocs(file.path, core), () => {
                         def.resolve(true)
                     }, (err) => {
-                      console.log(`Error POSTing documents to SOLR core : ${core}, ${err}`)
+                      console.error(`${(new Date()).toISOString()}: Error POSTing documents to SOLR core : ${core}, ${err}`)
                       def.reject(err)
                     })
                   } else {
@@ -181,7 +181,7 @@ function processQueue(queue) {
             });
 
           }, (err) => {
-            console.error(`Error in fullfilling fileDefs: ${err}`)
+            console.error(`${(new Date()).toISOString()}: Error in fullfilling fileDefs: ${err} while processing ${message.id}`)
 
             when(updateHistory(message.id, 'error', err), () => {
                 commit()
