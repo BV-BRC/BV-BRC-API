@@ -26,7 +26,8 @@ if (require.main === module){
 
 function submit(core, file){
     // const def = Deferred()
-    const query = 'update?versions=true&commit=true'
+    // const query = 'update?versions=true&softCommit=true'
+    const query = 'update?softCommit=true&openSearcher=false'
 
     console.log("reading: ", file)
     console.log("requesting: ", `${distributeURL}/${core}/${query}`)

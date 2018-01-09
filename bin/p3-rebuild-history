@@ -1,0 +1,139 @@
+#!/usr/bin/env node
+
+const config = require('../config')
+const opts = require('commander')
+
+const Defer = require('promised-io/promise').Deferred
+const when = require('promised-io/promise').when
+const All = require('promised-io/promise').all
+const fs = require('fs-extra')
+const JSONStream = require('JSONStream')
+const es = require('event-stream')
+
+const queueDir = config.get('queueDirectory')
+
+if (require.main === module) {
+  opts.option('-k, --key [value]', 'Index key')
+  .parse(process.argv)
+
+  if (!opts.key) {
+    console.error('Must supply key')
+    opts.help()
+  }
+
+  rebuildHistory(opts.key)
+}
+
+function rebuildHistory(key) {
+
+  const history = {id: key,
+    type: 'genome',
+    user: '',
+    options: {},
+    files: {},
+    state: 'rebuilt'
+  }
+
+  const filesDefs = fs.readdirSync(`${queueDir}/file_data/${key}`,
+    {encoding: 'utf8'})
+  .map((path) => {
+    const fullPath = `${queueDir}/file_data/${key}/${path}`
+    return buildFileObject(fullPath)
+  })
+
+  All(filesDefs).then(files => {
+    files.forEach(obj => {
+      const key = obj.name.split('.')[0]
+      if (key === 'unknown' && history.files['genome_amr'] === undefined) {
+        history.files['genome_amr'] = Object.assign(obj, {
+          name: 'genome_amr.json'
+        })
+      } else if (key === 'unknown' && history.files['taxonomy'] === undefined) {
+        history.files['taxonomy'] = Object.assign(obj, {
+          name: 'taxonomy.json'
+        })
+      } else {
+        history.files[key] = obj
+      }
+    })
+
+    // populate user
+    const genomePath = history.files['genome'].path
+    const genomes = fs.readJSONSync(genomePath, {encoding: 'utf8'})
+    history.user = genomes[0].owner
+
+    fs.writeJsonSync(`${queueDir}/history/${key}`, history, {spaces:0})
+  })
+}
+
+function buildFileObject(path) {
+  const def = new Defer()
+
+  when(guessFileType(path), (key) => {
+    console.log(`${path} => ${key}`)
+
+    const stat = fs.statSync(path)
+    def.resolve({
+      size: stat.size,
+      path: path,
+      name: `${key}.json`,
+      type: 'application/octet-stream',
+      mtime: stat.mtime
+    })
+  })
+
+  return def.promise
+}
+
+function guessFileType(path) {
+
+  const def = new Defer()
+
+  const myGuess = []
+
+  fs.createReadStream(path, {encoding: 'utf8'})
+  .pipe(JSONStream.parse('*'))
+  .pipe(es.mapSync(row => {
+
+    if (row.hasOwnProperty('taxon_lineage_names')) {
+      myGuess.push('genome')
+    } else if (row.hasOwnProperty('property_source')) {
+      myGuess.push('sp_gene')
+    } else if (row.hasOwnProperty('aa_sequence_md5')) {
+      myGuess.push('genome_feature')
+    } else if (row.hasOwnProperty('sequence_type')) {
+      myGuess.push('genome_sequence')
+    } else if (row.hasOwnProperty('pathway_id')) {
+      myGuess.push('pathway')
+    } else if (row.hasOwnProperty('genomes')) {
+      myGuess.push('taxonomy')
+    } else if (row.hasOwnProperty('resistant_phenotype')) {
+      myGuess.push('genome_amr')
+    }
+  }))
+  .on('close', () => {
+    // console.log(myGuess)
+    def.resolve(pickBestGuess(myGuess))
+  })
+
+  return def.promise
+}
+
+function pickBestGuess(array) {
+  let bestGuess = 'unknown'
+  let best = -1
+  const hash = {}
+
+  for (let i = 0, len = array.length; i < len; i++) {
+    if (hash[array[i]] === undefined) {
+      hash[array[i]] = 0
+    }
+    hash[array[i]]++
+    if (hash[array[i]] > best) {
+      best = hash[array[i]]
+      bestGuess = array[i]
+    }
+  }
+
+  return bestGuess
+}

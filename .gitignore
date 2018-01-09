@@ -7,6 +7,9 @@ run/*
 .DS_Store
 dump.rdb
 p3api.conf
+p3api.sublime-project
 p3api.sublime-workspace
 .idea/
+.vscode/
 tests/data_files
+package-lock.json

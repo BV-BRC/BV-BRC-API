@@ -7,6 +7,7 @@
     "test": "intern-client config=tests/intern"
   },
   "dependencies": {
+    "JSONStream": "^1.3.1",
     "archiver": "^1.0.0",
     "body-parser": "^1.8.4",
     "clarinet": "^0.9.0",
@@ -19,7 +20,6 @@
     "file-queue": "^0.2.1",
     "formidable": "^1.0.17",
     "fs-extra": "~0.12.0",
-    "intern": "~2.2.2",
     "json-patch": "^0.6.1",
     "md5": "^2.1.0",
     "minimist": "~1.1.0",
