@@ -1,16 +1,17 @@
 #!/usr/bin/env node
-
 const fs = require('fs')
-
+const opts = require('commander')
 const request = require('request')
-const Deferred = require('promised-io/promise').Deferred
-const when = require('promised-io/promise').when
-const all = require('promised-io/promise').all
 
-const distributeURL = 'http://localhost:8983/solr'
+const DISTRIBUTE_URL = 'http://localhost:8983/solr'
 const BASE_DATA_DIR = './data_files'
 
 if (require.main === module){
+    opts.option('-t, --token [value]', 'Token for private genome access')
+        .option('-e, --endpoint [value]', 'Endpoint to grab data from ' +
+            '(i.e., http://localhost:8983/solr)')
+        .option('-o, --owner [value]', 'Set new owner for data being indexed.')
+        .parse(process.argv)
 
     const genomes = fs.readdirSync(BASE_DATA_DIR)
 
@@ -19,30 +20,62 @@ if (require.main === module){
         fs.readdirSync(`${BASE_DATA_DIR}/${genome}`).forEach(file => {
             const core = file.split('.')[0]
 
-            submit(core, `${BASE_DATA_DIR}/${genome}/${file}`) 
+            submit(core, `${BASE_DATA_DIR}/${genome}/${file}`)
         })
     })
 }
 
-function submit(core, file){
-    // const def = Deferred()
-    // const query = 'update?versions=true&softCommit=true'
-    const query = 'update?softCommit=true&openSearcher=false'
+function submit(core, filePath){
+    const query = 'update?versions=true&commit=true'
+    const url = `${opts.endpoint || DISTRIBUTE_URL}/${core}/${query}`
 
-    console.log("reading: ", file)
-    console.log("requesting: ", `${distributeURL}/${core}/${query}`)
+    console.log("reading: ", filePath)
+    console.log("requesting: ", url)
 
-    fs.createReadStream(file).pipe(
+    if (opts.owner) {
+        console.log(`(Changed owner to: ${opts.owner})`)
+        fs.readFile(filePath, 'utf8', (err, data) => {
+            if (err) {
+                console.error(err)
+                return;
+            }
+
+            // set owner in every object
+            let objs = JSON.parse(data)
+            objs.forEach(o => {
+                if (!('owner' in o)){
+                    console.error("Error: no existing owner field found in object: ${filePath}")
+                    return;
+                }
+                o.owner = opts.owner
+            })
+
+            request.post({
+                url: url,
+                Authorization: opts.token || '',
+                json: objs
+            }, (error, resp, body) => {
+                if (error){
+                    console.error(error)
+                    return;
+                }
+                console.log(body)
+            })
+        })
+        return;
+    }
+
+    fs.createReadStream(filePath).pipe(
         request.post({
-            url: `${distributeURL}/${core}/${query}`
-        }, function(error, resp, body){
+            url: url,
+            Authorization: opts.token || ''
+        }, (error, resp, body) => {
             if (error){
                 console.error(error)
-                // def.reject(error)
                 return;
             }
             console.log(body)
-            // def.resolve(body)
         })
     )
 }
+
