@@ -71,7 +71,7 @@ function postDocs(docs,type){
         var defs = [];
         var def = new defer();
         var url = conf.get("solr").url + "/"+type+"/update?wt=json&overwrite=true&softCommit=true";
-        //console.log("POST URL: ", url, " #docs:", docs.length);
+
         Request(url, {
                 json: true,
                 method: "POST",
@@ -116,7 +116,7 @@ module.exports = function(req,res,next){
 
 	if (req.publicFree.indexOf(collection)>=0){
 		return next(new Error("Update cannot be applied to this data type"));
-	
+
 	}
 
 	if (!target_id) {
@@ -127,24 +127,18 @@ module.exports = function(req,res,next){
 
         var solr = new solrjs(SOLR_URL + "/" + collection);
         when(solr.get(target_id), function(sresults){
-                if(sresults && sresults.doc){
-                        var results = sresults.doc;
-		
-//			userModifiableProperties.forEach(function(prop){
-//				if (!results[prop]) { results[prop]=""; }
-//			});
-//			console.log("results: ", results);
-                        if(req.user && ((results.owner == req.user) || (results.user_write.indexOf(req.user) >= 0))){
+			if(sresults && sresults.doc){
+					var results = sresults.doc;
+
+			if(req.user && ((results.owner == req.user) || (results.user_write.indexOf(req.user) >= 0))){
 				console.log("Current Obj: ", results);
 				//console.log("Patch: ", patch);
-				
+
 				if (patch.some(function(p){
 					var parts = p.path.split("/");
-					//console.log("Patch Path Parts: ", parts);	
 					return (userModifiableProperties.indexOf(parts[1])<0)
 				})){
 					res.status(406).send("Patch contains non-modifiable properties");
-//					return next(new Error("Patch contains non-modifiable properties"));
 				}
 
 				console.log("PATCH: ", patch);
@@ -154,32 +148,28 @@ module.exports = function(req,res,next){
 				}catch(err){
 					res.status(406).send("Error in patching: " + err);
 					return;
-//					return next(err);
 				}
 
 				console.log("Patched Results: ", results);
 				delete results._version_;
 
 				when(postDocs([results],collection), function(r){
-					//console.log("r: ", r);
 					res.sendStatus(201);
 				}, function(err){
 
 					res.status(406).send("Error storing patched document" + err);
 					return;
-				//	next(new Error("Error applying update patch: " + err));
 				});
-//				console.log("PATCHED RESULTS: ", results);
 
-                        }else{
-                                if(!req.user){
-                                        debug("User not logged in, permission denied");
-                                        res.sendStatus(401);
-                                }else{
-                                        debug("User forbidden from private data");
-                                        res.sendStatus(403);
-                                }
-                        }
+					}else{
+							if(!req.user){
+									debug("User not logged in, permission denied");
+									res.sendStatus(401);
+							}else{
+									debug("User forbidden from private data");
+									res.sendStatus(403);
+							}
+					}
 		}
 	}, function(err){
 		console.log("Error retrieving " + collection  + " with id " + target_id);
