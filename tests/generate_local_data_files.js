@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 /**
- * ./generate_local_data_files.js --endpoint http://localhost:8983/solr
  *
- *
+ * Example Usage:
+ *  ./generate_local_data_files.js
+ *      --endpoint http://chestnut.mcs.anl.gov:8983/solr
  *
  */
 
@@ -14,10 +15,9 @@ const Deferred = require('promised-io/promise').Deferred
 const when = require('promised-io/promise').when
 const all = require('promised-io/promise').all
 
-// const config = require('../config');
-
 const DISTRIBUTE_URL = 'http://chestnut.mcs.anl.gov:8983/solr'
-const KEY_CORES = ['genome', 'genome_feature', 'genome_sequence']
+const KEY_CORES = ['genome', 'genome_feature', 'genome_sequence', 'pathway', 'sp_gene', 'genome_amr']
+
 const BASE_DATA_DIR = './data_files'
 const DEFAULT_ID_STR = '1763.134,83332.349,205918.41,83332.228'
 
@@ -68,7 +68,6 @@ function dataCall(core, genome_id){
             def.reject(error)
             return;
         }
-        // console.log(body)
 
         def.resolve(body.response.docs)
     })

@@ -1,4 +1,13 @@
 #!/usr/bin/env node
+/**
+ *
+ * Example Usage:
+ * ./index_local_data_files.js
+ *      --endpoint http://localhost:8983/some/solr/instance     (optional)
+ *      --owner user@patricbrc.org                              (optional; change owner of all records)
+ *
+ */
+
 const fs = require('fs')
 const opts = require('commander')
 const request = require('request')
