@@ -337,7 +337,7 @@ router.get("/genome/:id/refseqs", [
 	function(req, res, next){
 		req.call_collection = "genome_sequence";
 		req.call_method = "query";
-		req.call_params = ["&eq(genome_id," + req.params.id + ")&select(topology,gi,accession,length,sequence_id,gc_content,owner,sequence_type,taxon_id,public,genome_id,genome_name,date_inserted,date_modified)&sort(+accession)&limit(1000)"];
+		req.call_params = ["&eq(genome_id," + req.params.id + ")&select(accession,length,sequence_id)&sort(+accession)&limit(1000)"];
 		req.queryType = "rql";
 		next();
 	},
@@ -366,4 +366,10 @@ router.get("/genome/:id/refseqs", [
 	}
 ]);
 
+router.get("/genome/:id/names/", [
+	function(req, res, next){
+		res.json([])
+		res.end()
+	}
+])
 module.exports = router;
