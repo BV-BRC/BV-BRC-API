@@ -260,8 +260,8 @@ router.get("/genome/:id/features/:seq_accession", [
 		req.call_collection = "genome_feature";
 		req.call_method = "query";
 
-		var st = "and(or(eq(start," + start + "),gt(start," + start + ")),or(eq(start," + end + "),lt(start," + end + ")))"
-		var en = "and(or(eq(end," + start + "),gt(end," + start + ")),or(eq(end," + end + "),lt(end," + end + ")))"
+		var st = "between(start," + start + "," + end + ")"
+		var en = "between(end," + start + "," + end + ")";
 
 		var over = "and(lt(start," + start + "),gt(end," + end + "))";
 		if(req.query && req.query["reference_sequences_only"]){
