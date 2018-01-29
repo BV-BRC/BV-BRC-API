@@ -32,6 +32,7 @@
     "redis": "^2.8.0",
     "replify": "~1.2.0",
     "request": "~2.47.0",
+    "request-promise": "4.2.2",
     "rql": "^0.3.3",
     "serve-favicon": "~2.1.3",
     "solrjs": "~0.7.0",
