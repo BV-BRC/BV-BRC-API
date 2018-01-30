@@ -26,11 +26,13 @@ function updatePerms() {
 
     const genomeIds = opts.genome_ids.split(',')
 
-    var data = {
-        op: "remove",
-        permission: "read",
-        users: "devuser2@patricbrc.org"
-    }
+    var data = [{
+        user: "devuser2@patricbrc.org",
+        permission: 'read'
+    }, {
+        user: "devuser3@patricbrc.org",
+        permission: 'write'
+    }]
 
     const url = (opts.endpoint || DATA_API_URL) + '/permissions/genome/' + genomeIds[0]
 

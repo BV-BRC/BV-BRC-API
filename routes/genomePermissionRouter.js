@@ -46,11 +46,13 @@ router.post("/:target_id", [
 
 
 // example request used for help messages
-const exampleRequest = {
-	op: 'add',
-	users: 'me@patricbrc.org',
+const exampleRequest = [{
+	user: "user1@patricbrc.org",
 	permission: 'read'
-}
+}, {
+	user: "user2@patricbrc.org",
+	permission: 'write'
+}]
 
 
 function updatePermissions(req, res, next){
@@ -60,11 +62,11 @@ function updatePermissions(req, res, next){
 	}
 
 	const collection = "genome";
-	const patch = req.body;
+	const permissions = req.body;
 	const genomeIDs = req.params.target_id.split(',');
 
 	// ensure parameters are correct, or respond with appropriate message
-	const hasPassed = testParams(req, res, patch);
+	const hasPassed = testParams(req, res, permissions);
 	if (!hasPassed) return;
 
 	let proms = [];
@@ -77,7 +79,7 @@ function updatePermissions(req, res, next){
 			const solr = new solrjs(SOLR_URL + "/" + core);
 
 			let key = genomeCoresUUIDs[core]
-			let query = `q=genome_id:${genomeID}&fl=${key},owner,user_read,user_write&rows=100000`
+			let query = `q=genome_id:${genomeID}&fl=${key},owner,user_write&rows=100000`
 
 			var prom = solr.query(query)
 				.then(r => {
@@ -95,14 +97,14 @@ function updatePermissions(req, res, next){
 					records.forEach(record => {
 
 						if (!(record.owner == req.user) ||
-							(record.user_write && !record.user_write.indcludes(req.user)) ) {
+							(record.user_write && !record.user_write.includes(req.user)) ) {
 							console.log("FORBIDDEN")
 							debug("User forbidden from private data");
-							res.sendStatus(403);
+							res.status(403).end();
 						}
 
 						commands.push(
-							toCommand(record, record[key], patch.op, patch.permission, patch.users, core)
+							toCommand(record, record[key], permissions, core)
 						)
 					})
 
@@ -121,7 +123,7 @@ function updatePermissions(req, res, next){
 	Promise.all(proms)
 		.then(r => {
 			console.log('success.')
-			res.sendStatus(201);
+			res.sendStatus(200);
 		}).catch(err => {
 			console.log('FAILED', err)
 			res.status(406).send("Error updating document" + err);
@@ -138,54 +140,31 @@ function testParams(req, res, patch) {
 			"Request must must contain genome id(s). I.e., /permissions/genome/9999.9999"
 		);
 		return;
-	} else if (!patch.op){
-		res.status(400).send(
-			"Request must must contain an operation 'op'.\n" +
-			"Example: " + JSON.stringify(exampleRequest, null, 4)
-		);
-		return;
-	} else if (!patch.users) {
-		res.status(400).send(
-			"Request must must contain at least one user in 'users'.\n" +
-			"Example: " + JSON.stringify(exampleRequest, null, 4)
-		);
-		return;
-	} else if (!patch.permission) {
-		res.status(400).send(
-			"Request must must contain a permission 'permission'.\n" +
-			"Example: " + JSON.stringify(exampleRequest, null, 4)
-		);
-		return;
 	}
 
 	return true;
 }
 
 
-function toCommand(record, id, op, perm, users, core) {
-	var users = Array.isArray(users) ? users : [users]
+function toCommand(record, id, patch, core) {
+	console.log('patch', patch)
+	let readUsers = patch
+		.filter(p => p.permission == 'read')
+		.map(p => {
+			if (p.permission == 'read') return p.user;
+		})
 
-	// join to existing permissions and remove duplicates
-	if (op == 'add' && perm == 'read') {
-		users = (record.user_read || []).concat(users)
-		users = users.filter((x, i) =>  users.indexOf(x) === i );
-	} else if (op == 'add' && perm == 'write') {
-		users = (record.user_wrte || []).concat(users);
-		users = users.filter((x, i) =>  users.indexOf(x) === i );
-	} else if (op == 'remove' && perm == 'read') {
-		users = (record.user_read || []).filter((x, i) => !users.includes(x) );
-	} else if (op == 'remove' && perm == 'write') {
-		users = (record.user_write || []).filter((x, i) => !users.includes(x) );
-	}
+	let writeUsers = patch
+		.filter(p => p.permission == 'write')
+		.map(p => {
+			if (p.permission == 'write') return p.user;
+		})
 
 	let cmd = {};
 	cmd[genomeCoresUUIDs[core]] = id;
 
-	if (perm == 'read')
-		cmd.user_read = {"set": users}
-	else if (perm == 'write')
-		cmd.user_write = {"set": users}
-
+	cmd.user_read = {set: readUsers}
+	cmd.user_write = {set: writeUsers}
 
 	return cmd;
 }
