@@ -96,9 +96,7 @@ function updatePermissions(req, res, next){
 					let commands = [];
 					records.forEach(record => {
 
-						if (!(record.owner == req.user) ||
-							(record.user_write && !record.user_write.includes(req.user)) ) {
-							console.log("FORBIDDEN")
+						if (!(record.owner == req.user) ) {
 							debug("User forbidden from private data");
 							res.status(403).end();
 						}
@@ -171,7 +169,6 @@ function toCommand(record, id, patch, core) {
 
 
 function updateSOLR(commands, core){
-	console.log('updating core: ', core)
 	let url = SOLR_URL+ `/${core}/update?wt=json&softCommit=true`;
 
 	return request(url, {
