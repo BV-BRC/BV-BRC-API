@@ -254,7 +254,7 @@ router.get("/genome/:id/features/:seq_accession", [
 			req.call_params[0] += "&limit(10000)"
 		} else {
 			req.call_params = ["and(eq(genome_id," + req.params.id + "),eq(accession," + req.params.seq_accession + "),eq(annotation," + annotation + "),or(" + st + "," + en + "," + over + "),ne(feature_type,source))"];
-			//req.call_params[0]+="&select(patric_id,refseq_locus_tag,gene,product,annotation,feature_type,protein_id,gene_id,genome_name,accession,strand,na_length,aa_length,genome_id,start,end,annotation)";
+			req.call_params[0] += "&select(patric_id,refseq_locus_tag,gene,product,annotation,feature_type,protein_id,gene_id,genome_name,accession,strand,na_length,aa_length,genome_id,start,end,feature_id)"
 			req.call_params[0] += "&limit(10000)&sort(+start)";
 		}
 		req.queryType = "rql";
@@ -306,6 +306,9 @@ router.get("/genome/:id/features/:seq_accession", [
 				d.strand = (d.strand == "+") ? 1 : -1;
 				d.phase = (d.feature_type == "CDS") ? 0 : ((d.feature_type == "RNA") ? 1 : 2);
 				d.start = d.start - 1;
+				// temporary hack for aa and na sequence for tracks
+				d.aa_sequence = ' ';
+				d.na_sequence = ' ';
 				return d;
 			});
 			// debug("FEATURES: ", features)
