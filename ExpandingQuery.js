@@ -213,6 +213,9 @@ var LazyWalk = exports.LazyWalk = function(term, opts){
 						return when(runSDISubQuery("ppi", query), function(feature_ids){
 
 							// debug("feature_ids: ", feature_ids);
+							if (feature_ids.length === 0) {
+								return "(NOT_A_VALID_ID)"
+							}
 
 							return "and(in(feature_id_a,(" + feature_ids.join(",") + ")),in(feature_id_b,(" + feature_ids.join(",") + ")),or(eq(feature_id_a," + featureId + "),eq(feature_id_b," + featureId +")))";
 						}, function(err){
