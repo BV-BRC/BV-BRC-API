@@ -3,6 +3,10 @@ var when = require("promised-io/promise").when;
 var es = require("event-stream");
 // var wrap = require("../util/linewrap");
 
+function sanitize(val) {
+	return val.replace(/;/g, '%3B').replace(/=/g, '%3D').replace(/&/g, '%26').replace(/,/g, '%2C')
+}
+
 function serializeRow(type, o){
 	var row = [];
 	if(o.feature_type == "source"){
@@ -37,7 +41,7 @@ function serializeRow(type, o){
 	}
 
 	if(o.product){
-		row.push(";product=" + o.product);
+		row.push(";product=" + sanitize(o.product));
 	}
 
 	if(o.go){
