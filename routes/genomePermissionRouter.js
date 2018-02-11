@@ -15,14 +15,13 @@ const authMiddleware = require("../middleware/auth");
 const httpParams = require("../middleware/http-params");
 const bodyParser = require("body-parser");
 
-const debug = require('debug')('p3api-server:cachemiddleware');
+const debug = require('debug')('p3api-server:genomePermissions');
 const conf = require("../config");
 const when = require("promised-io/promise").when;
 const defer = require("promised-io/promise").defer;
 
 const solrjs = require("solrjs");
 const SOLR_URL = conf.get("solr").url;
-//const Request = require("request");
 const request = require('request-promise');
 
 
@@ -71,38 +70,43 @@ function updatePermissions(req, res, next){
 
 	let proms = [];
 	genomeIDs.forEach(genomeID => {
-		console.log(`genomeID: ${genomeID}`)
+		debug(`genomeID: ${genomeID}`)
 
+		// update objects from all genome-related cores
 		Object.keys(genomeCoresUUIDs).forEach(core =>{
-			console.log(`updating core ${core}...`)
+			debug(`updating core ${core}...`)
 
 			const solr = new solrjs(SOLR_URL + "/" + core);
 
+			// for each core, fetch objects keys and owners
+			// Notes:
+			//	-  keys are needed to update objects
+			//	-  owner is needed to check permission
 			let key = genomeCoresUUIDs[core]
-			let query = `q=genome_id:${genomeID}&fl=${key},owner,user_write&rows=100000`
-
+			let query = `q=genome_id:${genomeID}&fl=${key},owner&rows=100000`
 			var prom = solr.query(query)
 				.then(r => {
-					console.log(`retrieved records for genome ${genomeID} (core: ${core})...`)
+					debug(`retrieved records for genome ${genomeID} (core: ${core})...`)
 
-					// get actual records
+					// get onlyactual records
 					var records = r.response.docs;
+
+					// skip empty records
 					if (records.length == 0) {
-						console.log(`skipping empty records for core ${core}`)
+						debug(`skipping empty records for core/genome: ${core}/${genomeID}`)
 						return;
 					}
 
 					// create a command for each record
 					let commands = [];
 					records.forEach(record => {
-
 						if (!(record.owner == req.user) ) {
 							debug("User forbidden from private data");
 							res.status(403).end();
 						}
 
 						commands.push(
-							toCommand(record, record[key], permissions, core)
+							toSetCommand(record, record[key], permissions, core)
 						)
 					})
 
@@ -114,16 +118,16 @@ function updatePermissions(req, res, next){
 					res.end();
 				});
 
-			proms.push(prom)
+			proms.push(prom);
 		})
 	})
 
 	Promise.all(proms)
 		.then(r => {
-			console.log('success.')
+			debug('success.')
 			res.sendStatus(200);
 		}).catch(err => {
-			console.log('FAILED', err)
+			debug('FAILED', err)
 			res.status(406).send("Error updating document" + err);
 		})
 }
@@ -144,25 +148,24 @@ function testParams(req, res, patch) {
 }
 
 
-function toCommand(record, id, patch, core) {
-	console.log('patch', patch)
+function toSetCommand(record, id, patch, core) {
 	let readUsers = patch
 		.filter(p => p.permission == 'read')
 		.map(p => {
 			if (p.permission == 'read') return p.user;
-		})
+		});
 
 	let writeUsers = patch
 		.filter(p => p.permission == 'write')
 		.map(p => {
 			if (p.permission == 'write') return p.user;
-		})
+		});
 
 	let cmd = {};
 	cmd[genomeCoresUUIDs[core]] = id;
 
-	cmd.user_read = {set: readUsers}
-	cmd.user_write = {set: writeUsers}
+	cmd.user_read = {set: readUsers};
+	cmd.user_write = {set: writeUsers};
 
 	return cmd;
 }
