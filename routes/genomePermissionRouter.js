@@ -102,7 +102,7 @@ function updatePermissions(req, res, next){
 					records.forEach(record => {
 						if (!(record.owner == req.user) ) {
 							debug("User forbidden from private data");
-							res.status(403).end();
+							res.sendStatus(403);
 						}
 
 						commands.push(

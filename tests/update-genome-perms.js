@@ -1,9 +1,17 @@
 #!/usr/bin/env node
 const fs = require('fs')
 const opts = require('commander')
-const request = require('request')
+const rp = require('request-promise')
+
 
 const DATA_API_URL = 'http://localhost:3001'
+const TEST_PERMS = [{
+    user: "devuser2@patricbrc.org",
+    permission: 'read'
+}, {
+    user: "devuser3@patricbrc.org",
+    permission: 'write'
+}]
 
 
 if (require.main === module) {
@@ -17,41 +25,34 @@ if (require.main === module) {
         return
     }
 
-
-    updatePerms()
+    updatePerms(opts.genome_ids, opts.token)
 }
 
 
-function updatePerms() {
 
-    const genomeIds = opts.genome_ids.split(',')
+function updatePerms(genomeIds, token, permissions) {
+    var genomeIds = genomeIds.split(',')
 
-    var data = [{
-        user: "devuser2@patricbrc.org",
-        permission: 'read'
-    }, {
-        user: "devuser3@patricbrc.org",
-        permission: 'write'
-    }]
-
+    const data = permissions || TEST_PERMS
     const url = (opts.endpoint || DATA_API_URL) + '/permissions/genome/' + genomeIds[0]
 
-    console.log('\nURL:', url)
-
-    request.post(url, {
+    return rp.post({
+        url: url,
         body: JSON.stringify(data),
+        resolveWithFullResponse: true,
         headers: {
             "content-type": "application/json",
-            "authorization": opts.token || ''
+            "authorization": token || ''
         }
-    }, (error, resp, body) => {
-        if (error){
-            console.log('ITS AN ERROR')
-            console.error(error)
-            return;
-        }
-
-        console.log(body)
+    }).then(res =>{
+        //console.log(res.body)
+        return res
+    }).catch(error => {
+        //console.error(error)
+        return error
     })
 
 }
+
+
+module.exports = updatePerms;
