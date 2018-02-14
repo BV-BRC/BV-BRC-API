@@ -11,6 +11,6 @@ p3api.sublime-project
 p3api.sublime-workspace
 .idea/
 .vscode/
-tests/data_files
+tests/data-files
 package-lock.json
 tests/test-permissions/config.json
