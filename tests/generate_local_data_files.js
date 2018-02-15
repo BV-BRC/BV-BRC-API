@@ -23,7 +23,7 @@ const fs = require('fs'),
 const DATA_API_URL = 'https://p3.theseed.org/services/data_api'
 const DISTRIBUTE_URL = 'http://chestnut.mcs.anl.gov:8983/solr'
 
-// max number of docs that can fetched.  Script will end if exceed
+// max number of docs that can be fetched.  Script will end if exceeded.
 const DOC_LIMIT = 500000;
 
 // cores that will be fetched for each genome
@@ -170,7 +170,7 @@ function apiRequest(core, genome_id){
             process.exit();
         }
 
-        return body;
+        return docs;
     }).catch((e) => {
         console.log(e);
     })
