@@ -6,48 +6,72 @@
  *      --endpoint http://localhost:8983/some/solr/instance     (optional)
  *      --owner user@patricbrc.org                              (optional; change owner of all records)
  *
+ * TODO:
+ *      - Could use set operations to change owner instead
  */
 
-const fs = require('fs')
+const fs = require("fs")
 const opts = require('commander')
-const request = require('request')
-
+const rp = require('request-promise')
+const Promise = require("bluebird");
 const DISTRIBUTE_URL = 'http://localhost:8983/solr'
-const BASE_DATA_DIR = './data_files'
+const BASE_DATA_DIR = './data-files'
+
+const readFile = Promise.promisify(fs.readFile);
+const readDir = Promise.promisify(fs.readdir);
+
+// for progress
+let totalCount
+let remainingCount
+
 
 if (require.main === module){
     opts.option('-t, --token [value]', 'Token for private genome access')
         .option('-e, --endpoint [value]', 'Endpoint to grab data from ' +
             '(i.e., http://localhost:8983/solr)')
+        .option('-i, --input [value]', 'Directory to index into Solr')
         .option('-o, --owner [value]', 'Set new owner for data being indexed.')
         .parse(process.argv)
 
-    const genomes = fs.readdirSync(BASE_DATA_DIR)
-
-    genomes.forEach(genome => {
-        console.log(genome)
-        fs.readdirSync(`${BASE_DATA_DIR}/${genome}`).forEach(file => {
-            const core = file.split('.')[0]
-
-            submit(core, `${BASE_DATA_DIR}/${genome}/${file}`)
-        })
-    })
+    loadData()
 }
+
+
+async function loadData() {
+    const baseDir = opts.input || BASE_DATA_DIR
+
+    const genomes = await readDir(baseDir)
+
+    totalCount = genomes.length;
+    remainingCount = genomes.length;
+
+    for (let i = 0; i < genomes.length; i++){
+        let genome = genomes[i];
+
+        console.log(`Indexing genome ${genome}`)
+        var files = await readDir(`${baseDir}/${genome}`)
+
+        for (let i = 0; i < files.length; i++)  {
+            let file = files[i]
+            let core = file.split('.')[0]
+            let f = `${baseDir}/${genome}/${file}`;
+
+            let body = await submit(core, f);
+        }
+        remainingCount = remainingCount - 1
+        console.log(`Progress: ${((1 - remainingCount / totalCount) * 100).toFixed(2)}%`)
+        console.log()
+    }
+}
+
 
 function submit(core, filePath){
     const query = 'update?versions=true&commit=true'
     const url = `${opts.endpoint || DISTRIBUTE_URL}/${core}/${query}`
 
-    console.log("reading: ", filePath)
-    console.log("requesting: ", url)
-
     if (opts.owner) {
-        console.log(`(Changed owner to: ${opts.owner})`)
-        fs.readFile(filePath, 'utf8', (err, data) => {
-            if (err) {
-                console.error(err)
-                return;
-            }
+        console.log(`Loading core ${core} (Changed owner to: ${opts.owner})`)
+        return readFile(filePath, "utf8").then(function(data) {
 
             // set owner in every object
             let objs = JSON.parse(data)
@@ -59,32 +83,25 @@ function submit(core, filePath){
                 o.owner = opts.owner
             })
 
-            request.post({
+            return rp.post({
                 url: url,
-                Authorization: opts.token || '',
                 json: objs
-            }, (error, resp, body) => {
-                if (error){
-                    console.error(error)
-                    return;
-                }
-                console.log(body)
+            }).then(body => {
+                return body
+            }).catch(e => {
+                console.error(e)
             })
-        })
-        return;
+        }).catch(e => console.error(e))
     }
 
-    fs.createReadStream(filePath).pipe(
-        request.post({
+    // Todo: test
+    return fs.createReadStream(filePath).pipe(
+        rp.post({
             url: url,
             Authorization: opts.token || ''
-        }, (error, resp, body) => {
-            if (error){
-                console.error(error)
-                return;
-            }
-            console.log(body)
-        })
+        }).then(body => {
+            console.log(body, body)
+        }).catch(e => console.error(e))
     )
 }
 

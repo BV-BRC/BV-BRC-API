@@ -45,7 +45,7 @@ if (require.main === module){
         .option('-d, --data_api [value]', 'Use given Data API endpoint, instead of SOLR directly.')
         .option('-e, --solr [value]', 'Use SOLR to grab data.  Must provide endpoint ' +
             '(i.e., http://chestnut.mcs.anl.gov:8983/solr).  Can not use with --bulk.')
-        .option('-o, --output', 'Out put directory (./data-files/ is default')
+        .option('-o, --output [value]', 'Out put directory (./data-files/ is default')
         .option('--token [value]', 'Token, if Data API is being used')
         .parse(process.argv)
 
@@ -108,27 +108,26 @@ if (require.main === module){
 
 
 /**
- *
- * @param {*} genomeIDs list of genome ids
  * recursively fetch associated genome core data, one genome at a time
  * note: for each genome, requests for core data is in parallel
+ * @param {*} genomeIDs list of genome ids
  *
  */
-
 function recursiveFetch(genomeIDs) {
     console.log(`Percent Complete: ${(1 - genomeIDs.length / totalGenomes).toFixed(2) * 100}%\n`)
 
     // fetch all data for first genome, then continue through list
     fetchAllFromAPI([genomeIDs[0]]).then((res) => {
-        if (genomeIDs.shift()) recursiveFetch(genomeIDs);
+        genomeIDs.shift()
+        if (genomeIDs.length)
+            recursiveFetch(genomeIDs);
     })
 }
 
 
 /**
- *
- * @param {*} genomeID genome id
- * fetches all data for all genomeIDs in parallel
+ * fetches all data for a genomeID in parallel
+ * @param {*} genomeID genome id of interest
  */
 function fetchAllFromAPI(genomeID) {
     const reqs = KEY_CORES.map(core => apiRequest(core, genomeID))
@@ -144,17 +143,27 @@ function fetchAllFromAPI(genomeID) {
 }
 
 /**
- *
+ * requests data for a genome from Solr, given core and genome id
  * @param {*} core core to fetch from
  * @param {*} genome_id match on gneome ids
  */
 function apiRequest(core, genome_id){
-    const query = `?limit(250000)&eq(genome_id,${genome_id})&keyword(*)`
+    const query = `?limit(250000)&eq(genome_id,${genome_id})`+
+        `&keyword(*)&http_accept=application/solr+json&http_download=true`
     const url = `${opts.endpoint || DATA_API_URL}/${core}/${query}`
 
-    console.log("requesting: ", url)
+    console.log(`requesting ${genome_id} from core ${core}...`)
     return rp.get(url, getOpts).then(body => {
-        let resStr = JSON.stringify(body, null, 4)
+        let numFound = body.response.numFound
+        let docs = body.response.docs;
+
+        console.log(`Number of docs found for ${core}: ${numFound}`)
+
+        if (numFound > docs.length) {
+            console.error(`The number of results found (${numFound})
+                exceeds the limit you have set.  Ending.`)
+            process.exit()
+        }
 
         return body;
     }).catch((e) => {
@@ -163,7 +172,11 @@ function apiRequest(core, genome_id){
 }
 
 
-
+/**
+ * requests data for a genome from Solr, given core and genome id
+ * @param {*} core the core of interest
+ * @param {*} genome_id the genome id of interest
+ */
 function solrRequest(core, genome_id){
     const query = `select?q=genome_id:${genome_id}&rows=250000&wt=json`
     const url = `${opts.endpoint || DISTRIBUTE_URL}/${core}/${query}`
@@ -181,11 +194,13 @@ function solrRequest(core, genome_id){
 
 
 function createFolderSync(dirname){
-    console.log('exists?', fs.existsSync(dirname), dirname )
-    if (!fs.existsSync(BASE_DATA_DIR)) {
-        fs.mkdirSync(BASE_DATA_DIR)
+    // create base directory first
+    let base = dirname.slice(0, dirname.lastIndexOf('/'))
+    if (!fs.existsSync(base)) {
+        fs.mkdirSync(base)
     }
 
+    // create genome directory
     if (!fs.existsSync(dirname) && opts.force == true){
         fs.rmdirSync(dirname)
     }
