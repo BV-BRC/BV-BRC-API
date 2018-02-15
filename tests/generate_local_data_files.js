@@ -14,18 +14,24 @@
  *
  */
 
-const fs = require('fs')
-const process = require('process')
-const opts = require('commander')
-const request = require('request')
-const rp = require('request-promise')
+const fs = require('fs'),
+      process = require('process'),
+      opts = require('commander'),
+      request = require('request'),
+      rp = require('request-promise');
 
 const DATA_API_URL = 'https://p3.theseed.org/services/data_api'
 const DISTRIBUTE_URL = 'http://chestnut.mcs.anl.gov:8983/solr'
 
-const KEY_CORES = ['genome', 'genome_feature', 'genome_sequence', 'pathway', 'sp_gene', 'genome_amr']
-const BASE_DATA_DIR = './data-files'
-const DEFAULT_ID_STR = '1763.134,83332.349,205918.41,83332.228'
+// max number of docs that can fetched.  Script will end if exceed
+const DOC_LIMIT = 500000;
+
+// cores that will be fetched for each genome
+const KEY_CORES = ['genome', 'genome_feature', 'genome_sequence', 'pathway', 'sp_gene', 'genome_amr'];
+
+// defaults
+const BASE_DATA_DIR = './data-files';
+const DEFAULT_ID_STR = '1763.134,83332.349,205918.41,83332.228';
 
 const getOpts = {
     json: true,
@@ -51,18 +57,18 @@ if (require.main === module){
 
 
     if (!opts.genome_ids && !opts.bulk) {
-        console.error(`Warning: no genome_ids given. Using default: ${DEFAULT_ID_STR}'\n`)
+        console.error(`Warning: no genome_ids given. Using default: ${DEFAULT_ID_STR}'\n`);
     }
-    let genomeIDs = (opts.genome_ids || DEFAULT_ID_STR).split(',')
+    let genomeIDs = (opts.genome_ids || DEFAULT_ID_STR).split(',');
 
     if (!opts.data_api && !opts.solr_url) {
-        console.error(`Must specify at least --date_api or --solr\n`)
+        console.error(`Must specify at least --date_api or --solr\n`);
         return;
     }
 
     if (opts.bulk && opts.solr) {
         console.error('Sorry, the --bulk option can not be used with the --solr' +
-            ' option as of now')
+            ' option as of now');
         return;
     }
 
@@ -70,36 +76,36 @@ if (require.main === module){
     // if bulk option is given, first get some genomeIDs
     // then recursively fetch data
     if (opts.bulk) {
-        const query = `?limit(${opts.bulk})&select(genome_id)&keyword(*)`
-        const url = `${opts.endpoint || DATA_API_URL}/genome/${query}`
+        const query = `?limit(${opts.bulk})&select(genome_id)&keyword(*)`;
+        const url = `${opts.endpoint || DATA_API_URL}/genome/${query}`;
         rp.get(url, getOpts).then(body => {
-                let resStr = JSON.stringify(body, null, 4)
+                let resStr = JSON.stringify(body, null, 4);
 
-                genomeIDs = body.map(o => o.genome_id)
-                totalGenomes = genomeIDs.length
+                genomeIDs = body.map(o => o.genome_id);
+                totalGenomes = genomeIDs.length;
 
-                recursiveFetch(genomeIDs)
+                recursiveFetch(genomeIDs);
             }).catch((e) => {
-                console.log(e)
+                console.log(e);
             })
 
         return;
     }
 
-
+    // if genome_ids is provided as an option
     if (opts.data_api) {
-        totalGenomes = genomeIDs.length
-        recursiveFetch(genomeIDs)
+        totalGenomes = genomeIDs.length;
+        recursiveFetch(genomeIDs);
         return;
     } else if (opts.solr) {
         genomeIDs.forEach(genome_id => {
-            const reqs = KEY_CORES.map(core => solrRequest(core, genome_id))
+            const reqs = KEY_CORES.map(core => solrRequest(core, genome_id));
             Promise.all(reqs).then(body => {
-                const dirname = `${opts.output || BASE_DATA_DIR}/${genome_id}`
-                createFolderSync(dirname)
+                const dirname = `${opts.output || BASE_DATA_DIR}/${genome_id}`;
+                createFolderSync(dirname);
 
                 KEY_CORES.forEach((core, i) => {
-                    writeFileSync(body[i], `${dirname}/${core}.json`)
+                    writeFileSync(body[i], `${dirname}/${core}.json`);
                 })
             })
         })
@@ -114,11 +120,11 @@ if (require.main === module){
  *
  */
 function recursiveFetch(genomeIDs) {
-    console.log(`Percent Complete: ${(1 - genomeIDs.length / totalGenomes).toFixed(2) * 100}%\n`)
+    console.log(`Percent Complete: ${(1 - genomeIDs.length / totalGenomes).toFixed(2) * 100}%\n`);
 
     // fetch all data for first genome, then continue through list
     fetchAllFromAPI([genomeIDs[0]]).then((res) => {
-        genomeIDs.shift()
+        genomeIDs.shift();
         if (genomeIDs.length)
             recursiveFetch(genomeIDs);
     })
@@ -130,14 +136,14 @@ function recursiveFetch(genomeIDs) {
  * @param {*} genomeID genome id of interest
  */
 function fetchAllFromAPI(genomeID) {
-    const reqs = KEY_CORES.map(core => apiRequest(core, genomeID))
+    const reqs = KEY_CORES.map(core => apiRequest(core, genomeID));
     return Promise.all(reqs).then(body => {
 
-        const dirname = `${opts.output || BASE_DATA_DIR}/${genomeID}`
-        createFolderSync(dirname)
+        const dirname = `${opts.output || BASE_DATA_DIR}/${genomeID}`;
+        createFolderSync(dirname);
 
         KEY_CORES.forEach((core, i) => {
-            writeFileSync(body[i], `${dirname}/${core}.json`)
+            writeFileSync(body[i], `${dirname}/${core}.json`);
         })
     })
 }
@@ -148,26 +154,25 @@ function fetchAllFromAPI(genomeID) {
  * @param {*} genome_id match on gneome ids
  */
 function apiRequest(core, genome_id){
-    const query = `?limit(250000)&eq(genome_id,${genome_id})`+
-        `&keyword(*)&http_accept=application/solr+json&http_download=true`
-    const url = `${opts.endpoint || DATA_API_URL}/${core}/${query}`
+    const query = `?limit(${DOC_LIMIT})&eq(genome_id,${genome_id})`+
+        `&keyword(*)&http_accept=application/solr+json&http_download=true`;
+    const url = `${opts.endpoint || DATA_API_URL}/${core}/${query}`;
 
     console.log(`requesting ${genome_id} from core ${core}...`)
     return rp.get(url, getOpts).then(body => {
-        let numFound = body.response.numFound
+        let numFound = body.response.numFound;
         let docs = body.response.docs;
 
-        console.log(`Number of docs found for ${core}: ${numFound}`)
+        console.log(`Number of docs found for ${core}: ${numFound}`);
 
         if (numFound > docs.length) {
-            console.error(`The number of results found (${numFound})
-                exceeds the limit you have set.  Ending.`)
-            process.exit()
+            console.error(`The number of results found (${numFound}) exceeds the limit you have set.  Ending.`);
+            process.exit();
         }
 
         return body;
     }).catch((e) => {
-        console.log(e)
+        console.log(e);
     })
 }
 
@@ -178,8 +183,8 @@ function apiRequest(core, genome_id){
  * @param {*} genome_id the genome id of interest
  */
 function solrRequest(core, genome_id){
-    const query = `select?q=genome_id:${genome_id}&rows=250000&wt=json`
-    const url = `${opts.endpoint || DISTRIBUTE_URL}/${core}/${query}`
+    const query = `select?q=genome_id:${genome_id}&rows=${DOC_LIMIT}&wt=json`,
+          url = `${opts.endpoint || DISTRIBUTE_URL}/${core}/${query}`;
 
     console.log("requesting: ", url)
     return rp.get({
@@ -188,29 +193,29 @@ function solrRequest(core, genome_id){
     }).then(body => {
         def.resolve(body.response.docs)
     }).catch(e => {
-        console.error(e)
+        console.error(e);
     })
 }
 
 
 function createFolderSync(dirname){
     // create base directory first
-    let base = dirname.slice(0, dirname.lastIndexOf('/'))
+    let base = dirname.slice(0, dirname.lastIndexOf('/'));
     if (!fs.existsSync(base)) {
-        fs.mkdirSync(base)
+        fs.mkdirSync(base);
     }
 
     // create genome directory
     if (!fs.existsSync(dirname) && opts.force == true){
-        fs.rmdirSync(dirname)
+        fs.rmdirSync(dirname);
     }
 
     if (!fs.existsSync(dirname)) {
-        fs.mkdirSync(dirname)
+        fs.mkdirSync(dirname);
     }
 }
 
 function writeFileSync(json, filePath) {
-    fs.writeFileSync(filePath, JSON.stringify(json, null, 4), 'utf8')
-    console.log('Wrote:', filePath)
+    fs.writeFileSync(filePath, JSON.stringify(json, null, 4), 'utf8');
+    console.log('Wrote:', filePath);
 }
