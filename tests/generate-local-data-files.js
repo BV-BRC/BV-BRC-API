@@ -6,10 +6,11 @@
  *
  *  Example Usages:
  *  - fetch 20 genomes (and associated cores for each)
- *      ./generate_local_data_files.js --data_api --bulk=20
+ *      ./generate_local_data_files.js --bulk=20
  *
  *  - fetch some private genomes
- *      ./generate_local_data_files.js --data_api --genome_ids=99999.98,99999.99
+ *      ./generate_local_data_files.js
+ *          --genome_ids=99999.98,99999.99
  *          --token="<your_token>"
  *
  */
@@ -22,7 +23,6 @@ const fs = require('fs'),
       rp = require('request-promise');
 
 const DATA_API_URL = 'https://p3.theseed.org/services/data_api'
-const DISTRIBUTE_URL = 'http://chestnut.mcs.anl.gov:8983/solr'
 
 // max number of docs that can be fetched.  Script will end if exceeded.
 const DOC_LIMIT = 500000;
@@ -49,9 +49,7 @@ if (require.main === module){
         .option('-b, --bulk <n>', 'Number of "random" genomes to grab. ' +
                 'NOTE: this will ignore the --genome_ids option.')
         .option('-f, --force [value]', 'Force to update cached data')
-        .option('-d, --data_api [value]', 'Use given Data API endpoint, instead of SOLR directly.')
-        .option('-e, --solr [value]', 'Use SOLR to grab data.  Must provide endpoint ' +
-            '(i.e., http://chestnut.mcs.anl.gov:8983/solr).  Can not use with --bulk.')
+        .option('-d, --data_api [value]', 'Use specific Data API endpoint')
         .option('-o, --output [value]', 'Out put directory (./data-files/ is default')
         .option('-s, --skip_existing', "Skip existing genome directories")
         .option('--token [value]', 'Token, if Data API is being used')
@@ -60,18 +58,6 @@ if (require.main === module){
 
     if (!opts.genome_ids && !opts.bulk) {
         console.error(`Warning: no genome_ids given. Using default: ${DEFAULT_ID_STR}'\n`);
-    }
-
-
-    if (!opts.data_api && !opts.solr_url) {
-        console.error(`Must specify at least --date_api or --solr\n`);
-        return;
-    }
-
-    if (opts.bulk && opts.solr) {
-        console.error('The --bulk option can not be used with the --solr' +
-            ' option as of now');
-        return;
     }
 
     let genomeIDs = (opts.genome_ids || DEFAULT_ID_STR).split(',');
@@ -110,23 +96,8 @@ if (require.main === module){
     }
 
     // if genome_ids is provided as an option
-    if (opts.data_api) {
-        totalGenomes = genomeIDs.length;
-        recursiveFetch(genomeIDs);
-        return;
-    } else if (opts.solr) {
-        genomeIDs.forEach(genome_id => {
-            const reqs = KEY_CORES.map(core => solrRequest(core, genome_id));
-            Promise.all(reqs).then(body => {
-                const dirname = `${outDir}/${genome_id}`;
-                createFolderSync(dirname);
-
-                KEY_CORES.forEach((core, i) => {
-                    writeFileSync(body[i], `${dirname}/${core}.json`);
-                })
-            })
-        })
-    }
+    totalGenomes = genomeIDs.length;
+    recursiveFetch(genomeIDs);
 }
 
 
@@ -170,7 +141,7 @@ function fetchAllFromAPI(genomeID) {
  * @param {*} core core to fetch from
  * @param {*} genome_id match on gneome ids
  */
-function apiRequest(core, genome_id){
+function apiRequest(core, genome_id) {
     const query = `?limit(${DOC_LIMIT})&eq(genome_id,${genome_id})`+
         `&http_accept=application/solr+json&http_download=true`;
     const url = `${opts.endpoint || DATA_API_URL}/${core}/${query}`;
@@ -192,28 +163,6 @@ function apiRequest(core, genome_id){
         console.log(e);
     })
 }
-
-
-/**
- * requests data for a genome from Solr, given core and genome id
- * @param {*} core the core of interest
- * @param {*} genome_id the genome id of interest
- */
-function solrRequest(core, genome_id){
-    const query = `select?q=genome_id:${genome_id}&rows=${DOC_LIMIT}&wt=json`,
-          url = `${opts.endpoint || DISTRIBUTE_URL}/${core}/${query}`;
-
-    console.log("requesting: ", url)
-    return rp.get({
-        url: url,
-        json: true
-    }).then(body => {
-        def.resolve(body.response.docs)
-    }).catch(e => {
-        console.error(e);
-    })
-}
-
 
 function createFolderSync(dirname){
     // create base directory first
