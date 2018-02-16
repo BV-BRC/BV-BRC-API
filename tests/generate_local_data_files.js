@@ -15,6 +15,7 @@
  */
 
 const fs = require('fs'),
+      path = require('path'),
       process = require('process'),
       opts = require('commander'),
       request = require('request'),
@@ -30,8 +31,8 @@ const DOC_LIMIT = 500000;
 const KEY_CORES = ['genome', 'genome_feature', 'genome_sequence', 'pathway', 'sp_gene', 'genome_amr'];
 
 // defaults
-const BASE_DATA_DIR = './data-files';
 const DEFAULT_ID_STR = '1763.134,83332.349,205918.41,83332.228';
+let outDir = './data-files';
 
 const getOpts = {
     json: true,
@@ -52,6 +53,7 @@ if (require.main === module){
         .option('-e, --solr [value]', 'Use SOLR to grab data.  Must provide endpoint ' +
             '(i.e., http://chestnut.mcs.anl.gov:8983/solr).  Can not use with --bulk.')
         .option('-o, --output [value]', 'Out put directory (./data-files/ is default')
+        .option('-s, --skip_existing', "Skip existing genome directories")
         .option('--token [value]', 'Token, if Data API is being used')
         .parse(process.argv)
 
@@ -59,7 +61,7 @@ if (require.main === module){
     if (!opts.genome_ids && !opts.bulk) {
         console.error(`Warning: no genome_ids given. Using default: ${DEFAULT_ID_STR}'\n`);
     }
-    let genomeIDs = (opts.genome_ids || DEFAULT_ID_STR).split(',');
+
 
     if (!opts.data_api && !opts.solr_url) {
         console.error(`Must specify at least --date_api or --solr\n`);
@@ -67,11 +69,20 @@ if (require.main === module){
     }
 
     if (opts.bulk && opts.solr) {
-        console.error('Sorry, the --bulk option can not be used with the --solr' +
+        console.error('The --bulk option can not be used with the --solr' +
             ' option as of now');
         return;
     }
 
+    let genomeIDs = (opts.genome_ids || DEFAULT_ID_STR).split(',');
+    outDir = opts.output || outDir
+
+    let existingDirs;
+    if (opts.skip_existing) {
+        existingDirs = fs.readdirSync(outDir).filter(f =>
+            fs.statSync(path.join(outDir, f)).isDirectory()
+        )
+    }
 
     // if bulk option is given, first get some genomeIDs
     // then recursively fetch data
@@ -79,15 +90,21 @@ if (require.main === module){
         const query = `?limit(${opts.bulk})&select(genome_id)&keyword(*)`;
         const url = `${opts.endpoint || DATA_API_URL}/genome/${query}`;
         rp.get(url, getOpts).then(body => {
-                let resStr = JSON.stringify(body, null, 4);
+            let resStr = JSON.stringify(body, null, 4);
 
-                genomeIDs = body.map(o => o.genome_id);
-                totalGenomes = genomeIDs.length;
+            genomeIDs = body.map(o => o.genome_id );
+            if (opts.skip_existing) {
+                let cntBefore = genomeIDs.length
+                genomeIDs = genomeIDs.filter(id => !existingDirs.includes(id))
+                console.log(`\nSkiping ${cntBefore - genomeIDs.length} genomes\n`)
+            }
 
-                recursiveFetch(genomeIDs);
-            }).catch((e) => {
-                console.log(e);
-            })
+            totalGenomes = genomeIDs.length;
+
+            recursiveFetch(genomeIDs);
+        }).catch((e) => {
+            console.log(e);
+        })
 
         return;
     }
@@ -101,7 +118,7 @@ if (require.main === module){
         genomeIDs.forEach(genome_id => {
             const reqs = KEY_CORES.map(core => solrRequest(core, genome_id));
             Promise.all(reqs).then(body => {
-                const dirname = `${opts.output || BASE_DATA_DIR}/${genome_id}`;
+                const dirname = `${outDir}/${genome_id}`;
                 createFolderSync(dirname);
 
                 KEY_CORES.forEach((core, i) => {
@@ -139,7 +156,7 @@ function fetchAllFromAPI(genomeID) {
     const reqs = KEY_CORES.map(core => apiRequest(core, genomeID));
     return Promise.all(reqs).then(body => {
 
-        const dirname = `${opts.output || BASE_DATA_DIR}/${genomeID}`;
+        const dirname = `${outDir}/${genomeID}`;
         createFolderSync(dirname);
 
         KEY_CORES.forEach((core, i) => {
@@ -155,10 +172,10 @@ function fetchAllFromAPI(genomeID) {
  */
 function apiRequest(core, genome_id){
     const query = `?limit(${DOC_LIMIT})&eq(genome_id,${genome_id})`+
-        `&keyword(*)&http_accept=application/solr+json&http_download=true`;
+        `&http_accept=application/solr+json&http_download=true`;
     const url = `${opts.endpoint || DATA_API_URL}/${core}/${query}`;
 
-    console.log(`requesting ${genome_id} from core ${core}...`)
+    console.log(`Requesting ${genome_id} from core ${core}...`)
     return rp.get(url, getOpts).then(body => {
         let numFound = body.response.numFound;
         let docs = body.response.docs;
