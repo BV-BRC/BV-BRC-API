@@ -5,8 +5,8 @@
  *   - load directory ./test-files into
  *      ./index_local_data_files.js
  *          --input=./test-files/                          (optional; default: ./data-files)
- *          --endpoint http://localhost:8983/some/solr     (optional)
- *          --owner user@patricbrc.org                     (optional; change owner of all records)
+ *          --endpoint=http://localhost:8983/some/solr     (optional)
+ *          --owner=user@patricbrc.org                     (optional; change owner of all records)
  *
  * TODO:
  *      - Could use set operations to change owner instead
@@ -33,7 +33,8 @@ if (require.main === module) {
         .option('-e, --endpoint [value]', 'Endpoint to index data at ' +
             '(default: http://localhost:8983/solr)')
         .option('-i, --input [value]', 'Directory to index into Solr')
-        .option('-o, --owner [value]', 'Set new owner for data being indexed.')
+        .option('-o, --owner [value]', 'Set new owner for data being indexed')
+        .option('-p, --set_private', 'Set genomes as "public: false"')
         .parse(process.argv)
 
     loadData();
@@ -83,6 +84,9 @@ function submit(core, filePath) {
                     return;
                 }
                 o.owner = opts.owner;
+
+                // set as private if necessary
+                if (opts.set_private) o.public = false;
             })
 
             return rp.post({
