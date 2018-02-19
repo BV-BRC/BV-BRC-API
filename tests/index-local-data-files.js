@@ -8,8 +8,6 @@
  *          --endpoint=http://localhost:8983/some/solr     (optional)
  *          --owner=user@patricbrc.org                     (optional; change owner of all records)
  *
- * TODO:
- *      - Could use set operations to change owner instead
  */
 
 const fs = require("fs"),

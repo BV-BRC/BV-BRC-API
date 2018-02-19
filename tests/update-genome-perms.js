@@ -21,20 +21,18 @@ if (require.main === module) {
         .parse(process.argv)
 
     if (!opts.genome_ids) {
-        console.error(`No genome_ids given!\n`)
-        return
+        console.error(`No genome_ids given!\n`);
+        return;
     }
 
-    updatePerms(opts.genome_ids, opts.token)
+    updatePerms(opts.genome_ids.split(','), opts.token);
 }
 
 
 
 function updatePerms(genomeIds, token, permissions) {
-    var genomeIds = genomeIds.split(',')
-
-    const data = permissions || TEST_PERMS
-    const url = (opts.endpoint || DATA_API_URL) + '/permissions/genome/' + genomeIds[0]
+    const data = permissions || TEST_PERMS;
+    const url = (opts.endpoint || DATA_API_URL) + '/permissions/genome/' + genomeIds.join(',');
 
     return rp.post({
         url: url,
@@ -45,11 +43,9 @@ function updatePerms(genomeIds, token, permissions) {
             "authorization": token || ''
         }
     }).then(res =>{
-        //console.log(res.body)
-        return res
+        return res;
     }).catch(error => {
-        //console.error(error)
-        return error
+        return error;
     })
 
 }

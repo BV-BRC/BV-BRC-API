@@ -76,9 +76,9 @@ if (require.main === module){
         const query = `?limit(${opts.bulk})&select(genome_id)&keyword(*)`;
         const url = `${opts.endpoint || DATA_API_URL}/genome/${query}`;
         rp.get(url, getOpts).then(body => {
-            let resStr = JSON.stringify(body, null, 4);
 
             genomeIDs = body.map(o => o.genome_id );
+
             if (opts.skip_existing) {
                 let cntBefore = genomeIDs.length
                 genomeIDs = genomeIDs.filter(id => !existingDirs.includes(id))
