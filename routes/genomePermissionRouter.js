@@ -68,6 +68,10 @@ function updatePermissions(req, res, next){
 	const hasPassed = testParams(req, res, permissions);
 	if (!hasPassed) return;
 
+
+	// keep track of total number of docs updated
+	let numDocsUpdated = 0;
+
 	let proms = [];
 	genomeIDs.forEach(genomeID => {
 		debug(`genomeID: ${genomeID}`)
@@ -97,6 +101,8 @@ function updatePermissions(req, res, next){
 						return;
 					}
 
+					numDocsUpdated += records.length;
+
 					// create a command for each record
 					let commands = [];
 					records.forEach(record => {
@@ -124,7 +130,7 @@ function updatePermissions(req, res, next){
 
 	Promise.all(proms)
 		.then(r => {
-			debug('success.')
+			debug(`success.  Number of Docs Updated: ${numDocsUpdated}`)
 			res.sendStatus(200);
 		}).catch(err => {
 			debug('FAILED', err)
@@ -182,6 +188,8 @@ function updateSOLR(commands, core){
 			"accept":"application/json"
 		},
 		body: commands
+	}).then(r => {
+		debug(`${core} update successful`)
 	})
 }
 
