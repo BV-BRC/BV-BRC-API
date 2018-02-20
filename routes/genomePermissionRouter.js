@@ -11,13 +11,9 @@
  *		user: "user2@patricbrc.org",
  *		permission: 'write'
  *	}, {
- *		user: "user2@patricbrc.org",
+ *		user: "user3@patricbrc.org",
  *		permission: 'unchanged'		 // leave permissions as is for given genomes
  *	}]
- *
- *
- *
- * Todo: ensure request is completely correct
  *
  */
 const express = require('express');
