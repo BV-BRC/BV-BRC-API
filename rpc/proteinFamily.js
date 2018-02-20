@@ -210,12 +210,8 @@ function processProteinFamily(pfState, options){
 
 				const genomeString = genomeIds.map(genomeId => {
 					if (totalFamilyIdDict[familyId].hasOwnProperty(genomeId)) {
-						const count = totalFamilyIdDict[familyId][genomeId].length;
-						if (count < 10){
-							return '0' + count.toString(16);
-						} else {
-							return count.toString(16);
-						}
+						const hexCount = (totalFamilyIdDict[familyId][genomeId].length).toString(16);
+						return (hexCount.length === 1 ) ? `0${hexCount}` : hexCount
 					} else {
 						return '00';
 					}
