@@ -3,6 +3,19 @@
  *
  * Creates endpoint for editing genome permissions (and all associated cores)
  *
+ * Example POST:  /permissions/genome/xxxxx.xx,xxxxx.xx
+ *	 [{
+ *		user: "user1@patricbrc.org",
+ *		permission: 'read'
+ *	}, {
+ *		user: "user2@patricbrc.org",
+ *		permission: 'write'
+ *	}, {
+ *		user: "user2@patricbrc.org",
+ *		permission: 'unchanged'		 // leave permissions as is for given genomes
+ *	}]
+ *
+ *
  *
  * Todo: ensure request is completely correct
  *
@@ -43,17 +56,6 @@ router.post("/:target_id", [
 	updatePermissions
 ])
 
-
-// example request used for help messages
-const exampleRequest = [{
-	user: "user1@patricbrc.org",
-	permission: 'read'
-}, {
-	user: "user2@patricbrc.org",
-	permission: 'write'
-}]
-
-
 function updatePermissions(req, res, next){
 	if (!req._body || !req.body) {
 		console.log('no body')
@@ -65,7 +67,7 @@ function updatePermissions(req, res, next){
 	const genomeIDs = req.params.target_id.split(',');
 
 	// ensure parameters are correct, or respond with appropriate message
-	const hasPassed = testParams(req, res, permissions);
+	const hasPassed = testParams(req, res);
 	if (!hasPassed) return;
 
 
@@ -87,7 +89,7 @@ function updatePermissions(req, res, next){
 			//	-  keys are needed to update objects
 			//	-  owner is needed to check permission
 			let key = genomeCoresUUIDs[core]
-			let query = `q=genome_id:${genomeID}&fl=${key},owner&rows=100000`
+			let query = `q=genome_id:${genomeID}&fl=${key},owner,user_read,user_write&rows=100000`
 			var prom = solr.query(query)
 				.then(r => {
 					debug(`retrieved records for genome ${genomeID} (core: ${core})...`)
@@ -139,7 +141,7 @@ function updatePermissions(req, res, next){
 }
 
 
-function testParams(req, res, patch) {
+function testParams(req, res) {
 	if (!req.user) {
 		res.status(401).send("User not logged in, permission denied.");
 		return;
@@ -154,18 +156,45 @@ function testParams(req, res, patch) {
 }
 
 
-function toSetCommand(record, id, patch, core) {
-	let readUsers = patch
+function toSetCommand(record, id, permissions, core) {
+	let readUsers = permissions
 		.filter(p => p.permission == 'read')
 		.map(p => {
 			if (p.permission == 'read') return p.user;
-		});
+		})
 
-	let writeUsers = patch
+	// Note: we must also ensure write users can read.
+	// 'read' and 'write' are not exclusive so that
+	//	Data API queries are faster
+	let writeUsers = permissions
 		.filter(p => p.permission == 'write')
 		.map(p => {
-			if (p.permission == 'write') return p.user;
+			if (p.permission == 'write') {
+				readUsers.push(p.user);
+				return p.user;
+			}
 		});
+
+	// keep any existing permissions requested unchanged
+	let unChangedUsers = permissions
+		.filter(p => p.permission == 'unchanged')
+		.map(p => {
+			if (p.permission == 'unchanged') return p.user;
+		})
+
+	if (unChangedUsers.length) {
+		unChangedUsers.forEach(user => {
+			if (record.user_read && record.user_read.includes(user))
+				readUsers.unshift(user);
+			else if (record.user_write && record.user_write.includes(user))
+				writeUsers.unshift(user);
+		})
+	}
+
+	// remove possibility of duplicates
+	readUsers = readUsers.filter((x, i) => readUsers.indexOf(x) == i );
+	writeUsers = writeUsers.filter((x, i) => writeUsers.indexOf(x) == i );
+
 
 	let cmd = {};
 	cmd[genomeCoresUUIDs[core]] = id;
