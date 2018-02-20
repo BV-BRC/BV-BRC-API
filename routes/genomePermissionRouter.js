@@ -186,7 +186,7 @@ function toSetCommand(record, id, permissions, core) {
 		unChangedUsers.forEach(user => {
 			if (record.user_read && record.user_read.includes(user))
 				readUsers.unshift(user);
-			else if (record.user_write && record.user_write.includes(user))
+			if (record.user_write && record.user_write.includes(user))
 				writeUsers.unshift(user);
 		})
 	}
