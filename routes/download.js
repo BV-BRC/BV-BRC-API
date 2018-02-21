@@ -86,7 +86,9 @@ router.use([
 		}
 
 		if(!req.bundleTypes || req.bundleTypes.length < 1){
-			return next(new Error("Missing Bundled Types"));
+			res.writeHead(400, {'Content-Type': 'text/plain'})
+			res.end("Missing Bundled Types")
+			return;
 		}
 
 		if(req.archiveType){
