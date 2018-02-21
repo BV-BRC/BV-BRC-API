@@ -76,7 +76,7 @@ app.use(function(req, res, next){
 	next();
 });
 
-app.use(logger('[:date[clf]] :remote-user :method :url :status :response-time [:qtime] ms - :res[content-length]'));
+app.use(logger('[:date[clf]] :remote-addr :method :url :status :response-time [:qtime] ms - :res[content-length]'));
 
 app.use(function(req, res, next){
 	debug("APP MODE: ", app.get('env'));
