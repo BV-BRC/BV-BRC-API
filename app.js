@@ -52,9 +52,6 @@ logger.token("qtime", function(req, res){
 
 	return from + (res.formatStart.valueOf() - res.queryStart.valueOf());
 });
-logger.token("x-forwarded-for", function(req, res){
-	return req.headers['x-forwarded-for']
-});
 
 process.on("message", function(msg){
 	if(msg && msg.type == "stats"){
@@ -79,7 +76,7 @@ app.use(function(req, res, next){
 	next();
 });
 
-app.use(logger('[:date[iso]] :x-forwarded-for :method :url :status :response-time [:qtime] ms - :res[content-length]'));
+app.use(logger('[:date[iso]] :req[x-forwarded-for] :method :url :status :response-time [:qtime] ms - :res[content-length]'));
 
 app.use(function(req, res, next){
 	debug("APP MODE: ", app.get('env'));
