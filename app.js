@@ -6,7 +6,6 @@ if(config.get("newrelic_license_key")){
 var debug = require('debug')('p3api-server:app');
 var express = require('express');
 var path = require('path');
-var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
@@ -87,7 +86,7 @@ app.use(cookieParser());
 
 app.use(cors({
 	origin: true,
-	methods: ["GET,PUT,POST,PUT,DELETE"],
+	methods: ["GET,POST,PUT,DELETE"],
 	allowHeaders: ["if-none-match", "range", "accept", "x-range", "content-type", "authorization"],
 	exposedHeaders: ['facet_counts', 'x-facet-count', 'Content-Range', 'X-Content-Range', "ETag"],
 	credential: true,
@@ -186,16 +185,3 @@ app.use(function(err, req, res, next){
 		error: {}
 	});
 });
-
-debug("Launch Indexer");
-if(config.get("enableIndexer")){
-	var indexer = require('child_process').fork(__dirname + "/bin/p3-index-worker");
-
-	indexer.on("message", function(msg){
-		debug("message from child", msg);
-	});
-
-	indexer.send({type: "start"});
-}
-
-//require("replify")({name: "p3api", path: "./REPL"},app,{});
