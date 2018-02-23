@@ -79,7 +79,7 @@ app.use(function(req, res, next){
 	next();
 });
 
-app.use(logger('[:date[clf]] :x-forwarded-for :method :url :status :response-time [:qtime] ms - :res[content-length]'));
+app.use(logger('[:date[iso]] :x-forwarded-for :method :url :status :response-time [:qtime] ms - :res[content-length]'));
 
 app.use(function(req, res, next){
 	debug("APP MODE: ", app.get('env'));
