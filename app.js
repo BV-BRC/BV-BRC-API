@@ -15,7 +15,6 @@ var dataTypeRouter = require("./routes/dataType");
 var downloadRouter = require("./routes/download");
 var multiQueryRouter = require("./routes/multiQuery");
 var contentRouter = require("./routes/content");
-var previewRouter = require("./routes/preview");
 var rpcHandler = require("./routes/rpcHandler");
 var jbrowseRouter = require("./routes/JBrowse");
 var indexer = require("./routes/indexer");
@@ -117,9 +116,6 @@ app.use("/stats", function(req, res, next){
 
 app.use("/content", [
 	contentRouter
-])
-app.use("/preview", [
-	previewRouter
 ])
 
 app.use("/testTimeout", function(req,res,next){
