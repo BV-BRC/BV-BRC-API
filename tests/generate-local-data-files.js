@@ -2,11 +2,11 @@
 /**
  *  generate_local_data_files.json
  *
- *  Fetech
+ *  Fetches genome data from Data API saves as directory of JSON files
  *
  *  Example Usages:
  *  - fetch 20 genomes (and associated cores for each)
- *      ./generate_local_data_files.js --bulk=20
+ *      ./generate_local_data_files.js --bulk=20 --output="./dir/to/save/files"
  *
  *  - fetch some private genomes
  *      ./generate_local_data_files.js
@@ -19,7 +19,6 @@ const fs = require('fs'),
       path = require('path'),
       process = require('process'),
       opts = require('commander'),
-      request = require('request'),
       rp = require('request-promise');
 
 const DATA_API_URL = 'https://p3.theseed.org/services/data_api'
