@@ -24,6 +24,7 @@ http.globalAgent.maxSockets = 1024;
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 var app = module.exports = express();
+app.listen(config.get("http_port") || 3001)
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -50,13 +51,13 @@ logger.token("qtime", function(req, res){
 
 	return from + (res.formatStart.valueOf() - res.queryStart.valueOf());
 });
-
+/*
 process.on("message", function(msg){
 	if(msg && msg.type == "stats"){
 		stats = msg.data;
 	}
 });
-
+*/
 app.use(function(req, res, next){
 	req.id = reqId++;
 
