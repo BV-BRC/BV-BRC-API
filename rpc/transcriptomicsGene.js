@@ -114,30 +114,17 @@ function readWorkspaceExperiments(tgState, options){
 	const wsComparisonIds = tgState['wsComparisonIds'];
 	const def = new Deferred();
 
-	when(getWorkspaceObjects(wsExpIds, true, options.token), function(data){
+    const expressionFiles =  wsExpIds.map(function(exp_id){
+        var parts = exp_id.split('/'),
+        jobName = parts.pop(),
+        dotPath = parts.join('/') + '/.' + jobName +"/expression.json";
+        return dotPath;
+    });
 
-		// debug("getWorkspaceObjects:", data);
-
-		const fileList = data.map(function(obj){
-			const files = {};
-			obj.autoMeta.output_files.forEach(function(arr){
-				// debug(typeof arr, arr);
-				const d = (arr instanceof Array) ? arr[0] : arr;
-				const file = d.substr(d.lastIndexOf('/') + 1);
-				const type = file.split('.')[0];
-				files[type] = d;
-			});
-
-			return {meta: obj, files: files};
-		});
-
-		const expressionFiles = fileList.map(function(obj){
-			return obj.files.expression;
-		});
 
 		// debug("expressionFiles: ", expressionFiles);
 
-		return when(getWorkspaceObjects(expressionFiles, false, options.token), function(results){
+		when(getWorkspaceObjects(expressionFiles, false, options.token), function(results){
 
 			const p3FeatureIdSet = {};
 			const p2FeatureIdSet = {};
@@ -181,7 +168,6 @@ function readWorkspaceExperiments(tgState, options){
 				p2FeatureIds: Object.keys(p2FeatureIdSet)
 			});
 		});
-	});
 
 	return def.promise;
 }
@@ -391,21 +377,22 @@ function processTranscriptomicsGene(tgState, options){
 				}else if(expressionHash.hasOwnProperty(feature.p2_feature_id)){
 					expr = expressionHash[feature.p2_feature_id];
 				}
+                if(expr){
+                    // build expr object
+                    let count = 0;
+                    expr.sample_binary = comparisonIdList.map(function(comparisonId){
+                        if(expr.samples.hasOwnProperty(comparisonId) && expr.samples[comparisonId].log_ratio !== ''){
+                            count++;
+                            return "1";
+                        }else{
+                            return "0";
+                        }
+                    }).join('');
+                    expr.sample_size = count;
 
-				// build expr object
-				let count = 0;
-				expr.sample_binary = comparisonIdList.map(function(comparisonId){
-					if(expr.samples.hasOwnProperty(comparisonId) && expr.samples[comparisonId].log_ratio !== ''){
-						count++;
-						return "1";
-					}else{
-						return "0";
-					}
-				}).join('');
-				expr.sample_size = count;
-
-				const datum = Object.assign(feature, expr);
-				data.push(datum);
+                    const datum = Object.assign(feature, expr);
+                    data.push(datum);
+                }
 			});
 
 			def.resolve(data);
