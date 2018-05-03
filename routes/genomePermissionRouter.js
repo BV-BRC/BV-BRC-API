@@ -83,7 +83,8 @@ function updatePermissions(req, res, next){
 			// for each core, fetch objects keys and owners
 			// Notes:
 			//	-  keys are needed to update objects
-			//	-  owner is needed to check permission
+			//	-  owner, user_read, user_write are needed to check permissions
+			//         and for "unchanged" option.
 			let key = genomeCoresUUIDs[core]
 			let query = `q=genome_id:${genomeID}&fl=${key},owner,user_read,user_write&rows=100000`
 			var prom = solr.query(query)
