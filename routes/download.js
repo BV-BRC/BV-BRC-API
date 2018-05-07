@@ -9,6 +9,7 @@ var httpParams = require("../middleware/http-params");
 var authMiddleware = require("../middleware/auth");
 var querystring = require("querystring");
 var archiver = require('archiver');
+var path = require('path')
 
 router.use(httpParams);
 router.use(authMiddleware);
@@ -101,7 +102,7 @@ router.use([
 		var bundler;
 		try{
 			bundler = require("../bundler/" + req.sourceDataType)
-			debug("Bundler: ", bundler)
+			// debug("Bundler: ", bundler)
 			bundler(req, res, next);
 		}catch(err){
 			return next(new Error("Invalid Source Data Type" + err))
@@ -109,7 +110,7 @@ router.use([
 
 	},
 	function(req, res, next){
-		debug("Bundler Map: ", req.bulkMap)
+		// debug("Bundler Map: ", req.bulkMap)
 		if(!req.bulkMap){
 			debug("No Bulk Map Found");
 			next("route");
@@ -140,7 +141,16 @@ router.use([
 
 		archive = archiver.create(type, archOpts);
 		archive.pipe(res);
-		archive.bulk(req.bulkMap);
+		for (var i=0; i < req.bulkMap.length; i++) {
+			const baseFolder = req.bulkMap[i].cwd
+			const dest = req.bulkMap[i].dest
+			for (var j=0; j < req.bulkMap[i].src.length; j++) {
+				const fileName = req.bulkMap[i].src[j]
+				const filePath = path.join(dest, fileName)
+				// console.log(`adding ${filePath}`)
+				archive.glob(filePath, { cwd: baseFolder } );
+			}
+		}
 		archive.finalize();
 	}
 ])
