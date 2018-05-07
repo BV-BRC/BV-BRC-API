@@ -58,6 +58,7 @@ process.on("message", function(msg){
 	}
 });
 */
+/*
 app.use(function(req, res, next){
 	req.id = reqId++;
 
@@ -74,7 +75,7 @@ app.use(function(req, res, next){
 
 	next();
 });
-
+*/
 app.use(logger('[:date[iso]] :req[x-forwarded-for] :method :url :status :response-time [:qtime] ms - :res[content-length]'));
 
 app.use(function(req, res, next){
