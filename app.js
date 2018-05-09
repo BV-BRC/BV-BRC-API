@@ -16,6 +16,7 @@ var multiQueryRouter = require("./routes/multiQuery");
 var contentRouter = require("./routes/content");
 var rpcHandler = require("./routes/rpcHandler");
 var jbrowseRouter = require("./routes/JBrowse");
+var genomePermissionRouter = require("./routes/genomePermissionRouter");
 var indexer = require("./routes/indexer");
 var cors = require('cors');
 var http = require("http");
@@ -150,6 +151,10 @@ app.use('/bundle/:dataType/', [
 	downloadRouter
 ]);
 
+
+app.use('/permissions/genome', [
+	genomePermissionRouter
+]);
 
 app.use('/:dataType/', [
 	dataTypeRouter
