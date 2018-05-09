@@ -53,7 +53,7 @@ module.exports = function(req,res,next) {
       const map = {}
       if (genome.public) {
         map.expand = true;
-        map.cwd = Path.join(publicGenomeDir,genome.genome_id);
+        map.cwd = publicGenomeDir;
         map.dest = genome.genome_id;
         map.src = [];
         req.bundleTypes.forEach(function(bt) {

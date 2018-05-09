@@ -5,6 +5,8 @@ var router = express.Router({
 });
 var defer = require("promised-io/promise").defer;
 var when = require("promised-io/promise").when;
+var all = require("promised-io/promise").all;
+var Request = require('request')
 var config = require("../config");
 var SolrQueryParser = require("../middleware/SolrQueryParser");
 var RQLQueryParser = require("../middleware/RQLQueryParser");
@@ -73,11 +75,81 @@ router.get("/:id", function(req, res, next){
 		if(err){
 			return next(err);
 		}
-		res.set("content-type", "application/json");
-		res.send(JSON.stringify(data));
-		res.end();
+
+		if(data.state === 'indexed'){
+			respondWithData(res, data)
+		} else {
+			if (data.genomeId) {
+				checkSolr(data.genomeId)
+				.then((isAllIndexed) => {
+
+					if(isAllIndexed){
+						updateHistory(req.params.id, data).then((data) => {
+							respondWithData(res, data)
+						})
+					}else{
+						// as is, state is submitted
+						respondWithData(res, data)
+					}
+				}, (err) => {
+					console.log(err)
+					next(err)
+				})
+			}else{
+				// before it submitted, state is queued
+				respondWithData(res, data)
+			}
+		}
 	});
 });
+
+function respondWithData(res, data){
+	res.set("content-type", "application/json");
+	res.send(JSON.stringify(data));
+	res.end();
+}
+
+function checkSolr(genome_id){
+	const def = new defer()
+	const cores = ['genome_sequence', 'genome_feature', 'genome']
+	const defs = cores.map((core) => {
+		const url = `${config.get('solr').url}/${core}/select?q=genome_id:${genome_id}&rows=1&wt=json`
+		// console.log(`${url}`)
+		const def = new defer()
+		Request.get(url, (err, res, body) => {
+			if(err){
+				def.reject(err)
+				return def.promise
+			}
+			data = JSON.parse(body)
+			def.resolve(data['response']['numFound'] > 0)
+		})
+		return def.promise
+	})
+	when(all(defs), (results) => {
+		def.resolve(results.every((hasIndexed) => hasIndexed))
+	}, (err) => {
+		def.reject(err)
+	})
+	return def.promise
+}
+
+function updateHistory(id, data){
+	const def = new defer()
+
+	data.state = "indexed"
+	data.indexCompletionTime = new Date()
+
+	fs.writeJson(Path.join(qdir, "history", id), data, function(err){
+		if(err){
+			def.reject(err)
+			return def.promise
+		}
+
+		def.resolve(data)
+	})
+	return def.promise
+}
 
 router.post("/:type", [
 	function(req, res, next){

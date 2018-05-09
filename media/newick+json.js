@@ -39,7 +39,8 @@ module.exports = {
 				when(checkForFiles(lids), function(file){
 					fs.createReadStream(file).pipe(res);
 				}, function(err){
-					next(err);
+					res.writeHead(404, {'Content-Type': 'text/plain'})
+					res.end(err)
 					return;
 				})
 

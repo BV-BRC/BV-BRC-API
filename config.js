@@ -8,6 +8,7 @@ var defaults =  {
 		"enzyme_class_ref",
 		"gene_ontology_ref",
 		"genome",
+		"genome_test",
 		"genome_amr",
 		"genome_feature",
 		"genome_sequence",
