@@ -3,109 +3,100 @@
  *
  * Example Usage(s):
  *   - load directory ./test-files into
- *      ./index_local_data_files.js
- *          --input=./test-files/                          (optional; default: ./data-files)
- *          --endpoint=http://localhost:8983/some/solr     (optional)
- *          --owner=user@patricbrc.org                     (optional; change owner of all records)
+ *      ./index-local-data-files.js
+ *          -i ./test-files/                          (optional; default: ./data-files)
+ *          -e http://localhost:8983/some/solr
+ *          -o user@patricbrc.org                     (optional; change owner of all records)
  *
  */
 
 const fs = require("fs"),
       opts = require('commander'),
       rp = require('request-promise'),
-      Promise = require("bluebird");
+      util = require('util');
 
-const readFile = Promise.promisify(fs.readFile);
-const readDir = Promise.promisify(fs.readdir);
+const readFile = util.promisify(fs.readFile);
+const readDir = util.promisify(fs.readdir);
 
-
-const DISTRIBUTE_URL = 'http://localhost:8983/solr';
-const BASE_DATA_DIR = './data-files';
-
-// for progress
-let totalCount, remainingCount;
+const BASE_DATA_DIR = './test-files';
 
 
 if (require.main === module) {
     opts.option('-t, --token [value]', 'Token for private genome access')
-        .option('-e, --endpoint [value]', 'Endpoint to index data at ' +
-            '(default: http://localhost:8983/solr)')
+        .option('-e, --endpoint [value]', 'Endpoint to index data at')
         .option('-i, --input [value]', 'Directory to index into Solr')
         .option('-o, --owner [value]', 'Set new owner for data being indexed')
         .option('-p, --set_private', 'Set genomes as "public: false"')
         .parse(process.argv)
 
-    loadData();
+    if(!opts.endpoint) {
+        console.error(`Must provide endpoint "-e" where data will be indexed`);
+        return 1;
+    }
+
+    loadData(opts.input);
 }
 
 
-async function loadData() {
-    const baseDir = opts.input || BASE_DATA_DIR;
+async function loadData(inputDir) {
+    const baseDir = inputDir || BASE_DATA_DIR;
     const genomes = await readDir(baseDir);
 
-    totalCount = genomes.length;
-    remainingCount = genomes.length;
+    let genomeCount = genomes.length
 
-    for (let i = 0; i < genomes.length; i++){
-        let genome = genomes[i];
-
-        console.log(`Indexing genome ${genome}`);
+    for (const [i, genome] of genomes.entries()){
+        console.log(`Indexing genome ${genome}...`);
         var files = await readDir(`${baseDir}/${genome}`);
 
-        for (let i = 0; i < files.length; i++)  {
-            let file = files[i];
+        for (const [i, file] of files.entries()) {
             let core = file.split('.')[0];
             let f = `${baseDir}/${genome}/${file}`;
 
             let body = await submit(core, f);
         }
-        remainingCount = remainingCount - 1;
-        console.log(`Progress: ${((1 - remainingCount / totalCount) * 100).toFixed(2)}%`);
-        console.log();
+
+        console.log(`Progress: ${((i+1) / genomeCount * 100).toFixed(2)}% \n`);
     }
 }
 
 
 function submit(core, filePath) {
     const query = 'update?versions=true&commit=true';
-    const url = `${opts.endpoint || DISTRIBUTE_URL}/${core}/${query}`;
+    const url = `${opts.endpoint}/${core}/${query}`;
 
-    if (opts.owner) {
-        console.log(`Loading core ${core} (Changed owner to: ${opts.owner})`);
-        return readFile(filePath, "utf8").then(function(data) {
+    console.log(
+        `Loading core ${core}` +  (opts.owner ? ` (Changing owner to: ${opts.owner})` : '')
+    );
+    return readFile(filePath, "utf8").then(function(data) {
 
-            // set owner in every object
-            let objs = JSON.parse(data);
-            objs.forEach(o => {
-                if (!('owner' in o)){
-                    console.error("Error: no existing owner field found in object: ${filePath}");
-                    return;
-                }
-                o.owner = opts.owner;
+        // set owner in every object
+        let objs = JSON.parse(data);
+        objs.forEach(o => {
+            if (!('owner' in o)){
+                console.error(`Error: no existing owner field found in object: ${filePath}`);
+                return;
+            }
 
-                // set as private if necessary
-                if (opts.set_private) o.public = false;
-            })
+            // set owner if needed
+            if (opts.owner) o.owner = opts.owner;
 
-            return rp.post({
-                url: url,
-                json: objs
-            }).then(body => {
-                return body;
-            }).catch(e => {
-                console.error(e);
-            })
-        }).catch(e => console.error(e))
-    }
+            // set as private if needed
+            if (opts.set_private) o.public = false;
+        })
 
-    // Todo: test
-    return fs.createReadStream(filePath).pipe(
-        rp.post({
+        console.log('attempting post...')
+        return rp.post({
             url: url,
-            Authorization: opts.token || ''
+            json: objs
         }).then(body => {
-            console.log(body, body);
-        }).catch(e => console.error(e))
-    )
+            return body;
+        }).catch(e => {
+            console.error(e);
+        })
+    }).catch(e => console.error(e))
 }
+
+
+
+module.exports = loadData;
 
