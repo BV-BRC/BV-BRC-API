@@ -8,7 +8,9 @@
  *  Uses "fileDir" default directory  to save JSON.
  *
  *  Example Usage:
- *      ./setup-test-solr.js -e http://localhost:8983/!local!/solr/
+ *      ./setup-test-solr.js
+ *             -e http://localhost:8983/!local!/solr/
+ *             -o user@patricbrc.org  (set owner of objects, useful for API testing)
  *
  */
 

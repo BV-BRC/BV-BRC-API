@@ -40,7 +40,8 @@ const genomeCoresUUIDs = {
 	genome_feature: 'feature_id',
 	pathway: 'id',
 	sp_gene: 'id',
-	genome_amr: 'id'
+	genome_amr: 'id',
+	subsystem: 'id'
 }
 
 router.use(httpParams);

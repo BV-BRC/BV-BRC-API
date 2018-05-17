@@ -15,7 +15,6 @@ var ContentRange = require("../middleware/content-range");
 var APIMethodHandler = require("../middleware/APIMethodHandler");
 var cacheMiddleware = require("../middleware/cache");
 var patchMiddleware = require("../middleware/patch");
-//var permissionMiddleware = require("../middleware/genomePermission");
 var httpParams = require("../middleware/http-params");
 var solrjs = require("solrjs");
 var media = require("../middleware/media");
@@ -90,12 +89,6 @@ router.get("*", function(req, res, next){
 	next();
 })
 
-/*
-router.post("/permissions/:target_id ", [
-	bodyParser.json({type: ["application/jsonpatch+json"], limit: "100mb"}),
-	permissionMiddleware
-])
-*/
 
 // patch/update objects
 router.patch("/:target_id", [
