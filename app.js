@@ -6,7 +6,6 @@ if(config.get("newrelic_license_key")){
 var debug = require('debug')('p3api-server:app');
 var express = require('express');
 var path = require('path');
-var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
@@ -15,7 +14,6 @@ var dataTypeRouter = require("./routes/dataType");
 var downloadRouter = require("./routes/download");
 var multiQueryRouter = require("./routes/multiQuery");
 var contentRouter = require("./routes/content");
-var previewRouter = require("./routes/preview");
 var rpcHandler = require("./routes/rpcHandler");
 var jbrowseRouter = require("./routes/JBrowse");
 var genomePermissionRouter = require("./routes/genomePermissionRouter");
@@ -27,6 +25,7 @@ http.globalAgent.maxSockets = 1024;
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 var app = module.exports = express();
+app.listen(config.get("http_port") || 3001)
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -53,13 +52,14 @@ logger.token("qtime", function(req, res){
 
 	return from + (res.formatStart.valueOf() - res.queryStart.valueOf());
 });
-
+/*
 process.on("message", function(msg){
 	if(msg && msg.type == "stats"){
 		stats = msg.data;
 	}
 });
-
+*/
+/*
 app.use(function(req, res, next){
 	req.id = reqId++;
 
@@ -76,8 +76,8 @@ app.use(function(req, res, next){
 
 	next();
 });
-
-app.use(logger('[:date[clf]] :remote-user :method :url :status :response-time [:qtime] ms - :res[content-length]'));
+*/
+app.use(logger('[:date[iso]] :req[x-forwarded-for] :method :url :status :response-time [:qtime] ms - :res[content-length]'));
 
 app.use(function(req, res, next){
 	debug("APP MODE: ", app.get('env'));
@@ -89,7 +89,7 @@ app.use(cookieParser());
 
 app.use(cors({
 	origin: true,
-	methods: ["GET,PUT,POST,PUT,DELETE"],
+	methods: ["GET,POST,PUT,DELETE"],
 	allowHeaders: ["if-none-match", "range", "accept", "x-range", "content-type", "authorization"],
 	exposedHeaders: ['facet_counts', 'x-facet-count', 'Content-Range', 'X-Content-Range', "ETag"],
 	credential: true,
@@ -118,9 +118,6 @@ app.use("/stats", function(req, res, next){
 
 app.use("/content", [
 	contentRouter
-])
-app.use("/preview", [
-	previewRouter
 ])
 
 app.use("/testTimeout", function(req,res,next){
@@ -195,16 +192,3 @@ app.use(function(err, req, res, next){
 		error: {}
 	});
 });
-
-debug("Launch Indexer");
-if(config.get("enableIndexer")){
-	var indexer = require('child_process').fork(__dirname + "/bin/p3-index-worker");
-
-	indexer.on("message", function(msg){
-		debug("message from child", msg);
-	});
-
-	indexer.send({type: "start"});
-}
-
-//require("replify")({name: "p3api", path: "./REPL"},app,{});

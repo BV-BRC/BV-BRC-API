@@ -175,7 +175,7 @@ function processQueue(queue) {
               fs.removeSync(p);
             });
 
-            when(updateHistory(message.id, 'indexed'), () => {
+            when(updateHistory(message.id, 'submitted', genomeId), () => {
               commit()
               processQueue(queue)
             });
@@ -279,9 +279,10 @@ function updateHistory(id, state, msg) {
     }
 
     switch (state) {
-      case 'indexed':
+      case 'submitted':
         data.state = state
-        data.indexCompletionTime = new Date()
+        data.genomeId = msg
+        data.submissionTime = new Date()
         break
       case 'error':
         data.state = state

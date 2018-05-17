@@ -80,17 +80,18 @@ function updatePermissions(req, res, next){
 
 			const solr = new solrjs(SOLR_URL + "/" + core);
 
-			// for each core, fetch objects keys and owners
+			// for each core, fetch object keys, owners, user_read, user_write
 			// Notes:
 			//	-  keys are needed to update objects
-			//	-  owner is needed to check permission
+			//	-  owner, user_read, user_write are needed to check permissions
+			//         and for "unchanged" option.
 			let key = genomeCoresUUIDs[core]
 			let query = `q=genome_id:${genomeID}&fl=${key},owner,user_read,user_write&rows=100000`
 			var prom = solr.query(query)
 				.then(r => {
 					debug(`retrieved records for genome ${genomeID} (core: ${core})...`)
 
-					// get onlyactual records
+					// get only actual records
 					var records = r.response.docs;
 
 					// skip empty records
