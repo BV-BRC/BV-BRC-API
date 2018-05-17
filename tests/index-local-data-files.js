@@ -24,7 +24,8 @@ const BASE_DATA_DIR = './test-files';
 if (require.main === module) {
     opts.option('-t, --token [value]', 'Token for private genome access')
         .option('-e, --endpoint [value]', 'Endpoint to index data at')
-        .option('-i, --input [value]', 'Directory to index into Solr')
+        .option('-i, --input [value]',
+            `Directory to index into Solr; defaults to ${BASE_DATA_DIR}`)
         .option('-o, --owner [value]', 'Set new owner for data being indexed')
         .option('-p, --set_private', 'Set genomes as "public: false"')
         .parse(process.argv)

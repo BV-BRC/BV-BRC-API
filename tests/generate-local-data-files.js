@@ -29,7 +29,7 @@ const DOC_LIMIT = 500000;
 // cores that will be fetched for each genome
 const GENOME_CORES = [
     'genome', 'genome_feature', 'genome_sequence',
-    'pathway', 'sp_gene', 'genome_amr'
+    'pathway', 'sp_gene', 'genome_amr', 'subsystem'
 ];
 
 // defaults
@@ -49,7 +49,8 @@ if (require.main === module){
         .option('-b, --bulk <n>', 'Number of "random" genomes to grab. ' +
                 'NOTE: this will ignore the --genome_ids option.')
         .option('-f, --force [value]', 'Force to update cached data')
-        .option('-o, --output [value]', 'Out put directory (./data-files/ is default')
+        .option('-o, --output [value]',
+            `Output directory; defaults to ${OUT_DIR}`)
         .option('-s, --skip_existing', "Skip existing genome directories")
         .option('--token [value]', 'Token, if Data API is being used')
         .parse(process.argv)
