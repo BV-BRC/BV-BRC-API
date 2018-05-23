@@ -10,7 +10,7 @@
  *
  *  - fetch some private genomes
  *      ./generate-local-data-files.js
- *          --genome_ids=99999.98,99999.99
+ *          --genome-ids=99999.98,99999.99
  *          --token="<token>"
  *
  */
@@ -41,33 +41,32 @@ let getOpts = {
     headers: {
       "content-type": "application/json",
     }
-  }
+}
 
 
 if (require.main === module){
-    opts.option('-g, --genome_ids [value]', 'Genome IDs comma delimited')
+    opts.option('-g, --genome-ids [value]', 'Genome IDs comma delimited')
         .option('-b, --bulk <n>', 'Number of "random" genomes to grab. ' +
-                'NOTE: this will ignore the --genome_ids option.')
+            'NOTE: this will ignore the --genomeIDs option.')
         .option('-f, --force [value]', 'Force to update cached data')
         .option('-o, --output [value]',
             `Output directory; defaults to ${OUT_DIR}`)
-        .option('-s, --skip_existing', "Skip existing genome directories")
+        .option('-s, --skip-existing', "Skip existing genome directories")
         .option('--token [value]', 'Token, if Data API is being used')
         .parse(process.argv)
 
-
     getOpts.headers.authorization = opts.token || '';
 
-    if (!opts.genome_ids && !opts.bulk) {
-        console.error(`Warning: no genome_ids given. Using default: ${DEFAULT_IDS}'\n`);
-        DEFAULT_ID_STR
+    if (!opts.genomeIds && !opts.bulk) {
+        console.error(`Must provide genome IDs or use --bulk option.  --help for more`);
+        return 1;
     }
 
-    let genomeIDs = opts.genome_ids ? opts.genome_ids.split(',') : DEFAULT_IDS;
-    outDir = opts.output || outDir
+    let genomeIDs = opts.genomeIds ? opts.genomeIds.split(',') : DEFAULT_IDS;
+    outDir = opts.output || outDir;
 
     let existingDirs;
-    if (opts.skip_existing) {
+    if (opts.skipExisting) {
         existingDirs = fs.readdirSync(outDir).filter(f =>
             fs.statSync(path.join(outDir, f)).isDirectory()
         )
@@ -82,7 +81,7 @@ if (require.main === module){
 
             genomeIDs = body.map(o => o.genome_id );
 
-            if (opts.skip_existing) {
+            if (opts.skipExisting) {
                 let cntBefore = genomeIDs.length
                 genomeIDs = genomeIDs.filter(id => !existingDirs.includes(id))
                 console.log(`\nSkiping ${cntBefore - genomeIDs.length} genomes\n`)
@@ -153,13 +152,13 @@ async function fetchAllCores(genomeID, outputDir) {
  * @param {string} core - core to fetch from
  * @param {string} genome_id - match on gneome ids
  */
-function apiRequest(core, genome_id) {
-    const query = `?limit(${DOC_LIMIT})&eq(genome_id,${genome_id})`+
+function apiRequest(core, genomeID) {
+    const query = `?limit(${DOC_LIMIT})&eq(genome_id,${genomeID})`+
         `&http_accept=application/solr+json&http_download=true`;
 
     const url = `${DATA_API_URL}/${core}/${query}`;
 
-    console.log(`Requesting ${genome_id} from core ${core}...`)
+    console.log(`Requesting ${genomeID} from core ${core}...`)
     return rp.get(url, getOpts).then(body => {
         let numFound = body.response.numFound;
         let docs = body.response.docs;

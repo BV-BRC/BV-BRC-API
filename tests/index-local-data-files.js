@@ -27,7 +27,7 @@ if (require.main === module) {
         .option('-i, --input [value]',
             `Directory to index into Solr; defaults to ${BASE_DATA_DIR}`)
         .option('-o, --owner [value]', 'Set new owner for data being indexed')
-        .option('-p, --set_private', 'Set genomes as "public: false"')
+        .option('-p, --set-private', 'Set genomes as "public: false"')
         .parse(process.argv)
 
     if(!opts.endpoint) {
@@ -68,21 +68,18 @@ function submit(core, filePath) {
     console.log(
         `Loading core ${core}` +  (opts.owner ? ` (Changing owner to: ${opts.owner})` : '')
     );
-    return readFile(filePath, "utf8").then(function(data) {
-
-        // set owner in every object
+    return readFile(filePath, "utf8").then((data) => {
         let objs = JSON.parse(data);
         objs.forEach(o => {
             if (!('owner' in o)){
-                console.error(`Error: no existing owner field found in object: ${filePath}`);
-                return;
+                console.error(`Warning: no existing owner field found in object: ${filePath}`);
             }
 
             // set owner if needed
             if (opts.owner) o.owner = opts.owner;
 
             // set as private if needed
-            if (opts.set_private) o.public = false;
+            if (opts.setPrivate) o.public = false;
         })
 
         console.log('attempting post...')
@@ -92,7 +89,7 @@ function submit(core, filePath) {
         }).then(body => {
             return body;
         }).catch(e => {
-            console.error(e);
+            console.error(e.message);
         })
     }).catch(e => console.error(e))
 }

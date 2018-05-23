@@ -13,15 +13,18 @@
  */
 
 const assert = require('chai').assert,
-  updatePerms = require('../update-genome-perms'),
+  updatePerms = require('./update-genome-perms'),
   rp = require('request-promise'),
-  token = require('./config.json').token;
+  token = require('../config.json').token;
 
 const DATA_API_URL = 'http://localhost:3001';
 
 // for small tests
-// const TEST_GENOMES = ["1763.134"];
-const NOT_OWNED_GENOMES = ["83332.349"];
+// these ids are taken from:
+//   50-test-genome-ids.json
+//   50-test-genome-ids-2.json
+const TEST_GENOMES = ["1005525.3"];
+const NOT_OWNED_GENOMES = ["1532907.3"];
 
 // for large tests
 const TEST_SIZE = 20;
@@ -34,7 +37,8 @@ const CORES = [
 	'genome_feature',
 	'pathway',
 	'sp_gene',
-  'genome_amr'
+  'genome_amr',
+  'subsystem'
 ];
 
 // default options for get requests
@@ -46,12 +50,13 @@ const getOpts = {
     "authorization": token || ''
   }
 }
-
+console.log('called this')
 
 describe('Test Genome Permissions', () => {
 
     // start with single genome
     const genomeID = TEST_GENOMES[0];
+
 
     // test params
     const newPerms = [{
@@ -65,22 +70,27 @@ describe('Test Genome Permissions', () => {
     const serverUrl =  DATA_API_URL +
       `/genome?eq(genome_id,${genomeID})&select(user_read, user_write)`;
 
+
     describe('add new permissions (user1 with read and user2 with write)', function() {
 
       it('should return 200 with "OK"', function(done) {
         // allow only 10 secs
         this.timeout(10000);
 
-
+          console.log('requesting', genomeID, token, newPerms)
         updatePerms(genomeID, token, newPerms)
           .then(function(res){
+            console.log('res', res)
             assert.equal(200, res.statusCode);
             assert.equal('OK', res.body);
 
             done();
-          }).catch((err) => { done(err) })
+          }).catch((err) => {
+            console.log('error', err)
+            done(err)
+          })
       });
-
+      /*
       it('should have correct permissions on genome core', function(done) {
         rp.get(serverUrl, getOpts).then(res => {
           let serverPerms = res.body[0];
@@ -91,17 +101,18 @@ describe('Test Genome Permissions', () => {
         }).catch(e => {
           done(e);
         });
-      })
+      })*/
 
   });
 
 
-
+/*
   describe('remove all permissions', () => {
     it('should return 200 with "OK"', function(done) {
       // allow 10 secs
       this.timeout(10000);
 
+      // set with no permissions
       const newPerms = []
 
       updatePerms(genomeID, token, newPerms)
@@ -238,10 +249,11 @@ describe('Test Genome Permissions', () => {
         done();
       }).catch((err) => { done(err) })
   });
+  */
 
 }); // end Test Genome Permissions
 
-
+/*
 
 describe('Test Bulk Permissions', () => {
 
@@ -377,7 +389,7 @@ describe('Test Bulk Permissions', () => {
   })
 
 }); // end Bulk Permissions
-
+*/
 
 /**
  * returns promise with list of genome IDs based on number requested
