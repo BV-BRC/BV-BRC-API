@@ -3,9 +3,10 @@
   "version": "0.8.1",
   "private": true,
   "scripts": {
-    "start": "node ./bin/p3api-server",
-    "test": "intern-client config=tests/intern",
-    "test-permissions": "mocha \"tests/test-permissions/**/*.spec.js\""
+    "start": "pm2 start app.js -i 3 --name p3_api --merge-logs -o p3_api_service.out.log -e p3_api_service.err.log",
+    "stop": "pm2 stop p3_api"
+    "//test": "intern-client config=tests/intern",
+    "test-permissions": "mocha -R spec  \"tests/test-permissions/**/*.spec.js\""
   },
   "dependencies": {
     "JSONStream": "^1.3.1",
