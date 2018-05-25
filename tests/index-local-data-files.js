@@ -2,7 +2,7 @@
 /**
  *
  * Example Usage(s):
- *   - load directory ./test-files into
+ *   - load directory ./test-files into Solr
  *      ./index-local-data-files.js
  *          -i ./test-files/                          (optional; default: ./data-files)
  *          -e http://localhost:8983/some/solr

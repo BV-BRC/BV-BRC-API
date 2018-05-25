@@ -47,7 +47,7 @@ let getOpts = {
 if (require.main === module){
     opts.option('-g, --genome-ids [value]', 'Genome IDs comma delimited')
         .option('-b, --bulk <n>', 'Number of "random" genomes to grab. ' +
-            'NOTE: this will ignore the --genomeIDs option.')
+            'NOTE: this will ignore the --genome-ids option.')
         .option('-f, --force [value]', 'Force to update cached data')
         .option('-o, --output [value]',
             `Output directory; defaults to ${OUT_DIR}`)
@@ -113,7 +113,11 @@ if (require.main === module){
  * @param {string} params.outputDir - path to where genomes will be saved
  */
 async function fetchGenomes(params) {
-    const {genomeIDs, outputDir} = params;
+    let {genomeIDs, outputDir} = params;
+
+    // if string, assume file path
+    if (!Array.isArray(genomeIDs))
+        genomeIDs = require(genomeIDs);
 
     // get cores for each genome in parallel
     for (const [i, id] of genomeIDs.entries()) {

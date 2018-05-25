@@ -31,6 +31,7 @@ if (require.main === module) {
         .option('-f, --files-dir [value]',
             `Where to store and load files from`)
         .option('-o, --owner [value]', 'Change owner of objects to this owner')
+        .option('-p, --set-private', 'Set genomes as "public: false"')
         .parse(process.argv)
 
 
@@ -52,11 +53,11 @@ if (require.main === module) {
         return 1;
     }
 
-    fetchAndLoad(opts.filesDir);
+    fetchAndLoad(opts.genomeIds, opts.filesDir);
 }
 
 
-async function fetchAndLoad(fileDir) {
+async function fetchAndLoad(genomeIDs, fileDir) {
     console.log(`*** Fetching genomes to ${fileDir}...`)
     await fetchGenomes({genomeIDs, outputDir: fileDir});
 
