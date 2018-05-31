@@ -89,19 +89,18 @@ router.get("*", function(req, res, next){
 	next();
 })
 
-
 // patch/update objects
 router.patch("/:target_id", [
 	bodyParser.json({type: ["application/jsonpatch+json"], limit: "100mb"}),
 	patchMiddleware
-])	
+])
 
 
 //same thing as patch, but done over a post for clients that cannot issue the patch http verb
 router.post("/:target_id", [
 	bodyParser.json({type: ["application/jsonpatch+json"], limit: "100mb"}),
 	patchMiddleware
-])	
+])
 
 
 

@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "test": "intern-client config=tests/intern"
+    "test": "intern-client config=tests/intern",
+    "test-permissions": "mocha \"tests/test-permissions/**/*.spec.js\""
   },
   "dependencies": {
     "JSONStream": "^1.3.1",
@@ -32,6 +33,7 @@
     "redis": "^2.8.0",
     "replify": "~1.2.0",
     "request": "~2.47.0",
+    "request-promise": "4.2.2",
     "rql": "^0.3.3",
     "serve-favicon": "~2.1.3",
     "solrjs": "^0.7.1",
@@ -41,6 +43,8 @@
     "wordwrap": "^1.0.0"
   },
   "devDependencies": {
+    "chai": "4.1.2",
+    "mocha": "5.0.0",
     "pm2": "^2.10.2",
     "pm2-logrotate": "^2.4.0"
   }
