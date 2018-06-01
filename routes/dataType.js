@@ -89,7 +89,6 @@ router.get("*", function(req, res, next){
 	next();
 })
 
-
 // patch/update objects
 router.patch("/:target_id", [
 	bodyParser.json({type: ["application/jsonpatch+json"], limit: "100mb"}),
