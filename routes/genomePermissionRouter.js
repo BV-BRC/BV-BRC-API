@@ -40,7 +40,8 @@ const genomeCoresUUIDs = {
 	genome_feature: 'feature_id',
 	pathway: 'id',
 	sp_gene: 'id',
-	genome_amr: 'id'
+	genome_amr: 'id',
+	subsystem: 'id'
 }
 
 router.use(httpParams);
@@ -106,7 +107,10 @@ function updatePermissions(req, res, next){
 					let commands = [];
 					records.forEach(record => {
 						if (!(record.owner == req.user) ) {
-							debug("User forbidden from private data");
+							console.error(
+								`User ${req.user} was forbidden from private data ${genomeID} `+
+								`[core: ${core}; record: ${record[key]}]`
+							);
 							res.sendStatus(403);
 						}
 
@@ -118,7 +122,7 @@ function updatePermissions(req, res, next){
 					return updateSOLR(commands, core)
 
 				}, err => {
-					console.log("Error retrieving " + collection  + " with id " + target_id);
+					console.error(`Error retrieving ${collection} with id: ${genomeID}`);
 					res.status(406).send("Error retrieving target");
 					res.end();
 				});
@@ -215,7 +219,9 @@ function updateSOLR(commands, core){
 		},
 		body: commands
 	}).then(r => {
-		debug(`${core} update successful`)
+		debug(`${core} update successful`);
+	}).catch(e => {
+		console.error(e.error);
 	})
 }
 

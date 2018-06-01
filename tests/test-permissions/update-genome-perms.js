@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-const fs = require('fs')
-const opts = require('commander')
-const rp = require('request-promise')
+const fs = require('fs');
+const opts = require('commander');
+const rp = require('request-promise');
 
 
-const DATA_API_URL = 'http://localhost:3001'
+const DATA_API_URL = 'http://localhost:3001';
 const TEST_PERMS = [{
     user: "devuser2@patricbrc.org",
     permission: 'read'
@@ -16,7 +16,7 @@ const TEST_PERMS = [{
 
 if (require.main === module) {
     opts.option('-t, --token [value]', 'Token for private genome access')
-        .option('-g, --genome_ids [value]', 'Genome IDs (comma seperated) to change perms for')
+        .option('-g, --genome-ids [value]', 'Genome IDs (comma seperated) to change perms for')
         .option('-e, --endpoint [value]', 'Data API endpoint (i.e., http://localhost:3001)')
         .parse(process.argv)
 
@@ -25,14 +25,16 @@ if (require.main === module) {
         return;
     }
 
-    updatePerms(opts.genome_ids.split(','), opts.token);
+    updatePerms(opts.genomeIds.split(','), opts.token);
 }
 
 
 
-function updatePerms(genomeIds, token, permissions) {
+function updatePerms(genomeIDs, token, permissions) {
+    genomeIDs = Array.isArray(genomeIDs) ? genomeIDs : [genomeIDs]
+
     const data = permissions || TEST_PERMS;
-    const url = (opts.endpoint || DATA_API_URL) + '/permissions/genome/' + genomeIds.join(',');
+    const url = (opts.endpoint || DATA_API_URL) + '/permissions/genome/' + genomeIDs.join(',');
 
     return rp.post({
         url: url,
