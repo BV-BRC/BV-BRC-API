@@ -122,7 +122,7 @@ function updatePermissions(req, res, next){
 					return updateSOLR(commands, core)
 
 				}, err => {
-					console.log("Error retrieving " + collection  + " with id " + target_id);
+					console.error(`Error retrieving ${collection} with id: ${genomeID}`);
 					res.status(406).send("Error retrieving target");
 					res.end();
 				});
@@ -221,7 +221,7 @@ function updateSOLR(commands, core){
 	}).then(r => {
 		debug(`${core} update successful`);
 	}).catch(e => {
-		console.log(e.error);
+		console.error(e.error);
 	})
 }
 
