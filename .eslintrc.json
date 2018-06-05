@@ -1,3 +1,14 @@
 {
-    "extends": "standard"
+    "extends": "standard",
+    "rules": {
+        "new-cap": 0,
+        "eqeqeq": 0,
+        "camelcase": 0,
+        "one-var": 0,
+        "handle-callback-err": 0,
+        "no-return-assign": 0,
+        "no-redeclare": 0,
+        "no-unused-vars": 0,
+        "no-unused-expressions": 0
+    }
 }
