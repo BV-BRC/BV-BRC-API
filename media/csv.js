@@ -15,7 +15,7 @@ module.exports = {
       // res.set("content-disposition", 'attachment; filename="patric3_' + req.call_collection + '_query.csv"');
     }
 
-    if (req.call_method == 'stream') {
+    if (req.call_method === 'stream') {
       when(res.results, function (results) {
         var docCount = 0
         var head
@@ -39,7 +39,7 @@ module.exports = {
               if (data[field] instanceof Array) {
                 return '"' + data[field].map(function (v) { return v.replace(/"/g, "'") }).join(';') + '"'
               } else if (data[field]) {
-                if (typeof data[field] == 'string') {
+                if (typeof data[field] === 'string') {
                   return '"' + data[field].replace(/"/g, "'") + '"'
                 } else {
                   return data[field]
@@ -55,7 +55,7 @@ module.exports = {
           res.end()
         })
       })
-    } else if (req.call_method == 'query') {
+    } else if (req.call_method === 'query') {
       if (res.results && res.results.response && res.results.response.docs) {
         if (!fields) {
           fields = Object.keys(res.results.response.docs[0])
@@ -66,7 +66,7 @@ module.exports = {
             if (o[field] instanceof Array) {
               return '"' + o[field].map(function (v) { return v.replace(/"/g, "'") }).join(';') + '"'
             } else if (o[field]) {
-              if (typeof o[field] == 'string') {
+              if (typeof o[field] === 'string') {
                 return '"' + o[field].replace(/"/g, "'") + '"'
               } else {
                 return o[field]

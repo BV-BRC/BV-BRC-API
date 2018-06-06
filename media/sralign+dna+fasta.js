@@ -4,10 +4,10 @@ var es = require('event-stream')
 var wrap = require('../util/linewrap')
 
 function serializeRow (type, o) {
-  if (type == 'genome_feature') {
+  if (type === 'genome_feature') {
     var row = '>' + o.patric_id + '|' + o.feature_id + ' ' + o.product
     return row + wrap(o.na_sequence, 60) + '\n'
-  } else if (type == 'genome_sequence') {
+  } else if (type === 'genome_sequence') {
     var row = '>' + o.accession + '   ' + o.description + '   ' + '[' + (o.genome_name || o.genome_id) + ']\n'
     return row + wrap(o.sequence, 60) + '\n'
   } else {
@@ -25,7 +25,7 @@ module.exports = {
       // res.set("content-disposition", "attachment; filename=patric_genomes.fasta");
     }
 
-    if (req.call_method == 'stream') {
+    if (req.call_method === 'stream') {
       when(res.results, function (results) {
         // debug("res.results: ", results);
         var docCount = 0

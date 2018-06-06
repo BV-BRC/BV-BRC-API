@@ -10,7 +10,7 @@ module.exports = function (req, res, next) {
   // }
   if (req._parsedUrl.query) {
     var parsed = {}
-    if (typeof req._parsedUrl.query == 'string') {
+    if (typeof req._parsedUrl.query === 'string') {
       var q = req._parsedUrl.query
       var qparts = q.split('&').forEach(function (qp) {
         var parts = qp.split('=')
@@ -44,7 +44,7 @@ module.exports = function (req, res, next) {
         req._parsedUrl.search = search
       }
 
-      req._parsedUrl.path = req._parsedUrl.pathname + ((req._parsedUrl.search.charAt(0) == '?') ? req._parsedUrl.search : ('?' + req._parsedUrl.search))
+      req._parsedUrl.path = req._parsedUrl.pathname + ((req._parsedUrl.search.charAt(0) === '?') ? req._parsedUrl.search : ('?' + req._parsedUrl.search))
       req._parsedUrl.href = req._parsedUrl.path
       req.url = URL.format(req._parsedUrl)
       req._parsedUrl.query = '?' + req._parsedUrl.search

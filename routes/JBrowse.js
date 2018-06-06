@@ -212,7 +212,7 @@ router.get('/genome/:id/stats/regionFeatureDensities/:sequence_id', [
   function (req, res, next) {
     if (res.results && res.results.response && res.results.facet_counts.facet_ranges.start) {
       var binCounts = res.results.facet_counts.facet_ranges.start.counts.map(function (d) {
-        if (typeof (d) == 'number') {
+        if (typeof (d) === 'number') {
           return d
         }
       })
@@ -263,7 +263,7 @@ router.get('/genome/:id/features/:seq_accession', [
   Limiter,
   APIMethodHandler,
   function (req, res, next) {
-    if (req.call_collection == 'genome_sequence') {
+    if (req.call_collection === 'genome_sequence') {
       if (res.results && res.results.response && res.results.response.docs) {
         var refseqs = res.results.response.docs.map(function (d) {
           var end = req.query.end || req.params.end
@@ -299,8 +299,8 @@ router.get('/genome/:id/features/:seq_accession', [
         d.type = d.feature_type
         d.name = d.accession
         d.uniqueID = d.feature_id
-        d.strand = (d.strand == '+') ? 1 : -1
-        d.phase = (d.feature_type == 'CDS') ? 0 : ((d.feature_type == 'RNA') ? 1 : 2)
+        d.strand = (d.strand === '+') ? 1 : -1
+        d.phase = (d.feature_type === 'CDS') ? 0 : ((d.feature_type === 'RNA') ? 1 : 2)
         d.start = d.start - 1
         // temporary hack for aa and na sequence for tracks
         d.aa_sequence = ' '

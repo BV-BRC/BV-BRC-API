@@ -33,7 +33,7 @@ function checkForFiles (list) {
 module.exports = {
   contentType: 'application/newick',
   serialize: function (req, res, next) {
-    if (req.call_collection == 'taxonomy' && req.call_method == 'get') {
+    if (req.call_collection === 'taxonomy' && req.call_method === 'get') {
       if (res.results && res.results.doc) {
         var lids = res.results.doc.lineage_ids
         when(checkForFiles(lids), function (file) {

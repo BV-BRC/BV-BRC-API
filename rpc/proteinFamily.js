@@ -26,7 +26,7 @@ function fetchFamilyDescriptionBatch (familyIdList) {
       }
     })
 
-    if (missingIds.length == 0) {
+    if (missingIds.length === 0) {
       def.resolve(familyRefHash)
     } else {
       request.post({

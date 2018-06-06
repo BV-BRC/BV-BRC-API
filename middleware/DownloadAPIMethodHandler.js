@@ -6,7 +6,7 @@ var debug = require('debug')('p3api-server:middleware/DownloadAPIMethodHandler')
 var when = require('promised-io/promise').when
 
 var querySOLR = function (req, res, next) {
-  if (req.call_method != 'query') {
+  if (req.call_method !== 'query') {
     next()
   }
 
@@ -37,7 +37,7 @@ var getSOLR = function (req, res, next) {
     if (sresults && sresults.doc) {
       var results = sresults.doc
 
-      if (results.public || (req.publicFree.indexOf(req.call_collection) >= 0) || (results.owner == (req.user)) || (results.user_read && results.user_read.indexOf(req.user) >= 0)) {
+      if (results.public || (req.publicFree.indexOf(req.call_collection) >= 0) || (results.owner === (req.user)) || (results.user_read && results.user_read.indexOf(req.user) >= 0)) {
         res.results = sresults
         // debug("Results: ", results);
         next()

@@ -155,7 +155,7 @@ router.post('/:type', [
       return
     }
 
-    if (!req.params || !req.params.type || (!req.params.type == 'genome')) {
+    if (!req.params || !req.params.type || (!req.params.type === 'genome')) {
       res.sendStatus(406)
       return
     }

@@ -2,7 +2,7 @@ const debug = require('debug')('p3api-server:middleware/content-range')
 
 module.exports = function (req, res, next) {
   debug('Content Range middleware: ', req.call_method)
-  if (req.call_method != 'query') {
+  if (req.call_method !== 'query') {
     return next()
   }
   if (!res.results || res.results.length < 1) {

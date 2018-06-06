@@ -5,14 +5,14 @@ var es = require('event-stream')
 
 function serializeRow (type, o) {
   var row = []
-  if (o.feature_type == 'source') {
+  if (o.feature_type === 'source') {
     o.feature_type = 'region'
   }
-  if (o.feature_type == 'misc_RNA') {
+  if (o.feature_type === 'misc_RNA') {
     o.feature_type = 'transcript'
   }
 
-  if (o.feature_type == 'region') {
+  if (o.feature_type === 'region') {
     row.push('##sequence-region\taccn|' + o.accession + '\t' + o.start + '\t' + o.end + '\n')
     return
   }
@@ -60,7 +60,7 @@ module.exports = {
       // res.set("content-disposition", "attachment; filename=patric_genomes.fasta");
     }
 
-    if (req.call_method == 'stream') {
+    if (req.call_method === 'stream') {
       when(res.results, function (results) {
         // debug("res.results: ", results);
         var docCount = 0

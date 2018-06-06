@@ -28,7 +28,7 @@ module.exports = function query (dataType, query, opts) {
       return def.reject(err)
     }
 
-    if (body && typeof body == 'string') {
+    if (body && typeof body === 'string') {
       body = JSON.parse(body)
     }
     def.resolve(body)

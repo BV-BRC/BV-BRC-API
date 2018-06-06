@@ -37,7 +37,7 @@ function getWorkspaceObject (id, opts) {
     if (results.result) {
       var R = []
       results.result[0].map(function (o) {
-        var obj = (typeof o[1] == 'string') ? JSON.parse(o[1]) : o[1]
+        var obj = (typeof o[1] === 'string') ? JSON.parse(o[1]) : o[1]
         // debug("obj: ", obj );
         // debug("obj id_list: ", obj.id_list);
         Object.keys(obj.id_list).forEach(function (key) {
@@ -131,16 +131,16 @@ var LazyWalk = exports.LazyWalk = function (term, opts) {
 // debug("stringified term: ", Query(term).toString());
   var children
 
-  if (term && (typeof term == 'string')) {
+  if (term && (typeof term === 'string')) {
     // debug("TERM: ", term);
     return encodeURIComponent(term)
   }
 
-  if (typeof term == 'boolean') {
+  if (typeof term === 'boolean') {
     return term ? 'true' : 'false'
   }
 
-  if ((term === 0) || (typeof term == 'number')) {
+  if ((term === 0) || (typeof term === 'number')) {
     return term.toString()
   }
 
@@ -161,7 +161,7 @@ var LazyWalk = exports.LazyWalk = function (term, opts) {
     // return "(" + term.join(",") +")"
   }
   // debug("term: ", term, " type: ", typeof term, " args: ", term.args);
-  if (term && typeof term == 'object') {
+  if (term && typeof term === 'object') {
     if (term.name) {
       if (term.args) {
         term.args = term.args.map(function (t, index) {
@@ -177,11 +177,11 @@ var LazyWalk = exports.LazyWalk = function (term, opts) {
               return expanded
             })
           }
-          if (term.name == 'and' && term.args.length == 1) {
+          if (term.name === 'and' && term.args.length === 1) {
             return term.args[0]
-          } else if (term.name == 'and' && term.args.length == 0) {
+          } else if (term.name === 'and' && term.args.length === 0) {
             return ''
-          } else if (term.name == 'join' && term.args.length == 3) {
+          } else if (term.name === 'join' && term.args.length === 3) {
             // args: core, query, field
             return when(runJoinQuery(term.args[0], term.args[1], term.args[2], opts), function (ids) {
               return 'in(' + term.args[2] + ',(' + ids.join(',') + '))'
@@ -189,7 +189,7 @@ var LazyWalk = exports.LazyWalk = function (term, opts) {
               debug('Error in sub query', err)
               return '(NOT_A_VALID_ID)'
             })
-          } else if (term.name == 'descendants') {
+          } else if (term.name === 'descendants') {
             // debug("call descendants(): ", term.args);
             var queries = []
             term.args.forEach(function (taxId) {
@@ -204,7 +204,7 @@ var LazyWalk = exports.LazyWalk = function (term, opts) {
             })
 
             return 'or(' + queries.join(',') + ')'
-          } else if (term.name == 'secondDegreeInteraction') {
+          } else if (term.name === 'secondDegreeInteraction') {
             var featureId = term.args[0]
 
             var query = 'or(eq(feature_id_a,' + featureId + '),eq(feature_id_b,' + featureId + '))&select(feature_id_a,feature_id_b)'
@@ -220,7 +220,7 @@ var LazyWalk = exports.LazyWalk = function (term, opts) {
               debug('Error in 2ndDegree function call', err)
               return '(NOT_A_VALID_ID)'
             })
-          } else if (term.name == 'GenomeGroup') {
+          } else if (term.name === 'GenomeGroup') {
             // debug("call getWorkspaceObject(): ", term.args[0]);
             return when(getWorkspaceObject(term.args[0], opts), function (ids) {
               // debug("getWSObject: ", ids);
@@ -231,7 +231,7 @@ var LazyWalk = exports.LazyWalk = function (term, opts) {
               debug('Error Retrieving Workspace: ', err)
               return '(NOT_A_VALID_ID)'
             })
-          } else if (term.name == 'FeatureGroup') {
+          } else if (term.name === 'FeatureGroup') {
             // debug("call getWorkspaceObject(): ", term.args[0]);
             return when(getWorkspaceObject(term.args[0], opts), function (ids) {
               // debug("getWSObject: ", ids);
@@ -243,7 +243,7 @@ var LazyWalk = exports.LazyWalk = function (term, opts) {
               return '(NOT_A_VALID_ID)'
               // return err
             })
-          } else if (term.name == 'query') {
+          } else if (term.name === 'query') {
             var modelId = args[0]
             var q = Query(args[1])
             // debug("q: ", q);
@@ -276,7 +276,8 @@ var LazyWalk = exports.LazyWalk = function (term, opts) {
                 return results
               }
             }, function (err) {
-              // debug("SubQuery Error: ", err);
+              // debug('SubQuery Error: ', err)
+              throw Error('Error Expanding Query: ' + err)
             })
           }
           // debug("Fall through: ", term, args);
@@ -320,7 +321,7 @@ var ResolveQuery = exports.ResolveQuery = function (query, opts, clearCache) {
   // normalize to object with RQL's parser
   // debug("ResolveQuery: ", query);
 
-  if (typeof query == 'string') {
+  if (typeof query === 'string') {
     query = Query(query)
   }
 
@@ -342,12 +343,12 @@ var Walk = exports.Walk = function (term, expansions) {
   // debug("stringified term: ", Query(term).toString());
   var children
 
-  if (term && (typeof term == 'string')) {
+  if (term && (typeof term === 'string')) {
     return encodeURIComponent(term)
     // return term;
   }
 
-  if (term && (typeof term == 'number')) {
+  if (term && (typeof term === 'number')) {
     return term.toString()
   }
 
@@ -356,7 +357,7 @@ var Walk = exports.Walk = function (term, expansions) {
     return '(' + term.join(',') + ')'
   }
 
-  if (term && typeof term == 'object') {
+  if (term && typeof term === 'object') {
     // debug("Term is object: ", term);
     if (term.name) {
       if (term.args && (term.args.length > 0)) {
@@ -368,7 +369,7 @@ var Walk = exports.Walk = function (term, expansions) {
         return when(All(term.args), function (args) {
           // debug("term.args resolved: ", args);
           if (term.name && expansions[term.name]) {
-            if (typeof expansions[term.name] == 'function') {
+            if (typeof expansions[term.name] === 'function') {
               return expansions[term.name].apply(args)
             }
           }
@@ -387,7 +388,7 @@ exports.ExpandQuery = function (query, expansions) {
   // normalize to object with RQL's parser
   // debug("ResolveQuery: ", query);
 
-  if (typeof query == 'string') {
+  if (typeof query === 'string') {
     query = Query(query)
   }
   // debug("Query: ", query);

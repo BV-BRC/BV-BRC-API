@@ -7,7 +7,7 @@ var when = require('promised-io/promise').when
 var request = require('request')
 
 var streamQuery = function (req, res, next) {
-  if (req.call_method != 'stream') {
+  if (req.call_method !== 'stream') {
     next()
   }
 
@@ -26,7 +26,7 @@ var streamQuery = function (req, res, next) {
 }
 
 var querySOLR = function (req, res, next) {
-  if (req.call_method != 'query') {
+  if (req.call_method !== 'query') {
     next()
   }
 
@@ -57,7 +57,7 @@ var getSOLR = function (req, res, next) {
     if (sresults && sresults.doc) {
       var results = sresults.doc
 
-      if (results.public || (req.publicFree.indexOf(req.call_collection) >= 0) || (results.owner == (req.user)) || (results.user_read && results.user_read.indexOf(req.user) >= 0)) {
+      if (results.public || (req.publicFree.indexOf(req.call_collection) >= 0) || (results.owner === (req.user)) || (results.user_read && results.user_read.indexOf(req.user) >= 0)) {
         res.results = sresults
         // debug("Results: ", results);
         next()
@@ -95,7 +95,7 @@ var getSchema = function (req, res, next) {
       return next(err)
     }
 
-    if (body && typeof body == 'string') {
+    if (body && typeof body === 'string') {
       body = JSON.parse(body)
     }
     res.results = body

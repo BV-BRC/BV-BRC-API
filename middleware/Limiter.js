@@ -2,7 +2,7 @@ var maxLimit = 25000
 var defaultLimit = 25
 var downloadLimit = 2500000
 module.exports = function (req, res, next) {
-  if (req.call_method != 'query') { return next() }
+  if (req.call_method !== 'query') { return next() }
   var limit = maxLimit
   var q = req.call_params[0]
   var re = /(&rows=)(\d*)/
@@ -16,9 +16,9 @@ module.exports = function (req, res, next) {
     if (!matches) {
       // console.log("!matches && isDownload: ", req.isDownload);
       limit = defaultLimit
-    } else if (matches && typeof matches[2] != 'undefined' && (matches[2] > downloadLimit) && req.isDownload) {
+    } else if (matches && typeof matches[2] !== 'undefined' && (matches[2] > downloadLimit) && req.isDownload) {
       limit = downloadLimit
-    } else if (matches && typeof matches[2] != 'undefined' && (matches[2] > maxLimit) && (!req.isDownload)) {
+    } else if (matches && typeof matches[2] !== 'undefined' && (matches[2] > maxLimit) && (!req.isDownload)) {
       // console.log("!isDownload ... set limit to: ", maxLimit);
       limit = maxLimit
     } else {

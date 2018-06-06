@@ -15,7 +15,7 @@ module.exports = [
     var ctype = req.get('content-type')
     // debug("CTYPE: ", ctype);
 
-    if (req.body.jsonrpc || (ctype == 'application/jsonrpc+json')) {
+    if (req.body.jsonrpc || (ctype === 'application/jsonrpc+json')) {
       // debug("JSON RPC Request", JSON.stringify(req.body, null, 4));
 
       if (!req.body.method) {

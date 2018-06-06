@@ -72,10 +72,10 @@ function runCluster (data, config, opts) {
 
           lines.forEach(line => {
             line = line.trim()
-            if (!line || line.length == 0) return
+            if (!line || line.length === 0) return
 
             const tabs = line.split('\t')
-            if (count == 0) {
+            if (count === 0) {
               const columns = []
               for (let i = 4; i < tabs.length; i++) {
                 columns.push(tabs[i].split('-')[0])

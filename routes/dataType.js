@@ -49,7 +49,7 @@ router.use(function (req, res, next) {
 })
 
 router.get('*', function (req, res, next) {
-  if (req.path == '/') {
+  if (req.path === '/') {
     req.call_method = 'query'
     var ctype = req.get('content-type')
 
@@ -59,7 +59,7 @@ router.get('*', function (req, res, next) {
       ctype = req.headers['content-type'] = 'application/x-www-form-urlencoded'
     }
 
-    if (ctype == 'application/solrquery+x-www-form-urlencoded') {
+    if (ctype === 'application/solrquery+x-www-form-urlencoded') {
       req.queryType = 'solr'
     } else {
       req.queryType = 'rql'
@@ -69,7 +69,7 @@ router.get('*', function (req, res, next) {
 
     req.call_params = [req._parsedUrl.query || '']
     req.call_collection = req.params.dataType
-  } else if (req.path == '/schema') {
+  } else if (req.path === '/schema') {
     req.call_method = 'schema'
     req.call_params = []
     req.call_collection = req.params.dataType
@@ -77,7 +77,7 @@ router.get('*', function (req, res, next) {
     if (req.params[0]) {
       req.params[0] = req.params[0].substr(1)
       var ids = decodeURIComponent(req.params[0]).split(',')
-      if (ids.length == 1) {
+      if (ids.length === 1) {
         ids = ids[0]
       }
     }
@@ -111,7 +111,7 @@ router.post('*', [
       return
     }
     var ctype = req.get('content-type')
-    if (req.body.jsonrpc || (ctype == 'application/jsonrpc+json')) {
+    if (req.body.jsonrpc || (ctype === 'application/jsonrpc+json')) {
       debug('JSON RPC Request', JSON.stringify(req.body, null, 4))
       if (!req.body.method) {
         throw Error('Invalid Method')
@@ -158,7 +158,7 @@ router.post('*', [
     req.call_method = 'query'
     req.call_params = req.body ? [req.body] : []
     req.call_collection = req.params.dataType
-    req.queryType = (ctype == 'application/solrquery+x-www-form-urlencoded') ? 'solr' : 'rql'
+    req.queryType = (ctype === 'application/solrquery+x-www-form-urlencoded') ? 'solr' : 'rql'
 
     next()
   }
@@ -175,7 +175,7 @@ router.use([
     debug('req.call_method: ', req.call_method)
     debug('req.call_collection: ', req.call_collection)
 
-    if (req.call_method == 'query') {
+    if (req.call_method === 'query') {
       debug('req.queryType: ', req.queryType)
     }
     next()

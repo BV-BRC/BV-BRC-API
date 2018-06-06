@@ -24,7 +24,7 @@ module.exports = {
       // debug("fields: ", fields);
       const data = res.results.response.docs.map(function (o) {
         return fields.map(function (field) {
-          if (typeof o[field] == 'object') {
+          if (typeof o[field] === 'object') {
             if (o[field] instanceof Array) {
               return o[field].join(';')
             }

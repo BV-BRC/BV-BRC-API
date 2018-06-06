@@ -5,12 +5,12 @@ var wrap = require('../util/linewrap')
 
 function serializeRow (type, o) {
   var fasta_id
-  if (o.feature_type == 'source') {
+  if (o.feature_type === 'source') {
     return
   }
-  if (o.annotation == 'PATRIC') {
+  if (o.annotation === 'PATRIC') {
     fasta_id = o.patric_id + '|' + (o.refseq_locus_tag ? (o.refseq_locus_tag + '|') : '') + (o.alt_locus_tag ? (o.alt_locus_tag + '|') : '')
-  } else if (o.annotation == 'RefSeq') {
+  } else if (o.annotation === 'RefSeq') {
     fasta_id = 'gi|' + o.gi + '|' + (o.refseq_locus_tag ? (o.refseq_locus_tag + '|') : '') + (o.alt_locus_tag ? (o.alt_locus_tag + '|') : '')
   }
   var row = '>' + fasta_id + '   ' + o.product + '   [' + o.genome_name + ' | ' + o.genome_id + ']\n'
@@ -26,7 +26,7 @@ module.exports = {
       res.attachment('PATRIC_' + req.call_collection + '.fasta')
     }
 
-    if (req.call_method == 'stream') {
+    if (req.call_method === 'stream') {
       when(res.results, function (results) {
         // debug("res.results: ", results);
         var docCount = 0

@@ -43,14 +43,14 @@ function buildFasta (sequences, opts) {
   // build faa with stripped name so gblocks doesn't complain.
   sequences.forEach(function (o) {
     var fasta_id
-    if (o.feature_type == 'source') { return }
-    if (o.annotation == 'PATRIC') {
+    if (o.feature_type === 'source') { return }
+    if (o.annotation === 'PATRIC') {
       fasta_id = o.feature_id
-    } else if (o.annotation == 'RefSeq') {
+    } else if (o.annotation === 'RefSeq') {
       fasta_id = o.feature_id
     }
     var row = '>' + fasta_id + ' [' + o.genome_id + ']\n' + o.aa_sequence + '\n'
-    if (opts.alignType == 'dna') {
+    if (opts.alignType === 'dna') {
       row = '>' + fasta_id + ' [' + o.genome_id + ']\n' + o.na_sequence + '\n'
     }
     fasta.push(row)
@@ -153,10 +153,10 @@ function runGBlocks (input, opts) {
             var lines = data.split('\n')
             var empty = (!lines.some(function (line) {
               line = line.trim()
-              if (!line || line.length == 0) { return false };
-              if (line == '>undefined') { return false };
+              if (!line || line.length === 0) { return false };
+              if (line === '>undefined') { return false };
 
-              if (line.charAt(0) == '>') { return false }
+              if (line.charAt(0) === '>') { return false }
 
               return true
             }))
@@ -193,7 +193,7 @@ function runFastTree (input, opts) {
 
   fs.outputFile(tempName, input, function (err) {
     var runOpts = ['-gamma', '-nosupport']
-    if (opts.alignType == 'dna') {
+    if (opts.alignType === 'dna') {
       runOpts.push('-nt')
     }
     runOpts.push(tempName)

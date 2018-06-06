@@ -94,7 +94,7 @@ function updatePermissions (req, res, next) {
           var records = r.response.docs
 
           // skip empty records
-          if (records.length == 0) {
+          if (records.length === 0) {
             debug(`skipping empty records for core/genome: ${core}/${genomeID}`)
             return
           }
@@ -104,7 +104,7 @@ function updatePermissions (req, res, next) {
           // create a command for each record
           let commands = []
           records.forEach(record => {
-            if (!(record.owner == req.user)) {
+            if (!(record.owner === req.user)) {
               console.error(
                 `User ${req.user} was forbidden from private data ${genomeID} ` +
                 `[core: ${core}; record: ${record[key]}]`
@@ -154,18 +154,18 @@ function testParams (req, res) {
 
 function toSetCommand (record, id, permissions, core) {
   let readUsers = permissions
-    .filter(p => p.permission == 'read')
+    .filter(p => p.permission === 'read')
     .map(p => {
-      if (p.permission == 'read') return p.user
+      if (p.permission === 'read') return p.user
     })
 
   // Note: we must also ensure write users can read.
   // 'read' and 'write' are not exclusive so that
   //  Data API queries are faster
   let writeUsers = permissions
-    .filter(p => p.permission == 'write')
+    .filter(p => p.permission === 'write')
     .map(p => {
-      if (p.permission == 'write') {
+      if (p.permission === 'write') {
         readUsers.push(p.user)
         return p.user
       }
@@ -173,9 +173,9 @@ function toSetCommand (record, id, permissions, core) {
 
   // keep any existing permissions requested unchanged
   let unChangedUsers = permissions
-    .filter(p => p.permission == 'unchanged')
+    .filter(p => p.permission === 'unchanged')
     .map(p => {
-      if (p.permission == 'unchanged') return p.user
+      if (p.permission === 'unchanged') return p.user
     })
 
   if (unChangedUsers.length) {
@@ -186,8 +186,8 @@ function toSetCommand (record, id, permissions, core) {
   }
 
   // remove possibility of duplicates
-  readUsers = readUsers.filter((x, i) => readUsers.indexOf(x) == i)
-  writeUsers = writeUsers.filter((x, i) => writeUsers.indexOf(x) == i)
+  readUsers = readUsers.filter((x, i) => readUsers.indexOf(x) === i)
+  writeUsers = writeUsers.filter((x, i) => writeUsers.indexOf(x) === i)
 
   let cmd = {}
   cmd[genomeCoresUUIDs[core]] = id

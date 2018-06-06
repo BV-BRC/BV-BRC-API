@@ -6,7 +6,7 @@ module.exports = {
   contentType: 'application/json',
   serialize: function (req, res, next) {
     debug('application/json handler')
-    if (req.call_method == 'stream') {
+    if (req.call_method === 'stream') {
       when(res.results, function (results) {
         // debug("res.results: ", results);
         var docCount = 0
@@ -27,7 +27,7 @@ module.exports = {
           res.end()
         })
       })
-    } else if (req.call_method == 'query') {
+    } else if (req.call_method === 'query') {
       if (res.results && res.results.response && res.results.facet_counts) {
         res.set('facet_counts', JSON.stringify(res.results.facet_counts))
       }
@@ -39,7 +39,7 @@ module.exports = {
         res.status(404)
       }
       res.end()
-    } else if (req.call_method == 'schema') {
+    } else if (req.call_method === 'schema') {
       res.send(JSON.stringify(res.results))
       res.end()
     } else {

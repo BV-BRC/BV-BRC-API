@@ -2,7 +2,7 @@ var debug = require('debug')('p3api-server:FieldSelection')
 var url = require('url')
 
 module.exports = function (req, res, next) {
-  if ((req.call_method != 'query') && (req.call_method != 'stream')) {
+  if ((req.call_method !== 'query') && (req.call_method !== 'stream')) {
     return next()
   }
 

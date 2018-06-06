@@ -133,7 +133,7 @@ module.exports = function (req, res, next) {
 
     console.log('results', results)
 
-    if (req.user && ((results.owner == req.user) || (results.user_write.indexOf(req.user) >= 0))) {
+    if (req.user && ((results.owner === req.user) || (results.user_write.indexOf(req.user) >= 0))) {
       if (patch.some(function (p) {
         var parts = p.path.split('/')
         return (userModifiableProperties.indexOf(parts[1]) < 0)

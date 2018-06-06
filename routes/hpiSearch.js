@@ -73,7 +73,7 @@ router.post('/', [
     req.call_collection = 'transcriptomics_gene'
     req.call_method = 'query'
 
-    if (req.body.type != INPUT_TYPE_GENE) {
+    if (req.body.type !== INPUT_TYPE_GENE) {
       // return 422
       res.write('422: unrecognized input type')
       res.end()
@@ -102,7 +102,7 @@ router.post('/', [
     query.push('(' + req.body.ids.join('+OR+') + ')')
 
     // if we're using min log_ratio
-    if (req.body.thresholdType == THRESHOLD_LOG_RATIO) {
+    if (req.body.thresholdType === THRESHOLD_LOG_RATIO) {
       var pos_thresh = Math.abs(req.body.threshold)
       var neg_thresh = -1.0 * Math.abs(req.body.threshold)
       query.push('AND (log_ratio:[' + pos_thresh + ' TO *] OR log_ratio:[* TO ' + neg_thresh + '])')
@@ -340,7 +340,7 @@ router.get('/experiment/:id', [
     req.call_method = 'query'
 
     // check if the id is a number or not (number=eid, not=accession)
-    if (!isNaN(req.params.id) && parseInt(Number(req.params.id)) == req.params.id) {
+    if (!isNaN(req.params.id) && parseInt(Number(req.params.id)) === req.params.id) {
       req.call_params = ['&q=eid:' + req.params.id]
     } else {
       req.call_params = ['&q=accession:' + req.params.id]
@@ -376,7 +376,7 @@ router.get('/experiment/:id', [
       req.call_method = 'query'
 
       // check if the id is a number or not (number=eid, not=accession)
-      if (!isNaN(req.params.id) && parseInt(Number(req.params.id)) == req.params.id) {
+      if (!isNaN(req.params.id) && parseInt(Number(req.params.id)) === req.params.id) {
         req.call_params = ['&q=eid:' + req.params.id]
       } else {
         req.call_params = ['&q=accession:' + req.params.id]
@@ -430,7 +430,7 @@ router.get('/experiment/:id/id-list/:id_list', [
     req.call_method = 'query'
 
     // check if the id is a number or not (number=eid, not=accession)
-    if (!isNaN(req.params.id) && parseInt(Number(req.params.id)) == req.params.id) {
+    if (!isNaN(req.params.id) && parseInt(Number(req.params.id)) === req.params.id) {
       req.call_params = ['&q=eid:' + req.params.id]
     } else {
       req.call_params = ['&q=accession:' + req.params.id]
@@ -480,7 +480,7 @@ router.get('/experiment/:id/id-list/:id_list/ids', [
     req.call_method = 'query'
 
     // check if the id is a number or not (number=eid, not=accession)
-    if (!isNaN(req.params.id) && parseInt(Number(req.params.id)) == req.params.id) {
+    if (!isNaN(req.params.id) && parseInt(Number(req.params.id)) === req.params.id) {
       req.call_params = ['&q=eid:' + req.params.id]
     } else {
       req.call_params = ['&q=accession:' + req.params.id]

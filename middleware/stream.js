@@ -17,7 +17,7 @@ module.exports.checkIfStreaming = function (req, res, next) {
     return next()
   }
 
-  if (req.isDownload && req.call_method == 'query') {
+  if (req.isDownload && req.call_method === 'query') {
     req.call_method = 'stream'
   }
   next()

@@ -36,12 +36,12 @@ function processSubsystem (ssState, options) {
       return def.reject(error)
     }
 
-    if (response.facets.count == 0) {
+    if (response.facets.count === 0) {
       // data is not available
       return def.resolve([])
     }
     const familyStat = response.facets.stat.buckets
-    const familyIdList = familyStat.filter(el => el.val != '').map(el => el.val)
+    const familyIdList = familyStat.filter(el => el.val !== '').map(el => el.val)
 
     const fetchSize = 5000
     const steps = Math.ceil(familyIdList.length / fetchSize)

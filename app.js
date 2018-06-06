@@ -57,7 +57,7 @@ app.use(logger('[:date[iso]] :req[x-forwarded-for] :method :url :status :respons
 
 app.use(function (req, res, next) {
   debug('APP MODE: ', app.get('env'))
-  req.production = (app.get('env') == 'production')
+  req.production = (app.get('env') === 'production')
   next()
 })
 
@@ -116,7 +116,7 @@ app.use('/hpi/search', [
 ])
 
 app.param('dataType', function (req, res, next, dataType) {
-  if (collections.indexOf(dataType) != -1) {
+  if (collections.indexOf(dataType) !== -1) {
     next()
     return
   }

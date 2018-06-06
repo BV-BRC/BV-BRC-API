@@ -129,10 +129,10 @@ router.use([
       }
     }
 
-    if (type == 'tar') {
+    if (type === 'tar') {
       archOpts.gzip = true
       res.attachment('PATRIC_Export.tgz')
-    } else if (type == 'zip') {
+    } else if (type === 'zip') {
       res.attachment('PATRIC_Export.zip')
     }
 

@@ -20,7 +20,7 @@ module.exports = declare([Restrictive], {
 
   get: function (id /* string */, opts /* object */ /* exposed */) {
     return when(this.model.get(id, opts), function (obj) {
-      if (!obj.public || (obj.ownerId == opts.req.user.id)) {
+      if (!obj.public || (obj.ownerId === opts.req.user.id)) {
         throw new Error('Not Allowed')
       }
       return obj
