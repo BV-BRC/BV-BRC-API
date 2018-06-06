@@ -27,7 +27,7 @@ const bodyParser = require('body-parser')
 const debug = require('debug')('p3api-server:genomePermissions')
 const conf = require('../config')
 
-const solrjs = require('solrjs')
+const Solrjs = require('solrjs')
 const SOLR_URL = conf.get('solr').url
 const request = require('request-promise')
 
@@ -75,7 +75,7 @@ function updatePermissions (req, res, next) {
     Object.keys(genomeCoresUUIDs).forEach(core => {
       debug(`updating core ${core}...`)
 
-      const solr = new solrjs(SOLR_URL + '/' + core)
+      const solr = new Solrjs(SOLR_URL + '/' + core)
 
       // for each core, fetch object keys, owners, user_read, user_write
       // Notes:

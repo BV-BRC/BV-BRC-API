@@ -1,4 +1,4 @@
-var solrjs = require('solrjs')
+var Solrjs = require('solrjs')
 // var media = require("../middleware/media");
 var config = require('../config')
 var SOLR_URL = config.get('solr').url
@@ -13,7 +13,7 @@ var streamQuery = function (req, res, next) {
 
   var query = req.call_params[0]
   // debug("querySOLR() req.params", req.call_params);
-  var solr = new solrjs(SOLR_URL + '/' + req.call_collection)
+  var solr = new Solrjs(SOLR_URL + '/' + req.call_collection)
   debug('querySOLR() query: ', query)
   when(solr.stream(query), function (results) {
     // debug("APIMethodHandler solr.streamQuery results: ", results);
@@ -32,7 +32,7 @@ var querySOLR = function (req, res, next) {
 
   var query = req.call_params[0]
   // debug("querySOLR() req.params", req.call_params);
-  var solr = new solrjs(SOLR_URL + '/' + req.call_collection)
+  var solr = new Solrjs(SOLR_URL + '/' + req.call_collection)
   debug('querySOLR() query: ', query)
   when(solr.query(query), function (results) {
     // debug("APIMethodHandler solr.query results: ", results)
@@ -52,7 +52,7 @@ var querySOLR = function (req, res, next) {
   })
 }
 var getSOLR = function (req, res, next) {
-  var solr = new solrjs(SOLR_URL + '/' + req.call_collection)
+  var solr = new Solrjs(SOLR_URL + '/' + req.call_collection)
   when(solr.get(req.call_params[0]), function (sresults) {
     if (sresults && sresults.doc) {
       var results = sresults.doc

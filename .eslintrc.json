@@ -1,7 +1,6 @@
 {
     "extends": "standard",
     "rules": {
-        "new-cap": 0,
         "camelcase": 0,
         "handle-callback-err": 0,
         "no-undef": 0,

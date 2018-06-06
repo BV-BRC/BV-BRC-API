@@ -1,4 +1,4 @@
-var defer = require('promised-io/promise').defer
+var Defer = require('promised-io/promise').defer
 var when = require('promised-io/promise').when
 var debug = require('debug')('p3api-server:msa')
 var ChildProcess = require('child_process')
@@ -10,7 +10,7 @@ var fs = require('fs-extra')
 
 function runQuery (query, opts) {
   debug('Query: ', query)
-  var def = new defer()
+  var def = new Defer()
 
   debug('Send Request to distributeURL: ', distributeURL + 'genome_feature')
   debug('runQuery: ', query)
@@ -60,7 +60,7 @@ function buildFasta (sequences, opts) {
 }
 
 function runMuscle (sequences, opts) {
-  var def = new defer()
+  var def = new Defer()
   var d = []
   var errorClosed
 
@@ -101,7 +101,7 @@ function runMuscle (sequences, opts) {
 }
 
 function runGBlocks (input, opts) {
-  var def = new defer()
+  var def = new Defer()
   var errorClosed
   var tempName = Temp.path({suffix: '.aga'})
 
@@ -175,7 +175,7 @@ function runGBlocks (input, opts) {
 }
 
 function runFastTree (input, opts) {
-  var def = new defer()
+  var def = new Defer()
   var d = []
   var errorClosed
 
@@ -231,7 +231,7 @@ module.exports = {
     return params && params[0] && params[0].length > 1
   },
   execute: function (params, req, res) {
-    var def = new defer()
+    var def = new Defer()
     // console.log("Execute MSA: ", params)
     var query = params[0]
     var alignType = 'protein'

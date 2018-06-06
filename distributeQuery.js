@@ -1,4 +1,4 @@
-var defer = require('promised-io/promise').defer
+var Defer = require('promised-io/promise').defer
 var debug = require('debug')('p3api-server:distributeQuery')
 var config = require('./config')
 var request = require('request')
@@ -6,7 +6,7 @@ var distributeURL = config.get('distributeURL')
 
 module.exports = function query (dataType, query, opts) {
   debug('Query: ', query)
-  var def = new defer()
+  var def = new Defer()
   opts = opts || {}
 
   debug('Send Request to distributeURL: ', distributeURL + dataType)

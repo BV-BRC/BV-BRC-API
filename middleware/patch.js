@@ -1,9 +1,9 @@
 const debug = require('debug')('p3api-server:cachemiddleware')
 const conf = require('../config')
 const when = require('promised-io/promise').when
-const defer = require('promised-io/promise').defer
+const Defer = require('promised-io/promise').defer
 const jsonpatch = require('json-patch')
-const solrjs = require('solrjs')
+const Solrjs = require('solrjs')
 const SOLR_URL = conf.get('solr').url
 const Request = require('request')
 
@@ -68,7 +68,7 @@ const userModifiableProperties = [
 ]
 
 function postDocs (docs, type) {
-  var def = new defer()
+  var def = new Defer()
   var url = conf.get('solr').url + '/' + type + '/update?wt=json&overwrite=true&softCommit=true'
 
   Request(url, {
@@ -121,7 +121,7 @@ module.exports = function (req, res, next) {
 
   // console.log("Target Collection: ", collection, " obj id: ", target_id);
 
-  var solr = new solrjs(SOLR_URL + '/' + collection)
+  var solr = new Solrjs(SOLR_URL + '/' + collection)
   when(solr.get(target_id), (sresults) => {
     if (!sresults || !sresults.doc) {
       return

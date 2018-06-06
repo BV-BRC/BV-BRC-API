@@ -3,7 +3,7 @@ var router = express.Router({
   strict: true,
   mergeParams: true
 })
-var defer = require('promised-io/promise').defer
+var Defer = require('promised-io/promise').defer
 var when = require('promised-io/promise').when
 var all = require('promised-io/promise').all
 var Request = require('request')
@@ -100,12 +100,12 @@ function respondWithData (res, data) {
 }
 
 function checkSolr (genome_id) {
-  const def = new defer()
+  const def = new Defer()
   const cores = ['genome_sequence', 'genome_feature', 'genome']
   const defs = cores.map((core) => {
     const url = `${config.get('solr').url}/${core}/select?q=genome_id:${genome_id}&rows=1&wt=json`
     // console.log(`${url}`)
-    const def = new defer()
+    const def = new Defer()
     Request.get(url, (err, res, body) => {
       if (err) {
         def.reject(err)
@@ -125,7 +125,7 @@ function checkSolr (genome_id) {
 }
 
 function updateHistory (id, data) {
-  const def = new defer()
+  const def = new Defer()
 
   data.state = 'indexed'
   data.indexCompletionTime = new Date()
