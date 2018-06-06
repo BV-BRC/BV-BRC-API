@@ -112,10 +112,9 @@ function readWorkspaceExperiments (tgState, options) {
   const def = new Deferred()
 
   const expressionFiles = wsExpIds.map(function (exp_id) {
-    var parts = exp_id.split('/'),
-      jobName = parts.pop(),
-      dotPath = parts.join('/') + '/.' + jobName + '/expression.json'
-    return dotPath
+    const parts = exp_id.split('/')
+    const jobName = parts.pop()
+    return parts.join('/') + '/.' + jobName + '/expression.json'
   })
 
   // debug("expressionFiles: ", expressionFiles);
@@ -330,7 +329,8 @@ function processTranscriptomicsGene (tgState, options) {
           (expression.hasOwnProperty('feature_id')) ? expr.feature_id = expression.feature_id : '';
           (expression.hasOwnProperty('na_feature_id')) ? expr.p2_feature_id = expression.na_feature_id : '';
           (expression.hasOwnProperty('refseq_locus_tag')) ? expr.refseq_locus_tag = expression.refseq_locus_tag : ''
-          var log_ratio = expression.log_ratio, z_score = expression.z_score
+          const log_ratio = expression.log_ratio
+          const z_score = expression.z_score
           expr.samples[expression.pid.toString()] = {
             log_ratio: log_ratio || '',
             z_score: z_score || ''
