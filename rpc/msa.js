@@ -139,15 +139,10 @@ function runGBlocks (input, opts) {
           }
 
           fs.readFile(tempName + '-gb', 'utf8', function (err, data) {
-            var empty = true
             if (err) {
               def.reject('Unable to Read Gblocks output: ', err)
               return
             }
-
-            // var locusList=[];
-            // // console.log("data: ", data);
-            var empty = false
 
             var lines = data.split('\n')
             var empty = (!lines.some(function (line) {

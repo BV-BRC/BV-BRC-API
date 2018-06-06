@@ -243,7 +243,7 @@ var LazyWalk = exports.LazyWalk = function (term, opts) {
             var modelId = args[0]
             var q = Query(args[1])
             // debug("q: ", q);
-            var query = q.toString()
+            const query = q.toString()
             var type = 'public'
             // debug("typeof query: ", typeof query);
             // debug("Do Query ", modelId, query);

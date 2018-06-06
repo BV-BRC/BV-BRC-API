@@ -233,7 +233,7 @@ router.post('/', [
       var exp_map = {}
       var exp_provenance_map = {}
       for (var i in res.results.response.docs) {
-        var exp = res.results.response.docs[i]
+        const exp = res.results.response.docs[i]
 
         var exp_trans = {
           experimentIdentifier: exp.accession,

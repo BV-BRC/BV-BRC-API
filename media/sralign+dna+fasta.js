@@ -5,10 +5,10 @@ var wrap = require('../util/linewrap')
 
 function serializeRow (type, o) {
   if (type === 'genome_feature') {
-    var row = '>' + o.patric_id + '|' + o.feature_id + ' ' + o.product
+    const row = '>' + o.patric_id + '|' + o.feature_id + ' ' + o.product
     return row + wrap(o.na_sequence, 60) + '\n'
   } else if (type === 'genome_sequence') {
-    var row = '>' + o.accession + '   ' + o.description + '   ' + '[' + (o.genome_name || o.genome_id) + ']\n'
+    const row = '>' + o.accession + '   ' + o.description + '   ' + '[' + (o.genome_name || o.genome_id) + ']\n'
     return row + wrap(o.sequence, 60) + '\n'
   } else {
     throw Error('Cannot query for application/protein+fasta from this data collection')
