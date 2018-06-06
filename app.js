@@ -8,7 +8,6 @@ var express = require('express')
 var path = require('path')
 var logger = require('morgan')
 var cookieParser = require('cookie-parser')
-var bodyParser = require('body-parser')
 var hpiSearchRouter = require('./routes/hpiSearch')
 var dataTypeRouter = require('./routes/dataType')
 var downloadRouter = require('./routes/download')
@@ -33,10 +32,6 @@ app.set('view engine', 'ejs')
 
 app.enable('etag')
 app.set('etag', 'strong')
-
-// debug("APP MODE: ", app.get('env'));
-
-var reqId = 0
 
 var stats = null
 

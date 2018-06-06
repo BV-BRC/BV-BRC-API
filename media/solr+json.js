@@ -1,4 +1,3 @@
-var debug = require('debug')('p3api-server:media/solr+json')
 
 module.exports = {
   contentType: 'application/solr+json',

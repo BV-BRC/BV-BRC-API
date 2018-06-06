@@ -8,7 +8,7 @@ const redisOptions = config.get('redis')
 const redis = require('redis')
 const redisClient = redis.createClient(redisOptions)
 const RedisTTL = 60 * 60 * 24 // sec
-const currentContext = 5
+// const currentContext = 5
 const all = require('promised-io/promise').all
 
 function fetchFamilyDescriptionBatch (familyIdList) {
@@ -64,7 +64,6 @@ function fetchFamilyDescriptions (familyIdList) {
   const qSt = Date.now()
 
   for (let i = 0; i < steps; i++) {
-    const subDef = Deferred()
     const subFamilyIdList = familyIdList.slice(i * fetchSize, Math.min((i + 1) * fetchSize, familyIdList.length))
 
     allRequests.push(fetchFamilyDescriptionBatch(subFamilyIdList))

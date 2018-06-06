@@ -1,5 +1,3 @@
-var es = require('event-stream')
-var when = require('promised-io/promise').when
 
 var streamableMediaTypes = [
   'application/json',

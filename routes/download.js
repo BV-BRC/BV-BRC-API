@@ -1,8 +1,5 @@
 var express = require('express')
 var router = express.Router({strict: true, mergeParams: true})
-var defer = require('promised-io/promise').defer
-var when = require('promised-io/promise').when
-var config = require('../config')
 var bodyParser = require('body-parser')
 var debug = require('debug')('p3api-server:route/download')
 var httpParams = require('../middleware/http-params')

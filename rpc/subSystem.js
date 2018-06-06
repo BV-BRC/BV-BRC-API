@@ -4,7 +4,6 @@ const debug = require('debug')('p3api-server:Subsystem')
 const request = require('request')
 const config = require('../config')
 const distributeURL = config.get('distributeURL')
-const all = require('promised-io/promise').all
 
 function processSubsystem (ssState, options) {
   const def = new Deferred()
@@ -41,6 +40,7 @@ function processSubsystem (ssState, options) {
       return def.resolve([])
     }
     const familyStat = response.facets.stat.buckets
+    /*
     const familyIdList = familyStat.filter(el => el.val !== '').map(el => el.val)
 
     const fetchSize = 5000

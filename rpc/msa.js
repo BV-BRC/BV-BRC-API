@@ -102,7 +102,6 @@ function runMuscle (sequences, opts) {
 
 function runGBlocks (input, opts) {
   var def = new defer()
-  var d = []
   var errorClosed
   var tempName = Temp.path({suffix: '.aga'})
 

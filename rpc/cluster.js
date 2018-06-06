@@ -2,9 +2,6 @@ const Deferred = require('promised-io/promise').Deferred
 const when = require('promised-io/promise').when
 const debug = require('debug')('p3api-server:cluster')
 const spawn = require('child_process').spawn
-const config = require('../config')
-const request = require('request')
-const distributeURL = config.get('distributeURL')
 const Temp = require('temp')
 const fs = require('fs-extra')
 

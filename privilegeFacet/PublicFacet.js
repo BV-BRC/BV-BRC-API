@@ -3,10 +3,7 @@
  */
 var debug = require('debug')('p3api:facet:public')
 var Restrictive = require('dme/RestrictiveFacet')
-var util = require('util')
 var declare = require('dojo-declare/declare')
-var when = require('promised-io/promise').when
-var defer = require('promised-io/promise').defer
 
 module.exports = declare([Restrictive], {
   query: function (query /* string */, opts /* object */ /* exposed */) {

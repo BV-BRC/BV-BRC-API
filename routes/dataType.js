@@ -1,9 +1,5 @@
 var express = require('express')
 var router = express.Router({strict: true, mergeParams: true})
-var defer = require('promised-io/promise').defer
-var when = require('promised-io/promise').when
-var config = require('../config')
-var SolrQueryParser = require('../middleware/SolrQueryParser')
 var RQLQueryParser = require('../middleware/RQLQueryParser')
 var DecorateQuery = require('../middleware/DecorateQuery')
 var ExtractCustomFields = require('../middleware/ExtractCustomFields')
@@ -16,13 +12,9 @@ var APIMethodHandler = require('../middleware/APIMethodHandler')
 var cacheMiddleware = require('../middleware/cache')
 var patchMiddleware = require('../middleware/patch')
 var httpParams = require('../middleware/http-params')
-var solrjs = require('solrjs')
 var media = require('../middleware/media')
-var SOLR_URL = config.get('solr').url
 var bodyParser = require('body-parser')
-var rql = require('solrjs/rql')
 var debug = require('debug')('p3api-server:route/dataType')
-var Expander = require('../ExpandingQuery')
 var querystring = require('querystring')
 
 router.use(httpParams)

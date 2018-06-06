@@ -1,5 +1,4 @@
 var debug = require('debug')('p3api-server:media')
-var config = require('../config')
 var media = require('../media')
 
 module.exports = function (req, res, next) {

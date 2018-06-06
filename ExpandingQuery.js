@@ -2,10 +2,7 @@ var debug = require('debug')('p3api-server:ExpandingQuery')
 var when = require('promised-io/promise').when
 var Deferred = require('promised-io/promise').defer
 var All = require('promised-io/promise').all
-// var Sequence = require("promised-io/promise").seq;
-// var LazyArray = require("promised-io/lazy-array").LazyArray;
 var Query = require('rql/query').Query
-var request = require('request')
 var config = require('./config')
 var Request = require('request')
 var distributeURL = config.get('distributeURL')
@@ -129,7 +126,6 @@ function runSDISubQuery (core, query, opts) {
 var LazyWalk = exports.LazyWalk = function (term, opts) {
 // debug("LazyWalk term: ", term);
 // debug("stringified term: ", Query(term).toString());
-  var children
 
   if (term && (typeof term === 'string')) {
     // debug("TERM: ", term);
@@ -296,8 +292,6 @@ var LazyWalk = exports.LazyWalk = function (term, opts) {
   // throw Error("Invalid Term - " + JSON.stringify(term));
 }
 
-var queryCache = {}
-
 function runQuery (queryFn, query, opts) {
   // debug("Launch Query : ",query);
   if (opts && opts.req) {
@@ -341,7 +335,6 @@ var Walk = exports.Walk = function (term, expansions) {
     return ''
   }
   // debug("stringified term: ", Query(term).toString());
-  var children
 
   if (term && (typeof term === 'string')) {
     return encodeURIComponent(term)

@@ -1,6 +1,5 @@
 var debug = require('debug')('p3api-server:http-params')
 var URL = require('url')
-var querystring = require('querystring')
 
 module.exports = function (req, res, next) {
   // debug("Begin http-params Middleware: ", req.query, "URL: ", req.url," PARSED:", req._parsedUrl)
@@ -12,7 +11,7 @@ module.exports = function (req, res, next) {
     var parsed = {}
     if (typeof req._parsedUrl.query === 'string') {
       var q = req._parsedUrl.query
-      var qparts = q.split('&').forEach(function (qp) {
+      q.split('&').forEach(function (qp) {
         var parts = qp.split('=')
         parsed[parts[0]] = parts[1] || ''
       })

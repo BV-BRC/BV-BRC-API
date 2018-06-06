@@ -24,15 +24,10 @@ curl -H 'Content-Type: application/json' -X POST 'http://localhost:3001/hpi/sear
 // import dependencies
 var express = require('express')
 var router = express.Router({strict: true, mergeParams: true})
-var defer = require('promised-io/promise').defer
-var when = require('promised-io/promise').when
 var config = require('../config')
 var bodyParser = require('body-parser')
-var debug = require('debug')('p3api-server:route/hpiSearchRouter')
 var httpParams = require('../middleware/http-params') // checks for stuff starting with http_ in the query and sets it as a header
 var authMiddleware = require('../middleware/auth')
-var querystring = require('querystring')
-var RQLQueryParser = require('../middleware/RQLQueryParser')
 var APIMethodHandler = require('../middleware/APIMethodHandler')
 var Limiter = require('../middleware/Limiter')
 

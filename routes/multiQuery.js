@@ -2,7 +2,6 @@ var express = require('express')
 var router = express.Router({strict: true, mergeParams: true})
 var when = require('promised-io/promise').when
 var All = require('promised-io/promise').all
-var config = require('../config')
 var bodyParser = require('body-parser')
 var debug = require('debug')('p3api-server:route/multiQuery')
 var httpParams = require('../middleware/http-params')

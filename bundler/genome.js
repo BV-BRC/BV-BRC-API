@@ -5,7 +5,6 @@ var config = require('../config')
 var request = require('request')
 var distributeURL = config.get('distributeURL')
 var publicGenomeDir = config.get('publicGenomeDir')
-var Path = require('path')
 
 const maxBundleSize = 25000
 

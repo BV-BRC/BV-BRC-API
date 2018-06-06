@@ -26,8 +26,6 @@ const bodyParser = require('body-parser')
 
 const debug = require('debug')('p3api-server:genomePermissions')
 const conf = require('../config')
-const when = require('promised-io/promise').when
-const defer = require('promised-io/promise').defer
 
 const solrjs = require('solrjs')
 const SOLR_URL = conf.get('solr').url

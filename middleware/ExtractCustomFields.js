@@ -1,4 +1,3 @@
-var debug = require('debug')('p3api-server:FieldSelection')
 var url = require('url')
 
 module.exports = function (req, res, next) {

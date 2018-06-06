@@ -68,7 +68,6 @@ const userModifiableProperties = [
 ]
 
 function postDocs (docs, type) {
-  var defs = []
   var def = new defer()
   var url = conf.get('solr').url + '/' + type + '/update?wt=json&overwrite=true&softCommit=true'
 
@@ -90,15 +89,14 @@ function postDocs (docs, type) {
   return def.promise
 }
 
-function solrCommit (type, hard) {
-  var def = new defer()
-
-  Request(conf.get('solr').url + '/' + type + '/update?wt=json&' + (hard ? 'commit' : 'softCommit') + '=true', {}, function (err, response, body) {
-    if (err) { def.reject(err); return }
-    def.resolve(true)
-  })
-  return def.promise
-}
+// function solrCommit (type, hard) {
+//   var def = new defer()
+//   Request(conf.get('solr').url + '/' + type + '/update?wt=json&' + (hard ? 'commit' : 'softCommit') + '=true', {}, function (err, response, body) {
+//     if (err) { def.reject(err); return }
+//     def.resolve(true)
+//   })
+//   return def.promise
+// }
 
 module.exports = function (req, res, next) {
   if (!req._body || !req.body) {
