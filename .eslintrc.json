@@ -3,7 +3,6 @@
     "rules": {
         "camelcase": 0,
         "handle-callback-err": 0,
-        "no-undef": 0,
-        "no-return-assign": 0
+        "no-undef": 0
     }
 }
