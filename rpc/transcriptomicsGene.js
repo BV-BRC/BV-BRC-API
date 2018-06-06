@@ -325,10 +325,10 @@ function processTranscriptomicsGene (tgState, options) {
         }
 
         if (!expressionHash.hasOwnProperty(featureId)) {
-          var expr = {samples: {}};
-          (expression.hasOwnProperty('feature_id')) ? expr.feature_id = expression.feature_id : '';
-          (expression.hasOwnProperty('na_feature_id')) ? expr.p2_feature_id = expression.na_feature_id : '';
-          (expression.hasOwnProperty('refseq_locus_tag')) ? expr.refseq_locus_tag = expression.refseq_locus_tag : ''
+          var expr = {samples: {}}
+          if (expression.hasOwnProperty('feature_id')) { expr.feature_id = expression.feature_id }
+          if (expression.hasOwnProperty('na_feature_id')) { expr.p2_feature_id = expression.na_feature_id }
+          if (expression.hasOwnProperty('refseq_locus_tag')) { expr.refseq_locus_tag = expression.refseq_locus_tag }
           const log_ratio = expression.log_ratio
           const z_score = expression.z_score
           expr.samples[expression.pid.toString()] = {
@@ -347,9 +347,9 @@ function processTranscriptomicsGene (tgState, options) {
             expr.samples[expression.pid.toString()] = {
               log_ratio: log_ratio || '',
               z_score: z_score || ''
-            };
-            (log_ratio != null && Number(log_ratio) > 0) ? expr.up++ : '';
-            (log_ratio != null && Number(log_ratio) < 0) ? expr.down++ : ''
+            }
+            if (log_ratio != null && Number(log_ratio) > 0) { expr.up++ }
+            if (log_ratio != null && Number(log_ratio) < 0) { expr.down++ }
 
             expressionHash[featureId] = expr
           }
