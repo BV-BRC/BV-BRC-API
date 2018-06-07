@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "test": "intern-client config=tests/intern",
+    "test-rpc": "mocha -R spec \"tests/test-rpc/test.spec.js\"",
     "test-permissions": "mocha -R spec  \"tests/test-permissions/**/*.spec.js\""
   },
   "dependencies": {
