@@ -37,9 +37,14 @@ function runCluster (data, config, opts) {
       })
 
     setTimeout(function () {
-      debug('Cluster timed out!')
-      def.reject('Timed out. Cluster took more than 20 mins. Please reduce the data set and try again.')
-      child.kill('SIGHUP')
+      if (child.exitCode === 0) {
+        debug(`child process ${child.pid} is finished normally`)
+      } else {
+        debug('Cluster timed out!')
+        errorClosed = true
+        def.reject('Timed out. Cluster took more than 20 mins. Please reduce the data set and try again.')
+        child.kill('SIGHUP')
+      }
     }, 1000 * 60 * 20)
 
     child.stderr.on('data', function (errData) {
