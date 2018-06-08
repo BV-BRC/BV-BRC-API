@@ -31,18 +31,19 @@ function fetchFamilyDescriptionBatch (familyIdList) {
     } else {
       request.post({
         url: distributeURL + 'protein_family_ref/',
-        json: true,
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/solrquery+x-www-form-urlencoded',
           'Authorization': ''
         },
-        body: 'q=family_id:(' + missingIds.join(' OR ') + ')&fl=family_id,family_product&rows=' + missingIds.length
+        body: `q=family_id:(${missingIds.join(' OR ')})&fl=family_id,family_product&rows=${missingIds.length}`
       }, function (error, resp, body) {
         if (error) {
           def.reject(error)
+          return
         }
 
+        body = JSON.parse(body)
         body.forEach(family => {
           redisClient.set(family.family_id, family.family_product, 'EX', RedisTTL)
           familyRefHash[family.family_id] = family.family_product

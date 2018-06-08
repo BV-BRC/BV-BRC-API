@@ -170,7 +170,6 @@ function readPublicExperiments (tgState, options) {
 
   request.post({
     url: distributeURL + 'transcriptomics_gene/',
-    json: true,
     headers: {
       'Accept': 'application/solr+json',
       'Content-Type': 'application/rqlquery+x-www-form-urlencoded',
@@ -180,7 +179,10 @@ function readPublicExperiments (tgState, options) {
   }, function (error, res, response) {
     if (error || res.statusCode !== 200) {
       debug(error, res.statusCode)
+      def.reject(error)
+      return
     }
+    response = JSON.parse(response)
 
     const numFound = response.response.numFound
 
@@ -195,7 +197,6 @@ function readPublicExperiments (tgState, options) {
 
       request.post({
         url: distributeURL + 'transcriptomics_gene/',
-        json: true,
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/rqlquery+x-www-form-urlencoded',
@@ -204,7 +205,11 @@ function readPublicExperiments (tgState, options) {
         },
         body: tgState.query + '&select(pid,refseq_locus_tag,feature_id,log_ratio,z_score)'
       }, function (err, res, body) {
-        deferred.resolve(body)
+        if (err) {
+          deferred.reject(err)
+          return
+        }
+        deferred.resolve(JSON.parse(body))
       })
       allRequests.push(deferred)
     }
@@ -297,7 +302,6 @@ function processTranscriptomicsGene (tgState, options) {
 
       request.post({
         url: distributeURL + 'genome_feature/',
-        json: true,
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/solrquery+x-www-form-urlencoded',
@@ -306,7 +310,11 @@ function processTranscriptomicsGene (tgState, options) {
         },
         body: q
       }, function (err, res, body) {
-        subDef.resolve(body)
+        if (err) {
+          subDef.reject(err)
+          return
+        }
+        subDef.resolve(JSON.parse(body))
       })
       allRequests.push(subDef)
     }
