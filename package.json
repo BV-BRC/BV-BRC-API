@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
+    "test-api": "mocha -R spec \"tests/test-api/test.spec.js\"",
     "test-rpc": "mocha -R spec \"tests/test-rpc/test.spec.js\"",
     "test-permissions": "mocha -R spec  \"tests/test-permissions/**/*.spec.js\""
   },
