@@ -14,7 +14,6 @@ const requestOptions = {
 }
 
 describe('Test Data Type', () => {
-
   describe('RQL query on genome', () => {
     const rqlRequestOptions = Object.assign(requestOptions, {
       headers: {
@@ -113,5 +112,4 @@ describe('Test Data Type', () => {
         })
     })
   })
-
 })
