@@ -12,11 +12,8 @@ module.exports = function (req, res, next) {
       debug('Resolved Query: ', q)
       if (q === '()') { q = '' }
       var rq = rql(q)
-      var max = 25000;
-      if (req.isDownload){
-        max=999999999;
-      }
-   
+      const max = (req.isDownload) ? 999999999 : 25000
+
       req.call_params[0] = rq.toSolr({maxRequestLimit: max, defaultLimit: 25})
       // debug("Converted Solr Query: ", req.call_params[0]);
       req.queryType = 'solr'
