@@ -10,6 +10,7 @@ var defaults = {
     'genome',
     'genome_test',
     'genome_amr',
+    'feature_sequence',
     'genome_feature',
     'genome_sequence',
     'host_resp',
