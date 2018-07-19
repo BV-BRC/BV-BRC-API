@@ -58,11 +58,11 @@ if (require.main === module) {
 
   if (!opts.genomeIds && !opts.bulk) {
     console.error(`Must provide genome IDs or use --bulk option.  --help for more`)
-    exit()
+    opts.help()
   }
 
   let genomeIDs = opts.genomeIds ? opts.genomeIds.split(',') : DEFAULT_IDS
-  outDir = opts.output || outDir
+  outDir = opts.output || OUT_DIR
 
   let existingDirs
   if (opts.skipExisting) {
@@ -96,7 +96,7 @@ if (require.main === module) {
   }
 
   // if genome_ids is provided as an option
-  fetchGenomes({genomeIDs, outputDir: OUT_DIR})
+  fetchGenomes({genomeIDs, outputDir: outDir})
 }
 
 /**
