@@ -41,14 +41,10 @@ function generateTrackList (req, res, next) {
           'label': 'patric_id,gene', // "function( feature ) { return feature.get('patric_id') }" //both the function and the attribute list work. but label doesn't show using HTMLFeatures only CanvasFeatures
           'color': '#17487d'
         },
-        'hooks': {
-          // "modify": "function(track, feature, div) { div.style.padding='4px'; div.style.backgroundColor = ['#17487d','#5190d5','#c7daf1'][feature.get('phase')];}"
-        },
         'onClick': {
           'title': '{patric_id} {gene}',
           'label': "<div style='line-height:1.7em'><b>{patric_id}</b> | {refseq_locus_tag} | {alt_locus_Tag} | {gene}<br>{product}<br>{type}: {start} .. {end} ({strand})<br> <i>Click for detailed information</i></div>",
           'action': 'function(clickEvent){return window.featureDialogContent(this.feature);}'
-
         },
         'metadata': {
           'Description': 'PATRIC annotated genes'
@@ -73,9 +69,6 @@ function generateTrackList (req, res, next) {
           'className': 'feature3',
           'label': 'refseq_locus_tag,gene,gene_id,protein_id,feature_type', // "function( feature ) { return feature.get('refseq_locus_tag') }", //label attribute doesn't seem to work on HTMLFeatures
           'color': '#4c5e22'
-        },
-        'hooks': {
-          // "modify": "function(track, feature, div) { div.style.backgroundColor = ['#4c5e22','#9ab957','#c4d59b'][feature.get('phase')];}" //these don't seem to work on CanvasFeatures
         },
         'onClick': {
           'title': '{refseq_locus_tag} {gene}',
@@ -298,7 +291,6 @@ router.get('/genome/:id/features/:seq_accession', [
         d.name = d.accession
         d.uniqueID = d.feature_id
         d.strand = (d.strand === '+') ? 1 : -1
-        d.phase = (d.feature_type === 'CDS') ? 0 : ((d.feature_type === 'RNA') ? 1 : 2)
         d.start = d.start - 1
         // temporary hack for aa and na sequence for tracks
         d.aa_sequence = ' '
