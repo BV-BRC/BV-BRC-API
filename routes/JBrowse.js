@@ -38,9 +38,11 @@ function generateTrackList (req, res, next) {
         'style': {
           'showLabels': true,
           'showTooltips': true,
-          'label': 'patric_id,gene', // "function( feature ) { return feature.get('patric_id') }" //both the function and the attribute list work. but label doesn't show using HTMLFeatures only CanvasFeatures
+          'label': 'patric_id,gene',
           'color': '#17487d'
         },
+        'glyph': 'function(feature) { return "JBrowse/View/FeatureGlyph/" + ( {"gene": "Gene", "mRNA": "ProcessedTranscript", "transcript": "ProcessedTranscript", "segmented": "Segments" }[feature.get("type")] || "Box" ) }',
+        'subfeatures': true,
         'onClick': {
           'title': '{patric_id} {gene}',
           'label': "<div style='line-height:1.7em'><b>{patric_id}</b> | {refseq_locus_tag} | {alt_locus_Tag} | {gene}<br>{product}<br>{type}: {start} .. {end} ({strand})<br> <i>Click for detailed information</i></div>",
@@ -67,9 +69,11 @@ function generateTrackList (req, res, next) {
           'showLabels': true,
           'showTooltips': true,
           'className': 'feature3',
-          'label': 'refseq_locus_tag,gene,gene_id,protein_id,feature_type', // "function( feature ) { return feature.get('refseq_locus_tag') }", //label attribute doesn't seem to work on HTMLFeatures
+          'label': 'refseq_locus_tag,gene,gene_id,protein_id,feature_type',
           'color': '#4c5e22'
         },
+        'glyph': 'function(feature) { return "JBrowse/View/FeatureGlyph/" + ( {"gene": "Gene", "mRNA": "ProcessedTranscript", "transcript": "ProcessedTranscript", "segmented": "Segments" }[feature.get("type")] || "Box" ) }',
+        'subfeatures': true,
         'onClick': {
           'title': '{refseq_locus_tag} {gene}',
           'label': "<div style='line-height:1.7em'><b>{refseq_locus_tag}</b> | {gene}<br>{product}<br>{type}: {start} .. {end} ({strand})<br> <i>Click for detailed information</i></div>",
@@ -242,7 +246,7 @@ router.get('/genome/:id/features/:seq_accession', [
       req.call_params[0] += '&limit(10000)'
     } else {
       req.call_params = ['and(eq(genome_id,' + req.params.id + '),eq(accession,' + req.params.seq_accession + '),eq(annotation,' + annotation + '),or(' + st + ',' + en + ',' + over + '),ne(feature_type,source))']
-      req.call_params[0] += '&select(patric_id,refseq_locus_tag,gene,product,annotation,feature_type,protein_id,gene_id,genome_name,accession,strand,na_length,aa_length,genome_id,start,end,feature_id,classifier_score,classifier_round)'
+      req.call_params[0] += '&select(patric_id,refseq_locus_tag,gene,product,annotation,feature_type,protein_id,gene_id,genome_name,accession,strand,na_length,aa_length,genome_id,start,end,feature_id,segments,classifier_score,classifier_round)'
       req.call_params[0] += '&limit(10000)&sort(+start)'
     }
     req.queryType = 'rql'
@@ -292,6 +296,29 @@ router.get('/genome/:id/features/:seq_accession', [
         d.uniqueID = d.feature_id
         d.strand = (d.strand === '+') ? 1 : -1
         d.start = d.start - 1
+        // format subfeatures for segmented feature
+        if (d.segments.length > 1) {
+          d.subfeatures = d.segments.map((segment, idx) => {
+            const [start, end] = segment.split('..').map(val => parseInt(val))
+            return {
+              uniqueID: `${d.feature_id}_seg${idx}`,
+              start: start - 1,
+              end: end,
+              strand: d.strand,
+              protein_id: `${d.protein_id}_seg${idx}`,
+              feature_type: 'CDS',
+              type: 'CDS'
+            }
+          })
+          // temporary switch
+          // const pos = d.segments.map(seg => seg.split('..').map(pos => parseInt(pos))).reduce((r, el) => r.concat(el), [])
+          // d.end = Math.max(...pos)
+          // d.start = Math.min(...pos) - 1
+
+          d.type = 'segmented'
+        } else {
+          delete d.segments
+        }
         // temporary hack for aa and na sequence for tracks
         d.aa_sequence = ' '
         d.na_sequence = ' '
