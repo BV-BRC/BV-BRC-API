@@ -35,7 +35,7 @@ var querySOLR = function (req, res, next) {
   var solr = new Solrjs(SOLR_URL + '/' + req.call_collection)
   debug('querySOLR() query: ', query)
   when(solr.query(query), function (results) {
-    // debug("APIMethodHandler solr.query results: ", results)
+    // debug('APIMethodHandler solr.query response code: ', results.responseHeader.status)
     if (!results) {
       res.results = []
     } else if (results.response) {
@@ -45,7 +45,13 @@ var querySOLR = function (req, res, next) {
     } else {
       res.results = []
     }
-    next()
+    if (results.error) {
+      console.error('Error in Solr', JSON.stringify(results, null, '\t'))
+
+      res.status(400).send('A Database Erorr Occured')
+    } else {
+      next()
+    }
   }, function (err) {
     debug('Error Querying SOLR: ', err)
     next(err)
@@ -108,7 +114,7 @@ module.exports = function (req, res, next) {
     next()
     return
   }
-  debug('API Method MIDDLEWARE')
+  // debug('API Method MIDDLEWARE')
 
   res.queryStart = new Date()
   // debug("query START: ",res.queryStart);
