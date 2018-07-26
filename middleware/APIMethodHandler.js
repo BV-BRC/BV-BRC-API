@@ -46,7 +46,7 @@ var querySOLR = function (req, res, next) {
       res.results = []
     }
     if (results.error) {
-      console.error('Error in Solr', JSON.stringify(results, null, '\t'))
+      console.error(`[${(new Date()).toISOString()}] ${req.url}`, req.headers, results)
 
       res.status(400).send('A Database Erorr Occured')
     } else {
