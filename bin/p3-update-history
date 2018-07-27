@@ -28,12 +28,12 @@ if (require.main === module) {
   })
 }
 
-function updateHistory(key) {
+function updateHistory (key) {
   const def = new Defer()
   const fileDataPath = Path.join(queueDir, 'file_data', key)
   const historyPath = Path.join(queueDir, 'history', key)
 
-  console.log(`Updating History ${historyPath}`);
+  console.log(`Updating History ${historyPath}`)
 
   fs.readJson(historyPath, (err, data) => {
     if (err) {
@@ -47,13 +47,13 @@ function updateHistory(key) {
 
     fs.writeJson(historyPath, data, (err) => {
       if (err) {
-        console.log(`Error writing to history: ${id}`);
+        console.log(`Error writing to history: ${id}`)
         def.reject(err)
         return def.promise
       }
 
-      console.log(`Removing files from : ${fileDataPath}`);
-      fs.removeSync(fileDataPath);
+      console.log(`Removing files from : ${fileDataPath}`)
+      fs.removeSync(fileDataPath)
 
       def.resolve(true)
     })

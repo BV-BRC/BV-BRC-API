@@ -2,13 +2,12 @@
 
 const config = require('../config')
 const opts = require('commander')
-const request = require('request')
+const Request = require('request')
 const Defer = require('promised-io/promise').defer
 const when = require('promised-io/promise').when
 
 const fs = require('fs-extra')
 
-const solrUrl = config.get('solr').url
 const queueDir = config.get('queueDirectory')
 
 if (require.main === module) {
@@ -21,7 +20,7 @@ if (require.main === module) {
     opts.help()
   }
 
-  if (!opts.cores || opts.cores.length == 0) {
+  if (!opts.cores || opts.cores.length === 0) {
     console.error('Must supply cores')
     opts.help()
   }
@@ -30,9 +29,8 @@ if (require.main === module) {
   reIndexGenome(opts.key, cores)
 }
 
-function reIndexGenome(key, cores) {
+function reIndexGenome (key, cores) {
   console.log(`${key}, ${cores}, ${typeof $cores}`)
-  return
 
   fs.readJson(`${queueDir}/history/${key}`, { encoding: 'utf8' }, (err, data) => {
     if (err) {
@@ -52,7 +50,7 @@ function reIndexGenome(key, cores) {
   })
 }
 
-function postDocs(filePath, type) {
+function postDocs (filePath, type) {
   const def = new Defer()
   const url =
     `${config.get('solr').url}/${type}/update?wt=json&overwrite=true&commit=false`

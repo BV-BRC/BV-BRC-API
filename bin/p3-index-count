@@ -16,6 +16,4 @@ const queue = new Queue(queueDir, (err) => {
     console.log(`Queue Length: ${length}`)
     process.exit(0)
   })
-
-  return
 })

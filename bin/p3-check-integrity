@@ -19,7 +19,6 @@ const keyCores = ['genome', 'genome_amr', 'genome_feature', 'genome_sequence',
   'pathway', 'sp_gene']
 
 if (require.main === module) {
-
   opts.option('-k, --key [value]', 'Index Key')
     .parse(process.argv)
 
@@ -31,17 +30,14 @@ if (require.main === module) {
   runAnalysis(opts.key)
 }
 
-function runAnalysis(key) {
-
+function runAnalysis (key) {
   when(getCountsFromHistory(key), (history) => {
-
     const countMap = history.countMap
     const genomeId = history.genomeId
 
     console.log(`querying solr: ${genomeId}`)
 
     when(getCountsFromSolr(genomeId), (solrCounts) => {
-
       const allCores = keyCores.map(core => {
         const isEqual = (countMap[core] - solrCounts[core]) === 0
         console.log(`  ${core}: ${solrCounts[core]}/${countMap[core]} - ${isEqual ? 'Pass' : 'Fail'}`)
@@ -57,21 +53,17 @@ function runAnalysis(key) {
         console.error(`${key} is not indexed completely`)
       }
       process.exit(0)
-
     })
   }, (err) => {
     console.error(`${key}: rejected reading history`)
   })
 }
 
-
-function getCountsFromSolr(genomeId) {
-
+function getCountsFromSolr (genomeId) {
   const def = Defer()
   const reqs = keyCores.map(core => getCountsPerCore(core, genomeId))
 
   All(reqs).then(body => {
-
     const countMap = {}
     body.forEach((count, i) => {
       // console.log(`${keyCores[i]}: ${count}`)
@@ -84,7 +76,7 @@ function getCountsFromSolr(genomeId) {
   return def.promise
 }
 
-function getCountsPerCore(core, genomeId) {
+function getCountsPerCore (core, genomeId) {
   const def = Defer()
   const query = `select?q=genome_id:${genomeId}&rows=0&wt=json`
 
@@ -103,31 +95,26 @@ function getCountsPerCore(core, genomeId) {
   return def.promise
 }
 
-function getCountsFromHistory(key) {
-
+function getCountsFromHistory (key) {
   const def = Defer()
 
-  let history, data;
+  let history, data
   try {
     history = fs.readFileSync(`${queueDir}/history/${key}`, 'utf8')
     data = JSON.parse(history)
-  }
-  catch (e) {
+  } catch (e) {
     // console.error(e, history)
     def.reject(e.message)
-    return def.promise;
+    return def.promise
   }
 
   console.log(`History ${key} files is okay. Reading json files to count...`)
 
   const historyDefs = Object.keys(data.files).map(key => {
-
     const path = useLocalFS(data.files[key].path)
     const size = data.files[key].size
 
-    return (size < 104857600) ?
-      getCountsFromFile(path) : getCountsFromFileStream(path)
-
+    return (size < 104857600) ? getCountsFromFile(path) : getCountsFromFileStream(path)
   })
 
   const genomeId = getGenomeIdFromFile(useLocalFS(data.files.genome.path))
@@ -145,7 +132,7 @@ function getCountsFromHistory(key) {
   return def.promise
 }
 
-function getCountsFromFile(file) {
+function getCountsFromFile (file) {
   const def = new Defer()
 
   fs.readJson(file, 'utf8', (err, obj) => {
@@ -160,7 +147,7 @@ function getCountsFromFile(file) {
   return def.promise
 }
 
-function getCountsFromFileStream(file) {
+function getCountsFromFileStream (file) {
   const def = new Defer()
 
   try {
@@ -182,12 +169,12 @@ function getCountsFromFileStream(file) {
   return def.promise
 }
 
-function getGenomeIdFromFile(file) {
+function getGenomeIdFromFile (file) {
   const genome = fs.readJsonSync(file, 'utf8')
 
   return genome[0]['genome_id']
 }
 
-function useLocalFS(filePath) {
+function useLocalFS (filePath) {
   return filePath.replace('/disks/p3/var/indexing_queue', queueDir)
 }

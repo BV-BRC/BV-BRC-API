@@ -12,98 +12,75 @@ const es = require('event-stream')
 
 const queueDirectory = config.get('queueDirectory')
 
-console.log(`Queue Directory: ${queueDirectory}`);
+// console.log(`Queue Directory: ${queueDirectory}`)
 
-const queue = new Queue(queueDirectory, function(err) {
-    if (err) {
-      console.log(`error: ${err}`)
-      return
-    }
-    processQueue(queue);
-  })
+const queue = new Queue(queueDirectory, function (err) {
+  if (err) {
+    console.log(`error: ${err}`)
+    return
+  }
+  processQueue(queue)
+})
 
 let completedHardCommit = false
 
 const publicCores = ['taxonomy']
-const IndexingCores = ['genome_feature', 'genome', 'sp_gene', 'pathway',
-    'genome_sequence', 'taxonomy', 'genome_amr',]
+// const IndexingCores = ['genome_feature', 'genome', 'sp_gene', 'pathway', 'genome_sequence', 'taxonomy', 'genome_amr']
 
 process.on('message', (msg) => {
-  if (msg && msg.type == 'start') {
+  if (msg && msg.type === 'start') {
     if (timer) {
-      cancelTimeout(timer);
-      delete timer;
+      cancelTimeout(timer)
+      // delete timer;
+      timer = null
     }
 
-    processQueue(queue);
+    processQueue(queue)
   }
 })
 
 let timer
 
-function postDocs(filePath, type) {
+function postDocs (filePath, type) {
   const def = new Defer()
   const url =
   `${config.get('solr').url}/${type}/update?wt=json&overwrite=true&commit=false`
 
   fs.createReadStream(filePath).pipe(
-      Request.post(url, (err, res, body) => {
-          if (err || body.error) {
-            console.log(`Error POSTing to ${type} - ${err || body.error.msg}`)
-            def.reject(err)
-            return def.promise
-          }
+    Request.post(url, (err, res, body) => {
+      if (err || body.error) {
+        console.log(`Error POSTing to ${type} - ${err || body.error.msg}`)
+        def.reject(err)
+        return def.promise
+      }
 
-          // console.log(`  Posted ${filePath} to ${type}`)
-          def.resolve(true)
-        })
+      // console.log(`  Posted ${filePath} to ${type}`)
+      def.resolve(true)
+    })
   )
 
   return def.promise
 }
 
-function solrCommit(type) {
-  const def = new Defer()
-  const url = `${config.get('solr').url}/${type}/update?wt=json&softCommit=true`
-
-  Request(url, {json: true}, (err, response, body) => {
-      if (err) {
-        def.reject(err)
-        return def.promise
-      }
-      console.log(`Soft Committed ${type} (QTime: ${body.responseHeader.QTime})`)
-      def.resolve(true)
-    })
-
-  return def.promise
-}
-
-function processQueue(queue) {
-
+function processQueue (queue) {
   queue.length((err, length) => {
     if (length < 1) {
       if (!completedHardCommit) {
-
         console.log('Queue is Empty')
-        // const defs = IndexingCores.map(core => solrCommit(core))
-        // All(defs).then(() => {
-          completedHardCommit = true
-          setTimeout(() => {
-              processQueue(queue)
-            }, 5000)
-        // })
-
+        completedHardCommit = true
+        setTimeout(() => {
+          processQueue(queue)
+        }, 5000)
       } else {
         setTimeout(() => {
           processQueue(queue)
         }, 15000)
       }
     } else {
-      completedHardCommit = false;
+      completedHardCommit = false
       console.log(`Start processing queued items: ${length}`)
 
       queue.tpop((err, message, commit, rollback) => {
-
         if (err) {
           console.log(`Error popping message item. ${err}`)
           return
@@ -127,81 +104,75 @@ function processQueue(queue) {
           const genomeId = fs.readJsonSync(message.files.genome.path)[0]['genome_id']
 
           Object.keys(message.files).forEach(core => {
+            let files = message.files[core]
+            if (!(files instanceof Array)) {
+              files = [files]
+            }
+            files.forEach(file => {
+              if (!file.path) { return }
 
-              let files = message.files[core]
-              if (!(files instanceof Array)) {
-                files = [files];
+              const filePathDir = Path.dirname(file.path)
+              if (!containerPaths.includes(filePathDir)) {
+                containerPaths.push(filePathDir)
               }
-              files.forEach(file => {
-                if (!file.path) { return; }
 
-                const filePathDir = Path.dirname(file.path)
-                if (!containerPaths.includes(filePathDir)) {
-                  containerPaths.push(filePathDir)
-                }
+              const def = new Defer()
 
-                const def = new Defer()
-
-                when(updateJSONStreamWithAccessControl(file.name, file.path, core, message.user), (res) => {
-
-                  if (res.status === 'skip') {
+              when(updateJSONStreamWithAccessControl(file.name, file.path, core, message.user), (res) => {
+                if (res.status === 'skip') {
+                  def.resolve(true)
+                } else if (res.status === 'saved') {
+                  when(postDocs(file.path, core), () => {
                     def.resolve(true)
-                  } else if (res.status === 'saved') {
-                    when(postDocs(file.path, core), () => {
-                        def.resolve(true)
-                    }, (err) => {
-                      console.error(`${(new Date()).toISOString()}: Error POSTing documents to SOLR core : ${core}, ${err}`)
-                      def.reject(err)
-                    })
-                  } else {
-                    // Err
-                    def.reject(res)
-                  }
-                }, (err) => {
-                  def.reject(err)
-                })
+                  }, (err) => {
+                    console.error(`${(new Date()).toISOString()}: Error POSTing documents to SOLR core : ${core}, ${err}`)
+                    def.reject(err)
+                  })
+                } else {
+                  // Err
+                  def.reject(res)
+                }
+              }, (err) => {
+                def.reject(err)
+              })
 
-                fileDefs.push(def)
-              });
-            });
+              fileDefs.push(def)
+            })
+          })
 
           when(All(fileDefs), () => {
-
             const afterProcess = (new Date()).getTime()
-            console.log(`  ${(afterProcess-beforeProcess)}ms elapsed for genome (${genomeId})`)
+            console.log(`  ${(afterProcess - beforeProcess)}ms elapsed for genome (${genomeId})`)
 
             containerPaths.forEach(p => {
-              console.log(`Removing files from : ${p}`);
-              fs.removeSync(p);
-            });
+              console.log(`Removing files from : ${p}`)
+              fs.removeSync(p)
+            })
 
             when(updateHistory(message.id, 'submitted', genomeId), () => {
               commit()
               processQueue(queue)
-            });
-
+            })
           }, (err) => {
             console.error(`${(new Date()).toISOString()}: Error in fullfilling fileDefs: ${err} while processing ${message.id}`)
 
             when(updateHistory(message.id, 'error', err), () => {
-                commit()
-                processQueue(queue) // Resume
-              })
-          })
-
-        } catch (err) {
-          when(updateHistory(message.id, 'error', err), () => {
               commit()
               processQueue(queue) // Resume
             })
+          })
+        } catch (err) {
+          when(updateHistory(message.id, 'error', err), () => {
+            commit()
+            processQueue(queue) // Resume
+          })
         }
       })
     }
   })
 }
 
-function updateJSONStreamWithAccessControl(fileName, filePath, core, owner) {
-
+function updateJSONStreamWithAccessControl (fileName, filePath, core, owner) {
   const def = new Defer()
 
   try {
@@ -209,55 +180,55 @@ function updateJSONStreamWithAccessControl(fileName, filePath, core, owner) {
     const st = (new Date()).getTime()
 
     fs.createReadStream(filePath, {encoding: 'utf8'})
-    .pipe(JSONStream.parse('*'))
-    .pipe(es.mapSync(function(data) {
+      .pipe(JSONStream.parse('*'))
+      .pipe(es.mapSync(function (data) {
         fileData.push(data)
       }))
-    .on('close', () => {
-      const now = (new Date()).getTime()
-      console.log(`  Reading ${fileName}(${filePath}) took ${(now - st)}ms, ${fileData.length} rows`)
+      .on('close', () => {
+        const now = (new Date()).getTime()
+        console.log(`  Reading ${fileName}(${filePath}) took ${(now - st)}ms, ${fileData.length} rows`)
 
-      if (fileData.length == 0) {
-        // console.log(`  Skipping Empty ${fileName}(${filePath})`);
-        def.resolve({status: 'skip'})
-        return def.promise
-      }
+        if (fileData.length === 0) {
+          // console.log(`  Skipping Empty ${fileName}(${filePath})`);
+          def.resolve({status: 'skip'})
+          return def.promise
+        }
 
-      let processingErrors = false;
+        let processingErrors = false
 
-      if (!publicCores.includes(core)) {
-        fileData = fileData.map(item => {
-          if (!item.public) { item.public = false; }
-          if (!item.owner) {
-            item.owner = owner
-          } else if (item.owner != owner) {
-            if (!item.user_write || (item.user_write && !item.user_write.includes(owner))) {
-              processingErrors = `Item Owner ${item.owner} != Index User ${owner}`
+        if (!publicCores.includes(core)) {
+          fileData = fileData.map(item => {
+            if (!item.public) { item.public = false }
+            if (!item.owner) {
+              item.owner = owner
+            } else if (item.owner !== owner) {
+              if (!item.user_write || (item.user_write && !item.user_write.includes(owner))) {
+                processingErrors = `Item Owner ${item.owner} != Index User ${owner}`
+              }
             }
-          }
 
-          if (!item.user_read) { item.user_read = []; }
-          if (!item.user_write) { item.user_write = []; }
+            if (!item.user_read) { item.user_read = [] }
+            if (!item.user_write) { item.user_write = [] }
 
-          if (item._version_) {
-            delete item._version_
-          }
-          return item
-        })
-      }
-
-      if (!processingErrors) {
-        // Update json file
-        const outfile = fs.createWriteStream(filePath)
-        es.readArray(fileData).pipe(JSONStream.stringify()).pipe(outfile)
-        .on('close', () => {
-            def.resolve({status: 'saved'})
+            if (item._version_) {
+              delete item._version_
+            }
+            return item
           })
-      } else {
-        // Console.log(`Processing Errors in ${core} ${processingErrors}`);
-        def.reject(processingErrors);
-      }
-    })
+        }
+
+        if (!processingErrors) {
+          // Update json file
+          const outfile = fs.createWriteStream(filePath)
+          es.readArray(fileData).pipe(JSONStream.stringify()).pipe(outfile)
+            .on('close', () => {
+              def.resolve({status: 'saved'})
+            })
+        } else {
+          // Console.log(`Processing Errors in ${core} ${processingErrors}`);
+          def.reject(processingErrors)
+        }
+      })
   } catch (err) {
     console.log(`Error updateJSONStreamWithAccessControl ${filePath}`)
     def.reject(err)
@@ -266,11 +237,11 @@ function updateJSONStreamWithAccessControl(fileName, filePath, core, owner) {
   return def.promise
 }
 
-function updateHistory(id, state, msg) {
+function updateHistory (id, state, msg) {
   const def = new Defer()
   const historyPath = Path.join(queueDirectory, 'history', id)
 
-  console.log(`Updating History ${historyPath}`);
+  console.log(`Updating History ${historyPath}`)
 
   fs.readJson(historyPath, (err, data) => {
     if (err) {
@@ -295,7 +266,7 @@ function updateHistory(id, state, msg) {
 
     fs.writeJson(historyPath, data, (err) => {
       if (err) {
-        console.log(`Error writing to history: ${id}`);
+        console.log(`Error writing to history: ${id}`)
         def.reject(err)
         return def.promise
       }
