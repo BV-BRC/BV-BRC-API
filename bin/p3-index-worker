@@ -11,6 +11,7 @@ const JSONStream = require('JSONStream')
 const es = require('event-stream')
 
 const queueDirectory = config.get('queueDirectory')
+// require('request').debug = true
 
 // console.log(`Queue Directory: ${queueDirectory}`)
 
@@ -25,7 +26,7 @@ const queue = new Queue(queueDirectory, function (err) {
 let completedHardCommit = false
 
 const publicCores = ['taxonomy']
-// const IndexingCores = ['genome_feature', 'genome', 'sp_gene', 'pathway', 'genome_sequence', 'taxonomy', 'genome_amr']
+const IndexingCores = ['genome_feature', 'genome', 'sp_gene', 'pathway', 'genome_sequence', 'genome_amr', 'subsystem']
 
 process.on('message', (msg) => {
   if (msg && msg.type === 'start') {
@@ -41,20 +42,50 @@ process.on('message', (msg) => {
 
 let timer
 
+function deleteDocs (core, genomeId) {
+  const url = `${config.get('solr').url}/${core}/update?stream.body=<delete><query>genome_id:${genomeId}</query></delete>`
+
+  Request.get(url, (err, res, body) => {
+    if (err) {
+      console.log(err)
+      return
+    }
+    if (res.statusCode !== 200 || body.error) {
+      console.log(body.error.msg)
+      return
+    }
+    console.log(`Sent delete query successfully: ${url}`)
+  })
+}
+
 function postDocs (filePath, type) {
   const def = new Defer()
   const url =
   `${config.get('solr').url}/${type}/update?wt=json&overwrite=true&commit=false`
 
   fs.createReadStream(filePath).pipe(
-    Request.post(url, (err, res, body) => {
-      if (err || body.error) {
-        console.log(`Error POSTing to ${type} - ${err || body.error.msg}`)
+    Request.post(url, (err, res, bodyStr) => {
+      const body = JSON.parse(bodyStr)
+
+      if (err) {
+        // if solr is not available
+        if (err.code === 'ECONNREFUSED') {
+          console.log(`[${(new Date()).toISOString()}] Solr is not available: ${err.message}`)
+          // need to stop & notify
+          process.exit()
+        }
+        // other errors reported in http response
+        console.log(`Error POSTing to ${type} - ${err}`)
         def.reject(err)
         return def.promise
       }
 
-      // console.log(`  Posted ${filePath} to ${type}`)
+      // http response is okay, but internal solr errors
+      if (res.statusCode !== 200 || body.error) {
+        def.reject(new Error(`${res.statusCode} ${res.statusMessage || ''} - ${body.error.msg}`))
+        return def.promise
+      }
+
       def.resolve(true)
     })
   )
@@ -97,7 +128,6 @@ function processQueue (queue) {
         try {
           console.log(`\nStart indexing ${message.id} User: ${message.user}`)
 
-          const containerPaths = []
           const fileDefs = []
           const beforeProcess = (new Date()).getTime()
 
@@ -110,11 +140,6 @@ function processQueue (queue) {
             }
             files.forEach(file => {
               if (!file.path) { return }
-
-              const filePathDir = Path.dirname(file.path)
-              if (!containerPaths.includes(filePathDir)) {
-                containerPaths.push(filePathDir)
-              }
 
               const def = new Defer()
 
@@ -144,27 +169,33 @@ function processQueue (queue) {
             const afterProcess = (new Date()).getTime()
             console.log(`  ${(afterProcess - beforeProcess)}ms elapsed for genome (${genomeId})`)
 
-            containerPaths.forEach(p => {
-              console.log(`Removing files from : ${p}`)
-              fs.removeSync(p)
-            })
-
             when(updateHistory(message.id, 'submitted', genomeId), () => {
               commit()
               processQueue(queue)
+            }, (err) => {
+              console.error(`${(new Date()).toISOString()}: Error in updating history: ${err} while processing ${message.id}`)
             })
           }, (err) => {
-            console.error(`${(new Date()).toISOString()}: Error in fullfilling fileDefs: ${err} while processing ${message.id}`)
+            console.error(`${(new Date()).toISOString()}: Error in fullfilling fileDefs: ${err.message} while processing ${message.id}`)
 
-            when(updateHistory(message.id, 'error', err), () => {
+            // trigger rollback
+            IndexingCores.forEach(core => {
+              deleteDocs(core, genomeId)
+            })
+
+            when(updateHistory(message.id, 'error', err.message), () => {
               commit()
               processQueue(queue) // Resume
+            }, (err) => {
+              console.error(`${(new Date()).toISOString()}: Error in updating history: ${err} while processing ${message.id}`)
             })
           })
         } catch (err) {
-          when(updateHistory(message.id, 'error', err), () => {
+          when(updateHistory(message.id, 'error', err.message), () => {
             commit()
             processQueue(queue) // Resume
+          }, (err) => {
+            console.error(`${(new Date()).toISOString()}: Error in updating history: ${err} while processing ${message.id}`)
           })
         }
       })

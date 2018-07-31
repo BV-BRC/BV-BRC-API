@@ -52,11 +52,11 @@ router.use(authMiddleware)
 
 router.use(function (req, res, next) {
   debug('req.path', req.path)
-  debug('req content-type', req.get('content-type'))
-  debug('accept', req.get('accept'))
-  debug('req.url', req.url)
-  debug('req.path', req.path)
-  debug('req.params:', JSON.stringify(req.params))
+  // debug('req content-type', req.get('content-type'))
+  // debug('accept', req.get('accept'))
+  // debug('req.url', req.url)
+  // debug('req.path', req.path)
+  // debug('req.params:', JSON.stringify(req.params))
   next()
 })
 
@@ -77,6 +77,11 @@ router.get('/:id', function (req, res, next) {
               updateHistory(req.params.id, data).then((data) => {
                 respondWithData(res, data)
               })
+              // now delete files
+              const entry = Object.entries(data.files)[0]
+              const fileDirPath = Path.dirname(entry[1].path)
+              debug(`Removing files from ${fileDirPath}`)
+              fs.removeSync(fileDirPath)
             } else {
               // as is, state is submitted
               respondWithData(res, data)
@@ -112,6 +117,11 @@ function checkSolr (genome_id) {
         return def.promise
       }
       var data = JSON.parse(body)
+      if (res.statusCode !== 200 || data.error) {
+        def.reject(new Error(data.error.msg))
+        return def.promise
+      }
+      debug(`checking index status for ${genome_id}: [${core}] ${data.response.numFound} row(s) found`)
       def.resolve(data['response']['numFound'] > 0)
     })
     return def.promise
