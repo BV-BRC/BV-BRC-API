@@ -8,7 +8,8 @@ const redisOptions = config.get('redis')
 const redis = require('redis')
 const redisClient = redis.createClient(redisOptions)
 const RedisTTL = 60 * 60 * 24 // sec
-// const currentContext = 5
+// this is global setting for concurrent connections
+currentContext = 5
 const all = require('promised-io/promise').all
 
 function fetchFamilyDescriptionBatch (familyIdList) {
