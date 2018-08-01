@@ -47,8 +47,11 @@ logger.token('qtime', function (req, res) {
 
   return from + (res.formatStart.valueOf() - res.queryStart.valueOf())
 })
+logger.token('remote-ip', function (req, res) {
+  return req.headers['x-forwarded-for'] || req.connection.remoteAddress
+})
 
-app.use(logger('[:date[iso]] :req[x-forwarded-for] :method :url :status :response-time [:qtime] ms - :res[content-length]'))
+app.use(logger('[:date[iso]] :remote-ip :method :url :status :response-time [:qtime] ms - :res[content-length]'))
 
 app.use(function (req, res, next) {
   debug('APP MODE: ', app.get('env'))
