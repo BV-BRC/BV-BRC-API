@@ -78,8 +78,7 @@ router.get('/:id', function (req, res, next) {
                 respondWithData(res, data)
               })
               // now delete files
-              const entry = Object.entries(data.files)[0]
-              const fileDirPath = Path.dirname(entry[1].path)
+              const fileDirPath = Path.dirname(data.files['genome']['path'])
               debug(`Removing files from ${fileDirPath}`)
               fs.removeSync(fileDirPath)
             } else {
