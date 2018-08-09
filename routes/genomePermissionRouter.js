@@ -4,7 +4,7 @@
  * Creates endpoint for editing genome permissions (and all associated cores)
  *
  * Example POST:  /permissions/genome/xxxxx.xx,xxxxx.xx
- *   [{
+ *  [{
  *    user: "user1@patricbrc.org",
  *    permission: 'read'
  *  }, {
@@ -62,10 +62,13 @@ function updatePermissions (req, res, next) {
 
   // ensure parameters are correct, or respond with appropriate message
   const hasPassed = testParams(req, res)
-  if (!hasPassed) return
+  if (!hasPassed) return;
 
   // keep track of total number of docs updated
   let numDocsUpdated = 0
+
+  // used to ensure user is owner on every object
+  let notOwner = false;
 
   let proms = []
   genomeIDs.forEach(genomeID => {
@@ -97,17 +100,13 @@ function updatePermissions (req, res, next) {
             return
           }
 
-          numDocsUpdated += records.length
-
           // create a command for each record
           let commands = []
           records.forEach(record => {
-            if (!(record.owner === req.user)) {
-              console.error(
-                `User ${req.user} was forbidden from private data ${genomeID} ` +
+            if (record.owner !== req.user) {
+              notOwner = true
+              throw `User ${req.user} was forbidden from private data ${genomeID} in genomePermissionRouter ` +
                 `[core: ${core}; record: ${record[key]}]`
-              )
-              res.sendStatus(403)
             }
 
             commands.push(
@@ -115,11 +114,8 @@ function updatePermissions (req, res, next) {
             )
           })
 
+          numDocsUpdated += records.length
           return updateSOLR(commands, core)
-        }, err => {
-          console.error(`Error retrieving ${collection} with id: ${genomeID}`)
-          res.status(406).send('Error retrieving target')
-          res.end()
         })
 
       proms.push(prom)
@@ -131,20 +127,25 @@ function updatePermissions (req, res, next) {
       debug(`success.  Number of Docs Updated: ${numDocsUpdated}`)
       res.sendStatus(200)
     }).catch(err => {
-      debug('FAILED', err)
-      res.status(406).send('Error updating document' + err)
+      console.error(`Permission update failed with: ${err}`)
+
+      if (notOwner) {
+        res.sendStatus(403)
+      } else {
+        res.status(406).send(`Error updating document: ${err}`)
+      }
     })
 }
 
 function testParams (req, res) {
   if (!req.user) {
     res.status(401).send('User not logged in, permission denied.')
-    return
+    return false
   } else if (!req.params.target_id) {
     res.status(400).send(
       'Request must must contain genome id(s). I.e., /permissions/genome/9999.9999'
     )
-    return
+    return false
   }
 
   return true
@@ -210,7 +211,7 @@ function updateSOLR (commands, core) {
   }).then(r => {
     debug(`${core} update successful`)
   }).catch(e => {
-    console.error(e.error)
+    throw e
   })
 }
 
