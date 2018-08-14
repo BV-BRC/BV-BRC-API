@@ -19,8 +19,7 @@ if (require.main === module) {
 
   if (!opts.genome_ids) {
     console.error(`No genome_ids given!\n`)
-    exit()
-    // return;
+    process.exit(1)
   }
 
   updatePerms(opts.genomeIds.split(','), opts.token)
@@ -40,10 +39,6 @@ function updatePerms (genomeIDs, token, permissions) {
       'content-type': 'application/json',
       'authorization': token || ''
     }
-  }).then(res => {
-    return res
-  }).catch(error => {
-    return error
   })
 }
 

@@ -27,7 +27,7 @@ const TEST_GENOMES = ['66877.3']
 const NOT_OWNED_GENOMES = ['105579.5']
 
 // for large tests
-const TEST_SIZE = 20
+const TEST_SIZE = 10
 const TIMEOUT = 5 * (60 * 1000) // 5 mins
 
 // test over all cores
@@ -73,13 +73,12 @@ describe('Test Genome Permissions', () => {
       this.timeout(10000)
 
       updatePerms(genomeID, token, newPerms)
-        .then(function (res) {
+        .then(res => {
           assert.equal(200, res.statusCode)
           assert.equal('OK', res.body)
-
           done()
-        }).catch((err) => {
-          done(err)
+        }).catch(e => {
+          done(e)
         })
     })
 
@@ -110,7 +109,9 @@ describe('Test Genome Permissions', () => {
           assert.equal('OK', res.body)
 
           done()
-        }).catch((err) => { done(err) })
+        }).catch(e => {
+          done(e)
+         })
     })
 
     it('should have no permissions on genome core', function (done) {
@@ -126,6 +127,9 @@ describe('Test Genome Permissions', () => {
     })
   })
 
+
+
+
   describe('test bad inputs', function () {
     // allow 10 secs
     this.timeout(10000)
@@ -137,11 +141,12 @@ describe('Test Genome Permissions', () => {
       }]
 
       updatePerms(genomeID, '', newPerms)
-        .then(function (res) {
-          assert.equal(401, res.statusCode)
-
+        .then(res => {
+          done(true) // fail test otherwise
+        }).catch(e => {
+          assert.equal(401, e.statusCode)
           done()
-        }).catch((err) => { done(err) })
+        })
     })
 
     it('should give 401 if bogus token', function (done) {
@@ -154,11 +159,12 @@ describe('Test Genome Permissions', () => {
       let newToken = token.replace(new RegExp(realUser, 'g'), 'fakeuser')
 
       updatePerms(genomeID, newToken, newPerms)
-        .then(function (res) {
-          assert.equal(401, res.statusCode)
-
+        .then(res => {
+          done(true)
+        }).catch(e => {
+          assert.equal(401, e.statusCode)
           done()
-        }).catch((err) => { done(err) })
+        })
     })
 
     it('should give 403 if not owner', function (done) {
@@ -168,13 +174,16 @@ describe('Test Genome Permissions', () => {
       }]
 
       updatePerms(NOT_OWNED_GENOMES[0], token, newPerms)
-        .then(function (res) {
-          assert.equal(403, res.statusCode)
-
+        .then(res => {
+          done(true)
+        }).catch(e => {
+          assert.equal(403, e.statusCode)
           done()
-        }).catch((err) => { done(err) })
+        })
     })
 
+    // server ignores anything that is not "user" or "permission"
+    // and filters for only "read"/"write"/"unchanged" permissions
     it('should return 200 for invalid input', function (done) {
       let newPerms = [{
         user: 'asdfasdf',
@@ -182,12 +191,13 @@ describe('Test Genome Permissions', () => {
       }]
 
       updatePerms(genomeID, token, newPerms)
-        .then(function (res) {
+        .then(res => {
           assert.equal(200, res.statusCode)
           assert.equal('OK', res.body)
-
           done()
-        }).catch((err) => { done(err) })
+        }).catch(e => {
+          done(e)
+        })
     })
 
     it('should return 200 for invalid input', function (done) {
@@ -200,9 +210,10 @@ describe('Test Genome Permissions', () => {
         .then(function (res) {
           assert.equal(200, res.statusCode)
           assert.equal('OK', res.body)
-
           done()
-        }).catch((err) => { done(err) })
+        }).catch(e => {
+          done(e)
+        })
     })
 
     it('should still have no permissions on genome core', function (done) {
@@ -210,28 +221,30 @@ describe('Test Genome Permissions', () => {
         let serverPerms = res.body[0]
         assert.isObject(serverPerms, 'response is object')
         assert.deepEqual(serverPerms, {}, 'user_read and user_write do not exist')
-
         done()
       }).catch(e => {
         done(e)
       })
     })
-  })
 
-  it('should return 404 without genome id', function (done) {
-    let newPerms = [{
-      user: 'user1@patricbrc.org',
-      permission: 'write'
-    }]
+    it('should return 404 without genome id', function (done) {
+      let newPerms = [{
+        user: 'user1@patricbrc.org',
+        permission: 'write'
+      }]
 
-    updatePerms('', token, newPerms)
-      .then(function (res) {
-        assert.equal(404, res.statusCode)
+      updatePerms('', token, newPerms)
+        .then(res => {
+          done(true)
+        }).catch(e => {
+          assert.equal(404, e.statusCode)
+          done()
+        })
+    })
 
-        done()
-      }).catch((err) => { done(err) })
-  })
+  }) // end bad inputs
 }) // end Test Genome Permissions
+
 
 describe('Test Bulk Permissions', () => {
   // test params
@@ -254,7 +267,7 @@ describe('Test Bulk Permissions', () => {
       getGenomeIDs(TEST_SIZE).then(ids => {
         genomeIDs = ids
         done()
-      }).catch(e => done(e))
+      }).catch(e => { done(e) })
     })
 
     it(`can update permissions on ${TEST_SIZE} genomes`, function (done) {
@@ -266,7 +279,7 @@ describe('Test Bulk Permissions', () => {
           assert.equal('OK', res.body)
 
           done()
-        }).catch((err) => { done(err) })
+        }).catch(e => { done(e) })
     })
 
     it(`reports correct permissions`, function (done) {
@@ -275,15 +288,16 @@ describe('Test Bulk Permissions', () => {
       let proms = []
       genomeIDs.forEach(id => {
         CORES.forEach(core => {
+          // genome_amr and subsystem cores may be empty for some given genomes
+          if (['genome_amr', 'subsystem'].indexOf(core) !== -1) return;
+
           const serverUrl = DATA_API_URL +
           `/${core}?eq(genome_id,${id})&select(user_read,user_write)`
 
           let prom = rp.get(serverUrl, getOpts).then(res => {
             let serverPerms = res.body[0]
-
-            // verify permissions (ignore genome_amr)
-            if (core !== 'genome_amr') { verifyPermissions(newPerms, serverPerms) }
-          }).catch(e => done(e))
+            verifyPermissions(newPerms, serverPerms)
+          })
 
           proms.push(prom)
         })
@@ -314,7 +328,9 @@ describe('Test Bulk Permissions', () => {
       getGenomeIDs(TEST_SIZE).then(ids => {
         genomeIDs = ids
         done()
-      }).catch(e => done(e))
+      }).catch(e => {
+        done(e)
+      })
     })
 
     it(`can update permissions ${TEST_SIZE} genomes with ${permSize} permissions`, function (done) {
@@ -326,7 +342,9 @@ describe('Test Bulk Permissions', () => {
           assert.equal('OK', res.body)
 
           done()
-        }).catch((err) => { done(err) })
+        }).catch((e) => {
+          done(e)
+        })
     })
 
     it(`reports correct permissions`, function (done) {
@@ -335,14 +353,15 @@ describe('Test Bulk Permissions', () => {
       let proms = []
       genomeIDs.forEach(id => {
         CORES.forEach(core => {
+          // genome_amr and subsystem cores may be empty for some given genomes
+          if (['genome_amr', 'subsystem'].indexOf(core) !== -1) return;
+
           const serverUrl = DATA_API_URL +
           `/${core}?eq(genome_id,${id})&select(user_read, user_write)`
 
           let prom = rp.get(serverUrl, getOpts).then(res => {
             let serverPerms = res.body[0]
-
-            // verify permissions (ignore genome_amr)
-            if (core !== 'genome_amr') { verifyPermissions(bigPerms, serverPerms) }
+            verifyPermissions(bigPerms, serverPerms)
           })
 
           proms.push(prom)
@@ -354,7 +373,11 @@ describe('Test Bulk Permissions', () => {
       }).catch(e => done(e))
     })
   })
+
 }) // end Bulk Permissions
+
+
+
 
 /**
  * returns promise with list of private genome IDs based on number requested
@@ -368,7 +391,7 @@ function getGenomeIDs (numIDs) {
   })
 }
 
-function verifyPermissions (newPerms, serverPerms) {
+function verifyPermissions (newPerms, serverPerms, core, id) {
   newPerms.forEach(p => {
     if (p.permission === 'read') { assert.include(serverPerms.user_read, p.user, `${p.user} is in read_perms`) }
     if (p.permission === 'write') { assert.include(serverPerms.user_write, p.user, `${p.user} is in read_perms`) }
