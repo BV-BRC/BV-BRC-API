@@ -74,7 +74,7 @@ module.exports = {
       })
     } else {
       if (res.results && res.results.response && res.results.response.docs) {
-        const arrayOfPromises = res.results.response.docs.forEach(function (o) {
+        const arrayOfPromises = res.results.response.docs.map(function (o) {
           return serializeRow(req.call_collection, o)
         })
         All(arrayOfPromises).then((array) => {
