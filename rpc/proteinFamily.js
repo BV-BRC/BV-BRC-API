@@ -86,82 +86,81 @@ function fetchFamilyDescriptions (familyIdList) {
   return def.promise
 }
 
-function fetchFamilyDataByGenomeId (genomeId, options) {
-  const def = Deferred()
-  const key = 'pfs_' + genomeId
+async function fetchFamilyDataByGenomeId (genomeId, options) {
+  return new Promise((resolve, reject) => {
+    const key = 'pfs_' + genomeId
 
-  redisClient.get(key, function (err, familyData) {
-    if (familyData == null) {
-      debug(`no cached data for ${key}`)
+    redisClient.get(key, function (err, familyData) {
+      if (familyData == null) {
+        debug(`no cached data for ${key}`)
 
-      const query = `?q=genome_id:${genomeId} AND annotation:PATRIC AND feature_type:CDS&rows=25000&fl=pgfam_id,plfam_id,figfam_id,aa_length`
+        const query = `?q=genome_id:${genomeId} AND annotation:PATRIC AND feature_type:CDS&rows=25000&fl=pgfam_id,plfam_id,figfam_id,aa_length`
 
-      request.get({
-        url: distributeURL + 'genome_feature/' + query,
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/solrquery+x-www-form-urlencoded',
-          'Authorization': options.token || ''
-        },
-        json: true
-      }, function (error, resp, body) {
-        if (error) {
-          def.reject(error)
-        }
-        if (typeof body === 'object') {
-          redisClient.set(key, JSON.stringify(body), 'EX', RedisTTL)
-          def.resolve(body)
-        } else {
-          def.reject(body)
-        }
-      })
-    } else {
-      redisClient.expire(key, RedisTTL)
-      def.resolve(JSON.parse(familyData))
-    }
+        request.get({
+          url: distributeURL + 'genome_feature/' + query,
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/solrquery+x-www-form-urlencoded',
+            'Authorization': options.token || ''
+          },
+          json: true
+        }, function (error, resp, body) {
+          if (error) {
+            reject(error)
+            return
+          }
+          if (typeof body === 'object') {
+            redisClient.set(key, JSON.stringify(body), 'EX', RedisTTL)
+            resolve(body)
+          } else {
+            reject(body)
+          }
+        })
+      } else {
+        // hit cache
+        redisClient.expire(key, RedisTTL)
+        resolve(JSON.parse(familyData))
+      }
+    })
   })
-
-  return def.promise
 }
 
-function fetchFamilyData (familyType, genomeIdList, options) {
+async function fetchFamilyData (familyType, genomeIdList, options) {
   const def = Deferred()
-  const allRequests = []
   const familyIdField = familyType + '_id'
 
   const qSt = Date.now()
-  genomeIdList.forEach(genomeId => {
-    allRequests.push(fetchFamilyDataByGenomeId(genomeId, options))
-  })
+  const body = []
+  for (let i = 0, len = genomeIdList.length; i < len; i++) {
+    body[i] = await fetchFamilyDataByGenomeId(genomeIdList[i], options)
+  }
 
-  all(allRequests).then(body => {
-    debug('fetching family data took ', (Date.now() - qSt) / 1000, 's')
+  debug('fetching family data took ', (Date.now() - qSt) / 1000, 's')
 
-    const totalFamilyIdDict = {}
+  const totalFamilyIdDict = {}
 
-    body.forEach((data, i) => {
-      const genomeId = genomeIdList[i]
+  body.forEach((data, i) => {
+    const genomeId = genomeIdList[i]
 
-      data.forEach(row => {
-        const fid = row[familyIdField]
-        if (fid === '' || fid === undefined) return
+    data.forEach(row => {
+      const fid = row[familyIdField]
+      if (fid === '' || fid === undefined) return
 
-        if (totalFamilyIdDict.hasOwnProperty(fid)) {
-          if (totalFamilyIdDict[fid].hasOwnProperty(genomeId)) {
-            totalFamilyIdDict[fid][genomeId].push(row['aa_length'])
-          } else {
-            // has fid, but not genome id
-            totalFamilyIdDict[fid][genomeId] = [row['aa_length']]
-          }
+      if (totalFamilyIdDict.hasOwnProperty(fid)) {
+        if (totalFamilyIdDict[fid].hasOwnProperty(genomeId)) {
+          totalFamilyIdDict[fid][genomeId].push(row['aa_length'])
         } else {
-          totalFamilyIdDict[fid] = {}
+          // has fid, but not genome id
           totalFamilyIdDict[fid][genomeId] = [row['aa_length']]
         }
-      })
+      } else {
+        totalFamilyIdDict[fid] = {}
+        totalFamilyIdDict[fid][genomeId] = [row['aa_length']]
+      }
     })
-
-    def.resolve(totalFamilyIdDict)
   })
+
+  def.resolve(totalFamilyIdDict)
 
   return def.promise
 }
