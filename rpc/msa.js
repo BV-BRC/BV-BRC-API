@@ -3,39 +3,46 @@ var when = require('promised-io/promise').when
 var debug = require('debug')('p3api-server:msa')
 var ChildProcess = require('child_process')
 var config = require('../config')
-var request = require('request')
+var request = require('request-promise')
 var distributeURL = config.get('distributeURL')
 var Temp = require('temp')
 var fs = require('fs-extra')
+const getSequenceByHash = require('../util/featureSequence')
 
-function runQuery (query, opts) {
+async function runQuery (query, opts) {
   debug('Query: ', query)
-  var def = new Defer()
-
   debug('Send Request to distributeURL: ', distributeURL + 'genome_feature')
   debug('runQuery: ', query)
-  request.post({
-    url: distributeURL + 'genome_feature/',
+
+  const features = await request({
+    method: 'POST',
+    uri: distributeURL + 'genome_feature/',
     headers: {
       'content-type': 'application/rqlquery+x-www-form-urlencoded',
       'accept': 'application/json',
       'Authorization': opts.token || ''
     },
     body: query
-  }, function (err, r, body) {
-    // debug("Distribute RESULTS: ", body);
+  }).then((body) => JSON.parse(body))
 
-    if (err) {
-      return def.reject(err)
+  const md5Hash = await features.reduce(async (prevHash, f) => {
+    const md5 = (opts.alignType === 'dna') ? f.na_sequence_md5 : f.aa_sequence_md5
+    if (!Object.prototype.hasOwnProperty.call(prevHash, md5)) {
+      const newHash = await prevHash
+      newHash[md5] = await getSequenceByHash(md5)
+      return newHash
     }
+    return prevHash
+  }, {})
 
-    if (body && typeof body === 'string') {
-      body = JSON.parse(body)
+  return features.map((f) => {
+    if (opts.alignType === 'dna') {
+      f.na_sequence = md5Hash[f.na_sequence_md5]
+    } else {
+      f.aa_sequence = md5Hash[f.aa_sequence_md5]
     }
-    def.resolve(body)
+    return f
   })
-
-  return def.promise
 }
 
 function buildFasta (sequences, opts) {
@@ -230,7 +237,7 @@ module.exports = {
     // validate parameters here
     return params && params[0] && params[0].length > 1
   },
-  execute: function (params, req, res) {
+  execute: async function (params, req, res) {
     var def = new Defer()
     // console.log("Execute MSA: ", params)
     var query = params[0]
@@ -240,41 +247,40 @@ module.exports = {
     }
     var opts = {req: req, user: req.user, token: req.headers.authorization, alignType: alignType}
 
-    when(runQuery(query, opts), function (sequences) {
-      when(buildFasta(sequences, opts), function (fasta) {
-        when(runMuscle(fasta, opts), function (alignment) {
-          when(runGBlocks(alignment, opts), function (gblocksOut) {
-            when(runFastTree(gblocksOut, opts), function (fastTree) {
-              var map = {}
-              sequences.forEach(function (seq) {
-                map[seq.feature_id] = {
-                  'genome_name': seq.genome_name,
-                  'feature_id': seq.feature_id,
-                  'genome_id': seq.genome_id,
-                  'patric_id': seq.patric_id,
-                  'aa_length': seq.aa_length,
-                  'refseq_locus_tag': seq.refseq_locus_tag
-                }
-              })
+    var sequences = await runQuery(query, opts).catch((err) => {
+      def.reject('Unable To Retreive Feature Data for MSA: ' + err)
+    })
+    when(buildFasta(sequences, opts), function (fasta) {
+      when(runMuscle(fasta, opts), function (alignment) {
+        when(runGBlocks(alignment, opts), function (gblocksOut) {
+          when(runFastTree(gblocksOut, opts), function (fastTree) {
+            var map = {}
+            sequences.forEach(function (seq) {
+              map[seq.feature_id] = {
+                'genome_name': seq.genome_name,
+                'feature_id': seq.feature_id,
+                'genome_id': seq.genome_id,
+                'patric_id': seq.patric_id,
+                'aa_length': seq.aa_length,
+                'refseq_locus_tag': seq.refseq_locus_tag
+              }
+            })
 
-              def.resolve({
-                map: map,
-                alignment: alignment,
-                // gblocks: gblocksOut,
-                tree: fastTree
-              })
-            }, function (err) {
-              def.reject('Unable to Complete FastTree: ' + err)
+            def.resolve({
+              map: map,
+              alignment: alignment,
+              // gblocks: gblocksOut,
+              tree: fastTree
             })
           }, function (err) {
-            def.reject('Unable to Complete GBLocks for Alignment: ' + err)
+            def.reject('Unable to Complete FastTree: ' + err)
           })
         }, function (err) {
-          def.reject('Unable to Complete Alignement: ' + err)
+          def.reject('Unable to Complete GBLocks for Alignment: ' + err)
         })
+      }, function (err) {
+        def.reject('Unable to Complete Alignement: ' + err)
       })
-    }, function (err) {
-      def.reject('Unable To Retreive Feature Data for MSA: ' + err)
     })
     return def.promise
   }
