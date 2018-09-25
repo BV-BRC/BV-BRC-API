@@ -15,7 +15,7 @@ For example, querying genome information for [Mycobacterium tuberculosis H37Rv g
 ```
 $ curl -H "Accept: application/json" \
 -H "Content-Type: application/x-www-form-urlencoded" \
-https://www.alpha.patricbrc.org/api/genome/83332.12
+https://www.patricbrc.org/api/genome/83332.12
 ```
 
 Returns a json.
@@ -30,7 +30,7 @@ Returns a json.
 ```
 $ curl -H "Accept: application/json" \
 -H "Content-Type: application/rqlquery+x-www-form-urlencoded" \
-"https://www.alpha.patricbrc.org/api/genome/?eq(genome_id,83332.12)"
+"https://www.patricbrc.org/api/genome/?eq(genome_id,83332.12)"
 ```
 
 Returns a json, but in array. This is correct behavior, since a **query** may or may not return multiple records.
@@ -48,7 +48,7 @@ As we have more and more conditions or IDs, we may need to **POST** instead of G
 $ curl -H "Accept: application/json" \
 -H "Content-Type: application/rqlquery+x-www-form-urlencoded" \
 -X POST -d "eq(genome_id,83332.12)" \
-https://www.alpha.patricbrc.org/api/genome/
+https://www.patricbrc.org/api/genome/
 ```
 
 ### Apache Solr style
@@ -56,7 +56,7 @@ https://www.alpha.patricbrc.org/api/genome/
 ```
 $ curl -H "Accept: application/json" \
 -H "Content-Type: application/solrquery+x-www-form-urlencoded" \
-https://www.alpha.patricbrc.org/api/genome/?q=genome_id:83332.12
+https://www.patricbrc.org/api/genome/?q=genome_id:83332.12
 ```
 
 OR
@@ -65,7 +65,7 @@ OR
 $ curl -H "Accept: application/json" \
 -H "Content-Type: application/solrquery+x-www-form-urlencoded" \
 -X POST -d "q=genome_id:83332.12" \
-https://www.alpha.patricbrc.org/api/genome/
+https://www.patricbrc.org/api/genome/
 ```
 
 This queries should return the same result to what we have using RQL.
@@ -86,7 +86,7 @@ For more details on Apache solr query syntax, please refer [Standard Query Parse
 $ curl -H "Accept: application/solr+json" \
 -H "Content-Type: application/solrquery+x-www-form-urlencoded" \
 -X POST -d "q=genome_id:83332.12&rows=0&facet=true&facet.field=annotation&json.nl=map" \
-https://www.alpha.patricbrc.org/api/genome_feature/
+https://www.patricbrc.org/api/genome_feature/
 ```
 
 Now we have a little bit different query. Let me explain one by one.
@@ -125,6 +125,92 @@ Equivalent RQL example,
 curl -H "Accept: application/solr+json" \
 -H "Content-Type: application/rqlquery+x-www-form-urlencoded" \
 -X POST -d "eq(genome_id,83332.12)&facet((field,annotation))&limit(1)&json(nl,map)" \
-https://www.alpha.patricbrc.org/api/genome_feature/
+https://www.patricbrc.org/api/genome_feature/
 ```
+
+## Downloading FASTA files
+You can request nucleotide or protein FASTA formatted file with your query. For example, if you have a list of feature IDs that you want to retrieve nucleotide FASTA,
+```
+curl -H 'Accept:application/dna+fasta' -H 'Content-Type:application/rqlquery+x-www-form-urlencoded' \
+'https://www.patricbrc.org/api/genome_feature/?in(feature_id,(PATRIC.871585.3.CP002177.CDS.3486.5027.rev))&limit(25000)'
+
+or
+
+curl -H 'Accept:application/dna+fasta' -H 'Content-Type:application/rqlquery+x-www-form-urlencoded' \
+-X POST 'https://beta.patricbrc.org/api/genome_feature/' \
+-d 'in(feature_id,(PATRIC.871585.3.CP002177.CDS.3486.5027.rev))&limit(25000)'
+```
+Then you will get
+```
+>fig|871585.3.peg.3|BDGL_000003|VBIAciCal168233_0003|   Poly(glycerol-phosphate) alpha-glucosyltransferase (EC 2.4.1.52)   [Acinetobacter calcoaceticus PHEA-2 | 871585.3]
+atgaaaactcaatatttttttttatttccaaaaattgatcaaaagaaaaatggattggtt
+tttgctcttttaaagcgcgcaaaaatattaaatgaacaattaggtattagccccacaatt
+attactactgattatgatcgctcccttgctgaaaattattggagccttattactacaaat
+ttagctcctacttcaattggctatctcaatctatatggtgattttcaaggaactcatcta
+aaactggctaataaaaaaattcatagccctatggtagaaatgtttaacagtaacatttta
+aaaactataattcctttcacctacaatcaacgttttcatgataaaaataataaaaactat
+ttgtacgaaatacggcaaaatgactctcctactttaagttatgtgaatactttcaaaaaa
+ggtgtaaaaacaggacgaattatttatgactcttatggttatcttagttgtattcaagtc
+atcaactcagaaaatcaaatgataataactgaaacttattatcatacagaaggttatcca
+gttattataaaaaactatcaactcaacgaaaagaataaaaacattgtttcaaatattttt
+ttatttaataaacaaggtgttattaatgaggtttttgatactgaatctcagcttattcag
+tattggttcctaaaaatctctcaactttataaaaatgatctgatgtatattcttatcgac
+cgtgcaattcatttctatgaaccacttagagagataaaacaagaaaacatgcgatttatt
+gggacaattcatgctacccatctaaatggccatgatattcaaaattctacaattaatcgt
+cattatcgtagctattttaaatatagtaatgaattagacgcactagtaatcttaactgaa
+cgccaaaaacaacatattcaacagcgctttggaatggaagagaaattatttgttattcca
+catatatatgaaaaatctattgaccatgtcaatttttcaaacagagacccaatgttttgc
+ttaactattgctagatatgataaagcgaaaaatttagatagcttaattagaattttcaaa
+aaagttgtagaagtaatccccaatgcttatttaaacatttatggttttggaagtgagcat
+aacttcttacaaagtcaaattgatgaacatcagttaaataaccatattaaattgatgggc
+tataatgagaatactgatgctttatataataaggcaagcttattccttttttctagccga
+tctgaaggtttcggtatggcagttttagaagccctatgccatggctgccctgtcgtgagt
+tatgacatcgattacggaccatcagacatgattaatcatgatgaaaatggctatttagtt
+acttttcaagatgaagaattatttgcacagaaagtagtttctttattaaaagatgaacac
+aaacggcttaaacttagtgaaaatgcatatgcatgtagtcgactcacagatcaaaaacaa
+tttgccctaaaatggcaagagcttttccaggctattcagtaa
+```
+
+Replace `Accept:application/dna+fasta` with `Accept:application/protein+fasta` if you like to retrieve protein sequence in FASTA format.
+
+## Retrieving private data with Authorization Token
+In order to access your private genome, you will need Authorization Token and send a request to API with that in header. 
+
+```
+$ curl -X POST -H 'Content-Type:application/x-www-form-urlencoded' 'https://user.patricbrc.org/authenticate' \
+ -d 'username=_YOUR_USERNAME_' -d 'password=_YOUR_PASSWORD_'
+```
+
+This will return a string like
+```
+un=harry@patricbrc.org|tokenid=1c04a34e-d351-4a79-b24c-.....
+```
+
+Then, use this token in the request. For example,
+```
+$ curl -H "Accept: application/json" \
+-H "Content-Type: application/x-www-form-urlencoded" \
+-H "Authorization: un=harry@patricbrc.org|tokenid=1c04a34e-d351-4a79-b24c-....."
+https://www.patricbrc.org/api/genome/83332.12
+
+```
+
+## Summary of acceptible headers
+
+### Accept
+- application/json: json formatted results
+- application/solr+json: json format, but include solr response. Use for facetting since facetted results are outside returned docs.
+- text/csv: comma seperated results
+- text/tsv: tab delimited results
+- application/vnd.openxmlformats: excel formatted results
+- application/dna+fasta: for download FASTA formatted nucleotide sequence for the queried genome features
+- application/protein+fasta: for download FASTA formatted protein sequence for the queried genome features
+
+### Content-Type
+- application/x-www-form-urlencoded
+- application/rqlquery+x-www-form-urlencoded
+- application/solrquery+x-www-form-urlencoded
+
+### Authorization
+- Empty string will return only public data. Use autorization token for private or public data.
 
