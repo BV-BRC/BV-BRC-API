@@ -3,7 +3,6 @@ var when = require('promised-io/promise').when
 var es = require('event-stream')
 var wrap = require('../util/linewrap')
 const Defer = require('promised-io/promise').defer
-const All = require('promised-io/promise').all
 const getSequenceByHash = require('../util/featureSequence')
 
 function serializeRow (type, o) {
@@ -43,7 +42,7 @@ function serializeRow (type, o) {
 
 module.exports = {
   contentType: 'application/dna+fasta',
-  serialize: function (req, res, next) {
+  serialize: async function (req, res, next) {
     // debug("application/dna+fastahandler");
 
     if (req.isDownload) {
@@ -83,15 +82,11 @@ module.exports = {
       })
     } else {
       if (res.results && res.results.response && res.results.response.docs) {
-        const arrayOfPromises = res.results.response.docs.map(function (o) {
-          return serializeRow(req.call_collection, o)
-        })
-        All(arrayOfPromises).then((array) => {
-          array.forEach((row) => {
-            res.write(row)
-          })
-          res.end()
-        })
+        for (let i = 0, len = res.results.response.docs.length; i < len; i++) {
+          row = await serializeRow(req.call_collection, res.results.response.docs[i])
+          res.write(row)
+        }
+        res.end()
       } else {
         res.end()
       }
