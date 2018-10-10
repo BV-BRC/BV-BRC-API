@@ -2,22 +2,32 @@ var debug = require('debug')('p3api-server:media/sralign+dna+fasta')
 var when = require('promised-io/promise').when
 var es = require('event-stream')
 var wrap = require('../util/linewrap')
+const Defer = require('promised-io/promise').defer
+const getSequenceByHash = require('../util/featureSequence')
 
 function serializeRow (type, o) {
+  const def = new Defer()
   if (type === 'genome_feature') {
     const row = '>' + o.patric_id + '|' + o.feature_id + ' ' + o.product
-    return row + wrap(o.na_sequence, 60) + '\n'
+    if (o.na_sequence_md5) {
+      when(getSequenceByHash(o.na_sequence_md5), (seq) => {
+        def.resolve(row + wrap(seq, 60) + '\n')
+      }, (err) => {
+        def.reject(err)
+      })
+    }
   } else if (type === 'genome_sequence') {
     const row = '>' + o.accession + '   ' + o.description + '   ' + '[' + (o.genome_name || o.genome_id) + ']\n'
-    return row + wrap(o.sequence, 60) + '\n'
+    def.resolve(row + wrap(o.sequence, 60) + '\n')
   } else {
-    throw Error('Cannot query for application/protein+fasta from this data collection')
+    def.reject('Cannot query for application/sralign+dna+fasta from this data collection')
   }
+  return def.promise
 }
 
 module.exports = {
   contentType: 'application/sralign+dna+fasta',
-  serialize: function (req, res, next) {
+  serialize: async function (req, res, next) {
     debug('application/sralign+dna+fasta')
 
     if (req.isDownload) {
@@ -35,13 +45,19 @@ module.exports = {
           throw Error('Expected ReadStream in Serializer')
         }
 
-        results.stream.pipe(es.mapSync(function (data) {
+        results.stream.pipe(es.mapSync(function (data, callback) {
           if (!head) {
             head = data
+            callback()
           } else {
             // debug(JSON.stringify(data));
-            res.write(serializeRow(req.call_collection, data))
-            docCount++
+            when(serializeRow(req.call_collection, data), (row) => {
+              res.write(row)
+              docCount++
+              callback()
+            }, (err) => {
+              debug(err)
+            })
           }
         })).on('end', function () {
           debug('Exported ' + docCount + ' Documents')
@@ -50,9 +66,10 @@ module.exports = {
       })
     } else {
       if (res.results && res.results.response && res.results.response.docs) {
-        res.results.response.docs.forEach(function (o) {
-          res.write(serializeRow(req.call_collection, o))
-        })
+        for (let i = 0, len = res.results.response.docs.length; i < len; i++) {
+          row = await serializeRow(req.call_collection, res.results.response.docs[i])
+          res.write(row)
+        }
       }
       res.end()
     }
