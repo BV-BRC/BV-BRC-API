@@ -25,7 +25,7 @@ const queue = new Queue(queueDirectory, function (err) {
 
 let completedHardCommit = false
 
-const publicCores = ['taxonomy']
+const publicCores = ['taxonomy', 'feature_sequence']
 const IndexingCores = ['genome_feature', 'genome', 'sp_gene', 'pathway', 'genome_sequence', 'genome_amr', 'subsystem']
 
 process.on('message', (msg) => {
