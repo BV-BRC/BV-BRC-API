@@ -1,79 +1,62 @@
-var debug = require('debug')('p3api-server:media/dna+fasta')
-var when = require('promised-io/promise').when
-var es = require('event-stream')
-var wrap = require('../util/linewrap')
-const Defer = require('promised-io/promise').defer
-const getSequenceByHash = require('../util/featureSequence')
+const debug = require('debug')('p3api-server:media/dna+fasta')
+const when = require('promised-io/promise').when
+const es = require('event-stream')
+const wrap = require('../util/linewrap')
+const getSequenceByHash = require('../util/featureSequence').getSequenceByHash
+const getSequenceDictByHash = require('../util/featureSequence').getSequenceDictByHash
+const SEQUENCE_BATCH = 500
+currentContext = 20
 
-function serializeRow (type, o) {
-  const def = new Defer()
-  if (type === 'genome_feature') {
-    var fasta_id, row
-    if (o.annotation === 'PATRIC') {
-      fasta_id = o.patric_id + '|' + (o.refseq_locus_tag ? (o.refseq_locus_tag + '|') : '') + (o.alt_locus_tag ? (o.alt_locus_tag + '|') : '')
-    } else if (o.annotation === 'RefSeq') {
-      fasta_id = 'gi|' + o.gi + '|' + (o.refseq_locus_tag ? (o.refseq_locus_tag + '|') : '') + (o.alt_locus_tag ? (o.alt_locus_tag + '|') : '')
-    } else {
-      throw Error('Unknown Annotation Type: ' + o.annotation)
-    }
+function formatFASTAGenomeSequence (o) {
+  const header = `>accn|${o.accession}   ${o.description}   [${o.genome_name} | ${o.genome_id}]\n`
+  return header + wrap(o.sequence, 60) + '\n'
+}
 
-    row = '>' + fasta_id + '   ' + o.product + '   [' + o.genome_name + ' | ' + o.genome_id + ']\n'
-
-    if (o.na_sequence_md5) {
-      when(getSequenceByHash(o.na_sequence_md5), (seq) => {
-        row = row + wrap(seq, 60) + '\n'
-        def.resolve(row)
-      }, (err) => {
-        def.reject(err)
-      })
-    } else {
-      def.resolve(row)
-    }
-    return def.promise
-  } else if (type === 'genome_sequence') {
-    row = '>accn|' + o.accession + '   ' + o.description + '   ' + '[' + (o.genome_name || '') + ' | ' + (o.genome_id || '') + ']\n'
-    row = row + wrap(o.sequence, 60) + '\n'
-    def.resolve(row)
-    return def.promise
-  } else {
-    throw Error('Cannot serialize ' + type + ' to application/dna+fasta')
+function formatFASTAFeatureSequence (o) {
+  let fasta_id
+  if (o.annotation === 'PATRIC') {
+    fasta_id = `${o.patric_id}|${(o.refseq_locus_tag ? (o.refseq_locus_tag + '|') : '') + (o.alt_locus_tag ? (o.alt_locus_tag + '|') : '')}`
+  } else if (o.annotation === 'RefSeq') {
+    fasta_id = `gi|${o.gi}|${(o.refseq_locus_tag ? (o.refseq_locus_tag + '|') : '') + (o.alt_locus_tag ? (o.alt_locus_tag + '|') : '')}`
   }
+  const header = `>${fasta_id}   ${o.product}   [${o.genome_name} | ${o.genome_id}]\n`
+  return header + ((o.sequence) ? wrap(o.sequence, 60) : '') + '\n'
 }
 
 module.exports = {
   contentType: 'application/dna+fasta',
   serialize: async function (req, res, next) {
-    // debug("application/dna+fastahandler");
-
     if (req.isDownload) {
-      // res.set("content-disposition", "attachment; filename=patric_genomes.fasta");
       res.attachment('PATRIC_' + req.call_collection + '.fasta')
     }
 
     if (req.call_method === 'stream') {
       when(res.results, function (results) {
-        // debug("res.results: ", results);
-        var docCount = 0
-        var head
+        let docCount = 0
+        let head
 
         if (!results.stream) {
           throw Error('Expected ReadStream in Serializer')
         }
 
         results.stream.pipe(es.map(function (data, callback) {
-          // debug("STREAM DATA: ", data);
           if (!head) {
             head = data
             callback()
           } else {
-            // debug(JSON.stringify(data));
-            when(serializeRow(req.call_collection, data), (row) => {
-              res.write(row)
-              docCount++
+            if (req.call_collection === 'genome_feature') {
+              getSequenceByHash(data.na_sequence_md5).then((seq) => {
+                data.sequence = seq
+                res.write(formatFASTAFeatureSequence(data))
+                docCount++
+                callback()
+              }, (err) => {
+                debug(err)
+              })
+            } else if (req.call_collection === 'genome_sequence') {
+              res.write(formatFASTAGenomeSequence(data))
               callback()
-            }, (err) => {
-              debug(err)
-            })
+            }
           }
         })).on('end', function () {
           debug('Exported ' + docCount + ' Documents')
@@ -82,14 +65,40 @@ module.exports = {
       })
     } else {
       if (res.results && res.results.response && res.results.response.docs) {
-        for (let i = 0, len = res.results.response.docs.length; i < len; i++) {
-          row = await serializeRow(req.call_collection, res.results.response.docs[i])
-          res.write(row)
+        const docs = res.results.response.docs
+        const numFound = res.results.response.numFound
+
+        if (req.call_collection === 'genome_feature') {
+          // fetch sequences by batch and create a global dictionary
+          let sequenceDict = {}
+          for (let i = 0, len = Math.ceil(numFound / SEQUENCE_BATCH); i < len; i++) {
+            const start = i * SEQUENCE_BATCH
+            const end = Math.min((i + 1) * SEQUENCE_BATCH, numFound)
+            const md5Array = []
+            for (let j = start; j < end; j++) {
+              if (docs[j] && docs[j].na_sequence_md5 && docs[j].na_sequence_md5 !== '') {
+                md5Array.push(docs[j].na_sequence_md5)
+              }
+            }
+
+            const dict = await getSequenceDictByHash(md5Array)
+            sequenceDict = Object.assign(sequenceDict, dict)
+
+            // format as it goes
+            for (let j = start; j < end; j++) {
+              if (docs[j] && docs[j].na_sequence_md5) {
+                docs[j].sequence = sequenceDict[docs[j].na_sequence_md5]
+              }
+              res.write(formatFASTAFeatureSequence(docs[j]))
+            }
+          }
+        } else if (req.call_collection === 'genome_sequence') {
+          for (let i = 0, len = docs.length; i < len; i++) {
+            res.write(formatFASTAGenomeSequence(docs[i]))
+          }
         }
-        res.end()
-      } else {
-        res.end()
       }
+      res.end()
     }
   }
 }

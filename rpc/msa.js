@@ -7,7 +7,8 @@ var request = require('request-promise')
 var distributeURL = config.get('distributeURL')
 var Temp = require('temp')
 var fs = require('fs-extra')
-const getSequenceByHash = require('../util/featureSequence')
+// const getSequenceByHash = require('../util/featureSequence').getSequenceByHash
+const getSequenceDictByHash = require('../util/featureSequence').getSequenceDictByHash
 
 async function runQuery (query, opts) {
   debug('Query: ', query)
@@ -25,15 +26,20 @@ async function runQuery (query, opts) {
     body: query
   }).then((body) => JSON.parse(body))
 
-  const md5Hash = await features.reduce(async (prevHash, f) => {
-    const md5 = (opts.alignType === 'dna') ? f.na_sequence_md5 : f.aa_sequence_md5
-    if (!Object.prototype.hasOwnProperty.call(prevHash, md5)) {
-      const newHash = await prevHash
-      newHash[md5] = await getSequenceByHash(md5)
-      return newHash
-    }
-    return prevHash
-  }, {})
+  // const md5Hash = await features.reduce(async (prevHash, f) => {
+  //   const md5 = (opts.alignType === 'dna') ? f.na_sequence_md5 : f.aa_sequence_md5
+  //   if (!Object.prototype.hasOwnProperty.call(prevHash, md5)) {
+  //     const newHash = await prevHash
+  //     newHash[md5] = await getSequenceByHash(md5)
+  //     return newHash
+  //   }
+  //   return prevHash
+  // }, {})
+  const md5Array = features.map((f) => {
+    return (opts.alignType === 'dna') ? f.na_sequence_md5 : f.aa_sequence_md5
+  }).filter((md5) => md5)
+
+  const md5Hash = await getSequenceDictByHash(md5Array)
 
   return features.map((f) => {
     if (opts.alignType === 'dna') {
