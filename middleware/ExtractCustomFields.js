@@ -43,7 +43,9 @@ module.exports = function (req, res, next) {
           'AntiMicrobial Resistance', 'AntiMicrobial Resistance Evidence',
           'Gram Stain', 'Cell Shape', 'Motility', 'Sporulation', 'Temperature Range', 'Optimal Temperature', 'Salinity', 'Oxygen Requirement',
           'Habitat',
-          'Disease', 'Comments', 'Additional Metadata', 'Date Inserted', 'Date Modified'
+          'Disease', 'Comments', 'Additional Metadata',
+          'Coarse Consistency', 'Fine Consistency', 'Checkm Completeness', 'Checkm Contamination', 'Genome Quality Flags', 'Genome Quality',
+          'Date Inserted', 'Date Modified'
         ]
         req.fieldSelection = [
           'genome_id', 'genome_name', 'organism_name', 'taxon_id', 'genome_status',
@@ -61,7 +63,9 @@ module.exports = function (req, res, next) {
           'antimicrobial_resistance', 'antimicrobial_resistance_evidence',
           'gram_stain', 'cell_shape', 'motility', 'sporulation', 'temperature_range', 'optimal_temperature', 'salinity', 'oxygen_requirement',
           'habitat',
-          'disease', 'comments', 'additional_metadata', 'date_inserted', 'date_modified'
+          'disease', 'comments', 'additional_metadata',
+          'coarse_consistency', 'fine_consistency', 'checkm_completeness', 'checkm_contamination', 'genome_quality_flags', 'genome_quality',
+          'date_inserted', 'date_modified'
         ]
         break
       case 'genome_sequence':
