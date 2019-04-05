@@ -176,7 +176,7 @@ function processQueue (queue) {
               console.error(`${(new Date()).toISOString()}: Error in updating history: ${err} while processing ${message.id}`)
             })
           }, (err) => {
-            console.error(`${(new Date()).toISOString()}: Error in fullfilling fileDefs: ${err.message} while processing ${message.id}`)
+            console.error(`${(new Date()).toISOString()}: Error in fullfilling fileDefs: ${err} while processing ${message.id}`)
 
             // trigger rollback
             IndexingCores.forEach(core => {
