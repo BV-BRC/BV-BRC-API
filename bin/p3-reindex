@@ -24,13 +24,13 @@ if (require.main === module) {
     console.error('Must supply cores')
     opts.help()
   }
-  const cores = opts.cores.split(',')
+  const cores = opts.cores.includes(',') ? opts.cores.split(',') : [ opts.cores ]
 
   reIndexGenome(opts.key, cores)
 }
 
 function reIndexGenome (key, cores) {
-  console.log(`${key}, ${cores}, ${typeof $cores}`)
+  console.log(`${key}, ${cores}, ${Array.isArray(cores)}`)
 
   fs.readJson(`${queueDir}/history/${key}`, { encoding: 'utf8' }, (err, data) => {
     if (err) {
