@@ -45,7 +45,7 @@ function buildGraph(annotations,opts){
 	var errorClosed;
 
 	debug("Run Panaconda");
-	var child = ChildProcess.spawn("python", ["/Users/anwarren/projects/git_repos/cid_work/p3api/pangenome_graphs/fam_to_graph.py",
+	var child = ChildProcess.spawn("python", ["fam_to_graph.py",
             "--"+opts.alpha, "--layout", "--ksize",opts.ksize,"--diversity",opts.diversity,"--context",opts.context],{
 		stdio: [
 			'pipe',
