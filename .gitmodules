@@ -1,4 +1,0 @@
-[submodule "pangenome_graphs"]
-	path = pangenome_graphs
-	url = https://github.com/aswarren/pangenome_graphs.git
-	branch = patric
