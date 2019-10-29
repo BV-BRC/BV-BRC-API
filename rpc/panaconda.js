@@ -19,7 +19,8 @@ function runQuery(query,opts){
 		headers: {
 			"content-type": "application/rqlquery+x-www-form-urlencoded",
 			"accept": "text/tsv",
-            "Authorization": opts.token || ""
+            "Authorization": opts.token || "",
+            "download": true
 		},
 		body: query
 	}, function(err,r,body){
