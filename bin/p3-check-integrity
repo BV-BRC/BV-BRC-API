@@ -1,0 +1,180 @@
+#!/usr/bin/env node
+
+const config = require('../config')
+const opts = require('commander')
+const request = require('request')
+
+const Defer = require('promised-io/promise').Deferred
+const when = require('promised-io/promise').when
+const All = require('promised-io/promise').all
+
+const fs = require('fs-extra')
+const JSONStream = require('JSONStream')
+const es = require('event-stream')
+
+const solrUrl = config.get('solr').url
+const queueDir = config.get('queueDirectory')
+
+const keyCores = ['genome', 'genome_amr', 'genome_feature', 'genome_sequence',
+  'pathway', 'sp_gene']
+
+if (require.main === module) {
+  opts.option('-k, --key [value]', 'Index Key')
+    .parse(process.argv)
+
+  if (!opts.key) {
+    console.error('Must supply key')
+    opts.help()
+  }
+
+  runAnalysis(opts.key)
+}
+
+function runAnalysis (key) {
+  when(getCountsFromHistory(key), (history) => {
+    const countMap = history.countMap
+    const genomeId = history.genomeId
+
+    console.log(`querying solr: ${genomeId}`)
+
+    when(getCountsFromSolr(genomeId), (solrCounts) => {
+      const allCores = keyCores.map(core => {
+        const isEqual = (countMap[core] - solrCounts[core]) === 0
+        console.log(`  ${core}: ${solrCounts[core]}/${countMap[core]} - ${isEqual ? 'Pass' : 'Fail'}`)
+
+        return isEqual
+      })
+
+      const isComplete = allCores.every(val => val === true)
+
+      if (isComplete) {
+        console.log(`${key} is indexed completely`)
+      } else {
+        console.error(`${key} is not indexed completely`)
+      }
+      process.exit(0)
+    })
+  }, (err) => {
+    console.error(`${key}: rejected reading history`)
+  })
+}
+
+function getCountsFromSolr (genomeId) {
+  const def = Defer()
+  const reqs = keyCores.map(core => getCountsPerCore(core, genomeId))
+
+  All(reqs).then(body => {
+    const countMap = {}
+    body.forEach((count, i) => {
+      // console.log(`${keyCores[i]}: ${count}`)
+      countMap[keyCores[i]] = count
+    })
+
+    def.resolve(countMap)
+  })
+
+  return def.promise
+}
+
+function getCountsPerCore (core, genomeId) {
+  const def = Defer()
+  const query = `select?q=genome_id:${genomeId}&rows=0&wt=json`
+
+  request.get({
+    url: `${solrUrl}/${core}/${query}`,
+    json: true
+  }, (error, resp, body) => {
+    if (error) {
+      def.reject(error)
+      return
+    }
+
+    def.resolve(body.response.numFound)
+  })
+
+  return def.promise
+}
+
+function getCountsFromHistory (key) {
+  const def = Defer()
+
+  let history, data
+  try {
+    history = fs.readFileSync(`${queueDir}/history/${key}`, 'utf8')
+    data = JSON.parse(history)
+  } catch (e) {
+    // console.error(e, history)
+    def.reject(e.message)
+    return def.promise
+  }
+
+  console.log(`History ${key} files is okay. Reading json files to count...`)
+
+  const historyDefs = Object.keys(data.files).map(key => {
+    const path = useLocalFS(data.files[key].path)
+    const size = data.files[key].size
+
+    return (size < 104857600) ? getCountsFromFile(path) : getCountsFromFileStream(path)
+  })
+
+  const genomeId = getGenomeIdFromFile(useLocalFS(data.files.genome.path))
+
+  All(historyDefs).then((countArray) => {
+    const countMap = {}
+
+    Object.keys(data.files).forEach((key, idx) => {
+      countMap[key] = countArray[idx]
+    })
+
+    def.resolve({ isSuccessful: true, countMap: countMap, genomeId: genomeId })
+  })
+
+  return def.promise
+}
+
+function getCountsFromFile (file) {
+  const def = new Defer()
+
+  fs.readJson(file, 'utf8', (err, obj) => {
+    if (err) {
+      def.reject(err)
+      return
+    }
+
+    def.resolve(obj.length)
+  })
+
+  return def.promise
+}
+
+function getCountsFromFileStream (file) {
+  const def = new Defer()
+
+  try {
+    let length = 0
+
+    fs.createReadStream(file, { encoding: 'utf8' })
+      .pipe(JSONStream.parse('*'))
+      .pipe(es.mapSync(data => {
+        length++
+      }))
+      .on('close', () => {
+        def.resolve(length)
+      })
+  } catch (e) {
+    console.error(e)
+    def.reject(e)
+  }
+
+  return def.promise
+}
+
+function getGenomeIdFromFile (file) {
+  const genome = fs.readJsonSync(file, 'utf8')
+
+  return genome[0]['genome_id']
+}
+
+function useLocalFS (filePath) {
+  return filePath.replace('/disks/p3/var/indexing_queue', queueDir)
+}

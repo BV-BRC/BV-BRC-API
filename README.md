@@ -1,19 +1,24 @@
-PATRIC 3 API SERVER
+# PATRIC 3 API SERVER
 
-##Installation
+## Installation
 
-	# git clone --recursive git@github.com:dmachi/p3api.git
+	# git clone --recursive https://github.com/PATRIC3/p3_api.git
 	# cd p3api
 	# npm install
 	# cp p3api.conf.sample p3api.conf and modify as appropriate
 
-##Running
-	./bin/p3api-server  
+## Running
+	./bin/p3api-server
 
-##Running With Debugging Enabled
+## Running With Debugging Enabled
 	DEBUG=p3api-server ./bin/p3api-server
 
-##Testing
+## Testing
+
+For the latest documentation on setting up a test environment and running/writing tests, see [here](tests/README.md).
+
+##### Legacy Testing
+
 Testing requires internjs 2.x (https://theintern.github.io/), which has been included already.
 
 Test files exist in the tests/ directory.  All of the configured tests can be run by launching the p3api server locally on port 3001 (the default port) and then running
@@ -24,9 +29,9 @@ Individual test suites from the tests/ directory can be run by specifying them t
 
 	node_modules/.bin/intern-client config=tests/intern suite=tests/query
 
-###API Usage
+### API Usage
 
-The p3api server allows for direct retrieval of objects from the data source through HTTP GET request using the unique ID for each data type (i.e., genome_id for the Genome collections) as well as querying data sources using either RQL syntax or SOLR query syntax.  
+The p3api server allows for direct retrieval of objects from the data source through HTTP GET request using the unique ID for each data type (i.e., genome_id for the Genome collections) as well as querying data sources using either RQL syntax or SOLR query syntax.
 
 Genome Retrieval Example:
 
@@ -47,7 +52,7 @@ Responses from queries are available in a number of formats:
 - application/vnd.openxmlformats : Returns objects for use in MS Excel
 - application/dna+fasta : Returns DNA sequences for queries in FASTA format (this currently only makes sense for the 'genome_feature' collection)
 - application/protein+fasta: Returns Protein sequences for queries in FASTA format (this currently only makes sense for the 'genome_feature' collection)
-- application/gff :  Returns a genomic features in GFF format (This only makes sense for the 'genome_feature' collection) 
+- application/gff :  Returns a genomic features in GFF format (This only makes sense for the 'genome_feature' collection)
 
 The response format is determined by passing in the desired type in the HTTP Accept header of the request.  In cases where it is not possible to supply HTTP headers, the accept header can be specified by adding &http_accept=FORMAT  in the URL itself  (e.g.,  &http_accept=application/json)
 
@@ -72,4 +77,4 @@ HTTP Headers can be supplied normally or in a url by preceding the header name w
 
 Requests can force the server to set content-dispostion (thereby forcing a browser to download the file) by adding &http_download onto the url.
 
- 
+

@@ -1,0 +1,56 @@
+#!/usr/bin/env node
+
+const config = require('../config')
+const fs = require('fs-extra')
+// const exec = require('child_process').execSync
+
+const queueDir = config.get('queueDirectory')
+
+if (require.main === module) {
+  fs.readdirSync(`${queueDir}/file_data`).forEach(key => {
+    readStatus(key)
+  })
+}
+
+function readStatus (key) {
+  fs.readJson(`${queueDir}/history/${key}`, (err, data) => {
+    if (err) {
+      // console.error(err)
+      console.log(`${key}\tFile is corrupted`)
+      // uncomment below line if you want to rebuild history file automatically
+      // exec(`./bin/p3-rebuild-history -k ${key}`)
+      return
+    }
+    if (data && data.hasOwnProperty('state')) {
+      console.log(`${key}\tstate: ${data.state}`)
+      if (data.state === 'queued' || data.state === 'rebuilt') {
+        readDetail(data)
+        // uncomment below line if you want to check integrity automatically
+        // const stdout = exec(`./bin/p3-check-integrity -k ${key}`)
+        // console.log(`${stdout}\n`)
+      }
+    } else {
+      console.error(`${key}\tError reading history file`, data)
+    }
+  })
+}
+
+function readDetail (data) {
+  const genome = data.files['genome']
+
+  if (!genome) {
+    console.error(`Does not contain genome object`)
+    return
+  }
+
+  const path = genome.path
+
+  try {
+    const genomes = fs.readJSONSync(path, { throws: false })
+    const genome = genomes[0]
+
+    console.log(`  owner: ${genome.owner}, genome_id: ${genome.genome_id}`)
+  } catch (err) {
+    console.error(`Failed to read ${path}`)
+  }
+}

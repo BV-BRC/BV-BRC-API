@@ -2,25 +2,25 @@
     "featuredExperiment": {
         "data": [
             {
-                "organism": "Pseudomonas aeruginosa",
-                "link": "/view/ExperimentComparison/1223795",
-                "accession": "GSE49759",
-                "title": "Characterization of the GbdR regulon in Pseudomonas aeruginosa",
-                "pmid": "24097953"
+                "organism": "Mus musculus",
+                "link": "/view/ExperimentComparison/2000001",
+                "accession": "GSE79731",
+                "title": "Gene expression data from Mycobacterium tuberculosis-infected bone-marrow derived mouse macrophages [timecourse]",
+                "pmid": "27681624"
             },
             {
-                "organism": "Campylobacter jejuni",
-                "link": "/view/ExperimentComparison/1201089",
-                "accession": "GSE43024",
-                "title": "Transcriptional profiles of Campylobacter jejuni NCTC 11168 to 0.125mg/L erythromycin treatment",
-                "pmid": "23767761"
+                "organism": "Mus musculus",
+                "link": "/view/ExperimentComparison/2000002",
+                "accession": "GSE79732",
+                "title": "Gene expression data from Mycobacterium tuberculosis-infected WT and miR-155-/- bone-marrow derived macrophages [validation]",
+                "pmid": "27681624"
             },
             {
-                "organism": "Campylobacter jejuni",
-                "link": "/view/ExperimentComparison/1224258",
-                "accession": "GSE43023",
-                "title": "Transcriptional profiles of Campylobacter jejuni NCTC 11168 to 4mg/L erythromycin treatment",
-                "pmid": "23767761"
+                "organism": "Homo sapiens",
+                "link": "/view/ExperimentComparison/2000021",
+                "accession": "E-MTAB-3649",
+                "title": "ISG15 counteracts Listeria monocytogenes infection",
+                "pmid": ""
             }
         ]
     },
@@ -576,7 +576,7 @@
                 "label": "Salmonella enterica"
             },
             {
-                "count": 45,
+                "count": 46,
                 "label": "Mycobacterium tuberculosis"
             },
             {

@@ -1,4 +1,5 @@
 node_modules/*
+npm-debug.log
 *.swp
 *.bak
 log/*
@@ -6,5 +7,14 @@ run/*
 .DS_Store
 dump.rdb
 p3api.conf
+p3api.sublime-project
 p3api.sublime-workspace
 .idea/
+.vscode/
+tests/test-files
+tests/test-files-*
+package-lock.json
+tests/config.json
+
+p3_api_service.err.log
+p3_api_service.out.log

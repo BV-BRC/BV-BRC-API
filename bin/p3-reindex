@@ -1,0 +1,71 @@
+#!/usr/bin/env node
+
+const config = require('../config')
+const opts = require('commander')
+const Request = require('request')
+const Defer = require('promised-io/promise').defer
+const when = require('promised-io/promise').when
+
+const fs = require('fs-extra')
+
+const queueDir = config.get('queueDirectory')
+
+if (require.main === module) {
+  opts.option('-k, --key [value]', 'Index Key')
+    .option('-c, --cores [values]', 'Cores')
+    .parse(process.argv)
+
+  if (!opts.key) {
+    console.error('Must supply key')
+    opts.help()
+  }
+
+  if (!opts.cores || opts.cores.length === 0) {
+    console.error('Must supply cores')
+    opts.help()
+  }
+  const cores = opts.cores.includes(',') ? opts.cores.split(',') : [ opts.cores ]
+
+  reIndexGenome(opts.key, cores)
+}
+
+function reIndexGenome (key, cores) {
+  console.log(`${key}, ${cores}, ${Array.isArray(cores)}`)
+
+  fs.readJson(`${queueDir}/history/${key}`, { encoding: 'utf8' }, (err, data) => {
+    if (err) {
+      console.error(`${err}`)
+      return
+    }
+
+    cores.forEach((core) => {
+      const path = data.files[core].path
+
+      when(postDocs(path, core), () => {
+        console.log(`${core} is indexed`)
+      }, (err) => {
+        console.error(`${err}`)
+      })
+    })
+  })
+}
+
+function postDocs (filePath, type) {
+  const def = new Defer()
+  const url =
+    `${config.get('solr').url}/${type}/update?wt=json&overwrite=true&commit=false`
+
+  fs.createReadStream(filePath).pipe(
+    Request.post(url, (err, res, body) => {
+      if (err || body.error) {
+        console.log(`Error POSTing to ${type} - ${err || body.error.msg}`)
+        def.reject(err)
+        return def.promise
+      }
+
+      def.resolve(true)
+    })
+  )
+
+  return def.promise
+}

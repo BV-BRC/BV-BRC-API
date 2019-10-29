@@ -1,25 +1,22 @@
 #!/usr/bin/env node
-var config = require("../config");
-var Queue = require("file-queue").Queue;
-console.log("Queue Directory: ", config.get("queueDirectory"));
-var fs = require("fs-extra");
-var Path=require('path');
+var config = require('../config')
+var Queue = require('file-queue').Queue
+// console.log('Queue Directory: ', config.get('queueDirectory'))
+var fs = require('fs-extra')
+var Path = require('path')
 
-var queue = new Queue(config.get("queueDirectory"), function(err) {
-        if (err) {
-                console.log("error: ", err);
-                return;
-        }
-	queue.clear(function(err){
-		console.log("Queue Cleared");
-		fs.remove(Path.join(config.get("queueDirectory"),"file_data"), function(err){
-			if (err) {
-				console.log("Unable to clear file_data directory", err);
-			}
-			process.exit(0);
-		});
-	});
-});
-
-
-
+var queue = new Queue(config.get('queueDirectory'), function (err) {
+  if (err) {
+    // console.log('error: ', err)
+    return
+  }
+  queue.clear(function (err) {
+    console.log('Queue Cleared')
+    fs.remove(Path.join(config.get('queueDirectory'), 'file_data'), function (err) {
+      if (err) {
+        console.log('Unable to clear file_data directory', err)
+      }
+      process.exit(0)
+    })
+  })
+})

@@ -1,13 +1,13 @@
-const MSA = require("./rpc/msa");
-const Panaconda = require("./rpc/panaconda");
-const Cluster = require("./rpc/cluster");
-const ProteinFamily = require("./rpc/proteinFamily");
-const TranscriptomicsGene = require("./rpc/transcriptomicsGene");
+const MSA = require('./rpc/msa')
+const Cluster = require('./rpc/cluster')
+const ProteinFamily = require('./rpc/proteinFamily')
+const TranscriptomicsGene = require('./rpc/transcriptomicsGene')
+const Panaconda = require('./rpc/panaconda')
 
 module.exports = {
-    "panaconda": Panaconda,
-	"multipleSequenceAlignment": MSA,
-	"proteinFamily": ProteinFamily,
-	"transcriptomicsGene": TranscriptomicsGene,
-	"cluster": Cluster
-};
+  'multipleSequenceAlignment': MSA,
+  'proteinFamily': ProteinFamily,
+  'transcriptomicsGene': TranscriptomicsGene,
+  'cluster': Cluster,
+  'panaconda': Panaconda
+}

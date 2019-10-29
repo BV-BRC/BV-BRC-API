@@ -1,0 +1,63 @@
+#!/usr/bin/env node
+
+const config = require('../config')
+const opts = require('commander')
+const Defer = require('promised-io/promise').defer
+const when = require('promised-io/promise').when
+const Path = require('path')
+const fs = require('fs-extra')
+const queueDir = config.get('queueDirectory')
+
+if (require.main === module) {
+  opts.option('-k, --key [value]', 'Index key')
+    .option('-c, --confirm [value]', 'Confirm')
+    .parse(process.argv)
+
+  if (!opts.key) {
+    console.error('Must supply key')
+    opts.help()
+  }
+
+  if (!opts.confirm) {
+    console.error('This operation will delete files and cannot be undone.')
+    opts.help()
+  }
+
+  when(updateHistory(opts.key), () => {
+    console.log(`complete updating ${opts.key}`)
+  })
+}
+
+function updateHistory (key) {
+  const def = new Defer()
+  const fileDataPath = Path.join(queueDir, 'file_data', key)
+  const historyPath = Path.join(queueDir, 'history', key)
+
+  console.log(`Updating History ${historyPath}`)
+
+  fs.readJson(historyPath, (err, data) => {
+    if (err) {
+      def.reject(err)
+      return def.promise
+    }
+
+    data.state = 'indexed'
+    data.indexCompletionTime = new Date()
+    delete data.error
+
+    fs.writeJson(historyPath, data, (err) => {
+      if (err) {
+        console.log(`Error writing to history: ${id}`)
+        def.reject(err)
+        return def.promise
+      }
+
+      console.log(`Removing files from : ${fileDataPath}`)
+      fs.removeSync(fileDataPath)
+
+      def.resolve(true)
+    })
+  })
+
+  return def.promise
+}
