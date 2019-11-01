@@ -48,7 +48,7 @@ var querySOLR = function (req, res, next) {
     if (results.error) {
       console.error(`[${(new Date()).toISOString()}] ${req.url}`, req.headers, results)
 
-      res.status(400).send('A Database Erorr Occured')
+      res.status(400).send('A Database Error Occured\n' + JSON.stringify(results.error))
     } else {
       next()
     }
