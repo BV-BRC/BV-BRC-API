@@ -206,4 +206,11 @@ router.post('/:type', [
   }
 ])
 
+// fallback. return number of genomes in queue
+router.get('/', function (req, res, next) {
+  queue.length((err, length) => {
+    respondWithData(res, {'genomesInQueue': length})
+  })
+})
+
 module.exports = router
