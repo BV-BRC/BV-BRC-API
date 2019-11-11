@@ -30,7 +30,7 @@ module.exports = function query (dataType, query, opts) {
       try {
         body = JSON.parse(body)
       }catch(err){
-        return def.reject("Unable to parse response from distributed query: ", err);
+        return def.reject(new Error("Unable to parse response from distributed query: " + err));
       }
     }
     def.resolve(body)
