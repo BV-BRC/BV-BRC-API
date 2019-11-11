@@ -182,7 +182,12 @@ function readPublicExperiments (tgState, options) {
       def.reject(error)
       return
     }
-    response = JSON.parse(response)
+
+    try {
+      response = JSON.parse(response)
+    }catch(err){
+        return def.reject("readPublicExperiments(): Error parsing JSON from SOLR: " + err)
+    }
 
     const numFound = response.response.numFound
 
@@ -209,7 +214,12 @@ function readPublicExperiments (tgState, options) {
           deferred.reject(err)
           return
         }
-        deferred.resolve(JSON.parse(body))
+        try {
+          body = JSON.parse(body)
+        }catch(err){
+          return deferred.reject("Unable to parse JSON from SOLR: " + err);
+        }
+        deferred.resolve(body)
       })
       allRequests.push(deferred)
     }
@@ -314,7 +324,12 @@ function processTranscriptomicsGene (tgState, options) {
           subDef.reject(err)
           return
         }
-        subDef.resolve(JSON.parse(body))
+        try {
+          body = JSON.parse(body)
+        }catch(err){
+          return subDef.reject("Error parsing JSON from SOLR: " + err)
+        }
+        subDef.resolve(body);
       })
       allRequests.push(subDef)
     }
