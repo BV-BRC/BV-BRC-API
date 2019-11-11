@@ -37,7 +37,7 @@ module.exports = {
             // debug(JSON.stringify(data));
             var row = fields.map(function (field) {
               if (data[field] instanceof Array) {
-                return '"' + data[field].map(function (v) { return v.replace(/"/g, "'") }).join(';') + '"'
+                return '"' + data[field].map(function (v) { return (v && (typeof v=="string"))?(v.replace(/"/g, "'")):v }).join(';') + '"'
               } else if (data[field]) {
                 if (typeof data[field] === 'string') {
                   return '"' + data[field].replace(/"/g, "'") + '"'
@@ -64,7 +64,7 @@ module.exports = {
         res.results.response.docs.forEach(function (o) {
           var row = fields.map(function (field) {
             if (o[field] instanceof Array) {
-              return '"' + o[field].map(function (v) { return v.replace(/"/g, "'") }).join(';') + '"'
+              return '"' + o[field].map(function (v) { return (v && (typeof v=="string"))?(v.replace(/"/g, "'")):v }).join(';') + '"'
             } else if (o[field]) {
               if (typeof o[field] === 'string') {
                 return '"' + o[field].replace(/"/g, "'") + '"'

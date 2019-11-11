@@ -27,7 +27,11 @@ module.exports = function query (dataType, query, opts) {
     }
 
     if (body && typeof body === 'string') {
-      body = JSON.parse(body)
+      try {
+        body = JSON.parse(body)
+      }catch(err){
+        return def.reject("Unable to parse response from distributed query: ", err);
+      }
     }
     def.resolve(body)
   })
