@@ -43,9 +43,13 @@ function fetchFamilyDescriptionBatch (familyIdList) {
           def.reject(error)
           return
         }
-
-        body = JSON.parse(body)
-        body.forEach(family => {
+  
+        try {
+          body = JSON.parse(body)
+        }catch(perr){
+          return def.reject(new Error("Error Parsing JSON response from solr: " + perr));
+        }
+         body.forEach(family => {
           redisClient.set(family.family_id, family.family_product, 'EX', RedisTTL)
           familyRefHash[family.family_id] = family.family_product
         })
