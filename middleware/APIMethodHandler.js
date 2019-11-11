@@ -42,16 +42,15 @@ var querySOLR = function (req, res, next) {
       res.results = results
     } else if (results.grouped) {
       res.results = results
+    }else if (results.error) {
+      console.error(`[${(new Date()).toISOString()}] ${req.url}`, req.headers, results)
+      res.status(400).send('A Database Error Occured\n' + JSON.stringify(results.error))
+      return;
     } else {
       res.results = []
     }
-    if (results.error) {
-      console.error(`[${(new Date()).toISOString()}] ${req.url}`, req.headers, results)
 
-      res.status(400).send('A Database Error Occured\n' + JSON.stringify(results.error))
-    } else {
-      next()
-    }
+    next()
   }, function (err) {
     debug('Error Querying SOLR: ', err)
     next(err)
