@@ -33,6 +33,8 @@ router.post('*', [
 
     when(All(defs), function () {
       next()
+    }, function(err){
+      next(err);
     })
   },
 
