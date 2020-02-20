@@ -5,7 +5,7 @@ const spawn = require('child_process').spawn
 const Temp = require('temp')
 const fs = require('fs-extra')
 
-let child
+
 
 function runCluster (data, config, opts) {
   const def = new Deferred()
@@ -26,7 +26,7 @@ function runCluster (data, config, opts) {
       return
     }
 
-    child = spawn('cluster',
+    const child = spawn('cluster',
       ['-f', tempFileInput, '-u', tempFileBase,
         '-g', config.g || 1, '-e', config.e || 2, '-m', config.m || 'a'],
       {
