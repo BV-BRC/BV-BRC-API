@@ -198,7 +198,7 @@ function toSetCommand (record, id, permissions, core) {
 }
 
 function updateSOLR (commands, core) {
-  let url = SOLR_URL + `/${core}/update?wt=json&softCommit=true`
+  let url = SOLR_URL + `/${core}/update?wt=json`
 
   return request(url, {
     json: true,
