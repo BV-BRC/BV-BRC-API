@@ -37,8 +37,8 @@ var querySOLR = function (req, res, next) {
 
   // filter error queries
   if (query.includes("(genome_id:())")) {
-    res.status(400).send('Query contains error: (genome_id:())')
-    return;
+    res.status(404)
+    return next();
   }
 
   when(solr.query(query), function (results) {
