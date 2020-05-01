@@ -101,7 +101,7 @@ function processQueue (queue) {
         completedHardCommit = true
         setTimeout(() => {
           processQueue(queue)
-        }, 5000)
+        }, 60000)
       } else {
         setTimeout(() => {
           processQueue(queue)
