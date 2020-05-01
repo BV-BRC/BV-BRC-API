@@ -34,6 +34,13 @@ var querySOLR = function (req, res, next) {
   // debug("querySOLR() req.params", req.call_params);
   var solr = new Solrjs(SOLR_URL + '/' + req.call_collection)
   debug('querySOLR() query: ', query)
+
+  // filter error queries
+  if (query.includes("(genome_id:())")) {
+    res.status(400).send('Query contains error: (genome_id:())')
+    return;
+  }
+
   when(solr.query(query), function (results) {
     // debug('APIMethodHandler solr.query response code: ', results.responseHeader.status)
     if (!results) {
