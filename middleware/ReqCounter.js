@@ -7,7 +7,6 @@ let cnt_res_err = 0;
 
 const dest = pino.destination('reqeusts_per_min.log')
 const logger = pino({
-    base: null,
     timestamp: pino.stdTimeFunctions.isoTime
 }, dest)
 
