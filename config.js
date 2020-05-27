@@ -57,6 +57,11 @@ var defaults = {
   queueDirectory: './index-queue-dir',
   'solr': {
     'url': 'http://localhost:8983/solr'
+    , agent: {
+      keepAlive: true,
+      maxSockets: 32,
+      keepAliveMsecs: 3000
+    }
   },
 
   'redis': {

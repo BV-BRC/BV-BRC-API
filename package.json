@@ -1,6 +1,6 @@
 {
   "name": "p3api",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "private": true,
   "scripts": {
     "start": "node app.js",
@@ -36,7 +36,7 @@
     "request": "^2.88.2",
     "request-promise": "4.2.2",
     "rql": "^0.3.3",
-    "solrjs": "^0.7.1",
+    "solrjs": "github:dmachi/solrjs",
     "temp": "^0.8.3",
     "touch": "^1.0.0",
     "uuid": "^2.0.1",
