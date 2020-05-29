@@ -17,6 +17,10 @@ var uuid = require('uuid')
 var fs = require('fs-extra')
 var Path = require('path')
 
+var http = require('http')
+var solrAgentConfig = config.get('solr').agent
+var solrAgent = new http.Agent(solrAgentConfig)
+
 debug('Queue Directory: ', config.get('queueDirectory'))
 var qdir = config.get('queueDirectory')
 var queue
@@ -110,7 +114,9 @@ function checkSolr (genome_id) {
     const url = `${config.get('solr').url}/${core}/select?q=genome_id:${genome_id}&rows=1&wt=json`
     // console.log(`${url}`)
     const def = new Defer()
-    Request.get(url, (err, res, body) => {
+    Request.get(url, {
+      agent: solrAgent
+    }, (err, res, body) => {
       if (err) {
         def.reject(err)
         return def.promise
