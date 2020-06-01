@@ -11,7 +11,9 @@ const JSONStream = require('JSONStream')
 const es = require('event-stream')
 
 const queueDirectory = config.get('queueDirectory')
-// require('request').debug = true
+var http = require('http')
+var solrAgentConfig = config.get('solr').shortLiveAgent
+var solrAgent = new http.Agent(solrAgentConfig)
 
 // console.log(`Queue Directory: ${queueDirectory}`)
 
@@ -45,13 +47,15 @@ let timer
 function deleteDocs (core, genomeId) {
   const url = `${config.get('solr').url}/${core}/update?stream.body=<delete><query>genome_id:${genomeId}</query></delete>`
 
-  Request.get(url, (err, res, body) => {
+  Request.get(url, {
+    agent: solrAgent
+  }, (err, res, body) => {
     if (err) {
-      console.log(err)
+      console.error(err)
       return
     }
     if (res.statusCode !== 200 || body.error) {
-      console.log(body.error.msg)
+      console.error(body.error.msg)
       return
     }
     console.log(`Sent delete query successfully: ${url}`)
@@ -64,7 +68,9 @@ function postDocs (filePath, type) {
   `${config.get('solr').url}/${type}/update?wt=json&overwrite=true&commit=false`
 
   fs.createReadStream(filePath).pipe(
-    Request.post(url, (err, res, bodyStr) => {
+    Request.post(url, {
+      agent: solrAgent
+    }, (err, res, bodyStr) => {
       const body = JSON.parse(bodyStr)
 
       if (err) {
