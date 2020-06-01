@@ -18,7 +18,7 @@ var fs = require('fs-extra')
 var Path = require('path')
 
 var http = require('http')
-var solrAgentConfig = config.get('solr').agent
+var solrAgentConfig = config.get('solr').shortLiveAgent
 var solrAgent = new http.Agent(solrAgentConfig)
 
 debug('Queue Directory: ', config.get('queueDirectory'))

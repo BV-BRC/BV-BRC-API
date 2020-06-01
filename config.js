@@ -62,6 +62,10 @@ var defaults = {
       maxSockets: 32,
       keepAliveMsecs: 3000
     }
+    , shortLiveAgent: {
+      keepAlive: true,
+      maxSockets: 8
+    }
   },
 
   'redis': {

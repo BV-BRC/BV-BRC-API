@@ -6,7 +6,7 @@ var debug = require('debug')('p3api-server:middleware/DownloadAPIMethodHandler')
 var when = require('promised-io/promise').when
 var http = require('http')
 
-var solrAgentConfig = config.get('solr').agent
+var solrAgentConfig = config.get('solr').shortLiveAgent
 var solrAgent = new http.Agent(solrAgentConfig)
 
 var querySOLR = function (req, res, next) {
