@@ -60,11 +60,14 @@ var defaults = {
     , agent: {
       keepAlive: true,
       maxSockets: 32,
+      maxFreeScokets: 16,
       keepAliveMsecs: 3000
     }
     , shortLiveAgent: {
       keepAlive: true,
-      maxSockets: 8
+      maxSockets: 8,
+      maxFreeScokets: 1,
+      keepAliveMsecs: 500
     }
   },
 
