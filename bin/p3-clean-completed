@@ -1,0 +1,47 @@
+#!/usr/bin/env node
+
+const config = require('../config')
+const fs = require('fs-extra')
+const http = require('http')
+const DATA_API_PORT = config.get('http_port')
+const localAgent = new http.Agent({
+  keepAlive: true,
+  maxSockets: 1,
+  keepAliveMsecs: 500,
+})
+
+const queueDir = config.get('queueDirectory')
+
+if (require.main === module) {
+  fs.readdirSync(`${queueDir}/file_data`).forEach(key => {
+    fs.readJson(`${queueDir}/history/${key}`, (err, data) => {
+      if (err) {
+        return
+      }
+      if (data && data.hasOwnProperty('state') && data.state === 'submitted') {
+        checkCompleteIndex(key)
+      }
+    })
+  })
+}
+
+function checkCompleteIndex(key) {
+  http.get({
+    host: 'localhost',
+    port: DATA_API_PORT,
+    path: `/indexer/${key}`,
+    agent: localAgent
+  }, (res) => {
+    let rawData = '';
+    res.on('data', (chunk) => { rawData += chunk })
+    res.on('end', () => {
+      const parsed = JSON.parse(rawData)
+      if (parsed.state === 'indexed') {
+        console.log(`${key}\t${parsed.state}`)
+      }
+    })
+  })
+  .on('error', (err) => {
+    console.log(err)
+  })
+}
