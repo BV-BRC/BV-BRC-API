@@ -1,115 +1,159 @@
 const assert = require('chai').assert
-const rp = require('request-promise')
-const Url = require('url')
+const http = require('http')
 
-const DATA_API_URL = 'http://localhost:3001'
+const DATA_API_PORT = 3001
 const maxTimeOut = 3 * 60 * 1000
-// const token = require('../config.json').token || ''
 
-const requestOptions = {
-  resolveWithFullResponse: true,
-  headers: {
-    'Content-Type': 'application/json'
-  }
+const agent = new http.Agent({
+  keepAlive: true,
+  maxSockets: 1
+})
+
+async function responseHander(res) {
+  let body = ''
+  res.on('data', (chunk) => {
+    // console.log(chunk)
+    body += chunk
+  })
+
+  res.on('end', () => {
+    return JSON.parse(body)
+  })
 }
 
-describe('Test Data Type', () => {
+describe('Test Router - Data Type', () => {
   describe('RQL query on genome', () => {
-    const rqlRequestOptions = Object.assign(requestOptions, {
+    const rqlRequestOptions = {
+      port: DATA_API_PORT,
+      agent: agent,
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/rqlquery+x-www-form-urlencoded'
       }
-    })
+    }
 
     const query = 'eq(taxon_lineage_ids,773)&sort(-score)'
 
     it('GET request', function (done) {
       this.timeout(maxTimeOut)
-      const url = Url.resolve(`${DATA_API_URL}/genome/`, `?${query}`)
-      console.log(url)
-      rp.get(url, rqlRequestOptions)
-        .then((res) => {
-          assert.equal(200, res.statusCode)
-          assert.isString(res.body)
-          parsed = JSON.parse(res.body)
-          assert.isArray(parsed)
-          assert.equal(25, parsed.length)
 
+      http.get(Object.assign(rqlRequestOptions, {
+        path: `/genome/?${query}`
+      }), (res) => {
+        assert.equal(200, res.statusCode)
+
+        let body = ''
+        res.on('data', (chunk) => {
+          body += chunk
+        })
+
+        res.on('end', () => {
+          assert.isString(body)
+          parsed = JSON.parse(body)
+          assert.isArray(parsed)
+          assert.isAtLeast(25, parsed.length)
           done()
         })
-        .catch((err) => {
-          done(err)
-        })
+      })
+      .on('error', (err) => {
+        done(err)
+      })
     })
 
     it('POST request', function (done) {
       this.timeout(maxTimeOut)
-      const url = `${DATA_API_URL}/genome/`
-      rp.post(url, Object.assign(rqlRequestOptions, {
-        body: query
-      }))
-        .then((res) => {
-          assert.equal(200, res.statusCode)
-          assert.isString(res.body)
-          parsed = JSON.parse(res.body)
-          assert.isArray(parsed)
-          assert.equal(25, parsed.length)
 
+      const req = http.request(Object.assign(rqlRequestOptions, {
+        path: '/genome/',
+        method: 'POST'
+      }), (res) => {
+        assert.equal(200, res.statusCode)
+
+        let body = ''
+        res.on('data', (chunk) => {
+          body += chunk
+        })
+
+        res.on('end', () => {
+          assert.isString(body)
+          parsed = JSON.parse(body)
+          assert.isArray(parsed)
+          assert.isAtLeast(25, parsed.length)
           done()
         })
-        .catch((err) => {
+      })
+      .on('error', (err) => {
           done(err)
-        })
+      })
+      req.write(query)
+      req.end()
     })
   })
 
   describe('SolrQuery on genome', function () {
-    const solrRequestOptions = Object.assign(requestOptions, {
+    const solrRequestOptions = {
+      port: DATA_API_PORT,
+      agent: agent,
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/solrquery+x-www-form-urlencoded'
       }
-    })
+    }
 
     const query = 'q=taxon_lineage_ids:773&sort=score+desc'
 
     it('GET request', function (done) {
       this.timeout(maxTimeOut)
-      const url = Url.resolve(`${DATA_API_URL}/genome/`, `?${query}`)
-      rp.get(url, solrRequestOptions)
-        .then((res) => {
-          assert.equal(200, res.statusCode)
-          assert.isString(res.body)
-          parsed = JSON.parse(res.body)
-          assert.isArray(parsed)
-          assert.equal(25, parsed.length)
 
+      http.get(Object.assign(solrRequestOptions, {
+        path: `/genome/?${query}`
+      }), (res) => {
+        assert.equal(200, res.statusCode)
+
+        let body = ''
+        res.on('data', (chunk) => {
+          body += chunk
+        })
+
+        res.on('end', () => {
+          assert.isString(body)
+          parsed = JSON.parse(body)
+          assert.isArray(parsed)
+          assert.isAtLeast(25, parsed.length)
           done()
         })
-        .catch((err) => {
-          done(err)
-        })
+      })
+      .on('error', (err) => {
+        done(err)
+      })
     })
 
     it('POST request', function (done) {
       this.timeout(maxTimeOut)
-      const url = `${DATA_API_URL}/genome/`
-      rp.post(url, Object.assign(solrRequestOptions, {
-        body: query
-      }))
-        .then((res) => {
-          assert.equal(200, res.statusCode)
-          assert.isString(res.body)
-          parsed = JSON.parse(res.body)
-          assert.isArray(parsed)
-          assert.equal(25, parsed.length)
+      const req = http.request(Object.assign(solrRequestOptions, {
+        path: '/genome/',
+        method: 'POST'
+      }), (res) => {
+        assert.equal(200, res.statusCode)
 
+        let body = ''
+        res.on('data', (chunk) => {
+          body += chunk
+        })
+
+        res.on('end', () => {
+          assert.isString(body)
+          parsed = JSON.parse(body)
+          assert.isArray(parsed)
+          assert.isAtLeast(25, parsed.length)
           done()
         })
-        .catch((err) => {
-          done(err)
-        })
+      })
+      .on('error', (err) => {
+        done(err)
+      })
+      req.write(query)
+      req.end()
     })
   })
 })
