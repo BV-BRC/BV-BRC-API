@@ -1,5 +1,3 @@
-const Deferred = require('promised-io/promise').Deferred
-const when = require('promised-io/promise').when
 const debug = require('debug')('p3api-server:ProteinFamily')
 const request = require('request')
 const config = require('../config')
@@ -10,60 +8,58 @@ const redisClient = redis.createClient(redisOptions)
 const RedisTTL = 60 * 60 * 24 // sec
 // this is global setting for concurrent connections
 currentContext = 5
-const all = require('promised-io/promise').all
 
 function fetchFamilyDescriptionBatch (familyIdList) {
-  const def = Deferred()
-  const familyRefHash = {}
+  return new Promise((resolve, reject) => {
+    const familyRefHash = {}
 
-  redisClient.mget(familyIdList, function (err, replies) {
-    const missingIds = []
-    replies.forEach((reply, i) => {
-      if (reply == null) {
-        missingIds.push(familyIdList[i])
+    redisClient.mget(familyIdList, function (err, replies) {
+      const missingIds = []
+      replies.forEach((reply, i) => {
+        if (reply == null) {
+          missingIds.push(familyIdList[i])
+        } else {
+          redisClient.expire(familyIdList[i], RedisTTL)
+          familyRefHash[familyIdList[i]] = reply
+        }
+      })
+
+      if (missingIds.length === 0) {
+        resolve(familyRefHash)
       } else {
-        redisClient.expire(familyIdList[i], RedisTTL)
-        familyRefHash[familyIdList[i]] = reply
+        request.post({
+          url: distributeURL + 'protein_family_ref/',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/solrquery+x-www-form-urlencoded',
+            'Authorization': ''
+          },
+          body: `q=family_id:(${missingIds.join(' OR ')})&fl=family_id,family_product&rows=${missingIds.length}`
+        }, function (error, resp, body) {
+          if (error) {
+            reject(error)
+            return
+          }
+
+          try {
+            const parsed = JSON.parse(body)
+            parsed.forEach(family => {
+              redisClient.set(family.family_id, family.family_product, 'EX', RedisTTL)
+              familyRefHash[family.family_id] = family.family_product
+            })
+          } catch (perr) {
+            reject(new Error('Error Parsing JSON response from solr: ' + perr))
+            return
+          }
+
+          resolve(familyRefHash)
+        })
       }
     })
-
-    if (missingIds.length === 0) {
-      def.resolve(familyRefHash)
-    } else {
-      request.post({
-        url: distributeURL + 'protein_family_ref/',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/solrquery+x-www-form-urlencoded',
-          'Authorization': ''
-        },
-        body: `q=family_id:(${missingIds.join(' OR ')})&fl=family_id,family_product&rows=${missingIds.length}`
-      }, function (error, resp, body) {
-        if (error) {
-          def.reject(error)
-          return
-        }
-  
-        try {
-          body = JSON.parse(body)
-        }catch(perr){
-          return def.reject(new Error("Error Parsing JSON response from solr: " + perr));
-        }
-         body.forEach(family => {
-          redisClient.set(family.family_id, family.family_product, 'EX', RedisTTL)
-          familyRefHash[family.family_id] = family.family_product
-        })
-
-        def.resolve(familyRefHash)
-      })
-    }
   })
-
-  return def.promise
 }
 
-function fetchFamilyDescriptions (familyIdList) {
-  const def = Deferred()
+async function fetchFamilyDescriptions (familyIdList) {
   const fetchSize = 3000
   const steps = Math.ceil(familyIdList.length / fetchSize)
   const allRequests = []
@@ -77,17 +73,17 @@ function fetchFamilyDescriptions (familyIdList) {
 
   debug('protein_family_ref checking cache took', (Date.now() - qSt) / 1000, 's')
 
-  all(allRequests).then(body => {
+  try {
+    const body = await Promise.all(allRequests)
     debug('protein_family_ref took', (Date.now() - qSt) / 1000, 's')
 
-    const familyRefHash = body.reduce((r, b) => {
+    return body.reduce((r, b) => {
       return Object.assign(r, b)
     }, {})
 
-    def.resolve(familyRefHash)
-  })
-
-  return def.promise
+  } catch (err) {
+    return err
+  }
 }
 
 async function fetchFamilyDataByGenomeId (genomeId, options) {
@@ -130,7 +126,6 @@ async function fetchFamilyDataByGenomeId (genomeId, options) {
 }
 
 async function fetchFamilyData (familyType, genomeIdList, options) {
-  const def = Deferred()
   const familyIdField = familyType + '_id'
 
   const qSt = Date.now()
@@ -163,75 +158,70 @@ async function fetchFamilyData (familyType, genomeIdList, options) {
       }
     })
   })
-
-  def.resolve(totalFamilyIdDict)
-
-  return def.promise
+  return totalFamilyIdDict
 }
 
-function processProteinFamily (pfState, options) {
-  const def = new Deferred()
-
+async function processProteinFamily (pfState, options) {
   // moved from MemoryStore implementation.
   const familyType = pfState['familyType']
   const genomeIds = pfState.genomeIds
 
-  when(fetchFamilyData(familyType, genomeIds, options), function (totalFamilyIdDict) {
-    // debug(totalFamilyIdDict)
+  try {
+    const totalFamilyIdDict = await fetchFamilyData(familyType, genomeIds, options)
     const familyIdList = Object.keys(totalFamilyIdDict)
 
-    when(fetchFamilyDescriptions(familyIdList), function (familyRefHash) {
-      const qSt = Date.now()
-      const data = []
-      familyIdList.sort().forEach(familyId => {
-        const proteins = genomeIds.map(genomeId => {
-          return totalFamilyIdDict[familyId][genomeId]
-        })
-          .filter(row => row !== undefined)
-          .reduce((total, proteins) => {
-            return total.concat(proteins)
-          }, [])
+    const familyRefHash = await fetchFamilyDescriptions(familyIdList)
 
-        const aa_length_max = Math.max.apply(Math, proteins)
-        const aa_length_min = Math.min.apply(Math, proteins)
-        const aa_length_sum = proteins.reduce((total, val) => total + val, 0)
-        const aa_length_mean = aa_length_sum / proteins.length
-        const aa_length_variance = proteins.map(val => Math.pow(val - aa_length_mean, 2))
-          .reduce((total, val) => total + val, 0) / proteins.length
-        const aa_length_std = Math.sqrt(aa_length_variance)
-
-        // debug(proteins, aa_length_mean, aa_length_variance, aa_length_std);
-
-        const genomeString = genomeIds.map(genomeId => {
-          if (totalFamilyIdDict[familyId].hasOwnProperty(genomeId)) {
-            const hexCount = (totalFamilyIdDict[familyId][genomeId].length).toString(16)
-            return (hexCount.length === 1) ? `0${hexCount}` : hexCount
-          } else {
-            return '00'
-          }
-        }).join('')
-
-        const row = {
-          family_id: familyId,
-          feature_count: proteins.length,
-          genome_count: Object.keys(totalFamilyIdDict[familyId]).length,
-          aa_length_std: aa_length_std,
-          aa_length_max: aa_length_max,
-          aa_length_mean: aa_length_mean,
-          aa_length_min: aa_length_min,
-          description: familyRefHash[familyId],
-          genomes: genomeString
-        }
-        data.push(row)
+    const qSt = Date.now()
+    const data = []
+    familyIdList.sort().forEach(familyId => {
+      const proteins = genomeIds.map(genomeId => {
+        return totalFamilyIdDict[familyId][genomeId]
       })
+        .filter(row => row !== undefined)
+        .reduce((total, proteins) => {
+          return total.concat(proteins)
+        }, [])
 
-      debug('processing protein family data took ', (Date.now() - qSt) / 1000, 's')
+      const aa_length_max = Math.max.apply(Math, proteins)
+      const aa_length_min = Math.min.apply(Math, proteins)
+      const aa_length_sum = proteins.reduce((total, val) => total + val, 0)
+      const aa_length_mean = aa_length_sum / proteins.length
+      const aa_length_variance = proteins.map(val => Math.pow(val - aa_length_mean, 2))
+        .reduce((total, val) => total + val, 0) / proteins.length
+      const aa_length_std = Math.sqrt(aa_length_variance)
 
-      def.resolve(data)
+      // debug(proteins, aa_length_mean, aa_length_variance, aa_length_std);
+
+      const genomeString = genomeIds.map(genomeId => {
+        if (totalFamilyIdDict[familyId].hasOwnProperty(genomeId)) {
+          const hexCount = (totalFamilyIdDict[familyId][genomeId].length).toString(16)
+          return (hexCount.length === 1) ? `0${hexCount}` : hexCount
+        } else {
+          return '00'
+        }
+      }).join('')
+
+      const row = {
+        family_id: familyId,
+        feature_count: proteins.length,
+        genome_count: Object.keys(totalFamilyIdDict[familyId]).length,
+        aa_length_std: aa_length_std,
+        aa_length_max: aa_length_max,
+        aa_length_mean: aa_length_mean,
+        aa_length_min: aa_length_min,
+        description: familyRefHash[familyId],
+        genomes: genomeString
+      }
+      data.push(row)
     })
-  })
 
-  return def.promise
+    debug('processing protein family data took ', (Date.now() - qSt) / 1000, 's')
+
+    return data
+  } catch (err) {
+    return err
+  }
 }
 
 module.exports = {
@@ -240,18 +230,14 @@ module.exports = {
     const pfState = params[0]
     return pfState && pfState.genomeIds.length > 0
   },
-  execute: function (params) {
-    const def = new Deferred()
-
+  execute: async function (params) {
     const pfState = params[0]
     const opts = params[1]
 
-    when(processProteinFamily(pfState, opts), function (result) {
-      def.resolve(result)
-    }, function (err) {
-      def.reject('Unable to process protein family queries. ' + err)
-    })
-
-    return def.promise
+    try {
+      return await processProteinFamily(pfState, opts)
+    } catch (err) {
+      return new Error('Unable to process protein family queries. ' + err)
+    }
   }
 }
