@@ -9,26 +9,35 @@ function sanitize (val) {
 
 function serializeRow (type, o) {
   var row = []
+  var row2 = []
   if (o.feature_type === 'source') {
     o.feature_type = 'region'
   }
   if (o.feature_type === 'misc_RNA') {
     o.feature_type = 'transcript'
   }
-  if (o.feature_type === 'CDS') {
-    o.feature_type = 'gene'
-  }
 
   if (o.feature_type === 'region') {
     row.push('##sequence-region\taccn|' + o.accession + '\t' + o.start + '\t' + o.end + '\n')
     return
   }
+  if (o.feature_type === 'CDS') {
+    row.push(o.accession + '\t' + o.annotation + '\t' + 'gene' + '\t' + o.start + '\t' + o.end + '\t.\t' + o.strand + '\t0\t')
+    row2.push(o.accession + '\t' + o.annotation + '\t' + 'CDS' + '\t' + o.start + '\t' + o.end + '\t.\t' + o.strand + '\t0\t')
+  }
+  else {
+    row.push(o.accession + '\t' + o.annotation + '\t' + o.feature_type + '\t' + o.start + '\t' + o.end + '\t.\t' + o.strand + '\t0\t')
+  }
 
-  row.push(o.accession + '\t' + o.annotation + '\t' + o.feature_type + '\t' + o.start + '\t' + o.end + '\t.\t' + o.strand + '\t0\t')
+
   switch (o.annotation) {
     case 'PATRIC':
       row.push('ID=' + o.patric_id)
       row.push(';name=' + o.patric_id)
+      if(row2 != false){
+        row2.push('Parent=' + o.patric_id)
+        row2.push(';name=' + o.patric_id)
+      }
       break
     case 'RefSeq':
       row.push('ID=' + o.refseq_locus_tag)
@@ -51,8 +60,11 @@ function serializeRow (type, o) {
   if (o.ec) {
     row.push(';ec_number=' + o.ec.join('|'))
   }
-
-  return row.join('') + '\n'
+  var result = row.join('') + '\n';
+  if(row2 != false){
+    result += row2.join('') + '\n';
+  }
+  return result;
 }
 
 module.exports = {
