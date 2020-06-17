@@ -1,33 +1,31 @@
 # PATRIC 3 API SERVER
 
 ## Installation
-
-	# git clone --recursive https://github.com/PATRIC3/p3_api.git
-	# cd p3api
-	# npm install
-	# cp p3api.conf.sample p3api.conf and modify as appropriate
-
+```
+git clone https://github.com/PATRIC3/p3_api.git
+cd p3api
+npm install
+cp p3api.conf.sample p3api.conf # modify as appropriate
+```
 ## Running
-	./bin/p3api-server
+```
+npm start
+```
 
 ## Running With Debugging Enabled
-	DEBUG=p3api-server ./bin/p3api-server
+```
+DEBUG=p3api-server npm start
+```
+
+## Running with pm2
+```
+./node_modules/pm2/bin/pm2 start app.js -i 3 --name "p3-api-service" --merge-logs -o p3_api_service.out.log -e p3_api_service.err.log
+```
 
 ## Testing
 
 For the latest documentation on setting up a test environment and running/writing tests, see [here](tests/README.md).
 
-##### Legacy Testing
-
-Testing requires internjs 2.x (https://theintern.github.io/), which has been included already.
-
-Test files exist in the tests/ directory.  All of the configured tests can be run by launching the p3api server locally on port 3001 (the default port) and then running
-
-	npm test
-
-Individual test suites from the tests/ directory can be run by specifying them to intern-client
-
-	node_modules/.bin/intern-client config=tests/intern suite=tests/query
 
 ### API Usage
 

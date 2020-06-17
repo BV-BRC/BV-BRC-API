@@ -10,6 +10,7 @@ var Limiter = require('../middleware/Limiter')
 var ContentRange = require('../middleware/content-range')
 var APIMethodHandler = require('../middleware/APIMethodHandler')
 var cacheMiddleware = require('../middleware/cache')
+var reqCounter = require('../middleware/ReqCounter')
 var patchMiddleware = require('../middleware/patch')
 var httpParams = require('../middleware/http-params')
 var media = require('../middleware/media')
@@ -174,6 +175,7 @@ router.use([
   },
   streamingHandler.checkIfStreaming,
   [cacheMiddleware.get, APIMethodHandler, cacheMiddleware.put],
+  reqCounter,
   ExtractCustomFields,
   ContentRange,
   media

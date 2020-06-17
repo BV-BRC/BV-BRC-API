@@ -7,6 +7,7 @@ var DecorateQuery = require('../middleware/DecorateQuery')
 var PublicDataTypes = require('../middleware/PublicDataTypes')
 var authMiddleware = require('../middleware/auth')
 var APIMethodHandler = require('../middleware/APIMethodHandler')
+var reqCounter = require('../middleware/ReqCounter')
 var httpParams = require('../middleware/http-params')
 var Limiter = require('../middleware/Limiter')
 
@@ -126,6 +127,7 @@ router.get('/genome/:id/stats/global', [
   DecorateQuery,
   Limiter,
   APIMethodHandler,
+  reqCounter,
   function (req, res, next) {
     if (res.results && res.results.response && res.results.response.docs) {
       // debug("solr result: ", res.results.response.docs);
@@ -164,6 +166,7 @@ router.get('/genome/:id/stats/region/:sequence_id', [
   DecorateQuery,
   Limiter,
   APIMethodHandler,
+  reqCounter,
   function (req, res, next) {
     if (res.results && res.results.stats) {
       var featureTotal = res.results.stats.stats_fields.na_length.sum
@@ -204,6 +207,7 @@ router.get('/genome/:id/stats/regionFeatureDensities/:sequence_id', [
   DecorateQuery,
   Limiter,
   APIMethodHandler,
+  reqCounter,
   function (req, res, next) {
     if (res.results && res.results.response && res.results.facet_counts.facet_ranges.start) {
       var binCounts = res.results.facet_counts.facet_ranges.start.counts.map(function (d) {
@@ -257,6 +261,7 @@ router.get('/genome/:id/features/:seq_accession', [
   DecorateQuery,
   Limiter,
   APIMethodHandler,
+  reqCounter,
   function (req, res, next) {
     if (req.call_collection === 'genome_sequence') {
       if (res.results && res.results.response && res.results.response.docs) {
@@ -343,6 +348,7 @@ router.get('/genome/:id/refseqs', [
   DecorateQuery,
   Limiter,
   APIMethodHandler,
+  reqCounter,
   function (req, res, next) {
     // debug("Res.results: ", res.results);
     if (res.results && res.results.response && res.results.response.docs) {

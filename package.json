@@ -1,6 +1,6 @@
 {
   "name": "p3api",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "private": true,
   "scripts": {
     "start": "node app.js",
@@ -29,13 +29,14 @@
     "newrelic": "^4.1.4",
     "node-xlsx": "^0.6.0",
     "p3-user": "https://github.com/PATRIC3/p3_user.git",
+    "pino": "^6.2.1",
     "promised-io": "~0.3.4",
     "redis": "^2.8.0",
     "replify": "~1.2.0",
     "request": "^2.88.2",
     "request-promise": "4.2.2",
     "rql": "^0.3.3",
-    "solrjs": "^0.7.1",
+    "solrjs": "github:dmachi/solrjs",
     "temp": "^0.8.3",
     "touch": "^1.0.0",
     "uuid": "^2.0.1",
@@ -49,8 +50,8 @@
     "eslint-plugin-node": "^6.0.1",
     "eslint-plugin-promise": "^3.7.0",
     "eslint-plugin-standard": "^3.1.0",
-    "mocha": "^5.2.0",
-    "pm2": "^4.2.3",
+    "mocha": "^7.2.0",
+    "pm2": "^4.4.0",
     "pm2-logrotate": "^2.7.0"
   }
 }

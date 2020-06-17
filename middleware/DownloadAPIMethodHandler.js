@@ -4,6 +4,10 @@ var config = require('../config')
 var SOLR_URL = config.get('solr').url
 var debug = require('debug')('p3api-server:middleware/DownloadAPIMethodHandler')
 var when = require('promised-io/promise').when
+var http = require('http')
+
+var solrAgentConfig = config.get('solr').shortLiveAgent
+var solrAgent = new http.Agent(solrAgentConfig)
 
 var querySOLR = function (req, res, next) {
   if (req.call_method !== 'query') {
@@ -13,6 +17,7 @@ var querySOLR = function (req, res, next) {
   var query = req.call_params[0]
   // debug("querySOLR() req.params", req.call_params);
   var solr = new Solrjs(SOLR_URL + '/' + req.call_collection)
+  solr.setAgent(solrAgent)
   debug('querySOLR() query: ', query)
   when(solr.query(query), function (results) {
     // debug("APIMethodHandler solr.query results: ", results)
@@ -33,6 +38,7 @@ var querySOLR = function (req, res, next) {
 }
 var getSOLR = function (req, res, next) {
   var solr = new Solrjs(SOLR_URL + '/' + req.call_collection)
+  solr.setAgent(solrAgent)
   when(solr.get(req.call_params[0]), function (sresults) {
     if (sresults && sresults.doc) {
       var results = sresults.doc
