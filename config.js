@@ -59,13 +59,13 @@ var defaults = {
     'url': 'http://localhost:8983/solr'
     , agent: {
       keepAlive: true,
-      maxSockets: 32,
-      maxFreeScokets: 16,
-      keepAliveMsecs: 3000
+      maxSockets: 12,
+      maxFreeScokets: 3,
+      keepAliveMsecs: 1000
     }
     , shortLiveAgent: {
       keepAlive: true,
-      maxSockets: 8,
+      maxSockets: 4,
       maxFreeScokets: 1,
       keepAliveMsecs: 500
     }
