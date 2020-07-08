@@ -31,6 +31,10 @@ const Solrjs = require('solrjs')
 const SOLR_URL = conf.get('solr').url
 const request = require('request-promise')
 
+var http = require('http')
+var solrAgentConfig = conf.get('solr').shortLiveAgent
+var solrAgent = new http.Agent(solrAgentConfig)
+
 const genomeCoresUUIDs = {
   genome: 'genome_id',
   genome_sequence: 'sequence_id',
@@ -79,6 +83,7 @@ function updatePermissions (req, res, next) {
       debug(`updating core ${core}...`)
 
       const solr = new Solrjs(SOLR_URL + '/' + core)
+      solr.setAgent(solrAgent)
 
       // for each core, fetch object keys, owners, user_read, user_write
       // Notes:
@@ -207,6 +212,7 @@ function updateSOLR (commands, core) {
       'content-type': 'application/json',
       'accept': 'application/json'
     },
+    agent: solrAgent,
     body: commands
   }).then(r => {
     debug(`${core} update successful`)
