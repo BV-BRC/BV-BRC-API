@@ -1,0 +1,19 @@
+##gff-version 3
+#Genome: 1310581.3	Acinetobacter baumannii 34654 5S RNA
+JEZL01000010	PATRIC	rRNA	108979	109095	.	-	0	ID=fig|1310581.3.rna.51;name=fig|1310581.3.rna.51;product=5S RNA
+JEZL01000010	PATRIC	rRNA	109271	112172	.	-	0	ID=fig|1310581.3.rna.52;name=fig|1310581.3.rna.52;product=Large Subunit Ribosomal RNA%3B lsuRNA%3B LSU rRNA
+JEZL01000010	PATRIC	rRNA	112826	113044	.	-	0	ID=fig|1310581.3.rna.55;name=fig|1310581.3.rna.55;product=Small Subunit Ribosomal RNA%3B ssuRNA%3B SSU rRNA
+JEZL01000015	PATRIC	rRNA	63	179	.	+	0	ID=fig|1310581.3.rna.66;name=fig|1310581.3.rna.66;locus_tag=J480_2331;product=5S RNA
+JEZL01000026	PATRIC	rRNA	1	1101	.	-	0	ID=fig|1310581.3.rna.77;name=fig|1310581.3.rna.77;product=Small Subunit Ribosomal RNA%3B ssuRNA%3B SSU rRNA
+JEZL01000035	PATRIC	rRNA	1	194	.	+	0	ID=fig|1310581.3.rna.78;name=fig|1310581.3.rna.78;product=Large Subunit Ribosomal RNA%3B lsuRNA%3B LSU rRNA
+JEZL01000035	PATRIC	rRNA	370	486	.	+	0	ID=fig|1310581.3.rna.79;name=fig|1310581.3.rna.79;locus_tag=J480_3545;product=5S RNA
+JEZL01000045	PATRIC	rRNA	25155	25271	.	-	0	ID=fig|1310581.3.rna.82;name=fig|1310581.3.rna.82;product=5S RNA
+JEZL01000045	PATRIC	rRNA	25447	25640	.	-	0	ID=fig|1310581.3.rna.83;name=fig|1310581.3.rna.83;product=Large Subunit Ribosomal RNA%3B lsuRNA%3B LSU rRNA
+JEZL01000051	PATRIC	rRNA	17907	18023	.	-	0	ID=fig|1310581.3.rna.86;name=fig|1310581.3.rna.86;product=5S RNA
+JEZL01000051	PATRIC	rRNA	18199	18392	.	-	0	ID=fig|1310581.3.rna.87;name=fig|1310581.3.rna.87;product=Large Subunit Ribosomal RNA%3B lsuRNA%3B LSU rRNA
+JEZL01000054	PATRIC	rRNA	10263	10379	.	-	0	ID=fig|1310581.3.rna.88;name=fig|1310581.3.rna.88;product=5S RNA
+JEZL01000054	PATRIC	rRNA	10555	13456	.	-	0	ID=fig|1310581.3.rna.89;name=fig|1310581.3.rna.89;product=Large Subunit Ribosomal RNA%3B lsuRNA%3B LSU rRNA
+JEZL01000054	PATRIC	rRNA	14110	14328	.	-	0	ID=fig|1310581.3.rna.92;name=fig|1310581.3.rna.92;product=Small Subunit Ribosomal RNA%3B ssuRNA%3B SSU rRNA
+JEZL01000064	PATRIC	rRNA	1	100	.	-	0	ID=fig|1310581.3.rna.94;name=fig|1310581.3.rna.94;locus_tag=J480_4177;product=5S RNA
+JEZL01000064	PATRIC	rRNA	275	3176	.	-	0	ID=fig|1310581.3.rna.95;name=fig|1310581.3.rna.95;product=Large Subunit Ribosomal RNA%3B lsuRNA%3B LSU rRNA
+JEZL01000064	PATRIC	rRNA	3830	4048	.	-	0	ID=fig|1310581.3.rna.98;name=fig|1310581.3.rna.98;product=Small Subunit Ribosomal RNA%3B ssuRNA%3B SSU rRNA
