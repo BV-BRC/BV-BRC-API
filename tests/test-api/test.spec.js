@@ -25,13 +25,17 @@ describe('Test Router - Data Type', () => {
 
     it('GET request', function (done) {
       (async () => {
-        const body = await httpGet(Object.assign(rqlRequestOptions, {
-          path: `/genome/?${query}`
-        }))
-        const parsed = JSON.parse(body)
-        assert.isArray(parsed)
-        assert.isAtLeast(25, parsed.length)
-        done()
+        try {
+          const body = await httpGet(Object.assign(rqlRequestOptions, {
+            path: `/genome/?${query}`
+          }))
+          const parsed = JSON.parse(body)
+          assert.isArray(parsed)
+          assert.isAtLeast(25, parsed.length)
+          done()
+        } catch (error) {
+          done(error)
+        }
       })()
     })
 
@@ -39,14 +43,18 @@ describe('Test Router - Data Type', () => {
       // this.timeout(maxTimeOut)
 
       (async () => {
-        const body = await httpRequest(Object.assign(rqlRequestOptions, {
-          path: '/genome/',
-          method: 'POST'
-        }), query)
-        const parsed = JSON.parse(body)
-        assert.isArray(parsed)
-        assert.isAtLeast(25, parsed.length)
-        done()
+        try {
+          const body = await httpRequest(Object.assign(rqlRequestOptions, {
+            path: '/genome/',
+            method: 'POST'
+          }), query)
+          const parsed = JSON.parse(body)
+          assert.isArray(parsed)
+          assert.isAtLeast(25, parsed.length)
+          done()
+        } catch (error) {
+          done(error)
+        }
       })()
     })
   })
@@ -65,26 +73,34 @@ describe('Test Router - Data Type', () => {
 
     it('GET request', function (done) {
       (async () => {
-        const body = await httpGet(Object.assign(solrRequestOptions, {
-          path: `/genome/?${query}`
-        }))
-        const parsed = JSON.parse(body)
-        assert.isArray(parsed)
-        assert.isAtLeast(25, parsed.length)
-        done()
+        try {
+          const body = await httpGet(Object.assign(solrRequestOptions, {
+            path: `/genome/?${query}`
+          }))
+          const parsed = JSON.parse(body)
+          assert.isArray(parsed)
+          assert.isAtLeast(25, parsed.length)
+          done()
+        } catch (error) {
+          done(error)
+        }
       })()
     })
 
     it('POST request', function (done) {
       (async () => {
-        const body = await httpRequest(Object.assign(solrRequestOptions, {
-          path: '/genome/',
-          method: 'POST'
-        }), query)
-        const parsed = JSON.parse(body)
-        assert.isArray(parsed)
-        assert.isAtLeast(25, parsed.length)
-        done()
+        try {
+          const body = await httpRequest(Object.assign(solrRequestOptions, {
+            path: '/genome/',
+            method: 'POST'
+          }), query)
+          const parsed = JSON.parse(body)
+          assert.isArray(parsed)
+          assert.isAtLeast(25, parsed.length)
+          done()
+        } catch (error) {
+          done(error)
+        }
       })()
     })
   })
