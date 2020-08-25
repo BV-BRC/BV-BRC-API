@@ -215,7 +215,7 @@ router.get('/genome/:id/stats/regionFeatureDensities/:sequence_id', [
           return d
         }
       })
-      var maxCount = Math.math(binCounts)
+      var maxCount = Math.max(binCounts)
 
       res.json({
         'stats': {
