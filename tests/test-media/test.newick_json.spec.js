@@ -11,7 +11,7 @@ const agent = new http.Agent({
   maxSockets: 3
 })
 const requestOptions = {
-  port: 3001,
+  port: config.get('http_port'),
   agent: agent
 }
 

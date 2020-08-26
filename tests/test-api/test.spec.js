@@ -1,9 +1,7 @@
 const assert = require('chai').assert
 const http = require('http')
 const {httpGet, httpRequest} = require('../../util/http')
-
-const DATA_API_PORT = 3001
-// const maxTimeOut = 3 * 60 * 1000
+const config = require('../../config')
 
 const agent = new http.Agent({
   keepAlive: true,
@@ -13,7 +11,7 @@ const agent = new http.Agent({
 describe('Test Router - Data Type', () => {
   describe('RQL query on genome', () => {
     const rqlRequestOptions = {
-      port: DATA_API_PORT,
+      port: config.get('http_port'),
       agent: agent,
       headers: {
         'Accept': 'application/json',
@@ -61,7 +59,7 @@ describe('Test Router - Data Type', () => {
 
   describe('SolrQuery on genome', function () {
     const solrRequestOptions = {
-      port: DATA_API_PORT,
+      port: config.get('http_port'),
       agent: agent,
       headers: {
         'Accept': 'application/json',

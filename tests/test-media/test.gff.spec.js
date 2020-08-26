@@ -1,13 +1,14 @@
 const assert = require('chai').assert
 const {httpRequest} = require('../../util/http')
 const http = require('http')
+const config = require('../../config')
 
 const agent = new http.Agent({
   keepAlive: true,
   maxSockets: 3
 })
 const requestOptions = {
-  port: 3001,
+  port: config.get('http_port'),
   agent: agent
 }
 

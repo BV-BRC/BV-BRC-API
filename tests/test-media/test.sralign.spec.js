@@ -3,13 +3,14 @@ const {httpGet} = require('../../util/http')
 const http = require('http')
 const fs = require('fs')
 const Path = require('path')
+const config = require('../../config')
 
 const agent = new http.Agent({
   keepAlive: true,
   maxSockets: 3
 })
 const requestOptions = {
-  port: 3001,
+  port: config.get('http_port'),
   agent: agent
 }
 

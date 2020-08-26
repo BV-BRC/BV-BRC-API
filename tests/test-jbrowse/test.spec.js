@@ -3,6 +3,7 @@ const http = require('http')
 const {httpGet} = require('../../util/http')
 const Path = require('path')
 const fs = require('fs')
+const config = require('../../config')
 
 const agent = new http.Agent({
   keepAlive: true,
@@ -10,7 +11,7 @@ const agent = new http.Agent({
 })
 
 const rqlRequestOptions = {
-  port: 3001,
+  port: config.get('http_port'),
   agent: agent,
   headers: {
     'Accept': 'application/json',
