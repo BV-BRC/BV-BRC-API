@@ -2,7 +2,6 @@ const assert = require('chai').assert
 const { httpRequest } = require('../../util/http')
 const http = require('http')
 const config = require('../../config')
-const token = require('../config.json').token || ''
 
 const agent = new http.Agent({
   keepAlive: true,
