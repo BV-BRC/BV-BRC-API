@@ -1,0 +1,52 @@
+##gff-version 3
+#Genome: 83332.12	Mycobacterium tuberculosis H37Rv Chromosomal replication initiator protein DnaA
+NC_000962	PATRIC	gene	34	1524	.	+	0	ID=fig|83332.12.peg.1;name=fig|83332.12.peg.1;locus_tag=Rv0001;product=Chromosomal replication initiator protein DnaA
+NC_000962	PATRIC	CDS	34	1524	.	+	0	Parent=fig|83332.12.peg.1;name=fig|83332.12.peg.1
+NC_000962	PATRIC	gene	2052	3260	.	+	0	ID=fig|83332.12.peg.2;name=fig|83332.12.peg.2;locus_tag=Rv0002;product=DNA polymerase III beta subunit (EC 2.7.7.7);Ontology_term=GO:0003887|DNA-directed DNA polymerase activity
+NC_000962	PATRIC	CDS	2052	3260	.	+	0	Parent=fig|83332.12.peg.2;name=fig|83332.12.peg.2
+NC_000962	PATRIC	gene	3280	4437	.	+	0	ID=fig|83332.12.peg.3;name=fig|83332.12.peg.3;locus_tag=Rv0003;product=DNA recombination and repair protein RecF
+NC_000962	PATRIC	CDS	3280	4437	.	+	0	Parent=fig|83332.12.peg.3;name=fig|83332.12.peg.3
+NC_000962	PATRIC	gene	4497	4997	.	+	0	ID=fig|83332.12.peg.4;name=fig|83332.12.peg.4;locus_tag=Rv0004;product=Zn-ribbon-containing%2C possibly RNA-binding protein and truncated derivatives
+NC_000962	PATRIC	CDS	4497	4997	.	+	0	Parent=fig|83332.12.peg.4;name=fig|83332.12.peg.4
+NC_000962	PATRIC	gene	5207	7267	.	+	0	ID=fig|83332.12.peg.5;name=fig|83332.12.peg.5;locus_tag=Rv0005;product=DNA gyrase subunit B (EC 5.99.1.3);Ontology_term=GO:0003918|DNA topoisomerase (ATP-hydrolyzing) activity
+NC_000962	PATRIC	CDS	5207	7267	.	+	0	Parent=fig|83332.12.peg.5;name=fig|83332.12.peg.5
+NC_000962	PATRIC	gene	7302	9818	.	+	0	ID=fig|83332.12.peg.6;name=fig|83332.12.peg.6;locus_tag=Rv0006;product=DNA gyrase subunit A (EC 5.99.1.3);Ontology_term=GO:0003918|DNA topoisomerase (ATP-hydrolyzing) activity
+NC_000962	PATRIC	CDS	7302	9818	.	+	0	Parent=fig|83332.12.peg.6;name=fig|83332.12.peg.6
+NC_000962	PATRIC	gene	9963	10160	.	+	0	ID=fig|83332.12.peg.7;name=fig|83332.12.peg.7;product=hypothetical protein
+NC_000962	PATRIC	CDS	9963	10160	.	+	0	Parent=fig|83332.12.peg.7;name=fig|83332.12.peg.7
+NC_000962	PATRIC	gene	10484	10828	.	+	0	ID=fig|83332.12.peg.8;name=fig|83332.12.peg.8;locus_tag=Rv0007;product=FIG187021: hypothetical protein
+NC_000962	PATRIC	CDS	10484	10828	.	+	0	Parent=fig|83332.12.peg.8;name=fig|83332.12.peg.8
+NC_000962	PATRIC	gene	10999	11121	.	+	0	ID=fig|83332.12.peg.9;name=fig|83332.12.peg.9;product=hypothetical protein
+NC_000962	PATRIC	CDS	10999	11121	.	+	0	Parent=fig|83332.12.peg.9;name=fig|83332.12.peg.9
+NC_000962	PATRIC	gene	11555	11692	.	-	0	ID=fig|83332.12.peg.10;name=fig|83332.12.peg.10;product=hypothetical protein
+NC_000962	PATRIC	CDS	11555	11692	.	-	0	Parent=fig|83332.12.peg.10;name=fig|83332.12.peg.10
+NC_000962	PATRIC	gene	11874	12311	.	-	0	ID=fig|83332.12.peg.11;name=fig|83332.12.peg.11;locus_tag=Rv0008c;product=FIG024317: hypothetical protein
+NC_000962	PATRIC	CDS	11874	12311	.	-	0	Parent=fig|83332.12.peg.11;name=fig|83332.12.peg.11
+NC_000962	PATRIC	gene	12486	13016	.	+	0	ID=fig|83332.12.peg.12;name=fig|83332.12.peg.12;locus_tag=Rv0009;product=Peptidyl-prolyl cis-trans isomerase (EC 5.2.1.8)
+NC_000962	PATRIC	CDS	12486	13016	.	+	0	Parent=fig|83332.12.peg.12;name=fig|83332.12.peg.12
+NC_000962	PATRIC	gene	13024	13176	.	-	0	ID=fig|83332.12.peg.13;name=fig|83332.12.peg.13;product=hypothetical protein
+NC_000962	PATRIC	CDS	13024	13176	.	-	0	Parent=fig|83332.12.peg.13;name=fig|83332.12.peg.13
+NC_000962	PATRIC	gene	13133	13447	.	-	0	ID=fig|83332.12.peg.14;name=fig|83332.12.peg.14;locus_tag=Rv0010c;product=FIG020554: membrane protein
+NC_000962	PATRIC	CDS	13133	13447	.	-	0	Parent=fig|83332.12.peg.14;name=fig|83332.12.peg.14
+NC_000962	PATRIC	gene	13714	13995	.	-	0	ID=fig|83332.12.peg.15;name=fig|83332.12.peg.15;locus_tag=Rv0011c;product=FIG018426: putative septation inhibitor protein
+NC_000962	PATRIC	CDS	13714	13995	.	-	0	Parent=fig|83332.12.peg.15;name=fig|83332.12.peg.15
+NC_000962	PATRIC	gene	14134	14877	.	+	0	ID=fig|83332.12.peg.16;name=fig|83332.12.peg.16;locus_tag=Rv0012;product=FIG215594: Membrane spanning protein
+NC_000962	PATRIC	CDS	14134	14877	.	+	0	Parent=fig|83332.12.peg.16;name=fig|83332.12.peg.16
+NC_000962	PATRIC	gene	14914	15612	.	+	0	ID=fig|83332.12.peg.17;name=fig|83332.12.peg.17;locus_tag=Rv0013;product=Anthranilate synthase%2C amidotransferase component (EC 4.1.3.27) @ Para-aminobenzoate synthase%2C amidotransferase component (EC 2.6.1.85);Ontology_term=GO:0004049|anthranilate synthase activity,GO:0046820|4-amino-4-deoxychorismate synthase activity
+NC_000962	PATRIC	CDS	14914	15612	.	+	0	Parent=fig|83332.12.peg.17;name=fig|83332.12.peg.17
+NC_000962	PATRIC	gene	15590	17470	.	-	0	ID=fig|83332.12.peg.18;name=fig|83332.12.peg.18;locus_tag=Rv0014c;product=Serine/threonine-protein kinase PknB (EC 2.7.11.1)
+NC_000962	PATRIC	CDS	15590	17470	.	-	0	Parent=fig|83332.12.peg.18;name=fig|83332.12.peg.18
+NC_000962	PATRIC	gene	17467	18762	.	-	0	ID=fig|83332.12.peg.19;name=fig|83332.12.peg.19;locus_tag=Rv0015c;product=Serine/threonine-protein kinase PknA (EC 2.7.11.1)
+NC_000962	PATRIC	CDS	17467	18762	.	-	0	Parent=fig|83332.12.peg.19;name=fig|83332.12.peg.19
+NC_000962	PATRIC	gene	18759	20207	.	-	0	ID=fig|83332.12.peg.20;name=fig|83332.12.peg.20;locus_tag=Rv0016c;product=FtsI-like cell elongation transpeptidase
+NC_000962	PATRIC	CDS	18759	20207	.	-	0	Parent=fig|83332.12.peg.20;name=fig|83332.12.peg.20
+NC_000962	PATRIC	gene	20231	21598	.	-	0	ID=fig|83332.12.peg.21;name=fig|83332.12.peg.21;locus_tag=Rv0017c;product=FtsW-like cell division membrane protein CA_C0505
+NC_000962	PATRIC	CDS	20231	21598	.	-	0	Parent=fig|83332.12.peg.21;name=fig|83332.12.peg.21
+NC_000962	PATRIC	gene	21637	23172	.	-	0	ID=fig|83332.12.peg.22;name=fig|83332.12.peg.22;locus_tag=Rv0018c;product=Serine/threonine phosphatase PPP (EC 3.1.3.16)
+NC_000962	PATRIC	CDS	21637	23172	.	-	0	Parent=fig|83332.12.peg.22;name=fig|83332.12.peg.22
+NC_000962	PATRIC	gene	23270	23737	.	-	0	ID=fig|83332.12.peg.23;name=fig|83332.12.peg.23;locus_tag=Rv0019c;product=FHA-domain-containing protein
+NC_000962	PATRIC	CDS	23270	23737	.	-	0	Parent=fig|83332.12.peg.23;name=fig|83332.12.peg.23
+NC_000962	PATRIC	gene	23861	25243	.	-	0	ID=fig|83332.12.peg.24;name=fig|83332.12.peg.24;locus_tag=Rv0020c;product=FIG00824290: FHA domain protein
+NC_000962	PATRIC	CDS	23861	25243	.	-	0	Parent=fig|83332.12.peg.24;name=fig|83332.12.peg.24
+NC_000962	PATRIC	gene	25913	26881	.	-	0	ID=fig|83332.12.peg.25;name=fig|83332.12.peg.25;locus_tag=Rv0021c;product=putative oxidoreductase%2C nitronate monooxygenase family
+NC_000962	PATRIC	CDS	25913	26881	.	-	0	Parent=fig|83332.12.peg.25;name=fig|83332.12.peg.25
