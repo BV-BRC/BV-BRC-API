@@ -1,122 +1,116 @@
-var debug = require('debug')('p3api-server:media/cufflinks+gff')
-var when = require('promised-io/promise').when
-var es = require('event-stream')
-// var wrap = require("../util/linewrap");
+const EventStream = require('event-stream')
 
 function sanitize (val) {
   return val.replace(/;/g, '%3B').replace(/=/g, '%3D').replace(/&/g, '%26').replace(/,/g, '%2C')
 }
 
-function serializeRow (type, o) {
-  var row = []
-  var row2 = []
-  if (o.feature_type === 'source') {
-    o.feature_type = 'region'
+function serializeRow (doc) {
+  const row = []
+  const row2 = []
+  if (doc.feature_type === 'source') {
+    doc.feature_type = 'region'
   }
-  if (o.feature_type === 'misc_RNA') {
-    o.feature_type = 'transcript'
+  if (doc.feature_type === 'misc_RNA') {
+    doc.feature_type = 'transcript'
   }
 
-  if (o.feature_type === 'region') {
-    row.push('##sequence-region\taccn|' + o.accession + '\t' + o.start + '\t' + o.end + '\n')
+  if (doc.feature_type === 'region') {
+    row.push(`##sequence-region\taccn|${o.accession}\t${o.start}\t${o.end}\n`)
     return
   }
-  if (o.feature_type === 'CDS') {
-    row.push(o.accession + '\t' + o.annotation + '\t' + 'gene' + '\t' + o.start + '\t' + o.end + '\t.\t' + o.strand + '\t0\t')
-    row2.push(o.accession + '\t' + o.annotation + '\t' + 'CDS' + '\t' + o.start + '\t' + o.end + '\t.\t' + o.strand + '\t0\t')
-  }
-  else {
-    row.push(o.accession + '\t' + o.annotation + '\t' + o.feature_type + '\t' + o.start + '\t' + o.end + '\t.\t' + o.strand + '\t0\t')
+  if (doc.feature_type === 'CDS') {
+    row.push(`${doc.accession}\t${doc.annotation}\tgene\t${doc.start}\t${doc.end}\t.\t${doc.strand}\t0\t`)
+    row2.push(`${doc.accession}\t${doc.annotation}\tCDS\t${doc.start}\t${doc.end}\t.\t${doc.strand}\t0\t`)
+  } else {
+    row.push(`${doc.accession}\t${doc.annotation}\t${doc.feature_type}\t${doc.start}\t${doc.end}\t.\t${doc.strand}\t0\t`)
   }
 
-
-  switch (o.annotation) {
+  switch (doc.annotation) {
     case 'PATRIC':
-      row.push('ID=' + o.patric_id)
-      row.push(';name=' + o.patric_id)
-      if(row2 != false){
-        row2.push('Parent=' + o.patric_id)
-        row2.push(';name=' + o.patric_id)
+      row.push(`ID=${doc.patric_id}`)
+      row.push(`;name=${doc.patric_id}`)
+      if (row2.length > 0) {
+        row2.push(`Parent=${doc.patric_id}`)
+        row2.push(`;name=${doc.patric_id}`)
       }
       break
     case 'RefSeq':
-      row.push('ID=' + o.refseq_locus_tag)
-      row.push(';name=' + o.refseq_locus_tag)
+      row.push(`ID=${doc.refseq_locus_tag}`)
+      row.push(`;name=${doc.refseq_locus_tag}`)
       break
   }
 
-  if (o.refseq_locus_tag) {
-    row.push(';locus_tag=' + o.refseq_locus_tag)
+  if (doc.refseq_locus_tag) {
+    row.push(`;locus_tag=${doc.refseq_locus_tag}`)
   }
 
-  if (o.product) {
-    row.push(';product=' + sanitize(o.product))
+  if (doc.product) {
+    row.push(`;product=${sanitize(doc.product)}`)
   }
 
-  if (o.go) {
-    row.push(';Ontology_term=' + o.go)
+  if (doc.go) {
+    row.push(`;Ontology_term=${doc.go}`)
   }
 
-  if (o.ec) {
-    row.push(';ec_number=' + o.ec.join('|'))
+  if (doc.ec) {
+    row.push(`;ec_number=${doc.ec.join('|')}`)
   }
-  var result = row.join('') + '\n';
-  if(row2 != false){
-    result += row2.join('') + '\n';
+  let result = row.join('') + '\n'
+  if (row2.length > 0) {
+    result += row2.join('') + '\n'
   }
-  return result;
+  return result
 }
 
 module.exports = {
   contentType: 'application/cufflinks+gff',
   serialize: function (req, res, next) {
-    debug('application/cufflinks+gff')
+    // console.log(`media type csv, call_method: ${req.call_method}`)
 
     if (req.isDownload) {
       res.attachment('PATRIC_' + req.call_collection + '.fasta')
-      // res.set("content-disposition", "attachment; filename=patric_genomes.fasta");
     }
 
     if (req.call_method === 'stream') {
-      when(res.results, function (results) {
-        // debug("res.results: ", results);
-        var docCount = 0
-        var head
+      Promise.all([res.results]).then((vals) => {
+        const results = vals[0]
+        let docCount = 0
+        let head
 
         if (!results.stream) {
           throw Error('Expected ReadStream in Serializer')
         }
 
-        results.stream.pipe(es.mapSync(function (data) {
+        results.stream.pipe(EventStream.mapSync((data) => {
           if (!head) {
             head = data
           } else {
-            // debug(JSON.stringify(data));
             if (docCount < 1) {
               res.write('##gff-version 3\n')
-              res.write('#Genome: ' + data.genome_id + '\t' + data.genome_name)
+              res.write(`#Genome: ${data.genome_id}\t${data.genome_name}`)
               if (data.product) {
                 res.write(' ' + data.product)
               }
             }
-            res.write(serializeRow(req.call_collection, data))
+            res.write(serializeRow(data))
             docCount++
           }
-        })).on('end', function () {
-          debug('Exported ' + docCount + ' Documents')
+        })).on('end', () => {
           res.end()
         })
+      }, (error) => {
+        next(new Error(`Unable to receive stream: ${error}`))
       })
     } else {
       if (res.results && res.results.response && res.results.response.docs && res.results.response.docs.length > 0) {
         res.write('##gff-version 3\n')
-        res.write('#Genome: ' + res.results.response.docs[0].genome_id + '\t' + res.results.response.docs[0].genome_name)
+        res.write(`#Genome: ${res.results.response.docs[0].genome_id}\t${res.results.response.docs[0].genome_name}`)
         if (res.results.response.docs[0].product) {
           res.write(' ' + res.results.response.docs[0].product)
         }
         res.write('\n')
-        res.results.response.docs.forEach(function (o) {
-          res.write(serializeRow(req.call_collection, o))
+        res.results.response.docs.forEach((data) => {
+          res.write(serializeRow(data))
         })
       }
       res.end()

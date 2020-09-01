@@ -1,31 +1,28 @@
-var debug = require('debug')('p3api-server:media/json')
-var when = require('promised-io/promise').when
-var es = require('event-stream')
+const EventStream = require('event-stream')
 
 module.exports = {
   contentType: 'application/json',
   serialize: function (req, res, next) {
-    debug('application/json handler')
     if (req.call_method === 'stream') {
-      when(res.results, function (results) {
-        // debug("res.results: ", results);
-        var docCount = 0
+      Promise.all([res.results], (vals) => {
+        const results = vals[0]
+        let docCount = 0
+        let head
+
         res.write('[')
-        var head
-        results.stream.pipe(es.mapSync(function (data) {
-          // debug("STREAM DATA: ", data);
+        results.stream.pipe(EventStream.mapSync(function (data) {
           if (!head) {
             head = data
           } else {
-            // debug(JSON.stringify(data));
             res.write(((docCount > 0) ? ',' : '') + JSON.stringify(data))
             docCount++
           }
         })).on('end', function () {
-          debug('Exported ' + docCount + ' Documents')
           res.write(']')
           res.end()
         })
+      }, (error) => {
+        next(new Error(`Unable to receive stream: ${error}`))
       })
     } else if (req.call_method === 'query') {
       if (res.results && res.results.response && res.results.facet_counts) {

@@ -1,33 +1,25 @@
-var debug = require('debug')('p3api-server:media/newick+json')
-var when = require('promised-io/promise').when
-var config = require('../config')
-// var es = require("event-stream");
-var treeDir = config.get('treeDirectory')
-var Deferred = require('promised-io/promise').defer
-var Path = require('path')
-var fs = require('fs-extra')
+const Config = require('../config')
+const TREE_DIRECTORY = Config.get('treeDirectory')
+const Path = require('path')
+const Fs = require('fs')
 
 function checkForFiles (list) {
-  var def = new Deferred()
-  var id = list.pop()
-  var file = Path.join(treeDir, id + '.json')
-  debug('Look for json with newick: ', file)
-  fs.exists(file, function (exists) {
-    if (exists) {
-      def.resolve(file)
+  return new Promise((resolve, reject) => {
+    const id = list.pop()
+    const file = Path.join(TREE_DIRECTORY, `${id}.json`)
+
+    if (Fs.existsSync(file)) {
+      resolve(file)
     } else {
       if (!list || list.length < 1) {
-        def.reject('Newick+json Not Found')
+        reject(new Error('Json Not Found'))
       } else {
-        when(checkForFiles(list), function (f) {
-          def.resolve(f)
-        }, function (err) {
-          def.reject(err)
-        })
+        checkForFiles(list)
+          .then((f) => resolve(f))
+          .catch((e) => reject(e))
       }
     }
   })
-  return def.promise
 }
 
 module.exports = {
@@ -35,15 +27,17 @@ module.exports = {
   serialize: function (req, res, next) {
     if (req.call_collection === 'taxonomy' && req.call_method === 'get') {
       if (res.results && res.results.doc) {
-        var lids = res.results.doc.lineage_ids
-        when(checkForFiles(lids), function (file) {
-          fs.createReadStream(file).pipe(res)
-        }, function (err) {
-          res.writeHead(404, {'Content-Type': 'text/plain'})
-          res.end(err)
-        })
+        const lineageIds = res.results.doc.lineage_ids
+        checkForFiles(lineageIds)
+          .then((file) => {
+            Fs.createReadStream(file).pipe(res)
+          })
+          .catch((err) => {
+            res.writeHead(404, { 'Content-Type': 'text/plain' })
+            res.end(err)
+          })
       } else {
-        debug('Invalid Resposponse: ', res.results)
+        next(new Error(`Invalid Resposponse: ${res.results}`))
       }
     } else {
       next(new Error('Cannot retrieve newick+json formatted data from this source'))

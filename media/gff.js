@@ -1,50 +1,47 @@
-var debug = require('debug')('p3api-server:media/gff')
-var when = require('promised-io/promise').when
-var es = require('event-stream')
-// var wrap = require("../util/linewrap");
+const EventStream = require('event-stream')
 
-function serializeRow (type, o) {
-  var row = []
-  if (o.feature_type === 'source') {
-    o.feature_type = 'region'
+function serializeRow (doc) {
+  const row = []
+  if (doc.feature_type === 'source') {
+    doc.feature_type = 'region'
   }
-  if (o.feature_type === 'misc_RNA') {
-    o.feature_type = 'transcript'
+  if (doc.feature_type === 'misc_RNA') {
+    doc.feature_type = 'transcript'
   }
 
-  if (o.feature_type === 'region') {
-    row.push('##sequence-region\taccn|' + o.accession + '\t' + o.start + '\t' + o.end + '\n')
+  if (doc.feature_type === 'region') {
+    row.push(`##sequence-region\taccn|${doc.accession}\t${doc.start}\t${doc.end}\n`)
     return
   }
 
-  row.push('accn|' + o.accession + '\t' + o.annotation + '\t' + o.feature_type + '\t' + o.start + '\t' + o.end + '\t.\t' + o.strand + '\t0\t')
-  switch (o.annotation) {
+  row.push(`accn|${doc.accession}\t${doc.annotation}\t${doc.feature_type}\t${doc.start}\t${doc.end}\t.\t${doc.strand}\t0\t`)
+  switch (doc.annotation) {
     case 'PATRIC':
-      row.push('ID=' + o.patric_id)
+      row.push(`ID=${doc.patric_id}`)
       break
     case 'RefSeq':
-      row.push('ID=' + o.refseq_locus_tag)
+      row.push(`ID=${doc.refseq_locus_tag}`)
       break
   }
 
-  if (o.refseq_locus_tag) {
-    row.push(';locus_tag=' + o.refseq_locus_tag)
+  if (doc.refseq_locus_tag) {
+    row.push(`;locus_tag=${doc.refseq_locus_tag}`)
   }
 
-  if (o.product) {
-    row.push(';product=' + o.product)
+  if (doc.product) {
+    row.push(`;product=${doc.product}`)
   }
 
-  if (o.gene) {
-    row.push(';gene=' + o.gene)
+  if (doc.gene) {
+    row.push(`;gene=${doc.gene}`)
   }
 
-  if (o.go) {
-    row.push(';Ontology_term=' + o.go)
+  if (doc.go) {
+    row.push(`;Ontology_term=${doc.go}`)
   }
 
-  if (o.ec) {
-    row.push(';ec_number=' + o.ec.join('|'))
+  if (doc.ec) {
+    row.push(`;ec_number=${doc.ec.join('|')}`)
   }
 
   return row.join('') + '\n'
@@ -53,53 +50,52 @@ function serializeRow (type, o) {
 module.exports = {
   contentType: 'application/gff',
   serialize: function (req, res, next) {
-    // debug("application/gff");
-
     if (req.isDownload) {
-      res.attachment('PATRIC_' + req.call_collection + '.gff')
-      // res.set("content-disposition", "attachment; filename=patric_genomes.fasta");
+      res.attachment(`PATRIC_${req.call_collection}.gff`)
     }
 
     if (req.call_method === 'stream') {
-      when(res.results, function (results) {
-        // debug("res.results: ", results);
-        var docCount = 0
-        var head
+      Promise.all([res.results], (vals) => {
+        const results = vals[0]
+        let docCount = 0
+        let head
 
         if (!results.stream) {
           throw Error('Expected ReadStream in Serializer')
         }
 
-        results.stream.pipe(es.mapSync(function (data) {
+        results.stream.pipe(EventStream.mapSync((data) => {
           if (!head) {
             head = data
           } else {
             // debug(JSON.stringify(data));
             if (docCount < 1) {
               res.write('##gff-version 3\n')
-              res.write('#Genome: ' + data.genome_id + '\t' + data.genome_name)
+              res.write(`#Genome: ${data.genome_id}\t${data.genome_name}`)
               if (data.product) {
-                res.write(' ' + data.product)
+                res.write(` ${data.product}`)
               }
             }
             res.write(serializeRow(req.call_collection, data))
             docCount++
           }
-        })).on('end', function () {
-          debug('Exported ' + docCount + ' Documents')
+        })).on('end', () => {
           res.end()
         })
+      }, (error) => {
+        next(new Error(`Unable to receive stream: ${error}`))
       })
     } else {
       if (res.results && res.results.response && res.results.response.docs && res.results.response.docs.length > 0) {
         res.write('##gff-version 3\n')
-        res.write('#Genome: ' + res.results.response.docs[0].genome_id + '\t' + res.results.response.docs[0].genome_name)
-        if (res.results.response.docs[0].product) {
-          res.write(' ' + res.results.response.docs[0].product)
+        const thisDoc = res.results.response.docs[0]
+        res.write(`#Genome: ${thisDoc.genome_id}\t${thisDoc.genome_name}`)
+        if (thisDoc.product) {
+          res.write(` ${thisDoc.product}`)
         }
         res.write('\n')
-        res.results.response.docs.forEach(function (o) {
-          res.write(serializeRow(req.call_collection, o))
+        res.results.response.docs.forEach((o) => {
+          res.write(serializeRow(o))
         })
       }
       res.end()

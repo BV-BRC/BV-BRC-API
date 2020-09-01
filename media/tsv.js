@@ -1,25 +1,25 @@
-var debug = require('debug')('p3api-server:media/tsv')
-var when = require('promised-io/promise').when
-var es = require('event-stream')
+const EventStream = require('event-stream')
 
+function encapsulateStringArray (listOfVals) {
+  return `"${listOfVals.map((val) => (val && typeof val === 'string') ? val.replace(/"/g, "'") : val).join(';')}"`
+}
 module.exports = {
   contentType: 'text/tsv',
   serialize: function (req, res, next) {
-    debug('application/tsv handler')
-    debug('Method: ', req.call_method)
     var fields = req.fieldSelection
     var header = req.fieldHeader
 
     if (req.isDownload) {
-      res.attachment('PATRIC_' + req.call_collection + '.txt')
-      // res.set("content-disposition", 'attachment; filename="patric3_' + req.call_collection + '_query.txt"');
+      res.attachment(`PATRIC_${req.call_collection}.txt`)
     }
 
     if (req.call_method === 'stream') {
-      when(res.results, function (results) {
-        var docCount = 0
-        var head
-        results.stream.pipe(es.mapSync(function (data) {
+      Promise.all([res.results], (vals) => {
+        const results = vals[0]
+        let docCount = 0
+        let head
+
+        results.stream.pipe(EventStream.mapSync((data) => {
           if (!head) {
             head = data
           } else {
@@ -35,10 +35,10 @@ module.exports = {
             }
             var row = fields.map(function (field) {
               if (data[field] instanceof Array) {
-                return '"' + data[field].map(function (v) { return v.replace(/"/g, "'") }).join(';') + '"'
+                return encapsulateStringArray(data[field])
               } else if (data[field]) {
                 if (typeof data[field] === 'string') {
-                  return '"' + data[field].replace(/"/g, "'") + '"'
+                  return `"${data[field].replace(/"/g, "'")}"`
                 } else {
                   return data[field]
                 }
@@ -52,6 +52,8 @@ module.exports = {
         })).on('end', function () {
           res.end()
         })
+      }, (error) => {
+        next(new Error(`Unable to receive stream: ${error}`))
       })
     } else if (req.call_method === 'query') {
       if (res.results && res.results.response && res.results.response.docs) {
@@ -62,10 +64,10 @@ module.exports = {
         res.results.response.docs.forEach(function (o) {
           var row = fields.map(function (field) {
             if (o[field] instanceof Array) {
-              return '"' + o[field].map(function (v) { return v.replace(/"/g, "'") }).join(';') + '"'
+              return encapsulateStringArray(o[field])
             } else if (o[field]) {
               if (typeof o[field] === 'string') {
-                return '"' + o[field].replace(/"/g, "'") + '"'
+                return `"${o[field].replace(/"/g, "'")}"`
               } else {
                 return o[field]
               }

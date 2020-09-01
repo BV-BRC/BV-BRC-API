@@ -1,17 +1,13 @@
-var debug = require('debug')('p3api-server:media/excel')
-var xlsx = require('node-xlsx')
+const NodeXlsx = require('node-xlsx')
 
 module.exports = {
   contentType: 'application/vnd.openxmlformats',
   serialize: function (req, res, next) {
-    debug('application/vnd.openxmlformats handler')
-    debug('Method: ', req.call_method)
-    var fields = req.fieldSelection
-    var header = req.fieldHeader
+    let fields = req.fieldSelection
+    const header = req.fieldHeader
 
     if (req.isDownload) {
-      res.attachment('PATRIC_' + req.call_collection + '.xlsx')
-      // res.set("content-disposition", 'attachment; filename="patric3_' + req.call_collection + '_query.xlsx"');
+      res.attachment(`PATRIC_${req.call_collection}.xlsx`)
     }
 
     res.set('Content-Type', 'application/vnd.openxmlformats')
@@ -21,18 +17,16 @@ module.exports = {
         fields = Object.keys(res.results.response.docs[0])
       }
 
-      // debug("fields: ", fields);
-      const data = res.results.response.docs.map(function (o) {
+      const data = res.results.response.docs.map((doc) => {
         return fields.map(function (field) {
-          if (typeof o[field] === 'object') {
-            if (o[field] instanceof Array) {
-              return o[field].join(';')
+          if (typeof doc[field] === 'object') {
+            if (doc[field] instanceof Array) {
+              return doc[field].join(';')
             }
-            return JSON.stringify(o[field])
+            return JSON.stringify(doc[field])
           }
-          return o[field] || ''
+          return doc[field] || ''
         })
-        // return row;
       })
 
       if (header) {
@@ -41,11 +35,10 @@ module.exports = {
         data.unshift(fields)
       }
 
-      var d = xlsx.build([{name: 'patric3_query', data: data}])
+      var d = NodeXlsx.build([{ name: 'patric3_query', data: data }])
       res.end(d, 'binary')
     } else {
       res.status(404)
-      // res.end();
     }
   }
 }

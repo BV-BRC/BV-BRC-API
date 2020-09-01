@@ -1,15 +1,11 @@
-const debug = require('debug')('p3api-server:media/dna+fasta')
-const when = require('promised-io/promise').when
-const es = require('event-stream')
-const wrap = require('../util/linewrap')
-const getSequenceByHash = require('../util/featureSequence').getSequenceByHash
-const getSequenceDictByHash = require('../util/featureSequence').getSequenceDictByHash
+const EventStream = require('event-stream')
+const LineWrap = require('../util/linewrap')
+const { getSequenceByHash, getSequenceDictByHash } = require('../util/featureSequence')
 const SEQUENCE_BATCH = 500
-currentContext = 20
 
 function formatFASTAGenomeSequence (o) {
   const header = `>accn|${o.accession}   ${o.description}   [${o.genome_name} | ${o.genome_id}]\n`
-  return header + wrap(o.sequence, 60) + '\n'
+  return header + LineWrap(o.sequence, 60) + '\n'
 }
 
 function formatFASTAFeatureSequence (o) {
@@ -20,26 +16,27 @@ function formatFASTAFeatureSequence (o) {
     fasta_id = `gi|${o.gi}|${(o.refseq_locus_tag ? (o.refseq_locus_tag + '|') : '') + (o.alt_locus_tag ? (o.alt_locus_tag + '|') : '')}`
   }
   const header = `>${fasta_id}   ${o.product}   [${o.genome_name} | ${o.genome_id}]\n`
-  return header + ((o.sequence) ? wrap(o.sequence, 60) : '') + '\n'
+  return header + ((o.sequence) ? LineWrap(o.sequence, 60) : '') + '\n'
 }
 
 module.exports = {
   contentType: 'application/dna+fasta',
   serialize: async function (req, res, next) {
     if (req.isDownload) {
-      res.attachment('PATRIC_' + req.call_collection + '.fasta')
+      res.attachment(`PATRIC_${req.call_collection}.fasta`)
     }
 
     if (req.call_method === 'stream') {
-      when(res.results, function (results) {
-        let docCount = 0
+      Promise.all([res.results], (vals) => {
+        const results = vals[0]
+        // let docCount = 0
         let head
 
         if (!results.stream) {
           throw Error('Expected ReadStream in Serializer')
         }
 
-        results.stream.pipe(es.map(function (data, callback) {
+        results.stream.pipe(EventStream.map(function (data, callback) {
           if (!head) {
             head = data
             callback()
@@ -48,10 +45,10 @@ module.exports = {
               getSequenceByHash(data.na_sequence_md5).then((seq) => {
                 data.sequence = seq
                 res.write(formatFASTAFeatureSequence(data))
-                docCount++
+                // docCount++
                 callback()
               }, (err) => {
-                debug(err)
+                next(new Error(err))
               })
             } else if (req.call_collection === 'genome_sequence') {
               res.write(formatFASTAGenomeSequence(data))
@@ -59,9 +56,11 @@ module.exports = {
             }
           }
         })).on('end', function () {
-          debug('Exported ' + docCount + ' Documents')
+          // debug('Exported ' + docCount + ' Documents')
           res.end()
         })
+      }, (error) => {
+        next(new Error(`Unable to receive stream: ${error}`))
       })
     } else {
       if (res.results && res.results.response && res.results.response.docs) {

@@ -1,21 +1,17 @@
-const debug = require('debug')('p3api-server:media/protein+fasta')
-const when = require('promised-io/promise').when
-const es = require('event-stream')
-const wrap = require('../util/linewrap')
-const getSequenceByHash = require('../util/featureSequence').getSequenceByHash
-const getSequenceDictByHash = require('../util/featureSequence').getSequenceDictByHash
+const EventStream = require('event-stream')
+const LineWrap = require('../util/linewrap')
+const { getSequenceByHash, getSequenceDictByHash } = require('../util/featureSequence')
 const SEQUENCE_BATCH = 500
-currentContext = 20
 
-function formatFASTA (o) {
+function formatFASTA (doc) {
   let fasta_id
-  if (o.annotation === 'PATRIC') {
-    fasta_id = `${o.patric_id}|${(o.refseq_locus_tag ? (o.refseq_locus_tag + '|') : '') + (o.alt_locus_tag ? (o.alt_locus_tag + '|') : '')}`
+  if (doc.annotation === 'PATRIC') {
+    fasta_id = `${doc.patric_id}|${(doc.refseq_locus_tag ? (doc.refseq_locus_tag + '|') : '') + (doc.alt_locus_tag ? (doc.alt_locus_tag + '|') : '')}`
   } else if (o.annotation === 'RefSeq') {
-    fasta_id = `gi|${o.gi}|${(o.refseq_locus_tag ? (o.refseq_locus_tag + '|') : '') + (o.alt_locus_tag ? (o.alt_locus_tag + '|') : '')}`
+    fasta_id = `gi|${doc.gi}|${(doc.refseq_locus_tag ? (doc.refseq_locus_tag + '|') : '') + (doc.alt_locus_tag ? (doc.alt_locus_tag + '|') : '')}`
   }
-  const header = `>${fasta_id}   ${o.product}   [${o.genome_name} | ${o.genome_id}]\n`
-  return header + ((o.sequence) ? wrap(o.sequence, 60) : '') + '\n'
+  const header = `>${fasta_id}   ${doc.product}   [${doc.genome_name} | ${doc.genome_id}]\n`
+  return header + ((doc.sequence) ? LineWrap(doc.sequence, 60) : '') + '\n'
 }
 
 module.exports = {
@@ -26,15 +22,16 @@ module.exports = {
     }
 
     if (req.call_method === 'stream') {
-      when(res.results, function (results) {
-        let docCount = 0
+      Promise.all([req.results], (vals) => {
+        const results = vals[0]
+        // let docCount = 0
         let head
 
         if (!results.stream) {
           throw Error('Expected ReadStream in Serializer')
         }
 
-        results.stream.pipe(es.map(function (data, callback) {
+        results.stream.pipe(EventStream.map(function (data, callback) {
           if (!head) {
             head = data
             callback()
@@ -42,14 +39,13 @@ module.exports = {
             getSequenceByHash(data.aa_sequence_md5).then((seq) => {
               data.sequence = seq
               res.write(formatFASTA(data))
-              docCount++
+              // docCount++
               callback()
             }).catch((err) => {
-              debug(err)
+              next(new Error(err))
             })
           }
         })).on('end', function () {
-          debug('Exported ' + docCount + ' Documents')
           res.end()
         })
       })

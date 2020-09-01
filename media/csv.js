@@ -1,25 +1,26 @@
-var debug = require('debug')('p3api-server:media/csv')
-var when = require('promised-io/promise').when
-var es = require('event-stream')
+const EventStream = require('event-stream')
+
+function encapsulateStringArray (listOfVals) {
+  return `"${listOfVals.map((val) => (val && typeof val === 'string') ? val.replace(/"/g, "'") : val).join(';')}"`
+}
 
 module.exports = {
   contentType: 'text/csv',
   serialize: function (req, res, next) {
-    debug('application/csv handler')
-    debug('Method: ', req.call_method)
-    var fields = req.fieldSelection
-    var header = req.fieldHeader
+    let fields = req.fieldSelection
+    const header = req.fieldHeader
 
     if (req.isDownload) {
       res.attachment('PATRIC_' + req.call_collection + '.csv')
-      // res.set("content-disposition", 'attachment; filename="patric3_' + req.call_collection + '_query.csv"');
     }
+    // console.log(`media type csv, call_method: ${req.call_method}`)
 
     if (req.call_method === 'stream') {
-      when(res.results, function (results) {
-        var docCount = 0
-        var head
-        results.stream.pipe(es.mapSync(function (data) {
+      Promise.all([res.results]).then((vals) => {
+        const results = vals[0]
+        let docCount = 0
+        let head
+        results.stream.pipe(EventStream.mapSync((data) => {
           if (!head) {
             head = data
           } else {
@@ -34,13 +35,12 @@ module.exports = {
               }
             }
 
-            // debug(JSON.stringify(data));
-            var row = fields.map(function (field) {
+            const row = fields.map((field) => {
               if (data[field] instanceof Array) {
-                return '"' + data[field].map(function (v) { return (v && (typeof v=="string"))?(v.replace(/"/g, "'")):v }).join(';') + '"'
+                return encapsulateStringArray(data[field])
               } else if (data[field]) {
                 if (typeof data[field] === 'string') {
-                  return '"' + data[field].replace(/"/g, "'") + '"'
+                  return `"${data[field].replace(/"/g, "'")}"`
                 } else {
                   return data[field]
                 }
@@ -51,9 +51,11 @@ module.exports = {
             res.write(row.join(',') + '\n')
             docCount++
           }
-        })).on('end', function () {
+        })).on('end', () => {
           res.end()
         })
+      }, (error) => {
+        next(new Error(`Unable to receive stream: ${error}`))
       })
     } else if (req.call_method === 'query') {
       if (res.results && res.results.response && res.results.response.docs) {
@@ -61,15 +63,15 @@ module.exports = {
           fields = Object.keys(res.results.response.docs[0])
         }
         res.write(fields.join(',') + '\n')
-        res.results.response.docs.forEach(function (o) {
-          var row = fields.map(function (field) {
-            if (o[field] instanceof Array) {
-              return '"' + o[field].map(function (v) { return (v && (typeof v=="string"))?(v.replace(/"/g, "'")):v }).join(';') + '"'
-            } else if (o[field]) {
-              if (typeof o[field] === 'string') {
-                return '"' + o[field].replace(/"/g, "'") + '"'
+        res.results.response.docs.forEach((data) => {
+          const row = fields.map((field) => {
+            if (data[field] instanceof Array) {
+              return encapsulateStringArray(data[field])
+            } else if (data[field]) {
+              if (typeof data[field] === 'string') {
+                return `"${data[field].replace(/"/g, "'")}"`
               } else {
-                return o[field]
+                return data[field]
               }
             } else {
               return ''
