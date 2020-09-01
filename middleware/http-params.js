@@ -1,12 +1,9 @@
-var debug = require('debug')('p3api-server:http-params')
-var URL = require('url')
+const debug = require('debug')('p3api-server:http-params')
+const URL = require('url')
 
 module.exports = function (req, res, next) {
-  // debug("Begin http-params Middleware: ", req.query, "URL: ", req.url," PARSED:", req._parsedUrl)
-
-  // if (!req._parsedUrl){
   req._parsedUrl = URL.parse(req.url, false, false)
-  // }
+
   if (req._parsedUrl.query) {
     var parsed = {}
     if (typeof req._parsedUrl.query === 'string') {
@@ -20,20 +17,19 @@ module.exports = function (req, res, next) {
     debug('req.url', req.url, parsed)
 
     if (parsed) {
-      Object.keys(parsed).forEach(function (key) {
+      Object.keys(parsed).forEach((key) => {
         if (key.match('http_')) {
-          var header = key.split('_')[1]
+          const header = key.split('_')[1]
           req.headers[header] = decodeURIComponent(parsed[key])
           delete parsed[key]
         }
       })
 
-      // req._parsedUrl.query = parsed;
-      var keys = Object.keys(parsed)
+      const keys = Object.keys(parsed)
       if (keys.length < 1) {
         req._parsedUrl.search = ''
       } else {
-        var search = keys.map(function (key) {
+        const search = keys.map((key) => {
           if (!parsed[key]) {
             return key
           } else {
@@ -54,6 +50,6 @@ module.exports = function (req, res, next) {
   }
 
   debug('End http-params Middleware: ', req._parsedUrl, req._parsedUrl.query)
-  // console.log("Headers: ", req.headers);
+
   next()
 }

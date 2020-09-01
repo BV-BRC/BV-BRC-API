@@ -1,5 +1,5 @@
 
-var streamableMediaTypes = [
+const streamableMediaTypes = [
   'application/json',
   'text/csv',
   'text/tsv',

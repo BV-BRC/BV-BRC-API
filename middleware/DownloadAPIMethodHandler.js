@@ -1,5 +1,4 @@
 var Solrjs = require('solrjs')
-// var media = require("../middleware/media");
 var config = require('../config')
 var SOLR_URL = config.get('solr').url
 var debug = require('debug')('p3api-server:middleware/DownloadAPIMethodHandler')

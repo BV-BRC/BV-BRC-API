@@ -6,12 +6,6 @@ module.exports = function (req, res, next) {
 
   var rpcTypes = ['application/jsonrpc.result+json', 'application/jsonrpc+json']
 
-  /*
-  res.header("Cache-Control", "no-cache, no-store, must-revalidate");
-  res.header("Pragma", "no-cache");
-  res.header("Expires", 0);
-  */
-
   if (rpcTypes.some(function (t) {
     return req.is(t)
   })) {
