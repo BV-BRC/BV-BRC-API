@@ -2,6 +2,8 @@ const assert = require('chai').assert
 const http = require('http')
 const {httpGet, httpRequest} = require('../../util/http')
 const config = require('../../config')
+const Path = require('path')
+const Fs = require('fs')
 
 const agent = new http.Agent({
   keepAlive: true,
@@ -95,6 +97,34 @@ describe('Test Router - Data Type', () => {
           const parsed = JSON.parse(body)
           assert.isArray(parsed)
           assert.isAtLeast(25, parsed.length)
+          done()
+        } catch (error) {
+          done(error)
+        }
+      })()
+    })
+  })
+
+  describe('Get Schema', () => {
+    const requestOptions = {
+      port: config.get('http_port'),
+      agent: agent,
+      headers: {
+        'Accept': 'application/json'
+      },
+      path: '/genome/schema'
+    }
+    const ExpectedSchema = Fs.readFileSync(Path.join(__dirname, 'expected.schema.genome.json'), {
+      encoding: 'utf8'
+    })
+    const ExpectedSchemaJson = JSON.parse(ExpectedSchema)
+
+    it('GET genome schema', (done) => {
+      (async () => {
+        try {
+          const body = await httpGet(requestOptions)
+          const parsed = JSON.parse(body)
+          assert.deepEqual(parsed.schema, ExpectedSchemaJson)
           done()
         } catch (error) {
           done(error)
