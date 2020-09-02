@@ -1,41 +1,35 @@
 const assert = require('chai').assert
-const {httpGet} = require('../../util/http')
-const http = require('http')
-const fs = require('fs')
-const config = require('../../config')
-const treeDir = config.get('treeDirectory')
+const { httpGet } = require('../../util/http')
+const Http = require('http')
+const Fs = require('fs')
+const Config = require('../../config')
+const TREE_DIRECTORY = Config.get('treeDirectory')
 const Path = require('path')
 
-const agent = new http.Agent({
+const agent = new Http.Agent({
   keepAlive: true,
   maxSockets: 3
 })
 const requestOptions = {
-  port: config.get('http_port'),
+  port: Config.get('http_port'),
   agent: agent
 }
 
-describe('Test Media Types: newick+json', () => {
-  it('Test media type: newick+json', (done) => {
-    (async () => {
-      try {
-        const body = await httpGet(Object.assign(requestOptions, {
-          headers: {
-            'Accept': 'application/newick+json',
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          path: '/taxonomy/1763'
-        }))
-
-        const path = Path.join(treeDir, '2037.json')
-        const expected = fs.readFileSync(path, {
+describe('Test Media Types: newick+json', function () {
+  it('Test media type: newick+json', async function () {
+    return httpGet(Object.assign(requestOptions, {
+      headers: {
+        'Accept': 'application/newick+json',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      path: '/taxonomy/1763'
+    }))
+      .then((body) => {
+        const path = Path.join(TREE_DIRECTORY, '2037.json')
+        const expected = Fs.readFileSync(path, {
           encoding: 'utf8'
         })
         assert.equal(body.trimEnd(), expected.trimEnd())
-        done()
-      } catch (error) {
-        done(error)
-      }
-    })()
+      })
   })
 })
