@@ -22,7 +22,7 @@ module.exports = {
     }
 
     if (req.call_method === 'stream') {
-      Promise.all([req.results], (vals) => {
+      Promise.all([res.results]).then((vals) => {
         const results = vals[0]
         // let docCount = 0
         let head
@@ -48,6 +48,8 @@ module.exports = {
         })).on('end', function () {
           res.end()
         })
+      }, (error) => {
+        next(new Error(`Unable to receive stream: ${error}`))
       })
     } else {
       if (res.results && res.results.response && res.results.response.docs) {

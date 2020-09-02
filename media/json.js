@@ -4,7 +4,7 @@ module.exports = {
   contentType: 'application/json',
   serialize: function (req, res, next) {
     if (req.call_method === 'stream') {
-      Promise.all([res.results], (vals) => {
+      Promise.all([res.results]).then((vals) => {
         const results = vals[0]
         let docCount = 0
         let head

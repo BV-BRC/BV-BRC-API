@@ -55,7 +55,7 @@ module.exports = {
     }
 
     if (req.call_method === 'stream') {
-      Promise.all([res.results], (vals) => {
+      Promise.all([res.results]).then((vals) => {
         const results = vals[0]
         let docCount = 0
         let head
@@ -76,7 +76,7 @@ module.exports = {
                 res.write(` ${data.product}`)
               }
             }
-            res.write(serializeRow(req.call_collection, data))
+            res.write(serializeRow(data))
             docCount++
           }
         })).on('end', () => {
