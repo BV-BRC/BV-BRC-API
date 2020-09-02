@@ -3,7 +3,7 @@ const { httpRequest } = require('../../util/http')
 const http = require('http')
 const config = require('../../config')
 const token = require('../config.json').token || ''
-
+const MAX_TIMEOUT = 2 * 60 * 1000
 const agent = new http.Agent({
   keepAlive: true,
   maxSockets: 1
@@ -19,10 +19,12 @@ const requestOptions = {
 }
 
 
-describe('Test Transcriptomics Gene page', () => {
+describe('Test Transcriptomics Gene page', function () {
   const method = 'transcriptomicsGene'
 
-  describe('public experiment', () => {
+  describe('public experiment', function () {
+    this.timeout(MAX_TIMEOUT)
+
     const params = [{
       'heatmapAxis': '',
       'comparisonIds': ['100000211', '100000212', '100000213', '100000214'],
@@ -70,50 +72,49 @@ describe('Test Transcriptomics Gene page', () => {
     })
   })
 
-//   describe('workspace object', () => {
-//     const params = [{
-//       'heatmapAxis': '',
-//       'comparisonIds': ['4bf364a6-6a52-11e8-8803-002590829e0aS0', '4bf364a6-6a52-11e8-8803-002590829e0aS1', '4bf364a6-6a52-11e8-8803-002590829e0aS2'],
-//       'comparisonFilterStatus': {
-//         '4bf364a6-6a52-11e8-8803-002590829e0aS0': {'index': 0, 'status': 2, 'label': 'COL vs MHB'},
-//         '4bf364a6-6a52-11e8-8803-002590829e0aS1': {'index': 1, 'status': 2, 'label': 'MERO vs COL'},
-//         '4bf364a6-6a52-11e8-8803-002590829e0aS2': {'index': 2, 'status': 2, 'label': 'MERO vs MHB'}
-//       },
-//       'clusterRowOrder': [],
-//       'clusterColumnOrder': [],
-//       'significantGenes': 'Y',
-//       'colorScheme': 'rgb',
-//       'maxIntensity': 0,
-//       'keyword': '',
-//       'filterGenome': null,
-//       'upFold': 0,
-//       'downFold': 0,
-//       'upZscore': 0,
-//       'downZscore': 0,
-//       'wsExpIds': ['/PATRIC@patricbrc.org/PATRIC%20Workshop/ASM%20Microbe%202018/RNA-Seq/.Abaumannii_AMR_treatments/Abaumannii_AMR_treatments_diffexp'],
-//       'wsComaprisons': [
-//         {'expmean': -0.66225549, 'genes': 2203, 'pid': '4bf364a6-6a52-11e8-8803-002590829e0aS0', 'sig_z_score': 17, 'sampleUserGivenId': 'COL vs MHB', 'expname': 'COL vs MHB', 'sig_log_ratio': 1297, 'expstddev': 17.843524264},
-//         {'expmean': 0.2688476162, 'genes': 2149, 'pid': '4bf364a6-6a52-11e8-8803-002590829e0aS1', 'sig_z_score': 12, 'sampleUserGivenId': 'MERO vs COL', 'expname': 'MERO vs COL', 'sig_log_ratio': 1007, 'expstddev': 19.3514995681},
-//         {'expmean': -0.3483243464, 'genes': 2065, 'pid': '4bf364a6-6a52-11e8-8803-002590829e0aS2', 'sig_z_score': 8, 'sampleUserGivenId': 'MERO vs MHB', 'expname': 'MERO vs MHB', 'sig_log_ratio': 736, 'expstddev': 10.5018995298}
-//       ]
-//     }, {token: token}]
+  describe('workspace object', function () {
+    const params = [{
+      'heatmapAxis': '',
+      'comparisonIds': ['80a036ce-6aa8-11e8-901b-002590829e0aS0', '80a036ce-6aa8-11e8-901b-002590829e0aS1', '80a036ce-6aa8-11e8-901b-002590829e0aS2'],
+      'comparisonFilterStatus': {
+        '80a036ce-6aa8-11e8-901b-002590829e0aS0': {'index': 0, 'status': 2, 'label': 'COL vs MERO'},
+        '80a036ce-6aa8-11e8-901b-002590829e0aS1': {'index': 1, 'status': 2, 'label': 'COL vs MHB'},
+        '80a036ce-6aa8-11e8-901b-002590829e0aS2': {'index': 2, 'status': 2, 'label': 'MERO vs MHB'}
+      },
+      'clusterRowOrder': [],
+      'clusterColumnOrder': [],
+      'significantGenes': 'Y',
+      'colorScheme': 'rgb',
+      'maxIntensity': 0,
+      'keyword': '',
+      'filterGenome': null,
+      'upFold': 0,
+      'downFold': 0,
+      'upZscore': 0,
+      'downZscore': 0,
+      'wsExpIds': ['/PATRIC@patricbrc.org/PATRIC%20Workshop/RNA-Seq/.Acinetobacter_AMR_treatments/Acinetobacter_AMR_treatments_diffexp'],
+      'wsComaprisons': [
+        {"expmean": -0.2620460631, "genes": 2149, "pid": "80a036ce-6aa8-11e8-901b-002590829e0aS0", "sig_z_score": 12, "sampleUserGivenId": "COL vs MERO", "expname": "COL vs MERO", "sig_log_ratio": 1010, "expstddev": 19.351378158},
+        {"expmean": -0.7354886345, "genes": 2204, "pid": "80a036ce-6aa8-11e8-901b-002590829e0aS1", "sig_z_score": 21, "sampleUserGivenId": "COL vs MHB", "expname": "COL vs MHB", "sig_log_ratio": 1299, "expstddev": 17.9376742144},
+        {"expmean": -0.4388945358, "genes": 2066, "pid": "80a036ce-6aa8-11e8-901b-002590829e0aS2", "sig_z_score": 12, "sampleUserGivenId": "MERO vs MHB", "expname": "MERO vs MHB", "sig_log_ratio": 740, "expstddev": 10.6871591703}
+      ]
+    }, {token: token}]
 
-//     it('shold return result', function (done) {
-//       this.timeout(maxTimeOut)
+    it('shold return result', function (done) {
+      this.timeout(MAX_TIMEOUT)
 
-//       buildRemoteProcedureCallRequest(method, params)
-//         .then(function (res) {
-//           assert.equal(200, res.statusCode)
-//           assert.isObject(res.body)
-//           assert.containsAllKeys(res.body, ['result'])
-//           assert.isAtLeast(res.body.result.length, 1)
+      buildRemoteProcedureCallRequest(method, params)
+        .then((res) => {
+          const body = JSON.parse(res)
+          assert.containsAllKeys(body, ['result'])
+          assert.isAtLeast(body.result.length, 1)
 
-//           done()
-//         }).catch((err) => {
-//           done(err)
-//         })
-//     })
-//   })
+          done()
+        }).catch((err) => {
+          done(err)
+        })
+    })
+  })
 })
 
 

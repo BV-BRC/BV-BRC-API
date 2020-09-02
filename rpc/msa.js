@@ -1,40 +1,36 @@
-var Defer = require('promised-io/promise').defer
-var when = require('promised-io/promise').when
-var debug = require('debug')('p3api-server:msa')
-var ChildProcess = require('child_process')
-var config = require('../config')
-var request = require('request-promise')
-var distributeURL = config.get('distributeURL')
-var Temp = require('temp')
-var fs = require('fs-extra')
-// const getSequenceByHash = require('../util/featureSequence').getSequenceByHash
-const getSequenceDictByHash = require('../util/featureSequence').getSequenceDictByHash
+const debug = require('debug')('p3api-server:msa')
+const ChildProcess = require('child_process')
+const Config = require('../config')
+const http = require('http')
+const Temp = require('temp')
+const fs = require('fs-extra')
+const { httpRequest } = require('../util/http')
+const { getSequenceDictByHash } = require('../util/featureSequence')
+
+const agent = new http.Agent({
+  keepAlive: true,
+  maxSockets: 1
+})
 
 async function runQuery (query, opts) {
-  debug('Query: ', query)
-  debug('Send Request to distributeURL: ', distributeURL + 'genome_feature')
-  debug('runQuery: ', query)
 
-  const features = await request({
+  const features = await httpRequest({
+    port: Config.get('http_port'),
+    agent: agent,
     method: 'POST',
-    uri: distributeURL + 'genome_feature/',
     headers: {
-      'content-type': 'application/rqlquery+x-www-form-urlencoded',
-      'accept': 'application/json',
+      'Content-Type': 'application/rqlquery+x-www-form-urlencoded',
+      'Accept': 'application/json',
       'Authorization': opts.token || ''
     },
-    body: query
-  }).then((body) => JSON.parse(body))
+    path: `/genome_feature/`
+  }, query)
+    .then(
+      (body) => JSON.parse(body),
+      (err) => {
+       console.error(err)
+      })
 
-  // const md5Hash = await features.reduce(async (prevHash, f) => {
-  //   const md5 = (opts.alignType === 'dna') ? f.na_sequence_md5 : f.aa_sequence_md5
-  //   if (!Object.prototype.hasOwnProperty.call(prevHash, md5)) {
-  //     const newHash = await prevHash
-  //     newHash[md5] = await getSequenceByHash(md5)
-  //     return newHash
-  //   }
-  //   return prevHash
-  // }, {})
   const md5Array = features.map((f) => {
     return (opts.alignType === 'dna') ? f.na_sequence_md5 : f.aa_sequence_md5
   }).filter((md5) => md5)
@@ -52,189 +48,177 @@ async function runQuery (query, opts) {
 }
 
 function buildFasta (sequences, opts) {
-  var fasta = []
-  // build faa with stripped name so gblocks doesn't complain.
-  sequences.forEach(function (o) {
-    var fasta_id
-    if (o.feature_type === 'source') { return }
-    if (o.annotation === 'PATRIC') {
-      fasta_id = o.feature_id
-    } else if (o.annotation === 'RefSeq') {
-      fasta_id = o.feature_id
-    }
-    var row = '>' + fasta_id + ' [' + o.genome_id + ']\n' + o.aa_sequence + '\n'
-    if (opts.alignType === 'dna') {
-      row = '>' + fasta_id + ' [' + o.genome_id + ']\n' + o.na_sequence + '\n'
-    }
-    fasta.push(row)
-  })
+  return new Promise((resolve, reject) => {
+    const fasta = []
+    // build faa with stripped name so gblocks doesn't complain.
+    sequences.forEach((o) => {
+      let fasta_id
+      if (o.feature_type === 'source') { return }
+      if (o.annotation === 'PATRIC') {
+        fasta_id = o.feature_id
+      } else if (o.annotation === 'RefSeq') {
+        fasta_id = o.feature_id
+      }
+      let row = '>' + fasta_id + ' [' + o.genome_id + ']\n' + o.aa_sequence + '\n'
+      if (opts.alignType === 'dna') {
+        row = '>' + fasta_id + ' [' + o.genome_id + ']\n' + o.na_sequence + '\n'
+      }
+      fasta.push(row)
+    })
 
-  return fasta.join('')
+    resolve(fasta.join(''))
+  })
 }
 
 function runMuscle (sequences, opts) {
-  var def = new Defer()
-  var d = []
-  var errorClosed
+  return new Promise((resolve, reject) => {
+    const output = []
+    let errorClosed = false
 
-  debug('Run Aligner')
-  var child = ChildProcess.spawn('muscle', ['-fasta', '-maxhours', '0.03'], {
-    stdio: [
-      'pipe',
-      'pipe', // pipe child's stdout to parent
-      'pipe'
-    ]
+    // debug('Run Aligner')
+    const child = ChildProcess.spawn('muscle', ['-fasta', '-maxhours', '0.03'], {
+      stdio: [
+        'pipe',
+        'pipe', // pipe child's stdout to parent
+        'pipe'
+      ]
+    })
+
+    child.stdout.on('data', (data) => {
+      output.push(data.toString())
+    })
+
+    child.stderr.on('data', (errData) => {
+      // debug(`Muscle STDERR Data: ${errData.toString()}`)
+    })
+
+    child.on('error', (err) => {
+      errorClosed = true
+      reject(err)
+    })
+
+    child.on('close', (code) => {
+      debug('Muscle Process closed.', code)
+      if (!errorClosed) {
+        resolve(output.join(''))
+      }
+    })
+
+    child.stdin.write(sequences, 'utf8')
+    child.stdin.end()
   })
-
-  child.stdout.on('data', function (data) {
-    debug('Muscle Output Data: ', data.toString())
-    d.push(data.toString())
-  })
-
-  child.stderr.on('data', function (errData) {
-    debug('Muscle STDERR Data: ', errData.toString())
-  })
-
-  child.on('error', function (err) {
-    errorClosed = true
-    def.reject(err)
-  })
-
-  child.on('close', function (code) {
-    debug('Muscle Process closed.', code)
-    if (!errorClosed) {
-      def.resolve(d.join(''))
-    }
-  })
-
-  child.stdin.write(sequences, 'utf8')
-  child.stdin.end()
-
-  return def.promise
 }
 
 function runGBlocks (input, opts) {
-  var def = new Defer()
-  var errorClosed
-  var tempName = Temp.path({suffix: '.aga'})
+  return new Promise((resolve, reject) => {
+    let errorClosed = false
+    const tempName = Temp.path({suffix: '.aga'})
 
-  // console.log("GBlocks Temp File Input: ", tempName)
+    fs.outputFile(tempName, input, (err) => {
+      if (err) { reject(err); return }
 
-  fs.outputFile(tempName, input, function (err) {
-    if (err) { def.reject(err); return }
+      // debug('Run Gblocks')
+      const child = ChildProcess.spawn('Gblocks', [tempName, '-b5=h'], {
+        stdio: [
+          'pipe',
+          'pipe', // pipe child's stdout to parent
+          'pipe'
+        ]
+      })
 
-    debug('Run Gblocks')
-    var child = ChildProcess.spawn('Gblocks', [tempName, '-b5=h'], {
-      stdio: [
-        'pipe',
-        'pipe', // pipe child's stdout to parent
-        'pipe'
-      ]
-    })
+      child.stderr.on('data', (errData) => {
+        // debug('GBlocks STDERR Data: ', errData.toString())
+      })
 
-    child.stderr.on('data', function (errData) {
-      debug('GBlocks STDERR Data: ', errData.toString())
-    })
+      child.on('error', (err) => {
+        errorClosed = true
+        reject(err)
+      })
 
-    child.on('error', function (err) {
-      errorClosed = true
-      def.reject(err)
-    })
-
-    child.on('close', function (code) {
-      debug('GBlocks Process closed.', code)
-      if (!errorClosed) {
-        // console.log("Read File: ", tempName + "-gb");
-        fs.exists(tempName + '-gb', function (exists) {
-          if (!exists) {
-            def.reject('Gblocks Output Does Not Exist')
-            return
-          }
-
-          fs.readFile(tempName + '-gb', 'utf8', function (err, data) {
-            if (err) {
-              def.reject('Unable to Read Gblocks output: ', err)
+      child.on('close', (code) => {
+        debug('GBlocks Process closed.', code)
+        if (!errorClosed) {
+          fs.exists(tempName + '-gb', (exists) => {
+            if (!exists) {
+              reject('Gblocks Output Does Not Exist')
               return
             }
 
-            var lines = data.split('\n')
-            var empty = (!lines.some(function (line) {
-              line = line.trim()
-              if (!line || line.length === 0) { return false };
-              if (line === '>undefined') { return false };
+            fs.readFile(tempName + '-gb', 'utf8', (err, data) => {
+              if (err) {
+                reject(`Unable to Read Gblocks output: ${err}`)
+                return
+              }
 
-              if (line.charAt(0) === '>') { return false }
+              const lines = data.split('\n')
+              const isEmpty = (!lines.some((line) => {
+                line = line.trim()
+                if (!line || line.length === 0) { return false };
+                if (line === '>undefined') { return false };
 
-              return true
-            }))
+                if (line.charAt(0) === '>') { return false }
 
-            if (!empty) {
-              def.resolve(data)
-            } else {
-              fs.readFile(tempName, 'utf8', function (err, rawData) {
-                def.resolve(rawData)
-              })
-            }
-            // console.log("locusList: ", locusList);
-            // def.resolve(locusList.join("\n"));
+                return true
+              }))
+
+              if (!isEmpty) {
+                resolve(data)
+              } else {
+                fs.readFile(tempName, 'utf8', (err, rawData) => {
+                  resolve(rawData)
+                })
+              }
+            })
           })
-        })
-      }
-      // fs.unlink(tempName);
+        }
+      })
     })
   })
-
-  return def.promise
 }
 
 function runFastTree (input, opts) {
-  var def = new Defer()
-  var d = []
-  var errorClosed
+  return new Promise((resolve, reject) => {
+    const output = []
+    let errorClosed = false
+    const tempName = Temp.path({suffix: '.aga-gb'})
 
-  debug('Run FastTre_LG')
-
-  var tempName = Temp.path({suffix: '.aga-gb'})
-
-  // console.log("GBlocks Temp File Input: ", tempName)
-
-  fs.outputFile(tempName, input, function (err) {
-    var runOpts = ['-gamma', '-nosupport']
-    if (opts.alignType === 'dna') {
-      runOpts.push('-nt')
-    }
-    runOpts.push(tempName)
-    var child = ChildProcess.spawn('FastTree_LG', runOpts, {
-      stdio: [
-        'pipe',
-        'pipe', // pipe child's stdout to parent
-        'pipe'
-      ]
-    })
-
-    child.stdout.on('data', function (data) {
-      debug('FastTree_LG Output Data: ', data.toString())
-      d.push(data.toString())
-    })
-
-    child.stderr.on('data', function (errData) {
-      debug('FastTree_LG STDERR Data: ', errData.toString())
-    })
-
-    child.on('error', function (err) {
-      errorClosed = true
-      def.reject(err)
-    })
-
-    child.on('close', function (code) {
-      debug('FastTree_LG Process closed.', code)
-      if (!errorClosed) {
-        def.resolve(d.join(''))
+    fs.outputFile(tempName, input, (err) => {
+      const runOpts = ['-gamma', '-nosupport']
+      if (opts.alignType === 'dna') {
+        runOpts.push('-nt')
       }
-    })
-  })
+      runOpts.push(tempName)
+      const child = ChildProcess.spawn('FastTree_LG', runOpts, {
+        stdio: [
+          'pipe',
+          'pipe', // pipe child's stdout to parent
+          'pipe'
+        ]
+      })
 
-  return def.promise
+      child.stdout.on('data', (data) => {
+        // debug('FastTree_LG Output Data: ', data.toString())
+        output.push(data.toString())
+      })
+
+      child.stderr.on('data', (errData) => {
+        // debug('FastTree_LG STDERR Data: ', errData.toString())
+      })
+
+      child.on('error', (err) => {
+        errorClosed = true
+        reject(err)
+      })
+
+      child.on('close', (code) => {
+        debug('FastTree_LG Process closed.', code)
+        if (!errorClosed) {
+          resolve(output.join(''))
+        }
+      })
+    })
+
+  })
 }
 
 module.exports = {
@@ -244,50 +228,50 @@ module.exports = {
     return params && params[0] && params[0].length > 1
   },
   execute: async function (params, req, res) {
-    var def = new Defer()
-    // console.log("Execute MSA: ", params)
-    var query = params[0]
-    var alignType = 'protein'
-    if (params.length > 1) {
-      alignType = params[1]
-    }
-    var opts = {req: req, user: req.user, token: req.headers.authorization, alignType: alignType}
+    return new Promise(async (resolve, reject) => {
+      const query = params[0]
+      let alignType = 'protein'
+      if (params.length > 1) {
+        alignType = params[1]
+      }
+      const opts = {req: req, user: req.user, token: req.headers.authorization, alignType: alignType}
 
-    var sequences = await runQuery(query, opts).catch((err) => {
-      def.reject('Unable To Retreive Feature Data for MSA: ' + err)
-    })
-    when(buildFasta(sequences, opts), function (fasta) {
-      when(runMuscle(fasta, opts), function (alignment) {
-        when(runGBlocks(alignment, opts), function (gblocksOut) {
-          when(runFastTree(gblocksOut, opts), function (fastTree) {
-            var map = {}
-            sequences.forEach(function (seq) {
-              map[seq.feature_id] = {
-                'genome_name': seq.genome_name,
-                'feature_id': seq.feature_id,
-                'genome_id': seq.genome_id,
-                'patric_id': seq.patric_id,
-                'aa_length': seq.aa_length,
-                'refseq_locus_tag': seq.refseq_locus_tag
-              }
-            })
+      const sequences = await runQuery(query, opts).catch((err) => {
+        reject(`Unable To Retreive Feature Data for MSA: ${err}`)
+      })
+      buildFasta(sequences, opts).then((fasta) => {
+        runMuscle(fasta, opts).then((alignment) => {
+          runGBlocks(alignment, opts).then((gblocksOut) => {
+            runFastTree(gblocksOut, opts).then((fastTree) => {
+              const map = {}
+              sequences.forEach((seq) => {
+                map[seq.feature_id] = {
+                  'genome_name': seq.genome_name,
+                  'feature_id': seq.feature_id,
+                  'genome_id': seq.genome_id,
+                  'patric_id': seq.patric_id,
+                  'aa_length': seq.aa_length,
+                  'refseq_locus_tag': seq.refseq_locus_tag
+                }
+              })
 
-            def.resolve({
-              map: map,
-              alignment: alignment,
-              // gblocks: gblocksOut,
-              tree: fastTree
+              resolve({
+                map: map,
+                alignment: alignment,
+                tree: fastTree
+              })
+            }, (errFastTree) => {
+              reject(`Unable to Complete FastTree: ${errFastTree}`)
             })
-          }, function (err) {
-            def.reject('Unable to Complete FastTree: ' + err)
+          }, (errGBlocks) => {
+            reject(`Unable to Complete GBLocks for Alignment: ${errGBlocks}`)
           })
-        }, function (err) {
-          def.reject('Unable to Complete GBLocks for Alignment: ' + err)
+        }, (errMuscle) => {
+          reject(`Unable to Complete Alignement: ${errMuscle}`)
         })
-      }, function (err) {
-        def.reject('Unable to Complete Alignement: ' + err)
+      }, (errBuildFasta) => {
+        reject(`Unable to build Fasta: ${errBuildFasta}`)
       })
     })
-    return def.promise
   }
 }

@@ -21,7 +21,7 @@ var cors = require('cors')
 var http = require('http')
 
 http.globalAgent.maxSockets = 1024
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+// process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
 var app = module.exports = express()
 app.listen(config.get('http_port') || 3001)

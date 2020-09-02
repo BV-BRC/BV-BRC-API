@@ -1,19 +1,21 @@
 const debug = require('debug')('p3api-server:ProteinFamily')
-const request = require('request')
-const config = require('../config')
-const distributeURL = config.get('distributeURL')
-const redisOptions = config.get('redis')
+const { httpGet, httpRequest } = require('../util/http')
+const Config = require('../config')
+const http = require('http')
+const agent = new http.Agent({
+  keepAlive: true,
+  maxSockets: 1
+})
 const redis = require('redis')
+const redisOptions = Config.get('redis')
 const redisClient = redis.createClient(redisOptions)
 const RedisTTL = 60 * 60 * 24 // sec
-// this is global setting for concurrent connections
-currentContext = 5
 
 function fetchFamilyDescriptionBatch (familyIdList) {
   return new Promise((resolve, reject) => {
     const familyRefHash = {}
 
-    redisClient.mget(familyIdList, function (err, replies) {
+    redisClient.mget(familyIdList, async (err, replies) => {
       const missingIds = []
       replies.forEach((reply, i) => {
         if (reply == null) {
@@ -27,20 +29,16 @@ function fetchFamilyDescriptionBatch (familyIdList) {
       if (missingIds.length === 0) {
         resolve(familyRefHash)
       } else {
-        request.post({
-          url: distributeURL + 'protein_family_ref/',
+        await httpRequest({
+          port: Config.get('http_port'),
+          agent: agent,
+          method: 'POST',
           headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/solrquery+x-www-form-urlencoded',
-            'Authorization': ''
+            'Content-Type': 'application/solrquery+x-www-form-urlencoded'
           },
-          body: `q=family_id:(${missingIds.join(' OR ')})&fl=family_id,family_product&rows=${missingIds.length}`
-        }, function (error, resp, body) {
-          if (error) {
-            reject(error)
-            return
-          }
-
+          path: '/protein_family_ref/'
+        }, `q=family_id:(${missingIds.join(' OR ')})&fl=family_id,family_product&rows=${missingIds.length}`).then((body) => {
           try {
             const parsed = JSON.parse(body)
             parsed.forEach(family => {
@@ -53,6 +51,8 @@ function fetchFamilyDescriptionBatch (familyIdList) {
           }
 
           resolve(familyRefHash)
+        }, (error) => {
+          reject(error)
         })
       }
     })
@@ -80,7 +80,6 @@ async function fetchFamilyDescriptions (familyIdList) {
     return body.reduce((r, b) => {
       return Object.assign(r, b)
     }, {})
-
   } catch (err) {
     return err
   }
@@ -90,31 +89,28 @@ async function fetchFamilyDataByGenomeId (genomeId, options) {
   return new Promise((resolve, reject) => {
     const key = 'pfs_' + genomeId
 
-    redisClient.get(key, function (err, familyData) {
+    redisClient.get(key, async (err, familyData) => {
       if (familyData == null) {
         debug(`no cached data for ${key}`)
 
-        const query = `?q=genome_id:${genomeId} AND annotation:PATRIC AND feature_type:CDS&rows=25000&fl=pgfam_id,plfam_id,figfam_id,aa_length`
-
-        request.get({
-          url: distributeURL + 'genome_feature/' + query,
+        await httpGet({
+          port: Config.get('http_port'),
+          agent: agent,
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/solrquery+x-www-form-urlencoded',
             'Authorization': options.token || ''
           },
-          json: true
-        }, function (error, resp, body) {
-          if (error) {
-            reject(error)
-            return
-          }
+          path: `/genome_feature/?q=genome_id:${genomeId}+AND+annotation:PATRIC+AND+feature_type:CDS&rows=25000&fl=pgfam_id,plfam_id,figfam_id,aa_length`
+        }).then((body) => {
           if (typeof body === 'object') {
             redisClient.set(key, JSON.stringify(body), 'EX', RedisTTL)
             resolve(body)
           } else {
             reject(body)
           }
+        }, (error) => {
+          reject(error)
         })
       } else {
         // hit cache

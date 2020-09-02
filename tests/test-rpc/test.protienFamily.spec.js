@@ -32,7 +32,7 @@ describe('Test Protein Families', () => {
     'max_member_count': null,
     'min_genome_count': null,
     'max_genome_count': null
-  }]
+  }, {}]
   const payload = JSON.stringify({"id": 1, "method": method, "params": params, "jsonrpc": '2.0'})
 
   it('should return 200 with "OK" and result', (done) => {
