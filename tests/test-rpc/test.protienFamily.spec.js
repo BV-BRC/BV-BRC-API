@@ -2,6 +2,7 @@ const assert = require('chai').assert
 const { httpRequest } = require('../../util/http')
 const Http = require('http')
 const Config = require('../../config')
+const MAX_TIMEOUT = 1 * 60 * 1000
 
 const agent = new Http.Agent({
   keepAlive: true,
@@ -36,6 +37,8 @@ describe('Test Protein Families', function () {
   const payload = JSON.stringify({ 'id': 1, 'method': method, 'params': params, 'jsonrpc': '2.0' })
 
   it('PLFam for 83332.12', async function () {
+    this.timeout(MAX_TIMEOUT)
+
     return httpRequest(requestOptions, payload)
       .then((res) => {
         const body = JSON.parse(res)

@@ -2,6 +2,7 @@ const assert = require('chai').assert
 const { httpRequest } = require('../../util/http')
 const Http = require('http')
 const Config = require('../../config')
+const MAX_TIMEOUT = 1 * 60 * 1000
 
 const agent = new Http.Agent({
   keepAlive: true,
@@ -21,6 +22,8 @@ describe('Test Multiple Sequence Alignment', function () {
   const method = 'multipleSequenceAlignment'
 
   it('should return Nucleotide MSA', async function () {
+    this.timeout(MAX_TIMEOUT)
+
     const params = ['in(feature_id,(PATRIC.572418.5.NC_015758.CDS.3452.4438.fwd,PATRIC.572418.5.NC_015758.CDS.2053.3261.fwd,PATRIC.572418.5.NC_015758.CDS.34.1524.fwd))&limit(500)', 'dna']
     const payload = JSON.stringify({ 'id': 1, 'method': method, 'params': params, 'jsonrpc': '2.0' })
     return httpRequest(requestOptions, payload)
@@ -32,6 +35,8 @@ describe('Test Multiple Sequence Alignment', function () {
   })
 
   it('should return Amino Acide MSA', async function () {
+    this.timeout(MAX_TIMEOUT)
+
     const params = ['in(feature_id,(PATRIC.572418.5.NC_015758.CDS.3452.4438.fwd,PATRIC.572418.5.NC_015758.CDS.2053.3261.fwd,PATRIC.572418.5.NC_015758.CDS.34.1524.fwd))&limit(500)', 'protein']
     const payload = JSON.stringify({ 'id': 1, 'method': method, 'params': params, 'jsonrpc': '2.0' })
     return httpRequest(requestOptions, payload)
