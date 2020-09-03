@@ -29,7 +29,7 @@ function fetchFamilyDescriptionBatch (familyIdList) {
       if (missingIds.length === 0) {
         resolve(familyRefHash)
       } else {
-        await httpRequest({
+        httpRequest({
           port: Config.get('http_port'),
           agent: agent,
           method: 'POST',
@@ -93,7 +93,7 @@ async function fetchFamilyDataByGenomeId (genomeId, options) {
       if (familyData == null) {
         debug(`no cached data for ${key}`)
 
-        await httpGet({
+        httpGet({
           port: Config.get('http_port'),
           agent: agent,
           headers: {
@@ -102,12 +102,13 @@ async function fetchFamilyDataByGenomeId (genomeId, options) {
             'Authorization': options.token || ''
           },
           path: `/genome_feature/?q=genome_id:${genomeId}+AND+annotation:PATRIC+AND+feature_type:CDS&rows=25000&fl=pgfam_id,plfam_id,figfam_id,aa_length`
-        }).then((body) => {
+        }).then((res) => {
+          const body = JSON.parse(res)
           if (typeof body === 'object') {
             redisClient.set(key, JSON.stringify(body), 'EX', RedisTTL)
             resolve(body)
           } else {
-            reject(body)
+            reject(`Unable to retrieve genome object: ${genomeId}`)
           }
         }, (error) => {
           reject(error)
@@ -227,13 +228,15 @@ module.exports = {
     return pfState && pfState.genomeIds.length > 0
   },
   execute: async function (params) {
-    const pfState = params[0]
-    const opts = params[1]
+    return new Promise((resolve, reject) => {
+      const pfState = params[0]
+      const opts = params[1]
 
-    try {
-      return await processProteinFamily(pfState, opts)
-    } catch (err) {
-      return new Error('Unable to process protein family queries. ' + err)
-    }
+      processProteinFamily(pfState, opts).then((result) => {
+        resolve(result)
+      }, (err) => {
+        reject(`Unable to process protein family queries. ${err}`)
+      })
+    })
   }
 }
