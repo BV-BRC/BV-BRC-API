@@ -5,12 +5,6 @@
 	},
 	"workspaceAPI": "",
 	"distributeURL": "http://localhost:3001/",
-	"enableIndexer": false,
-	"jbrowseAPIRoot": "",
 	"queueDirectory": "",
-	"publicGenomeDir": "",
-	"cache": {
-		"enabled": false,
-		"directory": "/tmp/p3api_cache"
-	}
+	"publicGenomeDir": ""
 }

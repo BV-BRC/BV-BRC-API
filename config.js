@@ -41,12 +41,6 @@ var defaults = {
     'proteomics_protein'
   ],
 
-  enableIndexer: false,
-  indexImportLimits: {
-    default: 25,
-    genome_sequence: 100
-  },
-
   distributeURL: 'http://localhost:3001/',
 
   jbrowseAPIRoot: 'http://localhost:3001/jbrowse',
@@ -55,8 +49,8 @@ var defaults = {
   contentDirectory: './content',
   publicGenomeDir: '/genomes',
   queueDirectory: './index-queue-dir',
-  'solr': {
-    'url': 'http://localhost:8983/solr'
+  solr: {
+    url: 'http://localhost:8983/solr'
     , agent: {
       keepAlive: true,
       maxSockets: 12,
@@ -71,15 +65,13 @@ var defaults = {
     }
   },
 
-  'redis': {
-    'host': '127.0.0.1',
-    'port': 6379,
-    'prefix': '',
-    'db': 2,
-    'pass': ''
+  redis: {
+    host: '127.0.0.1',
+    port: 6379,
+    prefix: '',
+    db: 2,
+    pass: ''
   },
-
-  'numWorkers': 0,
 
   'cache': {
     'enabled': false,
