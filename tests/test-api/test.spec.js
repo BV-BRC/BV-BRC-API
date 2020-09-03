@@ -1,11 +1,11 @@
 const assert = require('chai').assert
-const http = require('http')
-const {httpGet, httpRequest} = require('../../util/http')
-const config = require('../../config')
+const Http = require('http')
+const { httpGet, httpRequest } = require('../../util/http')
+const Config = require('../../config')
 const Path = require('path')
 const Fs = require('fs')
 
-const agent = new http.Agent({
+const agent = new Http.Agent({
   keepAlive: true,
   maxSockets: 1
 })
@@ -13,7 +13,7 @@ const agent = new http.Agent({
 describe('Test Router - Data Type', () => {
   describe('RQL query on genome', () => {
     const rqlRequestOptions = {
-      port: config.get('http_port'),
+      port: Config.get('http_port'),
       agent: agent,
       headers: {
         'Accept': 'application/json',
@@ -23,45 +23,33 @@ describe('Test Router - Data Type', () => {
 
     const query = 'eq(taxon_lineage_ids,773)&sort(-score)'
 
-    it('GET request', function (done) {
-      (async () => {
-        try {
-          const body = await httpGet(Object.assign(rqlRequestOptions, {
-            path: `/genome/?${query}`
-          }))
+    it('GET request', async function () {
+      return httpGet(Object.assign(rqlRequestOptions, {
+        path: `/genome/?${query}`
+      }))
+        .then((body) => {
           const parsed = JSON.parse(body)
           assert.isArray(parsed)
           assert.isAtLeast(25, parsed.length)
-          done()
-        } catch (error) {
-          done(error)
-        }
-      })()
+        })
     })
 
-    it('POST request', function (done) {
-      // this.timeout(maxTimeOut)
-
-      (async () => {
-        try {
-          const body = await httpRequest(Object.assign(rqlRequestOptions, {
-            path: '/genome/',
-            method: 'POST'
-          }), query)
+    it('POST request', async function () {
+      return httpRequest(Object.assign(rqlRequestOptions, {
+        path: '/genome/',
+        method: 'POST'
+      }), query)
+        .then((body) => {
           const parsed = JSON.parse(body)
           assert.isArray(parsed)
           assert.isAtLeast(25, parsed.length)
-          done()
-        } catch (error) {
-          done(error)
-        }
-      })()
+        })
     })
   })
 
   describe('SolrQuery on genome', function () {
     const solrRequestOptions = {
-      port: config.get('http_port'),
+      port: Config.get('http_port'),
       agent: agent,
       headers: {
         'Accept': 'application/json',
@@ -71,43 +59,33 @@ describe('Test Router - Data Type', () => {
 
     const query = 'q=taxon_lineage_ids:773&sort=score+desc'
 
-    it('GET request', function (done) {
-      (async () => {
-        try {
-          const body = await httpGet(Object.assign(solrRequestOptions, {
-            path: `/genome/?${query}`
-          }))
+    it('GET request', async function () {
+      return httpGet(Object.assign(solrRequestOptions, {
+        path: `/genome/?${query}`
+      }))
+        .then((body) => {
           const parsed = JSON.parse(body)
           assert.isArray(parsed)
           assert.isAtLeast(25, parsed.length)
-          done()
-        } catch (error) {
-          done(error)
-        }
-      })()
+        })
     })
 
-    it('POST request', function (done) {
-      (async () => {
-        try {
-          const body = await httpRequest(Object.assign(solrRequestOptions, {
-            path: '/genome/',
-            method: 'POST'
-          }), query)
+    it('POST request', async function () {
+      return httpRequest(Object.assign(solrRequestOptions, {
+        path: '/genome/',
+        method: 'POST'
+      }), query)
+        .then((body) => {
           const parsed = JSON.parse(body)
           assert.isArray(parsed)
           assert.isAtLeast(25, parsed.length)
-          done()
-        } catch (error) {
-          done(error)
-        }
-      })()
+        })
     })
   })
 
   describe('Get Schema', () => {
     const requestOptions = {
-      port: config.get('http_port'),
+      port: Config.get('http_port'),
       agent: agent,
       headers: {
         'Accept': 'application/json'
@@ -119,17 +97,12 @@ describe('Test Router - Data Type', () => {
     })
     const ExpectedSchemaJson = JSON.parse(ExpectedSchema)
 
-    it('GET genome schema', (done) => {
-      (async () => {
-        try {
-          const body = await httpGet(requestOptions)
+    it('GET genome schema', async function () {
+      return httpGet(requestOptions)
+        .then((body) => {
           const parsed = JSON.parse(body)
           assert.deepEqual(parsed.schema, ExpectedSchemaJson)
-          done()
-        } catch (error) {
-          done(error)
-        }
-      })()
+        })
     })
   })
 })
