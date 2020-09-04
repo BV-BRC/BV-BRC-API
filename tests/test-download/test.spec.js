@@ -11,6 +11,36 @@ const agent = new Http.Agent({
   maxSockets: 1
 })
 
+async function httpGet (options) {
+  return new Promise((resolve, reject) => {
+    Http.get(options, (res) => {
+      const finalStream = new PassThrough()
+      let returnChunks
+      let isFirst = true
+      finalStream.on('data', (chunk) => {
+        if (isFirst) {
+          const lastIndex = chunk.lastIndexOf(Buffer.from('\0'))
+          returnChunks = chunk.slice(lastIndex + 1).toString()
+          isFirst = false
+        } else {
+          returnChunks += chunk.toString()
+        }
+      })
+      finalStream.on('end', () => {
+        resolve(returnChunks)
+      })
+      finalStream.on('error', (err) => {
+        reject(err)
+      })
+
+      res.pipe(Zlib.createUnzip()).pipe(finalStream)
+    })
+      .on('error', (err) => {
+        reject(err)
+      })
+  })
+}
+
 async function httpRequest (options, body) {
   return new Promise((resolve, reject) => {
     const req = Http.request(options, (res) => {
@@ -59,7 +89,7 @@ const RequestOption = {
 }
 
 describe('Test Router - Download', function () {
-  it('Genome PATRIC.features.tab', async function () {
+  it('POST - Genome PATRIC.features.tab', async function () {
     return httpRequest(RequestOption, 'q=eq(genome_id,83332.12)&archiveType=tar&types=*PATRIC.features.tab')
       .then((body) => {
         const firstIndex = body.indexOf('\0')
@@ -68,7 +98,7 @@ describe('Test Router - Download', function () {
       })
   })
 
-  it('Genome PATRIC.faa', async function () {
+  it('POST - Genome PATRIC.faa', async function () {
     return httpRequest(RequestOption, 'q=eq(genome_id,83332.12)&archiveType=tar&types=*PATRIC.faa')
       .then((body) => {
         const firstIndex = body.indexOf('\0')
@@ -79,4 +109,32 @@ describe('Test Router - Download', function () {
         console.error(`${err}`)
       })
   })
+
+  it('GET - Genome PATRIC.features.tab', async function () {
+    return httpGet(Object.assign(RequestOption, {
+      method: 'GET',
+      path: '/bundle/genome/?q=eq(genome_id,83332.12)&archiveType=tar&types=*PATRIC.features.tab'
+    }))
+      .then((body) => {
+        const firstIndex = body.indexOf('\0')
+        const trimmedBody = body.slice(0, firstIndex)
+        assert.equal(trimmedBody, ExpectedFeaturesTab)
+      })
+  })
+
+  it('GET - Genome PATRIC.faa', async function () {
+    return httpGet(Object.assign(RequestOption, {
+      method: 'GET',
+      path: '/bundle/genome/?q=eq(genome_id,83332.12)&archiveType=tar&types=*PATRIC.faa'
+    }))
+      .then((body) => {
+        const firstIndex = body.indexOf('\0')
+        const trimmedBody = body.slice(0, firstIndex)
+        assert.equal(trimmedBody, ExpectedFaa)
+      })
+      .catch((err) => {
+        console.error(`${err}`)
+      })
+  })
+
 })
