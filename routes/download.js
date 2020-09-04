@@ -1,24 +1,23 @@
-var express = require('express')
-var router = express.Router({strict: true, mergeParams: true})
-var bodyParser = require('body-parser')
-var debug = require('debug')('p3api-server:route/download')
-var httpParams = require('../middleware/http-params')
-var authMiddleware = require('../middleware/auth')
-var querystring = require('querystring')
-var archiver = require('archiver')
-var path = require('path')
+const Express = require('express')
+const Router = Express.Router({ strict: true, mergeParams: true })
+const BodyParser = require('body-parser')
+const debug = require('debug')('p3api-server:route/download')
+const HttpParamsMiddleWare = require('../middleware/http-params')
+const AuthMiddleware = require('../middleware/auth')
+const QueryString = require('querystring')
+const Archiver = require('archiver')
+const Path = require('path')
 
-router.use(httpParams)
-router.use(authMiddleware)
+Router.use(HttpParamsMiddleWare)
+Router.use(AuthMiddleware)
 
-router.get('*', [
+Router.get('*', [
   function (req, res, next) {
-    var url = req.url
+    let url = req.url
     if (url.match(/^\/\?/)) {
       url = url.replace(/^\/\?/, '')
     }
-    var query = querystring.parse(url)
-    debug('QUERY PARSE: ', query)
+    const query = QueryString.parse(url)
     if (query.types) {
       req.bundleTypes = query.types.split(',') || []
     } else {
@@ -34,16 +33,13 @@ router.get('*', [
     }
 
     req.sourceDataType = req.params.dataType
-
     next()
   }
 ])
 
-router.post('*', [
-  bodyParser.urlencoded({extended: true}),
+Router.post('*', [
+  BodyParser.urlencoded({ extended: true }),
   function (req, res, next) {
-    debug('req.body: ', req.body)
-
     if (req.body.types) {
       req.bundleTypes = req.body.types.split(',') || []
     } else {
@@ -63,15 +59,15 @@ router.post('*', [
   }
 ])
 
-router.use(function (req, res, next) {
-  debug('req content-type', req.get('content-type'))
-  debug('req.query', req.query)
-  debug('req.bundleTypes', req.bundleTypes)
-  debug('req.sourceDataType: ', req.sourceDataType)
+Router.use(function (req, res, next) {
+  debug(`req.content-type: ${req.get('content-type')}`)
+  debug(`req.query: ${req.query}`)
+  debug(`req.bundleTypes: ${req.bundleTypes}`)
+  debug(`req.archiveType: ${req.archiveType}`)
   next()
 })
 
-router.use([
+Router.use([
   function (req, res, next) {
     if (!req.sourceDataType) {
       return next(new Error('Source Data Type Missing'))
@@ -82,36 +78,28 @@ router.use([
     }
 
     if (!req.bundleTypes || req.bundleTypes.length < 1) {
-      res.writeHead(400, {'Content-Type': 'text/plain'})
+      res.writeHead(400, { 'Content-Type': 'text/plain' })
       res.end('Missing Bundled Types')
       return
-    }
-
-    if (req.archiveType) {
     }
 
     next()
   },
   function (req, res, next) {
-    debug('Load Bundler for: ', req.sourceDataType)
-    var bundler
     try {
-      bundler = require('../bundler/' + req.sourceDataType)
-      // debug("Bundler: ", bundler)
+      const bundler = require('../bundler/' + req.sourceDataType)
       bundler(req, res, next)
     } catch (err) {
-      return next(new Error('Invalid Source Data Type' + err))
+      return next(new Error(`Invalid Source Data Type ${err}`))
     }
   },
   function (req, res, next) {
-    // debug("Bundler Map: ", req.bulkMap)
     if (!req.bulkMap) {
-      debug('No Bulk Map Found')
       next('route')
     }
 
-    var archOpts = {}
-    var type
+    const archOpts = {}
+    let type
 
     if (req.archiveType) {
       type = req.archiveType
@@ -133,15 +121,15 @@ router.use([
       res.attachment('PATRIC_Export.zip')
     }
 
-    var archive = archiver.create(type, archOpts)
+    const archive = Archiver.create(type, archOpts)
     archive.pipe(res)
-    for (var i = 0; i < req.bulkMap.length; i++) {
+    for (let i = 0; i < req.bulkMap.length; i++) {
       const baseFolder = req.bulkMap[i].cwd
       const dest = req.bulkMap[i].dest
-      for (var j = 0; j < req.bulkMap[i].src.length; j++) {
+      for (let j = 0; j < req.bulkMap[i].src.length; j++) {
         const fileName = req.bulkMap[i].src[j]
-        const filePath = path.join(dest, fileName)
-        // console.log(`adding ${filePath}`)
+        const filePath = Path.join(dest, fileName)
+
         archive.glob(filePath, { cwd: baseFolder })
       }
     }
@@ -149,4 +137,4 @@ router.use([
   }
 ])
 
-module.exports = router
+module.exports = Router
