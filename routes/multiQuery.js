@@ -1,40 +1,53 @@
-var express = require('express')
-var router = express.Router({strict: true, mergeParams: true})
-var when = require('promised-io/promise').when
-var All = require('promised-io/promise').all
-var bodyParser = require('body-parser')
-var debug = require('debug')('p3api-server:route/multiQuery')
-var httpParams = require('../middleware/http-params')
-var authMiddleware = require('../middleware/auth')
-var distributeQuery = require('../distributeQuery')
+const Express = require('express')
+const Router = Express.Router({ strict: true, mergeParams: true })
+const BodyParser = require('body-parser')
+const debug = require('debug')('p3api-server:route/multiQuery')
+const HttpParamsMiddleware = require('../middleware/http-params')
+const AuthMiddleware = require('../middleware/auth')
+const { httpRequest } = require('../util/http')
+const Config = require('../config')
 
-router.use(httpParams)
-router.use(authMiddleware)
+async function subQuery (dataType, query, opts) {
+  return httpRequest({
+    port: Config.get('http_port'),
+    headers: {
+      'Content-Type': 'application/rqlquery+x-www-form-urlencoded',
+      Accept: opts.accept || 'application/json',
+      Authorization: opts.authorization || ''
+    },
+    method: 'POST',
+    path: `/${dataType}`
+  }, query)
+    .then((body) => JSON.parse(body))
+}
 
-router.post('*', [
-  bodyParser.json({extended: true}),
+Router.use(HttpParamsMiddleware)
+Router.use(AuthMiddleware)
+
+Router.post('*', [
+  BodyParser.json({ extended: true }),
   function (req, res, next) {
     debug('req.body: ', req.body)
-    var defs = []
+    const defs = []
     res.results = {}
 
     Object.keys(req.body).forEach(function (qlabel) {
       var qobj = req.body[qlabel]
       res.results[qlabel] = {}
 
-      defs.push(when(distributeQuery(qobj.dataType, qobj.query, {
+      defs.push(subQuery(qobj.dataType, qobj.query, {
         accept: qobj.accept,
         authorization: (req.headers && req.headers['authorization']) ? req.headers['authorization'] : ''
-      }), function (result) {
-        debug('RES: ', qlabel, result)
+      }).then(function (result) {
+        debug('RES: ', qlabel, result.length)
         res.results[qlabel].result = result
       }))
     })
 
-    when(All(defs), function () {
+    Promise.all(defs).then(() => {
       next()
-    }, function(err){
-      next(err);
+    }, (err) => {
+      next(err)
     })
   },
 
@@ -44,4 +57,4 @@ router.post('*', [
   }
 ])
 
-module.exports = router
+module.exports = Router

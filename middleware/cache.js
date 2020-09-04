@@ -1,26 +1,25 @@
-var debug = require('debug')('p3api-server:cachemiddleware')
-var Cache = require('../cache')
-var conf = require('../config')
-var md5 = require('md5')
-var when = require('promised-io/promise').when
-var enableCache = conf.get('cache').enable
+const debug = require('debug')('p3api-server:cachemiddleware')
+const Cache = require('../cache')
+const Config = require('../config')
+const Md5 = require('md5')
+const isCacheEnabled = Config.get('cache').enable
 
 module.exports.get = function (req, res, next) {
-  if (!enableCache) { return next() }
-  var key = [req.call_method, req.call_collection, req.queryType, req.call_params[0]]
+  if (!isCacheEnabled) { return next() }
+  const key = [req.call_method, req.call_collection, req.queryType, req.call_params[0]]
   if (req.call_method === 'stream') { return next() }
 
-  req.cacheKey = md5(key.join())
+  req.cacheKey = Md5(key.join())
   debug('Cache Req User: ', req.user)
 
   debug('Cache Key: ', req.cacheKey, key)
-  var opts = {}
+  const opts = {}
   if (req.user) {
     opts.user = req.user.id || req.user
   }
 
   res.queryStart = new Date()
-  when(Cache.get(req.cacheKey, opts), function (data) {
+  Cache.get(req.cacheKey, opts).then(function (data) {
     req.cacheHit = true
     res.results = data
     debug('CACHE HIT: ', req.cacheKey)
@@ -37,7 +36,7 @@ module.exports.get = function (req, res, next) {
 
 module.exports.put = function (req, res, next) {
   if (!req.cacheHit && req.cacheKey) {
-    var opts = {}
+    const opts = {}
     if (req.user) {
       opts.user = req.user.id || req.user
     }

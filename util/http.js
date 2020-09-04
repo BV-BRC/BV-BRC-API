@@ -8,13 +8,13 @@ module.exports = {
         res.setEncoding('utf8')
         let rawData = ''
         res.on('data', (chunk) => {
-          rawData += chunk.toString();
+          rawData += chunk.toString()
         })
         res.on('end', () => {
           resolve(rawData)
         })
-        res.on("error", (err) => {
-            reject(err)
+        res.on('error', (err) => {
+          reject(err)
         })
       })
     })
@@ -31,9 +31,9 @@ module.exports = {
           resolve(rawData)
         })
       })
-      .on('error', (err) => {
+        .on('error', (err) => {
           reject(err)
-      })
+        })
       req.write(body)
       req.end()
     })
@@ -44,13 +44,13 @@ module.exports = {
         res.setEncoding('utf8')
         let rawData = ''
         res.on('data', (chunk) => {
-          rawData += chunk.toString();
+          rawData += chunk.toString()
         })
         res.on('end', () => {
           resolve(rawData)
         })
-        res.on("error", (err) => {
-            reject(err)
+        res.on('error', (err) => {
+          reject(err)
         })
       })
     })
@@ -67,9 +67,9 @@ module.exports = {
           resolve(rawData)
         })
       })
-      .on('error', (err) => {
+        .on('error', (err) => {
           reject(err)
-      })
+        })
       req.write(body)
       req.end()
     })

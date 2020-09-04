@@ -1,42 +1,38 @@
-var debug = require('debug')('p3api-server:cachemiddleware')
-var fs = require('fs-extra')
-var conf = require('./config')
-var Path = require('path')
-var Deferred = require('promised-io/promise').defer
-var touch = require('touch')
+const debug = require('debug')('p3api-server:cacheClass')
+const Fs = require('fs-extra')
+const Config = require('./config')
+const Path = require('path')
+const Touch = require('touch')
 
-var cacheDir = conf.get('cache').directory
-debug('Using Cache Dir: ', cacheDir)
+const CACHE_DIR = Config.get('cache').directory
+debug('Using Cache Dir: ', CACHE_DIR)
 
 module.exports = {
   get: function (key, options) {
-    var def = new Deferred()
     options = options || {}
 
     if (!options.user) {
       options.user = 'public'
     }
 
-    var fn = Path.join(cacheDir, options.user, key)
-    debug('Check for Cached Data in: ', fn)
-    fs.exists(fn, function (exists) {
-      if (!exists) {
-        def.reject(false)
-        return
-      }
-
-      fs.readJson(fn, function (err, data) {
-        if (err) {
-          return def.reject(err)
+    return new Promise((resolve, reject) => {
+      const fileName = Path.join(CACHE_DIR, options.user, key)
+      debug('Check for Cached Data in: ', fileName)
+      Fs.exists(fileName, (exists) => {
+        if (!exists) {
+          reject(new Error(`File does not exist`))
+          return
         }
 
-        def.resolve(data)
-
-        touch(fn)
+        Fs.readJson(fileName, (err, data) => {
+          if (err) {
+            return reject(err)
+          }
+          resolve(data)
+          Touch(fileName)
+        })
       })
     })
-
-    return def.promise
   },
 
   put: function (key, data, options) {
@@ -46,18 +42,16 @@ module.exports = {
       options.user = 'public'
     }
 
-    var def = new Deferred()
-    var fn = Path.join(cacheDir, options.user, key)
-    debug('Store Cached Data to: ', fn)
-    fs.outputJson(fn, data, function (err) {
-      if (err) {
-        def.reject(err)
-        return
-      }
-
-      def.resolve(true)
+    return new Promise((resolve, reject) => {
+      const fileName = Path.join(CACHE_DIR, options.user, key)
+      debug('Store Cached Data to: ', fileName)
+      Fs.outputJson(fileName, data, (err) => {
+        if (err) {
+          reject(err)
+          return
+        }
+        resolve(true)
+      })
     })
-
-    return def.promise
   }
 }
