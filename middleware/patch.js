@@ -1,11 +1,13 @@
-const debug = require('debug')('p3api-server:cachemiddleware')
-const conf = require('../config')
-const when = require('promised-io/promise').when
-const Defer = require('promised-io/promise').defer
-const jsonpatch = require('json-patch')
+const debug = require('debug')('p3api-server:patchmiddleware')
 const Solrjs = require('solrjs')
-const SOLR_URL = conf.get('solr').url
-const Request = require('request')
+const jsonpatch = require('json-patch')
+const Url = require('url')
+const Http = require('http')
+const { httpRequest } = require('../util/http')
+const Config = require('../config')
+const SOLR_URL = Config.get('solr').url
+const solrAgentConfig = Config.get('solr').shortLiveAgent
+const solrAgent = new Http.Agent(solrAgentConfig)
 
 const userModifiableProperties = [
   'genome_status',
@@ -68,44 +70,29 @@ const userModifiableProperties = [
 ]
 
 function postDocs (docs, type) {
-  var def = new Defer()
-  var url = conf.get('solr').url + '/' + type + '/update?wt=json&overwrite=true&softCommit=true'
+  const parsedSolrUrl = Url.parse(SOLR_URL)
 
-  Request(url, {
-    json: true,
+  return httpRequest({
+    hostname: parsedSolrUrl.hostname,
+    port: parsedSolrUrl.port,
     method: 'POST',
-    headers: { 'content-type': 'application/json', 'accept': 'application/json' },
-    body: docs
-  }, (err, response, body) => {
-    if (err || body.error) {
-      console.log('Error POSTing to : ' + type + ' - ' + (err || body.error.msg))
-      def.reject(err)
-      return
-    }
-
-    def.resolve(true)
-  })
-
-  return def.promise
+    agent: solrAgent,
+    headers: {
+      'content-type': 'application/json',
+      'accept': 'application/json'
+    },
+    path: `/solr/${type}/update?wt=json&overwrite=true`
+  }, JSON.stringify(docs))
 }
-
-// function solrCommit (type, hard) {
-//   var def = new defer()
-//   Request(conf.get('solr').url + '/' + type + '/update?wt=json&' + (hard ? 'commit' : 'softCommit') + '=true', {}, function (err, response, body) {
-//     if (err) { def.reject(err); return }
-//     def.resolve(true)
-//   })
-//   return def.promise
-// }
 
 module.exports = function (req, res, next) {
   if (!req._body || !req.body) {
     return next()
   }
 
-  var patch = req.body
-  var collection = req.params.dataType
-  var target_id = req.params.target_id
+  const patchBody = req.body
+  const collection = req.params.dataType
+  const target_id = req.params.target_id
 
   if (!collection) {
     return next(new Error('Missing Collection Type for update patch'))
@@ -119,42 +106,39 @@ module.exports = function (req, res, next) {
     return next(new Error('Missing Target ID for update patch'))
   }
 
-  // console.log("Target Collection: ", collection, " obj id: ", target_id);
-
-  var solr = new Solrjs(SOLR_URL + '/' + collection)
-  when(solr.get(target_id), (sresults) => {
-    if (!sresults || !sresults.doc) {
-      return
+  const solrClient = new Solrjs(`${SOLR_URL}/${collection}`)
+  solrClient.setAgent(solrAgent)
+  solrClient.get(target_id).then((body) => {
+    if (!body || !body.doc) {
+      res.sendStatus(404)
     }
 
-    var results = sresults.doc
+    const doc = body.doc
 
-    console.log('results', results)
-
-    if (req.user && ((results.owner === req.user) || (results.user_write.indexOf(req.user) >= 0))) {
-      if (patch.some(function (p) {
-        var parts = p.path.split('/')
+    if (req.user && ((doc.owner === req.user) || (doc.user_write.indexOf(req.user) >= 0))) {
+      if (patchBody.some(function (p) {
+        const parts = p.path.split('/')
         return (userModifiableProperties.indexOf(parts[1]) < 0)
       })) {
         res.status(406).send('Patch contains non-modifiable properties')
       }
 
-      console.log('PATCH: ', patch)
+      debug('PATCH: ', patchBody)
 
       try {
-        jsonpatch.apply(results, patch)
+        jsonpatch.apply(doc, patchBody)
       } catch (err) {
         res.status(406).send('Error in patching: ' + err)
         return
       }
 
-      console.log('Patched Results: ', results)
-      delete results._version_
+      delete doc._version_
 
-      when(postDocs([results], collection), function (r) {
+      postDocs([doc], collection).then((postRes) => {
+        // debug(`post response:`, postRes)
         res.sendStatus(201)
-      }, function (err) {
-        res.status(406).send('Error storing patched document' + err)
+      }, (postErr) => {
+        res.status(406).send(`Error storing patched document: ${postErr}`)
       })
     } else {
       if (!req.user) {
@@ -166,7 +150,7 @@ module.exports = function (req, res, next) {
       }
     }
   }, (err) => {
-    console.log('Error retrieving ' + collection + ' with id ' + target_id)
+    console.error(`Error retrieving ${collection} with id ${target_id}. ${err}`)
     res.status(406).send('Error retrieving target')
     res.end()
   })
