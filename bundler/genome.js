@@ -1,46 +1,28 @@
-var Defer = require('promised-io/promise').defer
-var when = require('promised-io/promise').when
-var debug = require('debug')('p3api-server:genomebundler')
-var config = require('../config')
-var request = require('request')
-var distributeURL = config.get('distributeURL')
-var publicGenomeDir = config.get('publicGenomeDir')
+// const debug = require('debug')('p3api-server:genomebundler')
+const Config = require('../config')
+const PUBLIC_GENOME_DIR = Config.get('publicGenomeDir')
+const { httpRequest } = require('../util/http')
 
 const maxBundleSize = 25000
 
 function runQuery (query, opts) {
-  const def = new Defer()
-  opts = opts || {}
-
-  debug('Send Request to distributeURL: ', distributeURL + 'genome_feature')
-  debug('runQuery: ', query)
-  request.post({
-    url: distributeURL + 'genome/',
+  return httpRequest({
+    port: Config.get('http_port'),
+    path: '/genome/',
     headers: {
-      'content-type': 'application/rqlquery+x-www-form-urlencoded',
+      'Content-Type': 'application/rqlquery+x-www-form-urlencoded',
       accept: 'application/json',
-      authorization: opts.token || ''
+      authorization: opts.token
     },
-    body: query
-  }, function (err, r, body) {
-    if (err) {
-      return def.reject(err)
-    }
-
-    if (body && typeof body === 'string') {
-      body = JSON.parse(body)
-    }
-    def.resolve(body)
-  })
-
-  return def.promise
+    method: 'POST'
+  }, query)
+    .then((body) => JSON.parse(body))
 }
 
 module.exports = function (req, res, next) {
-  const q = req.query + '&limit(' + maxBundleSize + ')&select(genome_id,public,owner,genome_name)'
-  debug('GENOME BUNDLER. q: ', q)
+  const query = `${req.query}&limit(${maxBundleSize})&select(genome_id,public,owner,genome_name)`
 
-  when(runQuery(q, {token: req.headers.authorization || ''}), function (genomes) {
+  runQuery(query, {token: req.headers.authorization || ''}).then((genomes) => {
     if (!genomes || genomes.length < 0) {
       return next('route')
     }
@@ -48,7 +30,7 @@ module.exports = function (req, res, next) {
       const map = {}
       if (genome.public) {
         map.expand = true
-        map.cwd = publicGenomeDir
+        map.cwd = PUBLIC_GENOME_DIR
         map.dest = genome.genome_id
         map.src = []
         req.bundleTypes.forEach(function (bt) {

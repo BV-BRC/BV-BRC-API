@@ -1,30 +1,25 @@
-var bodyParser = require('body-parser')
-var rpcMethods = require('../rpc')
-var when = require('promised-io/promise').when
-var debug = require('debug')('p3api-server:route/rpcHandler')
+const BodyParser = require('body-parser')
+const RpcMethods = require('../rpc')
+const debug = require('debug')('p3api-server:route/rpcHandler')
 
 module.exports = [
-  bodyParser.json({type: ['application/jsonrpc+json'], limit: '30mb'}),
-  bodyParser.json({type: ['application/json'], limit: '30mb'}),
+  BodyParser.json({type: ['application/jsonrpc+json'], limit: '30mb'}),
+  BodyParser.json({type: ['application/json'], limit: '30mb'}),
   function (req, res, next) {
-    // debug("RPC HANDLER: ", req.body);
     if (!req.body) {
       next()
       return
     }
-    var ctype = req.get('content-type')
-    // debug("CTYPE: ", ctype);
+    const ctype = req.get('content-type')
 
     if (req.body.jsonrpc || (ctype === 'application/jsonrpc+json')) {
-      // debug("JSON RPC Request", JSON.stringify(req.body, null, 4));
-
       if (!req.body.method) {
         throw Error('No Method Supplied')
       }
 
-      var methodDef = rpcMethods[req.body.method]
+      const methodDef = RpcMethods[req.body.method]
       if (!methodDef) {
-        throw Error('Invalid Method: ' + req.body.method)
+        throw Error(`Invalid Method: ${req.body.method}`)
       }
 
       if (methodDef.requireAuth && !req.user) {
@@ -33,7 +28,7 @@ module.exports = [
       }
 
       if (!methodDef.validate || !methodDef.validate(req.body.params, req, res)) {
-        throw Error('RPC Parameter Validation Failed: ', req.body.params)
+        throw Error(`RPC Parameter Validation Failed: ${req.body.params}`)
       }
 
       req.call_method = req.body.method
@@ -44,15 +39,8 @@ module.exports = [
     }
   },
   function (req, res, next) {
-    // debug("req.call_method: ", req.call_method);
-    // debug("MethodDef: ", rpcMethods[req.call_method]);
-    // debug('req.call_params: ', req.call_params);
-    var methodDef = rpcMethods[req.call_method]
-
-    res.results = methodDef.execute(req.call_params, req, res)
-    when(res.results, function (r) {
-      // debug("Got execute Results: ", r)
-      res.results = r
+    RpcMethods[req.call_method].execute(req.call_params, req, res).then((results) => {
+      res.results = results
       next()
     }, function (err) {
       debug('Got Execute Error: ', err)
