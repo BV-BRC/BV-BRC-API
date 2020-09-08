@@ -1,14 +1,16 @@
 #!/usr/bin/env node
 
-const config = require('../config')
+const Config = require('../config')
 const opts = require('commander')
-const Request = require('request')
-const Defer = require('promised-io/promise').defer
-const when = require('promised-io/promise').when
+const { httpStreamRequest } = require('../util/http')
 
-const fs = require('fs-extra')
+const Fs = require('fs-extra')
+const Path = require('path')
+const QUEUE_DIRECTORY = Config.get('queueDirectory')
 
-const queueDir = config.get('queueDirectory')
+const Url = require('url')
+const SOLR_URL = Config.get('solr').url
+const parsedSolrUrl = Url.parse(SOLR_URL)
 
 if (require.main === module) {
   opts.option('-k, --key [value]', 'Index Key')
@@ -32,7 +34,7 @@ if (require.main === module) {
 function reIndexGenome (key, cores) {
   console.log(`${key}, ${cores}, ${Array.isArray(cores)}`)
 
-  fs.readJson(`${queueDir}/history/${key}`, { encoding: 'utf8' }, (err, data) => {
+  Fs.readJson(Path.join(QUEUE_DIRECTORY, 'history', key), { encoding: 'utf8' }, (err, data) => {
     if (err) {
       console.error(`${err}`)
       return
@@ -41,8 +43,13 @@ function reIndexGenome (key, cores) {
     cores.forEach((core) => {
       const path = data.files[core].path
 
-      when(postDocs(path, core), () => {
-        console.log(`${core} is indexed`)
+      postDocs(path, core).then((body) => {
+        const resp = JSON.parse(body)
+        if (resp.responseHeader.status === 0) {
+          console.log(`${core} is indexed`)
+        } else {
+          console.error(resp)
+        }
       }, (err) => {
         console.error(`${err}`)
       })
@@ -51,21 +58,14 @@ function reIndexGenome (key, cores) {
 }
 
 function postDocs (filePath, type) {
-  const def = new Defer()
-  const url =
-    `${config.get('solr').url}/${type}/update?wt=json&overwrite=true&commit=false`
-
-  fs.createReadStream(filePath).pipe(
-    Request.post(url, (err, res, body) => {
-      if (err || body.error) {
-        console.log(`Error POSTing to ${type} - ${err || body.error.msg}`)
-        def.reject(err)
-        return def.promise
-      }
-
-      def.resolve(true)
-    })
-  )
-
-  return def.promise
+  const readStream = Fs.createReadStream(filePath)
+  return httpStreamRequest({
+    hostname: parsedSolrUrl.hostname,
+    port: parsedSolrUrl.port,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    path: `/solr/${type}/update?wt=json&overwrite=true&commit=false`
+  }, readStream)
 }

@@ -1,19 +1,21 @@
-#!/usr/bin/env node  --max-old-space-size=4096
-const config = require('../config')
+#!/usr/bin/env node --unhandled-rejections=strict --max-old-space-size=4096
+const Config = require('../config')
 const Queue = require('file-queue').Queue
-const Defer = require('promised-io/promise').defer
-const when = require('promised-io/promise').when
-const All = require('promised-io/promise').all
 const Path = require('path')
 const fs = require('fs-extra')
-const Request = require('request')
 const JSONStream = require('JSONStream')
-const es = require('event-stream')
+const EventStream = require('event-stream')
 
-const queueDirectory = config.get('queueDirectory')
-var http = require('http')
-var solrAgentConfig = config.get('solr').shortLiveAgent
-var solrAgent = new http.Agent(solrAgentConfig)
+const queueDirectory = Config.get('queueDirectory')
+
+const { httpGet, httpStreamRequest } = require('../util/http')
+const Url = require('url')
+const SOLR_URL = Config.get('solr').url
+const parsedSolrUrl = Url.parse(SOLR_URL)
+
+const Http = require('http')
+const solrAgentConfig = Config.get('solr').shortLiveAgent
+const solrAgent = new Http.Agent(solrAgentConfig)
 
 // console.log(`Queue Directory: ${queueDirectory}`)
 
@@ -45,58 +47,32 @@ process.on('message', (msg) => {
 let timer
 
 function deleteDocs (core, genomeId) {
-  const url = `${config.get('solr').url}/${core}/update?stream.body=<delete><query>genome_id:${genomeId}</query></delete>`
-
-  Request.get(url, {
-    agent: solrAgent
-  }, (err, res, body) => {
-    if (err) {
-      console.error(err)
-      return
-    }
-    if (res.statusCode !== 200 || body.error) {
-      console.error(body.error.msg)
-      return
-    }
-    console.log(`Sent delete query successfully: ${url}`)
+  return httpGet({
+    hostname: parsedSolrUrl.hostname,
+    port: parsedSolrUrl.port,
+    agent: solrAgent,
+    path: `/solr/${core}/update?stream.body=<delete><query>genome_id:${genomeId}</query></delete>`
+  }).then(() => {
+    console.error(`Sent delete query successfully: [${core}] ${genomeId}`)
   })
 }
 
 function postDocs (filePath, type) {
-  const def = new Defer()
-  const url =
-  `${config.get('solr').url}/${type}/update?wt=json&overwrite=true&commit=false`
-
-  fs.createReadStream(filePath).pipe(
-    Request.post(url, {
-      agent: solrAgent
-    }, (err, res, bodyStr) => {
-      const body = JSON.parse(bodyStr)
-
-      if (err) {
-        // if solr is not available
-        if (err.code === 'ECONNREFUSED') {
-          console.log(`[${(new Date()).toISOString()}] Solr is not available: ${err.message}`)
-          // need to stop & notify
-          process.exit()
-        }
-        // other errors reported in http response
-        console.log(`Error POSTing to ${type} - ${err}`)
-        def.reject(err)
-        return def.promise
-      }
-
-      // http response is okay, but internal solr errors
-      if (res.statusCode !== 200 || body.error) {
-        def.reject(new Error(`${res.statusCode} ${res.statusMessage || ''} - ${body.error.msg}`))
-        return def.promise
-      }
-
-      def.resolve(true)
-    })
-  )
-
-  return def.promise
+  const readStream = fs.createReadStream(filePath)
+  return httpStreamRequest({
+    hostname: parsedSolrUrl.hostname,
+    port: parsedSolrUrl.port,
+    agent: solrAgent,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    path: `/solr/${type}/update?wt=json&overwrite=true&commit=false`
+  }, readStream).then(() => {
+    // console.log(`Posted ${type}`)
+  }).catch((err) => {
+    throw err
+  })
 }
 
 function processQueue (queue) {
@@ -147,36 +123,36 @@ function processQueue (queue) {
             files.forEach(file => {
               if (!file.path) { return }
 
-              const def = new Defer()
-
-              when(updateJSONStreamWithAccessControl(file.name, file.path, core, message.user), (res) => {
-                if (res.status === 'skip') {
-                  def.resolve(true)
-                } else if (res.status === 'saved') {
-                  when(postDocs(file.path, core), () => {
-                    def.resolve(true)
-                  }, (err) => {
-                    console.error(`${(new Date()).toISOString()}: Error POSTing documents to SOLR core : ${core}, ${err}`)
-                    def.reject(err)
-                  })
-                } else {
-                  // Err
-                  def.reject(res)
-                }
-              }, (err) => {
-                def.reject(err)
+              const def = new Promise((resolve, reject) => {
+                updateJSONStreamWithAccessControl(file.name, file.path, core, message.user).then((res) => {
+                  if (res.status === 'skip') {
+                    resolve(true)
+                  } else if (res.status === 'saved') {
+                    postDocs(file.path, core).then(() => {
+                      resolve(true)
+                    }, (err) => {
+                      console.error(`${(new Date()).toISOString()}: Error POSTing documents to SOLR core : ${core}, ${err}`)
+                      reject(err)
+                    })
+                  } else {
+                    // Err
+                    reject(res)
+                  }
+                }, (err) => {
+                  reject(err)
+                })
               })
 
               fileDefs.push(def)
             })
           })
 
-          when(All(fileDefs), () => {
+          Promise.all(fileDefs).then(() => {
             const afterProcess = (new Date()).getTime()
             console.log(`  ${(afterProcess - beforeProcess)}ms elapsed for genome (${genomeId})`)
 
-            when(updateHistory(message.id, 'submitted', genomeId), () => {
-              commit()
+            updateHistory(message.id, 'submitted', genomeId).then(() => {
+              // commit()
               processQueue(queue)
             }, (err) => {
               console.error(`${(new Date()).toISOString()}: Error in updating history: ${err} while processing ${message.id}`)
@@ -189,16 +165,16 @@ function processQueue (queue) {
               deleteDocs(core, genomeId)
             })
 
-            when(updateHistory(message.id, 'error', err.message), () => {
-              commit()
+            updateHistory(message.id, 'error', err.message).then(() => {
+              // commit()
               processQueue(queue) // Resume
             }, (err) => {
               console.error(`${(new Date()).toISOString()}: Error in updating history: ${err} while processing ${message.id}`)
             })
           })
         } catch (err) {
-          when(updateHistory(message.id, 'error', err.message), () => {
-            commit()
+          updateHistory(message.id, 'error', err.message).then(() => {
+            // commit()
             processQueue(queue) // Resume
           }, (err) => {
             console.error(`${(new Date()).toISOString()}: Error in updating history: ${err} while processing ${message.id}`)
@@ -210,107 +186,105 @@ function processQueue (queue) {
 }
 
 function updateJSONStreamWithAccessControl (fileName, filePath, core, owner) {
-  const def = new Defer()
+  return new Promise((resolve, reject) => {
 
-  try {
-    let fileData = []
-    const st = (new Date()).getTime()
+    try {
+      let fileData = []
+      const st = (new Date()).getTime()
 
-    fs.createReadStream(filePath, {encoding: 'utf8'})
-      .pipe(JSONStream.parse('*'))
-      .pipe(es.mapSync(function (data) {
-        fileData.push(data)
-      }))
-      .on('close', () => {
-        const now = (new Date()).getTime()
-        console.log(`  Reading ${fileName}(${filePath}) took ${(now - st)}ms, ${fileData.length} rows`)
+      fs.createReadStream(filePath, {encoding: 'utf8'})
+        .pipe(JSONStream.parse('*'))
+        .pipe(EventStream.mapSync(function (data) {
+          fileData.push(data)
+        }))
+        .on('close', () => {
+          const now = (new Date()).getTime()
+          console.log(`  Reading ${fileName}(${filePath}) took ${(now - st)}ms, ${fileData.length} rows`)
 
-        if (fileData.length === 0) {
-          // console.log(`  Skipping Empty ${fileName}(${filePath})`);
-          def.resolve({status: 'skip'})
-          return def.promise
-        }
+          if (fileData.length === 0) {
+            // console.log(`  Skipping Empty ${fileName}(${filePath})`);
+            resolve({status: 'skip'})
+            return
+          }
 
-        let processingErrors = false
+          let processingErrors = false
 
-        if (!publicCores.includes(core)) {
-          fileData = fileData.map(item => {
-            if (!item.public) { item.public = false }
-            if (!item.owner) {
-              item.owner = owner
-            } else if (item.owner !== owner) {
-              if (!item.user_write || (item.user_write && !item.user_write.includes(owner))) {
-                processingErrors = `Item Owner ${item.owner} != Index User ${owner}`
+          if (!publicCores.includes(core)) {
+            fileData = fileData.map(item => {
+              if (!item.public) { item.public = false }
+              if (!item.owner) {
+                item.owner = owner
+              } else if (item.owner !== owner) {
+                if (!item.user_write || (item.user_write && !item.user_write.includes(owner))) {
+                  processingErrors = `Item Owner ${item.owner} != Index User ${owner}`
+                }
               }
-            }
 
-            if (!item.user_read) { item.user_read = [] }
-            if (!item.user_write) { item.user_write = [] }
+              if (!item.user_read) { item.user_read = [] }
+              if (!item.user_write) { item.user_write = [] }
 
-            if (item._version_) {
-              delete item._version_
-            }
-            return item
-          })
-        }
-
-        if (!processingErrors) {
-          // Update json file
-          const outfile = fs.createWriteStream(filePath)
-          es.readArray(fileData).pipe(JSONStream.stringify()).pipe(outfile)
-            .on('close', () => {
-              def.resolve({status: 'saved'})
+              if (item._version_) {
+                delete item._version_
+              }
+              return item
             })
-        } else {
-          // Console.log(`Processing Errors in ${core} ${processingErrors}`);
-          def.reject(processingErrors)
-        }
-      })
-  } catch (err) {
-    console.log(`Error updateJSONStreamWithAccessControl ${filePath}`)
-    def.reject(err)
-  }
+          }
 
-  return def.promise
+          if (!processingErrors) {
+            // Update json file
+            const outfile = fs.createWriteStream(filePath)
+            EventStream.readArray(fileData).pipe(JSONStream.stringify()).pipe(outfile)
+              .on('close', () => {
+                resolve({status: 'saved'})
+              })
+          } else {
+            // Console.log(`Processing Errors in ${core} ${processingErrors}`);
+            reject(processingErrors)
+          }
+        })
+    } catch (err) {
+      console.log(`Error updateJSONStreamWithAccessControl ${filePath}`)
+      reject(err)
+    }
+  })
 }
 
 function updateHistory (id, state, msg) {
-  const def = new Defer()
-  const historyPath = Path.join(queueDirectory, 'history', id)
+  return new Promise((resolve, reject) => {
+    const historyPath = Path.join(queueDirectory, 'history', id)
 
-  console.log(`Updating History ${historyPath}`)
+    console.log(`Updating History ${historyPath}`)
 
-  fs.readJson(historyPath, (err, data) => {
-    if (err) {
-      def.reject(err)
-      return def.promise
-    }
-
-    switch (state) {
-      case 'submitted':
-        data.state = state
-        data.genomeId = msg
-        data.submissionTime = new Date()
-        break
-      case 'error':
-        data.state = state
-        data.error = msg
-        break
-      default:
-        data.state = state
-        break
-    }
-
-    fs.writeJson(historyPath, data, (err) => {
+    fs.readJson(historyPath, (err, data) => {
       if (err) {
-        console.log(`Error writing to history: ${id}`)
-        def.reject(err)
-        return def.promise
+        reject(err)
+        return promise
       }
 
-      def.resolve(true)
+      switch (state) {
+        case 'submitted':
+          data.state = state
+          data.genomeId = msg
+          data.submissionTime = new Date()
+          break
+        case 'error':
+          data.state = state
+          data.error = msg
+          break
+        default:
+          data.state = state
+          break
+      }
+
+      fs.writeJson(historyPath, data, (err) => {
+        if (err) {
+          console.log(`Error writing to history: ${id}`)
+          reject(err)
+          return
+        }
+
+        resolve(true)
+      })
     })
   })
-
-  return def.promise
 }

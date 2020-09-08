@@ -2,8 +2,6 @@
 
 const config = require('../config')
 const opts = require('commander')
-const Defer = require('promised-io/promise').defer
-const when = require('promised-io/promise').when
 const Path = require('path')
 const fs = require('fs-extra')
 const queueDir = config.get('queueDirectory')
@@ -23,41 +21,42 @@ if (require.main === module) {
     opts.help()
   }
 
-  when(updateHistory(opts.key), () => {
+  updateHistory(opts.key).then(() => {
     console.log(`complete updating ${opts.key}`)
+  }).catch((err) => {
+    console.error(err)
   })
 }
 
 function updateHistory (key) {
-  const def = new Defer()
-  const fileDataPath = Path.join(queueDir, 'file_data', key)
-  const historyPath = Path.join(queueDir, 'history', key)
+  return new Promise((resolve, reject) => {
+    const fileDataPath = Path.join(queueDir, 'file_data', key)
+    const historyPath = Path.join(queueDir, 'history', key)
 
-  console.log(`Updating History ${historyPath}`)
+    console.log(`Updating History ${historyPath}`)
 
-  fs.readJson(historyPath, (err, data) => {
-    if (err) {
-      def.reject(err)
-      return def.promise
-    }
-
-    data.state = 'indexed'
-    data.indexCompletionTime = new Date()
-    delete data.error
-
-    fs.writeJson(historyPath, data, (err) => {
+    fs.readJson(historyPath, (err, data) => {
       if (err) {
-        console.log(`Error writing to history: ${id}`)
-        def.reject(err)
-        return def.promise
+        reject(err)
+        return
       }
 
-      console.log(`Removing files from : ${fileDataPath}`)
-      fs.removeSync(fileDataPath)
+      data.state = 'indexed'
+      data.indexCompletionTime = new Date()
+      delete data.error
 
-      def.resolve(true)
+      fs.writeJson(historyPath, data, (err) => {
+        if (err) {
+          console.log(`Error writing to history: ${id}`)
+          reject(err)
+          return
+        }
+
+        console.log(`Removing files from : ${fileDataPath}`)
+        fs.removeSync(fileDataPath)
+
+        resolve(true)
+      })
     })
   })
-
-  return def.promise
 }

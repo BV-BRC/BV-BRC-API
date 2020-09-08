@@ -38,6 +38,32 @@ module.exports = {
       req.end()
     })
   },
+  'httpStreamRequest': async (options, streamableBody) => {
+    return new Promise((resolve, reject) => {
+      const req = http.request(options, (res) => {
+        res.setEncoding('utf8')
+        let rawData = ''
+        res.on('data', (chunk) => {
+          rawData += chunk.toString()
+        })
+        res.on('end', () => {
+          resolve(rawData)
+        })
+      })
+        .on('error', (err) => {
+          reject(err)
+        })
+      streamableBody.on('data', (chunk) => {
+        req.write(chunk)
+      })
+      streamableBody.on('end', () => {
+        req.end()
+      })
+      streamableBody.on('error', (err) => {
+        reject(err)
+      })
+    })
+  },
   'httpsGetUrl': async (url, options) => {
     return new Promise((resolve, reject) => {
       https.get(url, options, (res) => {

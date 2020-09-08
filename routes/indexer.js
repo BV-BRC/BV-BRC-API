@@ -1,46 +1,48 @@
-var express = require('express')
-var router = express.Router({
+const Express = require('express')
+const Router = Express.Router({
   strict: true,
   mergeParams: true
 })
-var Defer = require('promised-io/promise').defer
-var when = require('promised-io/promise').when
-var all = require('promised-io/promise').all
-var Request = require('request')
-var config = require('../config')
-var authMiddleware = require('../middleware/auth')
-var httpParams = require('../middleware/http-params')
-var Queue = require('file-queue').Queue
-var debug = require('debug')('p3api-server:route/indexer')
-var formidable = require('formidable')
-var uuid = require('uuid')
-var fs = require('fs-extra')
-var Path = require('path')
+const { httpGet } = require('../util/http')
+const Config = require('../config')
+const AuthMiddleware = require('../middleware/auth')
+const HttpParamsMiddleware = require('../middleware/http-params')
+const debug = require('debug')('p3api-server:route/indexer')
 
-var http = require('http')
-var solrAgentConfig = config.get('solr').shortLiveAgent
-var solrAgent = new http.Agent(solrAgentConfig)
+const Formidable = require('formidable')
+const Uuid = require('uuid')
+const Fs = require('fs-extra')
+const Path = require('path')
+const QUEUE_DIRECTORY = Config.get('queueDirectory')
+const Queue = require('file-queue').Queue
 
-debug('Queue Directory: ', config.get('queueDirectory'))
-var qdir = config.get('queueDirectory')
-var queue
-fs.mkdirs(Path.join(qdir, 'file_data'), function (err) {
+const Url = require('url')
+const SOLR_URL = Config.get('solr').url
+const parsedSolrUrl = Url.parse(SOLR_URL)
+
+const Http = require('http')
+const solrAgentConfig = Config.get('solr').shortLiveAgent
+const solrAgent = new Http.Agent(solrAgentConfig)
+
+debug('Queue Directory: ', QUEUE_DIRECTORY)
+let queue
+Fs.mkdirs(Path.join(QUEUE_DIRECTORY, 'file_data'), function (err) {
   if (err) {
     debug('Error Creating Index Directory Structure: ', err)
     return
   }
-  fs.mkdirs(Path.join(qdir, 'history'), function (err) {
+  Fs.mkdirs(Path.join(QUEUE_DIRECTORY, 'history'), function (err) {
     if (err) {
       debug('Error Creating Index History Directory: ', err)
       return
     }
-    fs.mkdirs(Path.join(qdir, 'errors'), function (err) {
+    Fs.mkdirs(Path.join(QUEUE_DIRECTORY, 'errors'), function (err) {
       if (err) {
         debug('Error Creating Index Error Directory: ', err)
         return
       }
 
-      queue = new Queue(qdir, function (err) {
+      queue = new Queue(QUEUE_DIRECTORY, function (err) {
         if (err) {
           debug('error: ', err)
           return
@@ -51,22 +53,12 @@ fs.mkdirs(Path.join(qdir, 'file_data'), function (err) {
   })
 })
 
-router.use(httpParams)
-router.use(authMiddleware)
+Router.use(HttpParamsMiddleware)
+Router.use(AuthMiddleware)
 
-router.use(function (req, res, next) {
-  debug('req.path', req.path)
-  // debug('req content-type', req.get('content-type'))
-  // debug('accept', req.get('accept'))
-  // debug('req.url', req.url)
-  // debug('req.path', req.path)
-  // debug('req.params:', JSON.stringify(req.params))
-  next()
-})
-
-router.get('/:id', function (req, res, next) {
-  debug('Read Data from History: ', Path.join(qdir, 'history', req.params.id))
-  fs.readJson(Path.join(qdir, 'history', req.params.id), function (err, data) {
+Router.get('/:id', function (req, res, next) {
+  debug('Read Data from History: ', Path.join(QUEUE_DIRECTORY, 'history', req.params.id))
+  Fs.readJson(Path.join(QUEUE_DIRECTORY, 'history', req.params.id), function (err, data) {
     if (err) {
       return next(err)
     }
@@ -84,9 +76,10 @@ router.get('/:id', function (req, res, next) {
               // now delete files
               const fileDirPath = Path.dirname(data.files['genome']['path'])
               debug(`Removing files from ${fileDirPath}`)
-              fs.removeSync(fileDirPath)
+              Fs.removeSync(fileDirPath)
             } else {
               // as is, state is submitted
+              debug('Not all cores indexed')
               respondWithData(res, data)
             }
           }, (err) => {
@@ -108,55 +101,45 @@ function respondWithData (res, data) {
 }
 
 function checkSolr (genome_id) {
-  const def = new Defer()
-  const cores = ['genome_sequence', 'genome_feature', 'genome']
-  const defs = cores.map((core) => {
-    const url = `${config.get('solr').url}/${core}/select?q=genome_id:${genome_id}&rows=1&wt=json`
-    // console.log(`${url}`)
-    const def = new Defer()
-    Request.get(url, {
-      agent: solrAgent
-    }, (err, res, body) => {
-      if (err) {
-        def.reject(err)
-        return def.promise
-      }
-      var data = JSON.parse(body)
-      if (res.statusCode !== 200 || data.error) {
-        def.reject(new Error(data.error.msg))
-        return def.promise
-      }
-      debug(`checking index status for ${genome_id}: [${core}] ${data.response.numFound} row(s) found`)
-      def.resolve(data['response']['numFound'] > 0)
+  return new Promise((resolve, reject) => {
+    const cores = ['genome_sequence', 'genome_feature', 'genome']
+    const check_cores = cores.map((core) => {
+      // this should be a direct call to bypass the auth check
+      return httpGet({
+        hostname: parsedSolrUrl.hostname,
+        port: parsedSolrUrl.port,
+        agent: solrAgent,
+        path: `/solr/${core}/select?q=genome_id:${genome_id}&rows=0&wt=json`
+      }).then((body) => {
+        const data = JSON.parse(body)
+        debug(`checking index status for ${genome_id}: [${core}] ${data.response.numFound} row(s) found`)
+        return (data['response']['numFound'] > 0)
+      })
     })
-    return def.promise
+    Promise.all(check_cores).then((results) => {
+      resolve(results.every((hasIndexed) => hasIndexed))
+    }, (err) => {
+      reject(err)
+    })
   })
-  when(all(defs), (results) => {
-    def.resolve(results.every((hasIndexed) => hasIndexed))
-  }, (err) => {
-    def.reject(err)
-  })
-  return def.promise
 }
 
 function updateHistory (id, data) {
-  const def = new Defer()
+  return new Promise((resolve, reject) => {
+    data.state = 'indexed'
+    data.indexCompletionTime = new Date()
 
-  data.state = 'indexed'
-  data.indexCompletionTime = new Date()
-
-  fs.writeJson(Path.join(qdir, 'history', id), data, function (err) {
-    if (err) {
-      def.reject(err)
-      return def.promise
-    }
-
-    def.resolve(data)
+    Fs.writeJson(Path.join(QUEUE_DIRECTORY, 'history', id), data, (err) => {
+      if (err) {
+        reject(err)
+        return
+      }
+      resolve(data)
+    })
   })
-  return def.promise
 }
 
-router.post('/:type', [
+Router.post('/:type', [
   function (req, res, next) {
     if (!req.user) {
       res.sendStatus(401)
@@ -173,20 +156,20 @@ router.post('/:type', [
       res.end(500)
       return
     }
-    var form = new formidable.IncomingForm()
-    var qid = uuid.v4()
-    fs.mkdirs(Path.join(qdir, 'file_data', qid), function (err) {
+    const form = new Formidable.IncomingForm()
+    const qid = Uuid.v4()
+    Fs.mkdirs(Path.join(QUEUE_DIRECTORY, 'file_data', qid), function (err) {
       if (err) {
-        debug('Error creating output directory for index files to be queued: ', Path.join(qdir, 'file_data', qid))
+        debug('Error creating output directory for index files to be queued: ', Path.join(QUEUE_DIRECTORY, 'file_data', qid))
         res.end(500)
         return
       }
       form.keepExtensions = true
-      form.uploadDir = Path.join(qdir, 'file_data', qid)
+      form.uploadDir = Path.join(QUEUE_DIRECTORY, 'file_data', qid)
       form.multiples = true
       debug('Begin parse')
       form.parse(req, function (err, fields, files) {
-        var d = {id: qid, type: req.params.type, user: req.user, options: fields, files: {}}
+        const d = { id: qid, type: req.params.type, user: req.user, options: fields, files: {} }
 
         Object.keys(files).forEach(function (type) {
           d.files[type] = files[type]
@@ -201,9 +184,9 @@ router.post('/:type', [
           d.state = 'queued'
           d.queueTime = new Date()
 
-          fs.writeJson(Path.join(qdir, 'history', qid), d, function (err) {
+          Fs.writeJson(Path.join(QUEUE_DIRECTORY, 'history', qid), d, function (err) {
             res.set('content-type', 'application/json')
-            res.send(JSON.stringify({id: qid, state: 'queued', queueTime: d.queueTime}))
+            res.send(JSON.stringify({ id: qid, state: 'queued', queueTime: d.queueTime }))
             res.end()
           })
         })
@@ -213,10 +196,10 @@ router.post('/:type', [
 ])
 
 // fallback. return number of genomes in queue
-router.get('/', function (req, res, next) {
+Router.get('/', function (req, res, next) {
   queue.length((err, length) => {
-    respondWithData(res, {'genomesInQueue': length})
+    respondWithData(res, { 'genomesInQueue': length })
   })
 })
 
-module.exports = router
+module.exports = Router

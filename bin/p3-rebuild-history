@@ -3,12 +3,9 @@
 const config = require('../config')
 const opts = require('commander')
 
-const Defer = require('promised-io/promise').Deferred
-const when = require('promised-io/promise').when
-const All = require('promised-io/promise').all
 const fs = require('fs-extra')
 const JSONStream = require('JSONStream')
-const es = require('event-stream')
+const EventStream = require('event-stream')
 
 const queueDir = config.get('queueDirectory')
 
@@ -40,7 +37,7 @@ function rebuildHistory (key) {
       return buildFileObject(fullPath)
     })
 
-  All(filesDefs).then(files => {
+  Promise.all(filesDefs).then(files => {
     files.forEach(obj => {
       const key = obj.name.split('.')[0]
       if (key === 'unknown' && history.files['genome_amr'] === undefined) {
@@ -67,56 +64,52 @@ function rebuildHistory (key) {
 }
 
 function buildFileObject (path) {
-  const def = new Defer()
-
-  when(guessFileType(path), (key) => {
+  return guessFileType(path).then((key) => {
     console.log(`${path} => ${key}`)
 
     const stat = fs.statSync(path)
-    def.resolve({
+    return {
       size: stat.size,
       path: path,
       name: `${key}.json`,
       type: 'application/octet-stream',
       mtime: stat.mtime
-    })
+    }
   })
-
-  return def.promise
 }
 
 function guessFileType (path) {
-  const def = new Defer()
-
-  const myGuess = []
-
-  fs.createReadStream(path, {encoding: 'utf8'})
-    .pipe(JSONStream.parse('*'))
-    .pipe(es.mapSync(row => {
-      if (row.hasOwnProperty('taxon_lineage_names')) {
-        myGuess.push('genome')
-      } else if (row.hasOwnProperty('property_source')) {
-        myGuess.push('sp_gene')
-      } else if (row.hasOwnProperty('aa_sequence_md5')) {
-        myGuess.push('genome_feature')
-      } else if (row.hasOwnProperty('md5') && row.hasOwnProperty('sequence')) {
-        myGuess.push('feature_sequence')
-      } else if (row.hasOwnProperty('sequence_type') && row.hasOwnProperty('sequence_id')) {
-        myGuess.push('genome_sequence')
-      } else if (row.hasOwnProperty('pathway_id')) {
-        myGuess.push('pathway')
-      } else if (row.hasOwnProperty('genomes')) {
-        myGuess.push('taxonomy')
-      } else if (row.hasOwnProperty('resistant_phenotype')) {
-        myGuess.push('genome_amr')
-      }
-    }))
-    .on('close', () => {
-      // console.log(myGuess)
-      def.resolve(pickBestGuess(myGuess))
-    })
-
-  return def.promise
+  return new Promise((resolve, reject) => {
+    const myGuess = []
+    fs.createReadStream(path, {encoding: 'utf8'})
+      .pipe(JSONStream.parse('*'))
+      .pipe(EventStream.mapSync(row => {
+        if (row.hasOwnProperty('taxon_lineage_names')) {
+          myGuess.push('genome')
+        } else if (row.hasOwnProperty('property_source')) {
+          myGuess.push('sp_gene')
+        } else if (row.hasOwnProperty('aa_sequence_md5')) {
+          myGuess.push('genome_feature')
+        } else if (row.hasOwnProperty('md5') && row.hasOwnProperty('sequence')) {
+          myGuess.push('feature_sequence')
+        } else if (row.hasOwnProperty('sequence_type') && row.hasOwnProperty('sequence_id')) {
+          myGuess.push('genome_sequence')
+        } else if (row.hasOwnProperty('pathway_id')) {
+          myGuess.push('pathway')
+        } else if (row.hasOwnProperty('genomes')) {
+          myGuess.push('taxonomy')
+        } else if (row.hasOwnProperty('resistant_phenotype')) {
+          myGuess.push('genome_amr')
+        }
+      }))
+      .on('error', (err) => {
+        reject(err)
+      })
+      .on('close', () => {
+        // console.log(myGuess)
+        resolve(pickBestGuess(myGuess))
+      })
+  })
 }
 
 function pickBestGuess (array) {
