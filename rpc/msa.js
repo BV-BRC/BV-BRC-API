@@ -13,7 +13,6 @@ const agent = new http.Agent({
 })
 
 async function runQuery (query, opts) {
-
   const features = await httpRequest({
     port: Config.get('http_port'),
     agent: agent,
@@ -28,7 +27,7 @@ async function runQuery (query, opts) {
     .then(
       (body) => JSON.parse(body),
       (err) => {
-       console.error(err)
+        console.error(err)
       })
 
   const md5Array = features.map((f) => {
@@ -112,7 +111,7 @@ function runMuscle (sequences, opts) {
 function runGBlocks (input, opts) {
   return new Promise((resolve, reject) => {
     let errorClosed = false
-    const tempName = Temp.path({suffix: '.aga'})
+    const tempName = Temp.path({ suffix: '.aga' })
 
     fs.outputFile(tempName, input, (err) => {
       if (err) { reject(err); return }
@@ -140,13 +139,13 @@ function runGBlocks (input, opts) {
         if (!errorClosed) {
           fs.exists(tempName + '-gb', (exists) => {
             if (!exists) {
-              reject('Gblocks Output Does Not Exist')
+              reject(new Error('Gblocks Output Does Not Exist'))
               return
             }
 
             fs.readFile(tempName + '-gb', 'utf8', (err, data) => {
               if (err) {
-                reject(`Unable to Read Gblocks output: ${err}`)
+                reject(new Error(`Unable to Read Gblocks output: ${err}`))
                 return
               }
 
@@ -180,7 +179,7 @@ function runFastTree (input, opts) {
   return new Promise((resolve, reject) => {
     const output = []
     let errorClosed = false
-    const tempName = Temp.path({suffix: '.aga-gb'})
+    const tempName = Temp.path({ suffix: '.aga-gb' })
 
     fs.outputFile(tempName, input, (err) => {
       const runOpts = ['-gamma', '-nosupport']
@@ -217,7 +216,6 @@ function runFastTree (input, opts) {
         }
       })
     })
-
   })
 }
 
@@ -234,10 +232,10 @@ module.exports = {
       if (params.length > 1) {
         alignType = params[1]
       }
-      const opts = {req: req, user: req.user, token: req.headers.authorization, alignType: alignType}
+      const opts = { req: req, user: req.user, token: req.headers.authorization, alignType: alignType }
 
       const sequences = await runQuery(query, opts).catch((err) => {
-        reject(`Unable To Retreive Feature Data for MSA: ${err}`)
+        reject(new Error(`Unable To Retreive Feature Data for MSA: ${err}`))
       })
       buildFasta(sequences, opts).then((fasta) => {
         runMuscle(fasta, opts).then((alignment) => {
@@ -261,16 +259,16 @@ module.exports = {
                 tree: fastTree
               })
             }, (errFastTree) => {
-              reject(`Unable to Complete FastTree: ${errFastTree}`)
+              reject(new Error(`Unable to Complete FastTree: ${errFastTree}`))
             })
           }, (errGBlocks) => {
-            reject(`Unable to Complete GBLocks for Alignment: ${errGBlocks}`)
+            reject(new Error(`Unable to Complete GBLocks for Alignment: ${errGBlocks}`))
           })
         }, (errMuscle) => {
-          reject(`Unable to Complete Alignement: ${errMuscle}`)
+          reject(new Error(`Unable to Complete Alignement: ${errMuscle}`))
         })
       }, (errBuildFasta) => {
-        reject(`Unable to build Fasta: ${errBuildFasta}`)
+        reject(new Error(`Unable to build Fasta: ${errBuildFasta}`))
       })
     })
   }

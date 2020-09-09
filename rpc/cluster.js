@@ -16,7 +16,7 @@ function runCluster (data, config, opts) {
     debug('Cluster Temp File Input: ', tempFileInput, 'at', tempFilePath)
     fs.outputFile(tempFileInput, data, (err) => {
       if (err) {
-        reject('Unable to write input data to', tempFileInput)
+        reject(new Error(`Unable to write input data to ${tempFileInput}`))
         return
       }
 
@@ -38,7 +38,7 @@ function runCluster (data, config, opts) {
         } else {
           debug('Cluster timed out!')
           errorClosed = true
-          reject('Timed out. Cluster took more than 5 mins. Please reduce the data set and try again.')
+          reject(new Error('Timed out. Cluster took more than 5 mins. Please reduce the data set and try again.'))
           child.kill('SIGHUP')
         }
       }, MAX_LIMIT)
@@ -59,7 +59,7 @@ function runCluster (data, config, opts) {
           // read result file and return
           fs.readFile(tempFileOutput, 'utf8', (err, data) => {
             if (err) {
-              reject('Unable to read ' + tempFileOutput)
+              reject(new Error(`Unable to read ${tempFileOutput}`))
               return
             }
 
@@ -121,7 +121,7 @@ module.exports = {
       runCluster(data, config, opts).then((result) => {
         resolve(result)
       }, (err) => {
-        reject(`Unable to Complete Cluster: ${err}`)
+        reject(new Error(`Unable to Complete Cluster: ${err}`))
       })
     })
   }

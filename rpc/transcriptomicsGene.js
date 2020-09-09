@@ -24,12 +24,10 @@ function getWorkspaceObjects (paths, metadataOnly, token) {
       id: 1,
       method: 'Workspace.get',
       version: '1.1',
-      params: [{objects: paths, metadata_only: metadataOnly}]
+      params: [{ objects: paths, metadata_only: metadataOnly }]
     })).then((body) => {
-
       results = JSON.parse(body)
       if (results.result) {
-
         const defs = results.result[0].map((obj) => {
           const meta = {
             name: obj[0][0],
@@ -50,7 +48,7 @@ function getWorkspaceObjects (paths, metadataOnly, token) {
             return meta
           }
           if (!meta.link_reference) {
-            return ({metadata: meta, data: obj[1]})
+            return ({ metadata: meta, data: obj[1] })
           } else {
             return httpsGetUrl(`${meta.link_reference}?download`, {
               headers: {
@@ -137,11 +135,11 @@ function readPublicExperiments (tgState, options) {
       path: '/transcriptomics_gene/'
     }, `${tgState.query}&select(pid,refseq_locus_tag,feature_id,log_ratio,z_score)&limit(1)`)
 
-    let repsonse
+    let response
     try {
       response = JSON.parse(res)
-    } catch (err){
-        reject(`readPublicExperiments(): Error parsing JSON from SOLR: ${err}`)
+    } catch (err) {
+      reject(new Error(`readPublicExperiments(): Error parsing JSON from SOLR: ${err}`))
     }
 
     const numFound = response.response.numFound
@@ -153,17 +151,17 @@ function readPublicExperiments (tgState, options) {
     for (let i = 0; i < steps; i++) {
       const range = 'items=' + (i * fetchSize) + '-' + ((i + 1) * fetchSize - 1)
       const subPromise = httpRequest({
-          port: Config.get('http_port'),
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/rqlquery+x-www-form-urlencoded',
-            'Range': range,
-            'Authorization': options.token || ''
-          },
-          method: 'POST',
-          agent: SolrAgent,
-          path: '/transcriptomics_gene/'
-        }, `${tgState.query}&select(pid,refseq_locus_tag,feature_id,log_ratio,z_score)`)
+        port: Config.get('http_port'),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/rqlquery+x-www-form-urlencoded',
+          'Range': range,
+          'Authorization': options.token || ''
+        },
+        method: 'POST',
+        agent: SolrAgent,
+        path: '/transcriptomics_gene/'
+      }, `${tgState.query}&select(pid,refseq_locus_tag,feature_id,log_ratio,z_score)`)
         .then((body) => JSON.parse(body))
       allRequests.push(subPromise)
     }
@@ -184,27 +182,25 @@ function readPublicExperiments (tgState, options) {
         })
       })
 
-      resolve({expressions: expressions, p3FeatureIds: Object.keys(p3FeatureIdSet), p2FeatureIds: []})
+      resolve({ expressions: expressions, p3FeatureIds: Object.keys(p3FeatureIdSet), p2FeatureIds: [] })
     })
-
   })
 }
 
 function processTranscriptomicsGene (tgState, options) {
   return new Promise((resolve, reject) => {
-
     let wsCall
     if (tgState.hasOwnProperty('wsExpIds')) {
       wsCall = readWorkspaceExperiments(tgState, options)
     } else {
-      wsCall = {expressions: [], p3FeatureIds: [], p2FeatureIds: []}
+      wsCall = { expressions: [], p3FeatureIds: [], p2FeatureIds: [] }
     }
 
     let publicCall
     if (tgState.hasOwnProperty('pbExpIds')) {
       publicCall = readPublicExperiments(tgState, options)
     } else {
-      publicCall = {expressions: [], p3FeatureIds: [], p2FeatureIds: []}
+      publicCall = { expressions: [], p3FeatureIds: [], p2FeatureIds: [] }
     }
 
     Promise.all([publicCall, wsCall]).then((results) => {
@@ -267,7 +263,7 @@ function processTranscriptomicsGene (tgState, options) {
           }
 
           if (!expressionHash.hasOwnProperty(featureId)) {
-            var expr = {samples: {}}
+            var expr = { samples: {} }
             if (expression.hasOwnProperty('feature_id')) { expr.feature_id = expression.feature_id }
             if (expression.hasOwnProperty('na_feature_id')) { expr.p2_feature_id = expression.na_feature_id }
             if (expression.hasOwnProperty('refseq_locus_tag')) { expr.refseq_locus_tag = expression.refseq_locus_tag }
@@ -344,7 +340,7 @@ module.exports = {
       processTranscriptomicsGene(tgState, opts).then((result) => {
         resolve(result)
       }, (err) => {
-        reject(`Unable to process protein family queries. ${err}`)
+        reject(new Error(`Unable to process protein family queries. ${err}`))
       })
     })
   }

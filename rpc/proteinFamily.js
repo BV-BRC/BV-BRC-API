@@ -108,7 +108,7 @@ async function fetchFamilyDataByGenomeId (genomeId, options) {
             redisClient.set(key, JSON.stringify(body), 'EX', RedisTTL)
             resolve(body)
           } else {
-            reject(`Unable to retrieve genome object: ${genomeId}`)
+            reject(new Error(`Unable to retrieve genome object: ${genomeId}`))
           }
         }, (error) => {
           reject(error)
@@ -235,7 +235,7 @@ module.exports = {
       processProteinFamily(pfState, opts).then((result) => {
         resolve(result)
       }, (err) => {
-        reject(`Unable to process protein family queries. ${err}`)
+        reject(new Error(`Unable to process protein family queries. ${err}`))
       })
     })
   }
