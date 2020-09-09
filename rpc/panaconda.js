@@ -1,6 +1,7 @@
 const debug = require('debug')('p3api-server:panaconda')
 const ChildProcess = require('child_process')
 const Config = require('../config')
+const { httpRequest } = require('../util/http')
 
 function runQuery (query, opts) {
   return httpRequest({
