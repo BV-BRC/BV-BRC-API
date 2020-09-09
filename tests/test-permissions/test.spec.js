@@ -111,7 +111,7 @@ describe('Test Genome Permissions', () => {
           done()
         }).catch(e => {
           done(e)
-         })
+        })
     })
 
     it('should have no permissions on genome core', function (done) {
@@ -126,9 +126,6 @@ describe('Test Genome Permissions', () => {
       })
     })
   })
-
-
-
 
   describe('test bad inputs', function () {
     // allow 10 secs
@@ -241,10 +238,8 @@ describe('Test Genome Permissions', () => {
           done()
         })
     })
-
   }) // end bad inputs
 }) // end Test Genome Permissions
-
 
 describe('Test Bulk Permissions', () => {
   // test params
@@ -289,7 +284,7 @@ describe('Test Bulk Permissions', () => {
       genomeIDs.forEach(id => {
         CORES.forEach(core => {
           // genome_amr and subsystem cores may be empty for some given genomes
-          if (['genome_amr', 'subsystem'].indexOf(core) !== -1) return;
+          if (['genome_amr', 'subsystem'].indexOf(core) !== -1) return
 
           const serverUrl = DATA_API_URL +
           `/${core}?eq(genome_id,${id})&select(user_read,user_write)`
@@ -354,7 +349,7 @@ describe('Test Bulk Permissions', () => {
       genomeIDs.forEach(id => {
         CORES.forEach(core => {
           // genome_amr and subsystem cores may be empty for some given genomes
-          if (['genome_amr', 'subsystem'].indexOf(core) !== -1) return;
+          if (['genome_amr', 'subsystem'].indexOf(core) !== -1) return
 
           const serverUrl = DATA_API_URL +
           `/${core}?eq(genome_id,${id})&select(user_read, user_write)`
@@ -373,11 +368,7 @@ describe('Test Bulk Permissions', () => {
       }).catch(e => done(e))
     })
   })
-
 }) // end Bulk Permissions
-
-
-
 
 /**
  * returns promise with list of private genome IDs based on number requested

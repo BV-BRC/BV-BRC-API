@@ -1,13 +1,7 @@
 const assert = require('chai').assert
-const Http = require('http')
 const { httpRequest } = require('../../util/http')
 const Config = require('../../config')
 const Token = require('../config.json').token
-
-const agent = new Http.Agent({
-  keepAlive: true,
-  maxSockets: 1
-})
 
 describe('Test Middleware - RQLQueryParser', function () {
   it('with workspaceObject', async function () {

@@ -17,7 +17,7 @@
  *
  */
 const express = require('express')
-const router = express.Router({strict: true, mergeParams: true})
+const router = express.Router({ strict: true, mergeParams: true })
 
 const PublicDataTypes = require('../middleware/PublicDataTypes')
 const authMiddleware = require('../middleware/auth')
@@ -50,7 +50,7 @@ router.use(authMiddleware)
 router.use(PublicDataTypes)
 
 router.post('/:target_id', [
-  bodyParser.json({type: ['application/json'], limit: '100mb'}),
+  bodyParser.json({ type: ['application/json'], limit: '100mb' }),
   updatePermissions
 ])
 
@@ -66,13 +66,13 @@ function updatePermissions (req, res, next) {
 
   // ensure parameters are correct, or respond with appropriate message
   const hasPassed = testParams(req, res)
-  if (!hasPassed) return;
+  if (!hasPassed) return
 
   // keep track of total number of docs updated
   let numDocsUpdated = 0
 
   // used to ensure user is owner on every object
-  let notOwner = false;
+  let notOwner = false
 
   let proms = []
   genomeIDs.forEach(genomeID => {
@@ -196,8 +196,8 @@ function toSetCommand (record, id, permissions, core) {
   let cmd = {}
   cmd[genomeCoresUUIDs[core]] = id
 
-  cmd.user_read = {set: readUsers}
-  cmd.user_write = {set: writeUsers}
+  cmd.user_read = { set: readUsers }
+  cmd.user_write = { set: writeUsers }
 
   return cmd
 }

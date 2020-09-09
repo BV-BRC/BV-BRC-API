@@ -1,5 +1,5 @@
 var express = require('express')
-var router = express.Router({strict: true, mergeParams: true})
+var router = express.Router({ strict: true, mergeParams: true })
 var RQLQueryParser = require('../middleware/RQLQueryParser')
 var DecorateQuery = require('../middleware/DecorateQuery')
 var ExtractCustomFields = require('../middleware/ExtractCustomFields')
@@ -84,19 +84,19 @@ router.get('*', function (req, res, next) {
 
 // patch/update objects
 router.patch('/:target_id', [
-  bodyParser.json({type: ['application/jsonpatch+json'], limit: '100mb'}),
+  bodyParser.json({ type: ['application/jsonpatch+json'], limit: '100mb' }),
   patchMiddleware
 ])
 
 // same thing as patch, but done over a post for clients that cannot issue the patch http verb
 router.post('/:target_id', [
-  bodyParser.json({type: ['application/jsonpatch+json'], limit: '100mb'}),
+  bodyParser.json({ type: ['application/jsonpatch+json'], limit: '100mb' }),
   patchMiddleware
 ])
 
 router.post('*', [
-  bodyParser.json({type: ['application/jsonrpc+json'], limit: '30mb'}),
-  bodyParser.json({type: ['application/json'], limit: '30mb'}),
+  bodyParser.json({ type: ['application/jsonrpc+json'], limit: '30mb' }),
+  bodyParser.json({ type: ['application/json'], limit: '30mb' }),
   function (req, res, next) {
     debug('json req._body', req._body)
     if (!req._body || !req.body) {
@@ -121,7 +121,7 @@ router.post('*', [
     next('route')
   },
 
-  bodyParser.text({type: 'application/x-www-form-urlencoded', limit: '30mb'}),
+  bodyParser.text({ type: 'application/x-www-form-urlencoded', limit: '30mb' }),
   function (req, res, next) {
     // debug('x-www-form-url-encoded check', body)
     req.call_method = 'query'
@@ -141,8 +141,8 @@ router.post('*', [
     next('route')
   },
 
-  bodyParser.text({type: 'application/rqlquery+x-www-form-urlencoded', limit: '30mb'}),
-  bodyParser.text({type: 'application/solrquery+x-www-form-urlencoded', limit: '30mb'}),
+  bodyParser.text({ type: 'application/rqlquery+x-www-form-urlencoded', limit: '30mb' }),
+  bodyParser.text({ type: 'application/solrquery+x-www-form-urlencoded', limit: '30mb' }),
   function (req, res, next) {
     debug('Handle Form Body')
     // req.body=decodeURIComponent(req.body);

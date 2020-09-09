@@ -53,7 +53,7 @@ if (require.main === module) {
 
 async function fetchAndLoad (genomeIDs, fileDir) {
   console.log(`*** Fetching genomes to ${fileDir}...`)
-  await fetchGenomes({genomeIDs, outputDir: fileDir})
+  await fetchGenomes({ genomeIDs, outputDir: fileDir })
 
   console.log(`*** Loading ${fileDir} into Solr...`)
   await loadData(fileDir)

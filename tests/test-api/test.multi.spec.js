@@ -1,9 +1,7 @@
 const assert = require('chai').assert
 const Http = require('http')
-const { httpGet, httpRequest } = require('../../util/http')
+const { httpRequest } = require('../../util/http')
 const Config = require('../../config')
-const Path = require('path')
-const Fs = require('fs')
 
 const agent = new Http.Agent({
   keepAlive: true,

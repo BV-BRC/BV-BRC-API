@@ -3,8 +3,8 @@ const RpcMethods = require('../rpc')
 const debug = require('debug')('p3api-server:route/rpcHandler')
 
 module.exports = [
-  BodyParser.json({type: ['application/jsonrpc+json'], limit: '30mb'}),
-  BodyParser.json({type: ['application/json'], limit: '30mb'}),
+  BodyParser.json({ type: ['application/jsonrpc+json'], limit: '30mb' }),
+  BodyParser.json({ type: ['application/json'], limit: '30mb' }),
   function (req, res, next) {
     if (!req.body) {
       next()

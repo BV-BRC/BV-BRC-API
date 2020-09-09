@@ -23,7 +23,7 @@ curl -H 'Content-Type: application/json' -X POST 'http://localhost:3001/hpi/sear
 
 // import dependencies
 var express = require('express')
-var router = express.Router({strict: true, mergeParams: true})
+var router = express.Router({ strict: true, mergeParams: true })
 var config = require('../config')
 var bodyParser = require('body-parser')
 var httpParams = require('../middleware/http-params') // checks for stuff starting with http_ in the query and sets it as a header
@@ -48,7 +48,7 @@ router.use(authMiddleware)
 // handle GET hpi/search/
 // Not sure what to return here
 router.get('/', [
-  bodyParser.urlencoded({extended: true}),
+  bodyParser.urlencoded({ extended: true }),
   function (req, res, next) {
     res.write('--- acknowledged GET for hpi/search \n')
     res.end()
@@ -298,7 +298,7 @@ router.post('/', [
 // GET hpi/search/experiment
 // Maybe a 404 or a list of all experiment ids
 router.get('/experiment', [
-  bodyParser.urlencoded({extended: true}),
+  bodyParser.urlencoded({ extended: true }),
   function (req, res, next) {
     req.call_collection = 'transcriptomics_experiment'
     req.call_method = 'query'
@@ -327,7 +327,7 @@ router.get('/experiment', [
 // GET hpi/search/experiment/{experimentIdentifier}
 // The details of an experiment, as showin in the primary endpoint
 router.get('/experiment/:id', [
-  bodyParser.urlencoded({extended: true}),
+  bodyParser.urlencoded({ extended: true }),
 
   // Step 1: get the samples for the eid
   function (req, res, next) {
@@ -419,7 +419,7 @@ router.get('/experiment/:id', [
 // GET hpi/search/experiment/{experimentIdentifier}/id-list/{listIdentifier}
 // The details of an experiment, as shown in the primary endpoint
 router.get('/experiment/:id/id-list/:id_list', [
-  bodyParser.urlencoded({extended: true}),
+  bodyParser.urlencoded({ extended: true }),
   function (req, res, next) {
     req.call_collection = 'transcriptomics_sample'
     req.call_method = 'query'
@@ -469,7 +469,7 @@ router.get('/experiment/:id/id-list/:id_list', [
 // Return the ids for the id-list.  If the optional includeOrthologs parameter is supplied,
 // return a second column with lorthologous ids from that organism
 router.get('/experiment/:id/id-list/:id_list/ids', [
-  bodyParser.urlencoded({extended: true}),
+  bodyParser.urlencoded({ extended: true }),
   function (req, res, next) {
     req.call_collection = 'transcriptomics_gene'
     req.call_method = 'query'
@@ -513,7 +513,7 @@ router.get('/experiment/:id/id-list/:id_list/ids', [
 // GET hpi/search/api
 // Supplies information specific to this BRC's implementation of the API
 router.get('/api', [
-  bodyParser.urlencoded({extended: true}),
+  bodyParser.urlencoded({ extended: true }),
   function (req, res, next) {
     // create the structure to hold the input types
     var support = {
@@ -542,7 +542,7 @@ router.get('/api', [
       'additionalFlags': [{
         'key': FLAG_ORTHOLOGY,
         'jsonType': 'boolean',
-        'description': 'If the useOrthology flag is set, returns a second column with orhologous IDs from that organism.'}]
+        'description': 'If the useOrthology flag is set, returns a second column with orhologous IDs from that organism.' }]
 
     }
     support.inputTypes.push(gene_input)

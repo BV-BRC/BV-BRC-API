@@ -22,7 +22,7 @@ function runQuery (query, opts) {
 module.exports = function (req, res, next) {
   const query = `${req.query}&limit(${maxBundleSize})&select(genome_id,public,owner,genome_name)`
 
-  runQuery(query, {token: req.headers.authorization || ''}).then((genomes) => {
+  runQuery(query, { token: req.headers.authorization || '' }).then((genomes) => {
     if (!genomes || genomes.length < 0) {
       return next('route')
     }

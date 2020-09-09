@@ -96,7 +96,7 @@ if (require.main === module) {
   }
 
   // if genome_ids is provided as an option
-  fetchGenomes({genomeIDs, outputDir: outDir})
+  fetchGenomes({ genomeIDs, outputDir: outDir })
 }
 
 /**
@@ -108,7 +108,7 @@ if (require.main === module) {
  * @param {string} params.outputDir - path to where genomes will be saved
  */
 async function fetchGenomes (params) {
-  let {genomeIDs, outputDir} = params
+  let { genomeIDs, outputDir } = params
 
   // if string, assume file path
   if (!Array.isArray(genomeIDs)) { genomeIDs = require(genomeIDs) }
