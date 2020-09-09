@@ -1,12 +1,10 @@
 var defer = require('promised-io/promise').defer;
 var when = require('promised-io/promise').when;
-var debug = require('debug')('p3api-server:msa');
+var debug = require('debug')('p3api-server:panaconda');
 var ChildProcess = require("child_process");
 var config = require("../config");
 var request = require('request');
 var distributeURL = config.get("distributeURL");
-var Temp = require('temp');
-var fs = require('fs-extra');
 
 function runQuery(query,opts){
 	debug("Query: ", query)
@@ -20,7 +18,7 @@ function runQuery(query,opts){
 			"content-type": "application/rqlquery+x-www-form-urlencoded",
 			"accept": "text/tsv",
             "Authorization": opts.token || "",
-            "download": true
+            // "download": true
 		},
 		body: query
 	}, function(err,r,body){
@@ -46,7 +44,7 @@ function buildGraph(annotations,opts){
 	var errorClosed;
 
 	debug("Run Panaconda");
-	var child = ChildProcess.spawn("python", ["fam_to_graph.py",
+	var child = ChildProcess.spawn("python", ["/disks/patric-common/runtime/bin/fam_to_graph.py",
             "--"+opts.alpha, "--layout", "--ksize",opts.ksize,"--diversity",opts.diversity,"--context",opts.context],{
 		stdio: [
 			'pipe',
