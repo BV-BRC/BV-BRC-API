@@ -1,134 +1,105 @@
-var debug = require('debug')('p3api-server:ExpandingQuery')
-var when = require('promised-io/promise').when
-var Deferred = require('promised-io/promise').defer
-var All = require('promised-io/promise').all
-var Query = require('rql/query').Query
-var config = require('./config')
-var Request = require('request')
-var distributeURL = config.get('distributeURL')
+const debug = require('debug')('p3api-server:ExpandingQuery')
+const Query = require('rql/query').Query
+const Config = require('./config')
+const { httpRequest, httpGet, httpsRequestUrl } = require('./util/http')
 
-var workspaceAPI = config.get('workspaceAPI')
+const WORKSPACE_API_URL = Config.get('workspaceAPI')
 
 function getWorkspaceObject (id, opts) {
-  var def = new Deferred()
-  // debug("in getWorkspaceObject: ", id);
-  // debug("wsAPI: ", workspaceAPI);
-  // debug("opts req headers: ", opts.req.headers);
-  Request({
-    method: 'POST',
-    url: workspaceAPI,
-    json: true,
-    body: {id: 1, method: 'Workspace.get', version: '1.1', params: [{objects: [decodeURIComponent(id)]}]},
-    headers: {
-      'accept': 'application/json',
-      'content-type': 'application/json',
-      'authorization': (opts && opts.req && opts.req.headers['authorization']) ? opts.req.headers['authorization'] : ''
-    }
-  }, function (err, resObj, results) {
-    if (err) {
-      debug('Error retrieving object from workspace: ', err)
-
-      def.reject(err)
-      return
-    }
-    if (results.result) {
-      var R = []
-      results.result[0].map(function (o) {
-        var obj = (typeof o[1] === 'string') ? JSON.parse(o[1]) : o[1]
-        // debug("obj: ", obj );
-        // debug("obj id_list: ", obj.id_list);
-        Object.keys(obj.id_list).forEach(function (key) {
-          R = R.concat(obj.id_list[key].filter(function (y) {
-            return !!y
-          }))
+  return new Promise((resolve, reject) => {
+    debug('in getWorkspaceObject: ', id)
+    httpsRequestUrl(WORKSPACE_API_URL, {
+      headers: {
+        'accept': 'application/json',
+        'content-type': 'application/json',
+        'authorization': (opts && opts.req && opts.req.headers['authorization']) ? opts.req.headers['authorization'] : ''
+      },
+      method: 'POST'
+    }, JSON.stringify({
+      id: 1, method: 'Workspace.get', version: '1.1', params: [{ objects: [decodeURIComponent(id)] }]
+    })).then((body) => {
+      const results = JSON.parse(body)
+      if (results.result) {
+        let R = []
+        results.result[0].map(function (o) {
+          const obj = (typeof o[1] === 'string') ? JSON.parse(o[1]) : o[1]
+          Object.keys(obj.id_list).forEach(function (key) {
+            R = R.concat(obj.id_list[key].filter(function (y) {
+              return !!y
+            }))
+          })
         })
-      })
-      if (R.length < 1) {
-        R.push('NOT_A_VALID_ID')
-      }
+        if (R.length < 1) {
+          R.push('NOT_A_VALID_ID')
+        }
 
-      R = R.map(encodeURIComponent)
-      // debug("R: ", R[0]);
-      def.resolve(R)
-      return
-    }
-    def.reject(false)
+        R = R.map(encodeURIComponent)
+        resolve(R)
+      } else {
+        reject(new Error(`Unable to parse workspace query result`))
+      }
+    }, (err) => {
+      reject(err)
+    })
   })
-  return def.promise
 }
 
 function runJoinQuery (core, query, field, opts) {
-  var def = new Deferred()
-
-  when(query, function (subquery) {
-    var q = subquery + '&facet((field,' + field + '),(limit,-1),(mincount,1))&json(nl,map)&limit(1)'
-    // debug("query: [", q, "]");
-
-    Request.post({
-      url: distributeURL + core + '/',
-      json: true,
-      headers: {
-        'Accept': 'application/solr+json',
-        'Content-Type': 'application/rqlquery+x-www-form-urlencoded',
-        'Authorization': (opts && opts.req && opts.req.headers['authorization']) ? opts.req.headers['authorization'] : ''
-      },
-      body: q
-    }, function (err, resObj, results) {
-      if (err) {
-        def.reject(err)
-        return
-      }
-
-      // debug("results: ", results);
-      // debug(results['facet_counts']['facet_fields'][field]);
-      if (results['facet_counts']['facet_fields'][field]) {
-        var R = Object.keys(results['facet_counts']['facet_fields'][field])
-
-        def.resolve(R)
-        return
-      }
-
-      def.reject(false)
+  return new Promise((resolve, reject) => {
+    debug('*** runJoinQuery:', core, query, field)
+    query.then((subquery) =>
+      httpRequest({
+        headers: {
+          'Accept': 'application/solr+json',
+          'Content-Type': 'application/rqlquery+x-www-form-urlencoded',
+          'Authorization': (opts && opts.req && opts.req.headers['authorization']) ? opts.req.headers['authorization'] : ''
+        },
+        method: 'POST',
+        port: Config.get('http_port'),
+        path: `/${core}/`
+      }, `${subquery}&facet((field,${field}),(limit,-1),(mincount,1))&json(nl,map)&limit(1)`)
+        .then((results) => {
+          const data = JSON.parse(results)
+          if (data['facet_counts']['facet_fields'][field]) {
+            resolve(Object.keys(data['facet_counts']['facet_fields'][field]))
+          }
+        }, (err) => {
+          reject(new Error(`Unable to execute sub query: ${err}`))
+        })
+      , (err) => {
+      reject(new Error(`Unable to resolve query: ${err}`))
     })
   })
-  return def.promise
 }
 
 function runSDISubQuery (core, query, opts) {
-  const def = new Deferred()
-
-  Request.get({
-    url: distributeURL + core + '/?' + query + '&facet((field,feature_id_a),(field,feature_id_b),(limit,-1),(mincount,1))&json(nl,map)&limit(1)',
-    json: true,
+  debug('**** runSDISubQuery:')
+  return httpGet({
+    port: Config.get('http_port'),
     headers: {
       'Accept': 'application/solr+json',
       'Content-Type': 'application/rqlquery+x-www-form-urlencoded',
       'Authorization': (opts && opts.req && opts.req.headers['authorization']) ? opts.req.headers['authorization'] : ''
-    }
-  }, function (err, resObj, results) {
-    if (err) {
-      def.reject(err)
-    }
-
+    },
+    path: `/${core}/?${query}&facet((field,feature_id_a),(field,feature_id_b),(limit,-1),(mincount,1))&json(nl,map)&limit(1)`
+  }).then((res) => {
+    const results = JSON.parse(res)
     if (results['facet_counts']['facet_fields']['feature_id_a'] && results['facet_counts']['facet_fields']['feature_id_b']) {
-      var data = Object.assign({}, results['facet_counts']['facet_fields']['feature_id_a'], results['facet_counts']['facet_fields']['feature_id_b'])
+      const data = Object.assign({}, results['facet_counts']['facet_fields']['feature_id_a'], results['facet_counts']['facet_fields']['feature_id_b'])
 
-      // debug("runSDISubQuery result: ", Object.keys(data).length);
-      def.resolve(Object.keys(data))
+      return Object.keys(data)
     } else {
-      def.resolve([])
+      return []
     }
   })
-
-  return def.promise
 }
 
 var LazyWalk = exports.LazyWalk = function (term, opts) {
-// debug("LazyWalk term: ", term);
-// debug("stringified term: ", Query(term).toString());
+// debug('LazyWalk term: ', term);
+// debug('stringified term: ', Query(term).toString());
 
   if (term && (typeof term === 'string')) {
-    // debug("TERM: ", term);
+    // debug('TERM: ', term);
     return encodeURIComponent(term)
   }
 
@@ -143,20 +114,20 @@ var LazyWalk = exports.LazyWalk = function (term, opts) {
   if (term && term instanceof Array) {
     var out = []
     var defs = term.map(function (t) {
-      return when(LazyWalk(t, opts), function (t) {
-        out.push(t)
+      return Promise.all([LazyWalk(t, opts)]).then((vals) => {
+        out.push(vals[0])
       })
     })
 
-    return when(All(defs), function (defs) {
-      // debug("Out: ", out);
+    return Promise.all(defs).then(function (defs) {
+      // debug('Out: ', out);
       return '(' + out.join(',') + ')'
     })
-    // debug("LazyWalk term is instanceof Array: ", term);
-    // debug("Return Val: (" + term.join(",") + ")");
-    // return "(" + term.join(",") +")"
+    // debug('LazyWalk term is instanceof Array: ', term);
+    // debug('Return Val: (' + term.join(',') + ')');
+    // return '(' + term.join(',') +')'
   }
-  // debug("term: ", term, " type: ", typeof term, " args: ", term.args);
+  // debug('term: ', term, ' type: ', typeof term, ' args: ', term.args);
   if (term && typeof term === 'object') {
     if (term.name) {
       if (term.args) {
@@ -164,11 +135,11 @@ var LazyWalk = exports.LazyWalk = function (term, opts) {
           return LazyWalk(t, opts)
         })
 
-        return when(All(term.args), function (args) {
+        return Promise.all(term.args).then(function (args) {
           if (opts && opts.expansions && opts.expansions[term.name]) {
             var expanded = opts.expansions[term.name].apply(this, term.args)
-            // debug("expanded: ", expanded);
-            return when(ResolveQuery(expanded, opts, false), function (expanded) {
+            // debug('expanded: ', expanded);
+            return ResolveQuery(expanded, opts, false).then(function (expanded) {
               debug('Expanded POST WALK: ' + expanded)
               return expanded
             })
@@ -179,14 +150,14 @@ var LazyWalk = exports.LazyWalk = function (term, opts) {
             return ''
           } else if (term.name === 'join' && term.args.length === 3) {
             // args: core, query, field
-            return when(runJoinQuery(term.args[0], term.args[1], term.args[2], opts), function (ids) {
+            return runJoinQuery(term.args[0], term.args[1], term.args[2], opts).then(function (ids) {
               return 'in(' + term.args[2] + ',(' + ids.join(',') + '))'
             }, function (err) {
               debug('Error in sub query', err)
               return '(NOT_A_VALID_ID)'
             })
           } else if (term.name === 'descendants') {
-            // debug("call descendants(): ", term.args);
+            // debug('call descendants(): ', term.args);
             var queries = []
             term.args.forEach(function (taxId) {
               var p1 = encodeURIComponent('(*,' + taxId + ')')
@@ -205,8 +176,8 @@ var LazyWalk = exports.LazyWalk = function (term, opts) {
 
             var query = 'or(eq(feature_id_a,' + featureId + '),eq(feature_id_b,' + featureId + '))&select(feature_id_a,feature_id_b)'
 
-            return when(runSDISubQuery('ppi', query), function (feature_ids) {
-              // debug("feature_ids: ", feature_ids);
+            return runSDISubQuery('ppi', query).then(function (feature_ids) {
+              // debug('feature_ids: ', feature_ids);
               if (feature_ids.length === 0) {
                 return '(NOT_A_VALID_ID)'
               }
@@ -217,36 +188,35 @@ var LazyWalk = exports.LazyWalk = function (term, opts) {
               return '(NOT_A_VALID_ID)'
             })
           } else if (term.name === 'GenomeGroup') {
-            // debug("call getWorkspaceObject(): ", term.args[0]);
-            return when(getWorkspaceObject(term.args[0], opts), function (ids) {
-              // debug("getWSObject: ", ids);
+            // debug('call getWorkspaceObject(): ', term.args[0]);
+            return getWorkspaceObject(term.args[0], opts).then(function (ids) {
+              // debug('getWSObject: ', ids);
               var out = '(' + ids.join(',') + ')'
-              // debug("out: ", out);
+              // debug('out: ', out);
               return out
             }, function (err) {
               debug('Error Retrieving Workspace: ', err)
               return '(NOT_A_VALID_ID)'
             })
           } else if (term.name === 'FeatureGroup') {
-            // debug("call getWorkspaceObject(): ", term.args[0]);
-            return when(getWorkspaceObject(term.args[0], opts), function (ids) {
-              // debug("getWSObject: ", ids);
+            // debug('call getWorkspaceObject(): ', term.args[0]);
+            return getWorkspaceObject(term.args[0], opts).then(function (ids) {
+              // debug('getWSObject: ', ids);
               var out = '(' + ids.join(',') + ')'
-              // debug("out: ", out);
+              // debug('out: ', out);
               return out
             }, function (err) {
               debug('Error Retrieving Workspace: ', err)
               return '(NOT_A_VALID_ID)'
-              // return err
             })
           } else if (term.name === 'query') {
             var modelId = args[0]
             var q = Query(args[1])
-            // debug("q: ", q);
+            // debug('q: ', q);
             const query = q.toString()
             var type = 'public'
-            // debug("typeof query: ", typeof query);
-            // debug("Do Query ", modelId, query);
+            // debug('typeof query: ', typeof query);
+            // debug('Do Query ', modelId, query);
             if (opts && opts.req && opts.req.user) {
               if (opts.req.user.isAdmin) {
                 type = 'admin'
@@ -255,20 +225,20 @@ var LazyWalk = exports.LazyWalk = function (term, opts) {
               }
             }
 
-            // debug(" get executor for  modelId: ", modelId, "type: ", type);
+            // debug(' get executor for  modelId: ', modelId, 'type: ', type);
             var queryFn = DME.getModelExecutor('query', modelId, type)
             if (!queryFn) {
               throw new Error('Invalid Executor during LazyWalk for Query Resolver')
             }
-            return when(runQuery(queryFn, query, opts), function (results) {
-              // debug("runQuery results len: ",results?results.length:"None");
+            return runQuery(queryFn, query, opts).then(function (results) {
+              // debug('runQuery results len: ',results?results.length:'None');
 
               // debug('results: ', results);
               if (results instanceof Array) {
-                // debug("instance of array", results);
+                // debug('instance of array', results);
                 return '(' + results.join(',') + ')'
               } else {
-                // debug("non-array", results);
+                // debug('non-array', results);
                 return results
               }
             }, function (err) {
@@ -276,7 +246,7 @@ var LazyWalk = exports.LazyWalk = function (term, opts) {
               throw Error('Error Expanding Query: ' + err)
             })
           }
-          // debug("Fall through: ", term, args);
+          // debug('Fall through: ', term, args);
           return term.name + '(' + args.join(',') + ')'
         }, function (err) {
           throw Error('Error Lazily Expanding Query: ' + err)
@@ -289,40 +259,38 @@ var LazyWalk = exports.LazyWalk = function (term, opts) {
     }
   }
   debug('Skipping Invalid Term: ', term)
-  // throw Error("Invalid Term - " + JSON.stringify(term));
 }
 
 function runQuery (queryFn, query, opts) {
-  // debug("Launch Query : ",query);
   if (opts && opts.req) {
     if (opts.req.queryCache && opts.req.queryCache[query]) {
       return opts.req.queryCache[query]
     }
   }
-  return when(queryFn(query, opts), function (qres) {
+  return queryFn(query, opts).then(function (qres) {
     if (opts && opts.req) {
       if (!opts.req.queryCache) {
         opts.req.queryCache = {}
       }
       opts.req.queryCache[query] = qres
     }
-    // debug("qres len: ", qres.length);
     return qres
   })
 }
 
 var ResolveQuery = exports.ResolveQuery = function (query, opts, clearCache) {
   // normalize to object with RQL's parser
-  // debug("ResolveQuery: ", query);
+  // debug('ResolveQuery: ', query);
 
   if (typeof query === 'string') {
     query = Query(query)
   }
 
   // walk the parsed query and lazily resolve any subqueries/joins
-  return when(LazyWalk(query, opts), function (finalQuery) {
+  return Promise.all([LazyWalk(query, opts)]).then((vals) => {
+    const finalQuery = vals[0]
     // finalQuery will be a new string query
-    // debug("Final Query: " + finalQuery);
+    // debug('Final Query: ' + finalQuery);
     if (opts && opts.req.queryCache && clearCache) {
       delete opts.req.queryCache
     }
@@ -334,11 +302,10 @@ var Walk = exports.Walk = function (term, expansions) {
   if (!term) {
     return ''
   }
-  // debug("stringified term: ", Query(term).toString());
+  // debug('stringified term: ', Query(term).toString());
 
   if (term && (typeof term === 'string')) {
     return encodeURIComponent(term)
-    // return term;
   }
 
   if (term && (typeof term === 'number')) {
@@ -346,21 +313,21 @@ var Walk = exports.Walk = function (term, expansions) {
   }
 
   if (term && term instanceof Array) {
-    // debug("Term is an array: ", term);
+    // debug('Term is an array: ', term);
     return '(' + term.join(',') + ')'
   }
 
   if (term && typeof term === 'object') {
-    // debug("Term is object: ", term);
+    // debug('Term is object: ', term);
     if (term.name) {
       if (term.args && (term.args.length > 0)) {
         term.args = term.args.map(function (t, index) {
-          // debug("Walk SubTerm: ", t, " Expansions: ", expansions);
+          // debug('Walk SubTerm: ', t, ' Expansions: ', expansions);
           return Walk(t, expansions)
         })
 
-        return when(All(term.args), function (args) {
-          // debug("term.args resolved: ", args);
+        return Promise.all(term.args).then(function (args) {
+          // debug('term.args resolved: ', args);
           if (term.name && expansions[term.name]) {
             if (typeof expansions[term.name] === 'function') {
               return expansions[term.name].apply(args)
@@ -379,16 +346,12 @@ var Walk = exports.Walk = function (term, expansions) {
 exports.ExpandQuery = function (query, expansions) {
   expansions = expansions || _expansions || {}
   // normalize to object with RQL's parser
-  // debug("ResolveQuery: ", query);
+  // debug('ResolveQuery: ', query);
 
   if (typeof query === 'string') {
     query = Query(query)
   }
-  // debug("Query: ", query);
+  // debug('Query: ', query);
   // walk the parsed query and lazily resolve any subqueries/joins
-  return when(Walk(query, expansions), function (finalQuery) {
-    // finalQuery will be a new string query
-    // debug("Expanded Query: ", finalQuery);
-    return finalQuery
-  })
+  return Promise.all([Walk(query, expansions)]).then((vals) => vals[0])
 }
