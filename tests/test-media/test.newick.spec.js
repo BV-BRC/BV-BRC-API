@@ -32,4 +32,17 @@ describe('Test Media Types: newick', function () {
         assert.equal(body.trimEnd(), expected.trimEnd())
       })
   })
+
+  it('Test 404 Error', async function () {
+    return httpGet(Object.assign(requestOptions, {
+      headers: {
+        'Accept': 'application/newick',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      path: '/taxonomy/10239'
+    }))
+      .then((body) => {
+        assert.deepEqual(JSON.parse(body), {})
+      })
+  })
 })

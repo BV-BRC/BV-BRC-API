@@ -33,7 +33,7 @@ module.exports = {
             Fs.createReadStream(file).pipe(res)
           })
           .catch((err) => {
-            console.log(`${err}`)
+            console.log(`Unable to handle media type newick+json. ${err}`)
             res.writeHead(404, { 'Content-Type': 'application/json' })
             res.end("{}")
           })
