@@ -33,8 +33,9 @@ module.exports = {
             Fs.createReadStream(file).pipe(res)
           })
           .catch((err) => {
-            res.writeHead(404, { 'Content-Type': 'text/plain' })
-            res.end(err)
+            console.log(`${err}`)
+            res.writeHead(404, { 'Content-Type': 'application/json' })
+            res.end("{}")
           })
       } else {
         next(new Error(`Invalid Resposponse: ${res.results}`))

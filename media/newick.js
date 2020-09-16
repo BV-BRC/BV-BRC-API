@@ -34,7 +34,9 @@ module.exports = {
             Fs.createReadStream(file).pipe(res)
           })
           .catch((err) => {
-            next(err)
+            console.log(`Unable to handle media type newick. ${err}`)
+            res.writeHead(404, { 'Content-Type': 'application/json' })
+            res.end("{}")
           })
       } else {
         next(new Error(`Invalid Resposponse: ${res.results}`))
