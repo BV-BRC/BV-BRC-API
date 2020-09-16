@@ -161,9 +161,10 @@ function processQueue (queue) {
             console.error(`${(new Date()).toISOString()}: Error in fullfilling fileDefs: ${err} while processing ${message.id}`)
 
             // trigger rollback
-            IndexingCores.forEach(core => {
-              deleteDocs(core, genomeId)
-            })
+            // this operation is very costly. Delete by ID is preferred.
+            // IndexingCores.forEach(core => {
+            //   deleteDocs(core, genomeId)
+            // })
 
             updateHistory(message.id, 'error', err.message).then(() => {
               // commit()
