@@ -1,6 +1,6 @@
-var Rql = require('solrjs/rql')
-var debug = require('debug')('RQLQueryParser')
-var Expander = require('../ExpandingQuery')
+const Rql = require('solrjs/rql')
+const debug = require('debug')('RQLQueryParser')
+const Expander = require('../ExpandingQuery')
 
 module.exports = function (req, res, next) {
   if (req.queryType === 'rql') {
@@ -12,7 +12,7 @@ module.exports = function (req, res, next) {
         .then((q) => {
           debug('Resolved Query: ', q)
           if (q === '()') { q = '' }
-          var rq = Rql(q)
+          const rq = Rql(q)
           const max = (req.isDownload) ? 999999999 : 25000
           req.call_params[0] = rq.toSolr({ maxRequestLimit: max, defaultLimit: 25 })
           debug(`Converted Solr Query: ${req.call_params[0]}`)
@@ -20,8 +20,7 @@ module.exports = function (req, res, next) {
           next()
         })
     } catch (err) {
-      // throw 400
-      console.error(`400 ERROR: ${err.message}`)
+      console.error(`[${(new Date()).toISOString()}] Unable to resolve RQL query for ${req.call_params[0]}. ${err.message}. Send 400`)
       res.status(400).send(err.message)
     }
   } else {
