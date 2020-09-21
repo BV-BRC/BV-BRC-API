@@ -26,7 +26,7 @@ function getWorkspaceObjects (paths, metadataOnly, token) {
       version: '1.1',
       params: [{ objects: paths, metadata_only: metadataOnly }]
     })).then((body) => {
-      results = JSON.parse(body)
+      const results = JSON.parse(body)
       if (results.result) {
         const defs = results.result[0].map((obj) => {
           const meta = {
@@ -280,8 +280,8 @@ function processTranscriptomicsGene (tgState, options) {
           } else {
             expr = expressionHash[featureId]
             if (!expr.samples.hasOwnProperty(expression.pid.toString())) {
-              log_ratio = expression.log_ratio
-              z_score = expression.z_score
+              const log_ratio = expression.log_ratio
+              const z_score = expression.z_score
               expr.samples[expression.pid.toString()] = {
                 log_ratio: log_ratio || '',
                 z_score: z_score || ''

@@ -36,7 +36,7 @@ module.exports = {
           .catch((err) => {
             console.log(`Unable to handle media type newick. ${err}`)
             res.writeHead(404, { 'Content-Type': 'application/json' })
-            res.end("{}")
+            res.end('{}')
           })
       } else {
         next(new Error(`Invalid Resposponse: ${res.results}`))

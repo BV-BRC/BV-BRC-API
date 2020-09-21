@@ -15,7 +15,7 @@ function serializeRow (doc) {
   }
 
   if (doc.feature_type === 'region') {
-    row.push(`##sequence-region\taccn|${o.accession}\t${o.start}\t${o.end}\n`)
+    row.push(`##sequence-region\taccn|${doc.accession}\t${doc.start}\t${doc.end}\n`)
     return
   }
   if (doc.feature_type === 'CDS') {
