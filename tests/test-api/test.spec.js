@@ -105,4 +105,23 @@ describe('Test Router - Data Type', () => {
         })
     })
   })
+
+  describe('Test Solr get handler', () => {
+    const requestOptions = {
+      port: Config.get('http_port'),
+      agent: agent,
+      headers: {
+        'Accept': 'application/json'
+      },
+      path: '/genome/83332.12'
+    }
+
+    it('GET genome schema', async function () {
+      return httpGet(requestOptions)
+        .then((body) => {
+          const parsed = JSON.parse(body)
+          assert.deepEqual(parsed.genome_id, '83332.12')
+        })
+    })
+  })
 })

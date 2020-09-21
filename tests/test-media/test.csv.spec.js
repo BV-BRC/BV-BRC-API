@@ -13,7 +13,7 @@ const requestOptions = {
 }
 
 describe('Test Media Types: csv', () => {
-  it('Test call_method: stream', async () => {
+  it('Test call_method: stream, single row', async () => {
     return httpRequest(Object.assign(requestOptions, {
       headers: {
         'Accept': 'text/csv',
@@ -27,6 +27,22 @@ describe('Test Media Types: csv', () => {
         const expected = 'Genome,Genome ID,Accession,PATRIC ID,RefSeq Locus Tag,Alt Locus Tag,Feature ID,Annotation,Feature Type,Start,End,Length,Strand,FIGfam ID,PATRIC genus-specific families (PLfams),PATRIC cross-genus families (PGfams),Protein ID,AA Length,Gene Symbol,Product,GO\n\
 "Mycobacterium tuberculosis H37Rv","83332.12","NC_000962","fig|83332.12.peg.2","Rv0002","VBIMycTub87468_0002","PATRIC.83332.12.NC_000962.CDS.2052.3260.fwd","PATRIC","CDS",2052,3260,1209,"+","FIG00066425","PLF_1763_00000832","PGF_06473395","NP_214516.1",402,"dnaN","DNA polymerase III beta subunit (EC 2.7.7.7)","GO:0003887|DNA-directed DNA polymerase activity"\n'
         assert.equal(body, expected)
+      })
+  })
+
+  it('Test call_method: stream, multi rows', async () => {
+    return httpRequest(Object.assign(requestOptions, {
+      headers: {
+        'Accept': 'text/csv',
+        'Content-Type': 'application/rqlquery+x-www-form-urlencoded',
+        'download': true
+      },
+      method: 'POST',
+      path: '/genome_feature/'
+    }), 'eq(genome_id,83332.12)&sort(+feature_id)&limit(500)')
+      .then((body) => {
+        // console.log(body)
+        assert.isNotEmpty(body)
       })
   })
 
