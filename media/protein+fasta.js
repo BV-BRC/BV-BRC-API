@@ -7,7 +7,7 @@ function formatFASTA (doc) {
   let fasta_id
   if (doc.annotation === 'PATRIC') {
     fasta_id = `${doc.patric_id}|${(doc.refseq_locus_tag ? (doc.refseq_locus_tag + '|') : '') + (doc.alt_locus_tag ? (doc.alt_locus_tag + '|') : '')}`
-  } else if (o.annotation === 'RefSeq') {
+  } else if (doc.annotation === 'RefSeq') {
     fasta_id = `gi|${doc.gi}|${(doc.refseq_locus_tag ? (doc.refseq_locus_tag + '|') : '') + (doc.alt_locus_tag ? (doc.alt_locus_tag + '|') : '')}`
   }
   const header = `>${fasta_id}   ${doc.product}   [${doc.genome_name} | ${doc.genome_id}]\n`
