@@ -1,3 +1,5 @@
+#!/usr/bin/env node --unhandled-rejections=strict
+
 var config = require('./config')
 if (config.get('newrelic_license_key')) {
   require('newrelic')
@@ -18,10 +20,13 @@ var jbrowseRouter = require('./routes/JBrowse')
 var genomePermissionRouter = require('./routes/genomePermissionRouter')
 var indexer = require('./routes/indexer')
 var cors = require('cors')
-var http = require('http')
 
-http.globalAgent.maxSockets = 1024
-// process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+process.on('uncaughtException', (err, origin) => {
+  console.log(`Uncaught Expcetion. [${(new Date()).toISOString()}] ${err}, ${origin}`)
+})
+process.on('unhandledRejection', (reason, promise) => {
+  console.log(`UnhandledRejection. [${(new Date()).toISOString()}] reason: ${reason}, promise:`, promise)
+})
 
 var app = module.exports = express()
 app.listen(config.get('http_port') || 3001)
