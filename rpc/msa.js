@@ -164,6 +164,10 @@ function runGBlocks (input, opts) {
                 resolve(data)
               } else {
                 fs.readFile(tempName, 'utf8', (err, rawData) => {
+                  if (err) {
+                    reject(new Error(`Gblocks output is empty. ${err}`))
+                    return
+                  }
                   resolve(rawData)
                 })
               }
@@ -182,6 +186,10 @@ function runFastTree (input, opts) {
     const tempName = Temp.path({ suffix: '.aga-gb' })
 
     fs.outputFile(tempName, input, (err) => {
+      if (err) {
+        reject(new Error(`RunFastTree Error: ${err}`))
+        return
+      }
       const runOpts = ['-gamma', '-nosupport']
       if (opts.alignType === 'dna') {
         runOpts.push('-nt')

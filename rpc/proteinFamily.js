@@ -16,6 +16,10 @@ function fetchFamilyDescriptionBatch (familyIdList) {
     const familyRefHash = {}
 
     redisClient.mget(familyIdList, async (err, replies) => {
+      if (err) {
+        reject(new Error(`Unable to read family description from redis: ${err}`))
+        return
+      }
       const missingIds = []
       replies.forEach((reply, i) => {
         if (reply == null) {
@@ -90,6 +94,10 @@ async function fetchFamilyDataByGenomeId (genomeId, options) {
     const key = 'pfs_' + genomeId
 
     redisClient.get(key, async (err, familyData) => {
+      if (err) {
+        reject(new Error(`Unable to read family data from redis: ${err}`))
+        return
+      }
       if (familyData == null) {
         debug(`no cached data for ${key}`)
 

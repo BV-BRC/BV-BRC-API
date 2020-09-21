@@ -169,6 +169,12 @@ Router.post('/:type', [
       form.multiples = true
       debug('Begin parse')
       form.parse(req, function (err, fields, files) {
+        if (err) {
+          console.error(`Unable to parse form: ${err}`, req)
+          res.error(`Unable to parse form: ${err}`)
+          res.end(500)
+          return
+        }
         const d = { id: qid, type: req.params.type, user: req.user, options: fields, files: {} }
 
         Object.keys(files).forEach(function (type) {
@@ -185,6 +191,11 @@ Router.post('/:type', [
           d.queueTime = new Date()
 
           Fs.writeJson(Path.join(QUEUE_DIRECTORY, 'history', qid), d, function (err) {
+            if (err) {
+              console.error(`Unable to update history for ${qid}: ${err}`)
+              res.end(500)
+              return
+            }
             res.set('content-type', 'application/json')
             res.send(JSON.stringify({ id: qid, state: 'queued', queueTime: d.queueTime }))
             res.end()
@@ -198,6 +209,9 @@ Router.post('/:type', [
 // fallback. return number of genomes in queue
 Router.get('/', function (req, res, next) {
   queue.length((err, length) => {
+    if (err) {
+      console.error(`Unable to read queue info.`)
+    }
     respondWithData(res, { 'genomesInQueue': length })
   })
 })

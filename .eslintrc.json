@@ -1,8 +1,10 @@
 {
     "extends": "standard",
+    "env": {
+        "node": true,
+        "mocha": true
+    },
     "rules": {
-        "camelcase": 0,
-        "handle-callback-err": 0,
-        "no-undef": 0
+        "camelcase": 0
     }
 }
