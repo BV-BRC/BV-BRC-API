@@ -1,10 +1,6 @@
 #!/usr/bin/env node --unhandled-rejections=strict
 
 var config = require('./config')
-if (config.get('newrelic_license_key')) {
-  require('newrelic')
-}
-
 var debug = require('debug')('p3api-server:app')
 var express = require('express')
 var path = require('path')
