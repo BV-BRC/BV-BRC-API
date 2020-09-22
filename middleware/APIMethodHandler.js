@@ -16,7 +16,7 @@ function streamQuery (req, res, next) {
   const solrClient = new Solrjs(SOLR_URL + '/' + req.call_collection)
   solrClient.setAgent(solrAgent)
 
-  debug('querySOLR() query: ', query)
+  debug('streamSOLR() query: ', query)
 
   solrClient.stream(query)
     .then((results) => {

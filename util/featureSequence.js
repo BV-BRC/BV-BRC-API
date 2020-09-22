@@ -1,5 +1,8 @@
 const Config = require('../config')
 const { httpGet, httpRequest } = require('./http')
+const Http = require('http')
+const solrAgentConfig = Config.get('solr').shortLiveAgent
+const solrAgent = new Http.Agent(solrAgentConfig)
 
 async function getSequenceByHash (md5) {
   return httpGet({
@@ -7,6 +10,7 @@ async function getSequenceByHash (md5) {
     headers: {
       'Accept': 'application/json'
     },
+    agent: solrAgent,
     path: `/feature_sequence/${md5}`
   }, {
     json: true
@@ -23,6 +27,7 @@ async function getSequenceDictByHash (md5Array) {
     port: Config.get('http_port'),
     method: 'POST',
     path: `/feature_sequence/`,
+    agent: solrAgent,
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/solrquery+x-www-form-urlencoded'
