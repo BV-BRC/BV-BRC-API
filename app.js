@@ -138,35 +138,14 @@ app.use('/:dataType/', [
   dataTypeRouter
 ])
 
-// catch 404 and forward to error handler
+// Send 404
 app.use(function (req, res, next) {
-  var err = new Error('Not Found')
-  err.status = 404
-  next(err)
-})
-
-// error handlers
-
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-  app.use(function (err, req, res, next) {
-    debug('Dev env error handler: err status', err.status)
-    res.status(err.status || 500)
-    res.render('error', {
-      message: err.message,
-      error: err
-    })
+  console.error(`Unable to find router.`, req)
+  res.setHeader('Content-Type', 'application/json')
+  res.status(404)
+  res.send({
+    'status': 404,
+    'message': 'Not Found'
   })
-}
-
-// production error handler
-// no stacktraces leaked to user
-app.use(function (err, req, res, next) {
-  debug('Dev env error handler: ', ' err status', err.status)
-  res.status(err.status || 500)
-  res.render('error', {
-    message: err.message,
-    error: {}
-  })
+  res.end()
 })
