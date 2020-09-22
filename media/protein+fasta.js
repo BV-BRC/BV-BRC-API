@@ -54,7 +54,7 @@ module.exports = {
     } else {
       if (res.results && res.results.response && res.results.response.docs) {
         const docs = res.results.response.docs
-        const numFound = res.results.response.numFound
+        const numFound = Math.min(res.results.response.numFound, docs.length) // query results can have lesser then it matched
 
         // fetch sequences by batch and create a global dictionary
         let sequenceDict = {}
@@ -63,7 +63,7 @@ module.exports = {
           const end = Math.min((i + 1) * SEQUENCE_BATCH, numFound)
           const md5Array = []
           for (let j = start; j < end; j++) {
-            if (docs[j] && docs[j].aa_sequence_md5 && docs[j].aa_sequence_md5 !== '') {
+            if (docs[j] && docs[j].aa_sequence_md5 && docs[j].aa_sequence_md5 !== '' && !sequenceDict.hasOwnProperty(docs[j].aa_sequence_md5)) {
               md5Array.push(docs[j].aa_sequence_md5)
             }
           }
