@@ -145,3 +145,13 @@ app.use(function (req, res, next) {
   })
   res.end()
 })
+
+// Handle errors
+app.use(function (error, req, res, next) {
+  res.setHeader('Content-Type', 'application/json')
+  res.status(error.status || 500)
+  res.send({
+    status: error.status || 500,
+    message: error.message || 'Interal Server Error'
+  })
+})
