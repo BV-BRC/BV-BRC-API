@@ -1,12 +1,16 @@
 {
   "name": "p3api",
-  "version": "0.8.2",
+  "version": "0.9.0",
   "private": true,
   "scripts": {
-    "start": "node app.js",
-    "test-api": "mocha -R spec tests/test-api/test.spec.js",
+    "start": "node --unhandled-rejections=stric app.js",
+    "test-api": "mocha -R spec tests/test-api/test.*.spec.js",
     "test-rpc": "mocha -R spec tests/test-rpc/test.*.spec.js",
     "test-media": "mocha -R spec tests/test-media/test.*.spec.js",
+    "test-jbrowse": "mocha spec tests/test-jbrowse/test.spec.js",
+    "test-hpi": "mocha spec tests/test-hpi/test.spec.js",
+    "test-content": "mocha spec tests/test-content/test.spec.js",
+    "test-download": "mocha spec tests/test-download/test.spec.js",
     "test-permissions": "mocha -R spec  \"tests/test-permissions/**/*.spec.js\""
   },
   "dependencies": {
@@ -27,7 +31,7 @@
     "morgan": "^1.9.1",
     "nconf": "^0.10.0",
     "node-xlsx": "^0.6.0",
-    "p3-user": "https://github.com/PATRIC3/p3_user.git",
+    "p3-user": "github:PATRIC3/p3_user",
     "pino": "^6.2.1",
     "redis": "^2.8.0",
     "request-promise": "4.2.2",
