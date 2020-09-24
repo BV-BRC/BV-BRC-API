@@ -3,7 +3,7 @@
   "version": "0.9.0",
   "private": true,
   "scripts": {
-    "start": "node --unhandled-rejections=stric app.js",
+    "start": "node --unhandled-rejections=strict app.js",
     "test-api": "mocha -R spec tests/test-api/test.*.spec.js",
     "test-rpc": "mocha -R spec tests/test-rpc/test.*.spec.js",
     "test-media": "mocha -R spec tests/test-media/test.*.spec.js",
