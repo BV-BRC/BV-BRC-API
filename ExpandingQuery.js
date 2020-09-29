@@ -21,20 +21,25 @@ function getWorkspaceObject (id, opts) {
       const results = JSON.parse(body)
       if (results.result) {
         let R = []
-        results.result[0].map(function (o) {
-          const obj = (typeof o[1] === 'string') ? JSON.parse(o[1]) : o[1]
-          Object.keys(obj.id_list).forEach(function (key) {
-            R = R.concat(obj.id_list[key].filter(function (y) {
-              return !!y
-            }))
+        try {
+          results.result[0].map(function (o) {
+            const obj = (typeof o[1] === 'string') ? JSON.parse(o[1]) : o[1]
+            Object.keys(obj.id_list).forEach(function (key) {
+              R = R.concat(obj.id_list[key].filter(function (y) {
+                return !!y
+              }))
+            })
           })
-        })
-        if (R.length < 1) {
-          R.push('NOT_A_VALID_ID')
-        }
+          if (R.length < 1) {
+            R.push('NOT_A_VALID_ID')
+          }
 
-        R = R.map(encodeURIComponent)
-        resolve(R)
+          R = R.map(encodeURIComponent)
+          resolve(R)
+        } catch (err) {
+          console.error(`ExpandingQuery::getWorkspaceObject() ${err} id: ${id}, results:`, results)
+          reject(new Error(`Unable to process workspace object. ${err}`))
+        }
       } else {
         reject(new Error(`Unable to parse workspace query result`))
       }

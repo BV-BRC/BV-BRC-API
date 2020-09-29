@@ -17,6 +17,9 @@ module.exports = {
           reject(err)
         })
       })
+        .on('error', (err) => {
+          reject(new Error(`Unable to request the database. ${err.code}`))
+        })
     })
   },
   'httpRequest': async (options, body) => {
@@ -34,6 +37,9 @@ module.exports = {
         .on('error', (err) => {
           reject(err)
         })
+      req.on('error', (err) => {
+        reject(new Error(`Unable to request the database. ${err.code}`))
+      })
       req.write(body)
       req.end()
     })
@@ -79,6 +85,9 @@ module.exports = {
           reject(err)
         })
       })
+        .on('error', (err) => {
+          reject(new Error(`Unable to request the database. ${err.code}`))
+        })
     })
   },
   'httpsRequestUrl': async (url, options, body) => {
