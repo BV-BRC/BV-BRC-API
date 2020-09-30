@@ -40,10 +40,11 @@ module.exports = {
       res.send(JSON.stringify(res.results))
       res.end()
     } else {
-      if (!res.results || !res.results.doc) {
+      // req.call_method === get
+      if (!res.results) {
         res.status(404)
       } else {
-        res.send(JSON.stringify(res.results.doc))
+        res.send(JSON.stringify(res.results.doc || res.results.docs))
       }
       res.end()
     }

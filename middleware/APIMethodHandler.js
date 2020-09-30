@@ -89,6 +89,23 @@ function getSOLR (req, res, next) {
             res.sendStatus(403)
           }
         }
+      } else if (sresults && sresults.response && sresults.response.docs) {
+        // handle for multiple ids in get request
+        var results = sresults.response.docs[0]
+
+        if (results.public || (req.publicFree.indexOf(req.call_collection) >= 0) || (results.owner === (req.user)) || (results.user_read && results.user_read.indexOf(req.user) >= 0)) {
+          debug("sending get result")
+          res.results = sresults.response
+          next()
+        } else {
+          if (!req.user) {
+            debug('User not logged in, permission denied')
+            res.sendStatus(401)
+          } else {
+            debug('User forbidden from private data')
+            res.sendStatus(403)
+          }
+        }
       } else {
         next()
       }
