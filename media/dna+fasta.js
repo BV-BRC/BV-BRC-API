@@ -1,7 +1,7 @@
 const EventStream = require('event-stream')
 const LineWrap = require('../util/linewrap')
 const { getSequenceByHash, getSequenceDictByHash } = require('../util/featureSequence')
-const SEQUENCE_BATCH = 500
+const SEQUENCE_BATCH = 200
 
 function formatFASTAGenomeSequence (o) {
   const header = `>accn|${o.accession}   ${o.description}   [${o.genome_name} | ${o.genome_id}]\n`

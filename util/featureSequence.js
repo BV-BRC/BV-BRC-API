@@ -12,8 +12,6 @@ async function getSequenceByHash (md5) {
     },
     agent: solrAgent,
     path: `/feature_sequence/${md5}`
-  }, {
-    json: true
   }).then((body) => {
     const doc = JSON.parse(body)
     return doc.sequence
@@ -23,22 +21,31 @@ async function getSequenceByHash (md5) {
 async function getSequenceDictByHash (md5Array) {
   if (md5Array.length === 0) return
 
-  return httpRequest({
+  const ids = md5Array.join(',')
+  return httpGet({
     port: Config.get('http_port'),
-    method: 'POST',
-    path: `/feature_sequence/`,
-    agent: solrAgent,
     headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/solrquery+x-www-form-urlencoded'
-    }
-  }, `q=md5:(${md5Array.join(' OR ')})&fl=md5,sequence&rows=${md5Array.length}`)
+      'Accept': 'application/json'
+    },
+    agent: solrAgent,
+    path: `/feature_sequence/${ids}`
+  })
     .then((resp) => {
-      const docs = JSON.parse(resp)
-      return docs.reduce((h, cur) => {
-        h[cur.md5] = cur.sequence
-        return h
-      }, {})
+      if (resp === "") {
+        throw Error(`Unable to lookup sequence: ${ids}`)
+      }
+      if (md5Array.length === 1) {
+        const doc = JSON.parse(resp)
+        const obj = {}
+        obj[doc.md5] = doc.sequence
+        return obj
+      } else {
+        const docs = JSON.parse(resp)
+        return docs.reduce((h, cur) => {
+          h[cur.md5] = cur.sequence
+          return h
+        }, {})
+      }
     }).catch((err) => {
       console.error(err)
     })
