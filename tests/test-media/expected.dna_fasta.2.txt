@@ -1,0 +1,7 @@
+>accn|CDHH01000070   Mycobacterium bovis genome assembly Assembly of the genome MB3, contig 70, whole genome shotgun sequence.   [Mycobacterium bovis strain MB3 | 1765.317]
+agcgcgttcaggctcaacggaataccaggaatagtaatatccggcaccacaatcggaccg
+acaccacccagcgcgttcaggctcaacggaataccaggaatagtaatatccggcaccaca
+atcggaccgatgccaccattcacttcgacgctcagtgggatggcgggaatgctgagtgtg
+tctgagtagccaatcagaccctggtaatcgcccctccacagtatgccgttgctgtagctg
+cccgagatcagggcgccggtgttaaggtcgccaatgtttccccagccggtgttgaggtcg
+ccgaggtttaggta

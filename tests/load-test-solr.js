@@ -33,19 +33,19 @@ if (require.main === module) {
   if (!opts.genomeIds) {
     console.error(`Must provide genome IDs or use --bulk option.  --help for more`)
     opts.outputHelp()
-    exit()
+    process.exit()
   }
 
   if (!opts.endpoint) {
     console.error(`Must provide endpoint "-e" where data will be indexed`)
     opts.outputHelp()
-    exit()
+    process.exit()
   }
 
   if (!opts.filesDir) {
     console.error(`Must provide path "-f" for where to store and load files from `)
     opts.outputHelp()
-    exit()
+    process.exit()
   }
 
   fetchAndLoad(opts.genomeIds, opts.filesDir)

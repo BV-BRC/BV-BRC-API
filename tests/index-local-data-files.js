@@ -31,7 +31,7 @@ if (require.main === module) {
 
   if (!opts.endpoint) {
     console.error(`Must provide endpoint "-e" where data will be indexed`)
-    exit()
+    process.exit()
   }
 
   loadData(opts.input)

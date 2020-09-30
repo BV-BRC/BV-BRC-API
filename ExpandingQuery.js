@@ -71,7 +71,7 @@ function runJoinQuery (core, query, field, opts) {
         }, (err) => {
           reject(new Error(`Unable to execute sub query: ${err}`))
         })
-      , (err) => {
+    , (err) => {
       reject(new Error(`Unable to resolve query: ${err}`))
     })
   })
@@ -349,7 +349,7 @@ var Walk = exports.Walk = function (term, expansions) {
 }
 
 exports.ExpandQuery = function (query, expansions) {
-  expansions = expansions || _expansions || {}
+  expansions = expansions || {}
   // normalize to object with RQL's parser
   // debug('ResolveQuery: ', query);
 

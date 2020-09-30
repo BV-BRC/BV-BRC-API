@@ -27,7 +27,7 @@ describe('Test Panaconda', function () {
       },
       method: 'POST'
     }, payload).then((res) => {
-      const data= JSON.parse(res)
+      const data = JSON.parse(res)
       assert.isNotEmpty(data.result.graph)
       // assert.deepEqual(data, JSON.parse(expected))
     })

@@ -1,0 +1,2 @@
+##gff-version 3
+#Genome: 83332.12	Mycobacterium tuberculosis H37Rv DNA polymerase III beta subunit (EC 2.7.7.7)accn|NC_000962	PATRIC	CDS	2052	3260	.	+	0	ID=fig|83332.12.peg.2;locus_tag=Rv0002;product=DNA polymerase III beta subunit (EC 2.7.7.7);gene=dnaN;Ontology_term=GO:0003887|DNA-directed DNA polymerase activity

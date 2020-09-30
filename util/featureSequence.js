@@ -1,5 +1,5 @@
 const Config = require('../config')
-const { httpGet, httpRequest } = require('./http')
+const { httpGet } = require('./http')
 const Http = require('http')
 const solrAgentConfig = Config.get('solr').shortLiveAgent
 const solrAgent = new Http.Agent(solrAgentConfig)
@@ -31,7 +31,7 @@ async function getSequenceDictByHash (md5Array) {
     path: `/feature_sequence/${ids}`
   })
     .then((resp) => {
-      if (resp === "") {
+      if (resp === '') {
         throw Error(`Unable to lookup sequence: ${ids}`)
       }
       if (md5Array.length === 1) {

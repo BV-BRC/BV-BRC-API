@@ -1,0 +1,2 @@
+genome_name	genome_id	accession	patric_id	refseq_locus_tag	alt_locus_tag	feature_id	annotation	feature_type	start	end	na_length	strand	figfam_id	plfam_id	pgfam_id	protein_id	aa_length	gene	product	go
+"Mycobacterium tuberculosis H37Rv"	"83332.12"	"NC_000962"	"fig|83332.12.peg.2"	"Rv0002"	"VBIMycTub87468_0002"	"PATRIC.83332.12.NC_000962.CDS.2052.3260.fwd"	"PATRIC"	"CDS"	2052	3260	1209	"+"	"FIG00066425"	"PLF_1763_00000832"	"PGF_06473395"	"NP_214516.1"	402	"dnaN"	"DNA polymerase III beta subunit (EC 2.7.7.7)"	"GO:0003887|DNA-directed DNA polymerase activity"

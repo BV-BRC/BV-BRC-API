@@ -2,6 +2,9 @@ const assert = require('chai').assert
 const { httpRequest } = require('../../util/http')
 const Http = require('http')
 const Config = require('../../config')
+const Fs = require('fs')
+const Path = require('path')
+
 const MAX_TIMEOUT = 1 * 60 * 1000
 
 const agent = new Http.Agent({
@@ -12,6 +15,12 @@ const requestOptions = {
   port: Config.get('http_port'),
   agent: agent
 }
+const ExpectedTsvStream = Fs.readFileSync(Path.join(__dirname, 'expected.tsv.stream.txt'), {
+  encoding: 'utf8'
+})
+const ExpectedTsvQuery = Fs.readFileSync(Path.join(__dirname, 'expected.tsv.query.txt'), {
+  encoding: 'utf8'
+})
 
 describe('Test Media Types: tsv', function () {
   it('Test call_method: stream', async function () {
@@ -27,9 +36,7 @@ describe('Test Media Types: tsv', function () {
       path: '/genome_feature/'
     }), 'rql=eq%28feature_id%252CPATRIC.83332.12.NC_000962.CDS.2052.3260.fwd%29%2526sort%28%252Bfeature_id%29%2526limit%281%29')
       .then((body) => {
-        const expected = 'Genome\tGenome ID\tAccession\tPATRIC ID\tRefSeq Locus Tag\tAlt Locus Tag\tFeature ID\tAnnotation\tFeature Type\tStart\tEnd\tLength\tStrand\tFIGfam ID\tPATRIC genus-specific families (PLfams)\tPATRIC cross-genus families (PGfams)\tProtein ID\tAA Length\tGene Symbol\tProduct\tGO\n\
-"Mycobacterium tuberculosis H37Rv"\t"83332.12"\t"NC_000962"\t"fig|83332.12.peg.2"\t"Rv0002"\t"VBIMycTub87468_0002"\t"PATRIC.83332.12.NC_000962.CDS.2052.3260.fwd"\t"PATRIC"\t"CDS"\t2052\t3260\t1209\t"+"\t"FIG00066425"\t"PLF_1763_00000832"\t"PGF_06473395"\t"NP_214516.1"\t402\t"dnaN"\t"DNA polymerase III beta subunit (EC 2.7.7.7)"\t"GO:0003887|DNA-directed DNA polymerase activity"\n'
-        assert.equal(body, expected)
+        assert.equal(body, ExpectedTsvStream)
       })
   })
 
@@ -45,9 +52,7 @@ describe('Test Media Types: tsv', function () {
       path: '/genome_feature/'
     }), 'rql=eq%28feature_id%252CPATRIC.83332.12.NC_000962.CDS.2052.3260.fwd%29%2526sort%28%252Bfeature_id%29%2526limit%281%29')
       .then((body) => {
-        const expected = 'genome_name\tgenome_id\taccession\tpatric_id\trefseq_locus_tag\talt_locus_tag\tfeature_id\tannotation\tfeature_type\tstart\tend\tna_length\tstrand\tfigfam_id\tplfam_id\tpgfam_id\tprotein_id\taa_length\tgene\tproduct\tgo\n\
-"Mycobacterium tuberculosis H37Rv"\t"83332.12"\t"NC_000962"\t"fig|83332.12.peg.2"\t"Rv0002"\t"VBIMycTub87468_0002"\t"PATRIC.83332.12.NC_000962.CDS.2052.3260.fwd"\t"PATRIC"\t"CDS"\t2052\t3260\t1209\t"+"\t"FIG00066425"\t"PLF_1763_00000832"\t"PGF_06473395"\t"NP_214516.1"\t402\t"dnaN"\t"DNA polymerase III beta subunit (EC 2.7.7.7)"\t"GO:0003887|DNA-directed DNA polymerase activity"\n'
-        assert.equal(body, expected)
+        assert.equal(body, ExpectedTsvQuery)
       })
   })
 })

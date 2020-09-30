@@ -2,6 +2,8 @@ const assert = require('chai').assert
 const { httpRequest } = require('../../util/http')
 const Http = require('http')
 const Config = require('../../config')
+const Fs = require('fs')
+const Path = require('path')
 const MAX_TIMEOUT = 1 * 60 * 1000
 
 const agent = new Http.Agent({
@@ -12,6 +14,9 @@ const requestOptions = {
   port: Config.get('http_port'),
   agent: agent
 }
+const ExpectedProtinFasta = Fs.readFileSync(Path.join(__dirname, 'expected.protein_fasta.txt'), {
+  encoding: 'utf8'
+})
 
 describe('Test Media Types: protein+fasta', function () {
   it('Test call_method: stream', async function () {
@@ -46,12 +51,3 @@ describe('Test Media Types: protein+fasta', function () {
       })
   })
 })
-
-const ExpectedProtinFasta = '>fig|83332.12.peg.2|Rv0002|VBIMycTub87468_0002|   DNA polymerase III beta subunit (EC 2.7.7.7)   [Mycobacterium tuberculosis H37Rv | 83332.12]\n\
-MDAATTRVGLTDLTFRLLRESFADAVSWVAKNLPARPAVPVLSGVLLTGSDNGLTISGFD\n\
-YEVSAEAQVGAEIVSPGSVLVSGRLLSDITRALPNKPVDVHVEGNRVALTCGNARFSLPT\n\
-MPVEDYPTLPTLPEETGLLPAELFAEAISQVAIAAGRDDTLPMLTGIRVEILGETVVLAA\n\
-TDRFRLAVRELKWSASSPDIEAAVLVPAKTLAEAAKAGIGGSDVRLSLGTGPGVGKDGLL\n\
-GISGNGKRSTTRLLDAEFPKFRQLLPTEHTAVATMDVAELIEAIKLVALVADRGAQVRME\n\
-FADGSVRLSAGADDVGRAEEDLVVDYAGEPLTIAFNPTYLTDGLSSLRSERVSFGFTTAG\n\
-KPALLRPVSGDDRPVAGLNGNGPFPAVSTDYVYLLMPVRLPG\n'

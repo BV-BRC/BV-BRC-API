@@ -75,7 +75,7 @@ function getSOLR (req, res, next) {
   solrClient.get(req.call_params[0])
     .then((sresults) => {
       if (sresults && sresults.doc) {
-        var results = sresults.doc
+        const results = sresults.doc
 
         if (results.public || (req.publicFree.indexOf(req.call_collection) >= 0) || (results.owner === (req.user)) || (results.user_read && results.user_read.indexOf(req.user) >= 0)) {
           res.results = sresults
@@ -91,10 +91,9 @@ function getSOLR (req, res, next) {
         }
       } else if (sresults && sresults.response && sresults.response.docs) {
         // handle for multiple ids in get request
-        var results = sresults.response.docs[0]
+        const results = sresults.response.docs[0]
 
         if (results.public || (req.publicFree.indexOf(req.call_collection) >= 0) || (results.owner === (req.user)) || (results.user_read && results.user_read.indexOf(req.user) >= 0)) {
-          debug("sending get result")
           res.results = sresults.response
           next()
         } else {

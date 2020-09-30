@@ -50,14 +50,14 @@ var defaults = {
   publicGenomeDir: '/genomes',
   queueDirectory: './index-queue-dir',
   solr: {
-    url: 'http://localhost:8983/solr'
-    , agent: {
+    url: 'http://localhost:8983/solr',
+    agent: {
       keepAlive: true,
       maxSockets: 8,
       maxFreeScokets: 0,
       keepAliveMsecs: 1000
-    }
-    , shortLiveAgent: {
+    },
+    shortLiveAgent: {
       keepAlive: true,
       maxSockets: 4,
       maxFreeScokets: 0,

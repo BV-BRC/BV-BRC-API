@@ -60,7 +60,7 @@ function updatePermissions (req, res, next) {
     return next()
   }
 
-  const collection = 'genome'
+  // const collection = 'genome'
   const permissions = req.body
   const genomeIDs = req.params.target_id.split(',')
 
@@ -110,8 +110,8 @@ function updatePermissions (req, res, next) {
           records.forEach(record => {
             if (record.owner !== req.user) {
               notOwner = true
-              throw `User ${req.user} was forbidden from private data ${genomeID} in genomePermissionRouter ` +
-                `[core: ${core}; record: ${record[key]}]`
+              throw Error(`User ${req.user} was forbidden from private data ${genomeID} in genomePermissionRouter ` +
+                `[core: ${core}; record: ${record[key]}]`)
             }
 
             commands.push(

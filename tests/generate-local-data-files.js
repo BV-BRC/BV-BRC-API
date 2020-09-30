@@ -62,7 +62,7 @@ if (require.main === module) {
   }
 
   let genomeIDs = opts.genomeIds ? opts.genomeIds.split(',') : DEFAULT_IDS
-  outDir = opts.output || OUT_DIR
+  const outDir = opts.output || OUT_DIR
 
   let existingDirs
   if (opts.skipExisting) {
@@ -85,14 +85,14 @@ if (require.main === module) {
         console.log(`\nSkiping ${cntBefore - genomeIDs.length} genomes\n`)
       }
 
-      totalGenomes = genomeIDs.length
+      // totalGenomes = genomeIDs.length
 
       recursiveFetch(genomeIDs)
     }).catch((e) => {
       console.log(e)
     })
 
-    exit()
+    process.exit()
   }
 
   // if genome_ids is provided as an option
