@@ -39,12 +39,6 @@ function querySOLR (req, res, next) {
 
   debug('querySOLR() query: ', query)
 
-  // filter error queries
-  if (query.includes('(genome_id:())')) {
-    res.status(404)
-    return next()
-  }
-
   solrClient.query(query)
     .then((results) => {
       if (!results) {

@@ -124,4 +124,36 @@ describe('Test Router - Data Type', () => {
         })
     })
   })
+
+  describe('Test Error handler', () => {
+    const requestOptions = {
+      port: Config.get('http_port'),
+      agent: agent,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/rqlquery+x-www-form-urlencoded'
+      }
+    }
+
+    it('Expect 404 - in(genome_id:())', async function () {
+      return httpGet(Object.assign(requestOptions, {
+        path: '/genome/?in(genome_id:())'
+      }))
+        .then((body) => {
+          const parsed = JSON.parse(body)
+          assert.equal(parsed.status, 400)
+          assert.equal(parsed.message, 'Query Syntax Error: in(genome_id:())')
+        })
+    })
+    it('Expect 404 - in(taxon_id:())', async function () {
+      return httpGet(Object.assign(requestOptions, {
+        path: '/genome/?in(taxon_id:())'
+      }))
+        .then((body) => {
+          const parsed = JSON.parse(body)
+          assert.equal(parsed.status, 400)
+          assert.equal(parsed.message, 'Query Syntax Error: in(taxon_id:())')
+        })
+    })
+  })
 })

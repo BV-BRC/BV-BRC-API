@@ -19,9 +19,13 @@ module.exports = function (req, res, next) {
           req.queryType = 'solr'
           next()
         })
+        .catch((err) => {
+          console.error(`${err}`)
+          res.status(400).send({ status: 400, message: err.message })
+        })
     } catch (err) {
       console.error(`[${(new Date()).toISOString()}] Unable to resolve RQL query for ${req.call_params[0]}. ${err.message}. Send 400`)
-      res.status(400).send(err.message)
+      res.status(400).send({ status: 400, message: err.message })
     }
   } else {
     next()
