@@ -1,6 +1,7 @@
 var express = require('express')
 var router = express.Router({ strict: true, mergeParams: true })
 var RQLQueryParser = require('../middleware/RQLQueryParser')
+var SOLRQueryParser = require('../middleware/SolrQueryParser')
 var DecorateQuery = require('../middleware/DecorateQuery')
 var ExtractCustomFields = require('../middleware/ExtractCustomFields')
 var PublicDataTypes = require('../middleware/PublicDataTypes')
@@ -159,6 +160,7 @@ router.post('*', [
 
 router.use([
   RQLQueryParser,
+  SOLRQueryParser,
   DecorateQuery,
   Limiter,
   function (req, res, next) {

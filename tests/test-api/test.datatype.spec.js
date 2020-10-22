@@ -57,7 +57,7 @@ describe('Test Router - Data Type', () => {
       }
     }
 
-    const query = 'q=taxon_lineage_ids:773&sort=score+desc'
+    const query = 'q=taxon_lineage_ids:773+AND+reference_genome:*&sort=score+desc'
 
     it('GET request', async function () {
       return httpGet(Object.assign(solrRequestOptions, {
@@ -153,6 +153,23 @@ describe('Test Router - Data Type', () => {
           const parsed = JSON.parse(body)
           assert.equal(parsed.status, 400)
           assert.equal(parsed.message, 'Query Syntax Error: in(taxon_id:())')
+        })
+    })
+
+    it('Expect 404 - SolrQuery Syntax Error', async function () {
+      return httpGet({
+        port: Config.get('http_port'),
+        agent: agent,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/solrquery+x-www-form-urlencoded'
+        },
+        path: '/genome/?q=taxon_id:&fl=lineage_ids,lineage_names,lineage_ranks&rows=25000'
+      })
+        .then((body) => {
+          const parsed = JSON.parse(body)
+          assert.equal(parsed.status, 400)
+          assert.equal(parsed.message, 'Error in parsing query: q=taxon_id:')
         })
     })
   })
