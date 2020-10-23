@@ -83,6 +83,28 @@ describe('Test Router - Data Type', () => {
     })
   })
 
+  describe('Application examples', function () {
+    const solrRequestOptions = {
+      port: Config.get('http_port'),
+      agent: agent,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/solrquery+x-www-form-urlencoded'
+      }
+    }
+
+    it('GET boosted query', async function () {
+      return httpGet(Object.assign(solrRequestOptions, {
+        path: `/taxonomy/?q=((taxon_name:*Brucella*)%20OR%20(taxon_name:Brucella))%20AND%20(taxon_rank:superkingdom^7000000%20OR%20taxon_rank:phylum^6000000%20OR%20taxon_rank:class^5000000%20OR%20taxon_rank:order^4000000%20OR%20taxon_rank:family^3000000%20OR%20taxon_rank:genus^2000000%20OR%20taxon_rank:species^1000000%20OR%20taxon_rank:*)&fl=taxon_name,taxon_id,taxon_rank,lineage_names&qf=taxon_name`
+      }))
+        .then((body) => {
+          const parsed = JSON.parse(body)
+          assert.isArray(parsed)
+          assert.isAtLeast(25, parsed.length)
+        })
+    })
+  })
+
   describe('Get Schema', () => {
     const requestOptions = {
       port: Config.get('http_port'),
