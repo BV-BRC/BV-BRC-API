@@ -5,7 +5,7 @@ let cnt_req = 0
 let cnt_res_ok = 0
 let cnt_res_err = 0
 
-const dest = Pino.destination('reqeusts_per_min.log')
+const dest = Pino.destination('requests_per_min.log')
 const logger = Pino({
   timestamp: Pino.stdTimeFunctions.isoTime
 }, dest)
