@@ -92,6 +92,14 @@ describe('Test Router - Data Type', () => {
         'Content-Type': 'application/solrquery+x-www-form-urlencoded'
       }
     }
+    const rqlRequestOptions = {
+      port: Config.get('http_port'),
+      agent: agent,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/rqlquery+x-www-form-urlencoded'
+      }
+    }
 
     it('GET boosted query', async function () {
       return httpGet(Object.assign(solrRequestOptions, {
@@ -101,6 +109,24 @@ describe('Test Router - Data Type', () => {
           const parsed = JSON.parse(body)
           assert.isArray(parsed)
           assert.isAtLeast(25, parsed.length)
+        })
+    })
+
+    it('POST many ORs', async function () {
+      const payload = Fs.readFileSync(Path.join(__dirname, 'payload.app.txt'), {
+        encoding: 'utf8'
+      })
+      return httpRequest(Object.assign(rqlRequestOptions, {
+        method: 'POST',
+        path: '/genome/'
+      }), payload)
+        .then((body) => {
+          const parsed = JSON.parse(body)
+          assert.isArray(parsed)
+          assert.isAtLeast(25, parsed.length)
+        })
+        .catch((err) => {
+          console.error(err)
         })
     })
   })
