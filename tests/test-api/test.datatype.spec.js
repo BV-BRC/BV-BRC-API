@@ -123,7 +123,7 @@ describe('Test Router - Data Type', () => {
         .then((body) => {
           const parsed = JSON.parse(body)
           assert.isArray(parsed)
-          assert.isAtLeast(25, parsed.length)
+          assert.isAtLeast(parsed.length, 25)
         })
         .catch((err) => {
           console.error(err)
