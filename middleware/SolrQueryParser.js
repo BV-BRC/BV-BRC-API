@@ -18,7 +18,9 @@ module.exports = function (req, res, next) {
       next()
     } catch (err) {
       debug(`Error in parsing query: ${query}, ${err}`)
-      res.status(400).send({ status: 400, message: `Error in parsing query: ${query}` })
+      // res.status(400).send({ status: 400, message: `Error in parsing query: ${query}` })
+      console.error(`Error in parsing query: ${query}`, req._parsedUrl)
+      next()
     }
   } else {
     next()
