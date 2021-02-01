@@ -29,6 +29,8 @@ var defaults = {
     'sp_gene',
     'sp_gene_evidence',
     'sp_gene_ref',
+    'spike_lineage',
+    'spike_variant',
     'structured_assertion',
     'subsystem',
     'subsystem_ref',

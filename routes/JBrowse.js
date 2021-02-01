@@ -12,6 +12,7 @@ var httpParams = require('../middleware/http-params')
 var Limiter = require('../middleware/Limiter')
 
 var apiRoot = config.get('jbrowseAPIRoot')
+var distRoot = config.get('distributeURL')
 
 function generateTrackList (req, res, next) {
   return JSON.stringify({
@@ -96,9 +97,113 @@ function generateTrackList (req, res, next) {
   })
 }
 
+function generateSarsCov2TrackList (req, res, next) {
+  return JSON.stringify({
+    'formatVersion': 1,
+    'names': {
+        'type': 'REST',
+        'url': 'names/'
+    },
+    'include': distRoot + 'content/jbrowse/sars_colors.conf',
+    'tracks': [
+      {
+        'baseUrl': apiRoot + '/genome/' + req.params.id,
+        'chunkSize': 20000,
+        'key': 'Reference sequence',
+        'label': 'refseqs',
+        'maxExportSpan': 10000000,
+        'pinned': true,
+        'region_stats': false,
+        'storeClass': 'p3/store/SeqFeatureREST',
+        'type': 'SequenceTrack'
+      },
+      {
+        'baseUrl': apiRoot + '/genome/2697049.107626',
+        'glyph': 'function(feature) { return "JBrowse/View/FeatureGlyph/" + ( {"gene": "Gene", "mRNA": "ProcessedTranscript", "transcript": "ProcessedTranscript", "segmented": "Segments" }[feature.get("type")] || "Box" ) }',
+        'key': 'RefSeq Annotation',
+        'label': 'RefSeqGenes',
+        'maxExportFeatures': 10000,
+        'maxExportSpan': 10000000,
+        'metadata': {
+            'Description': 'RefSeq annotated genes'
+        },
+        'onClick': {
+          'action': 'function(clickEvent){return window.featureDialogContent(this.feature);}',
+          'label': '<div style="line-height:1.7em"><b>{refseq_locus_tag}</b> | {gene}<br>{product}<br>{type}: {start} .. {end} ({strand})<br> <i>Click for detailed information</i></div>',
+          'title': '{refseq_locus_tag} {gene}'
+        },
+        'query': {
+          'annotation': 'RefSeq'
+        },
+        'region_stats': true,
+        'storeClass': 'p3/store/SeqFeatureREST',
+        'style': {
+          'className': 'feature3',
+          'color': 'function(feature) { return feature.get("feature_type")=="CDS" ? "darkred" : "#4c5e22"; }',
+          'label': 'product,refseq_locus_tag,gene,gene_id,protein_id,feature_type',
+          'showLabels': true,
+          'showTooltips': true
+        },
+        'subfeatures': true,
+        'type': 'JBrowse/View/Track/CanvasFeatures'
+      },
+      {
+        'urlTemplate': distRoot + 'content/jbrowse/voc_sarscov2.sorted.gff.gz',
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        '#type': 'JBrowse/View/Track/HTMLVariants',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'key': 'VOC Markers',
+        'label': 'VOCMarkers',
+        'maxExportFeatures': 10000,
+        'maxExportSpan': 10000000,
+        'metadata': {
+          'Description': 'VOC Markers'
+        },
+        'style': {
+          'className': 'feature3',
+          'color': 'function(feature) { var f={voColor}; return f(feature); }',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth':3
+        },
+        'subfeatures': true
+      },
+      {
+        'urlTemplate': distRoot + 'content/jbrowse/uniprot_sarscov2_features.sorted.gff.gz',
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        '#type': 'JBrowse/View/Track/HTMLVariants',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'key': 'Uniprot Features',
+        'label': 'UniprotFeatures',
+        'maxExportFeatures': 10000,
+        'maxExportSpan': 10000000,
+        'metadata': {
+          'Description': 'Uniprot Features'
+        },
+        'style': {
+          'className': 'feature3',
+          'color': "function(feature) { return feature.data.type=='Domain' ? 'purple': feature.data.type=='Transmembrane' ? 'red': feature.data.type=='Repeat' ? 'orange' : 'blue'; }",
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth':3
+        },
+        'subfeatures': true
+      }
+    ]
+  })
+}
+
+
 router.use(httpParams)
 router.use(authMiddleware)
 router.use(PublicDataTypes)
+
+router.get('/genome/2697049.107626/trackList', [
+  function(req, res, next) {
+    res.write(generateSarsCov2TrackList(req, res, next))
+    res.end()
+  }
+])
 
 router.get('/genome/:id/trackList', [
   function (req, res, next) {
