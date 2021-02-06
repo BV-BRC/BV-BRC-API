@@ -107,7 +107,7 @@ function generateSarsCov2TrackList (req, res, next) {
     'include': distRoot + 'content/jbrowse/sars_colors.conf',
     'tracks': [
       {
-        'baseUrl': apiRoot + '/genome/' + req.params.id,
+        'baseUrl': apiRoot + '/genome/2697049.107626',
         'chunkSize': 20000,
         'key': 'Reference sequence',
         'label': 'refseqs',
