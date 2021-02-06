@@ -150,7 +150,6 @@ function generateSarsCov2TrackList (req, res, next) {
       {
         'urlTemplate': distRoot + 'content/jbrowse/voc_sarscov2.sorted.gff.gz',
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        '#type': 'JBrowse/View/Track/HTMLVariants',
         'type': 'JBrowse/View/Track/CanvasFeatures',
         'key': 'VOC Markers',
         'label': 'VOCMarkers',
@@ -164,9 +163,13 @@ function generateSarsCov2TrackList (req, res, next) {
           'color': 'function(feature) { var f={voColor}; return f(feature); }',
           'showLabels': true,
           'showTooltips': true,
-          'borderWidth':3
+          'borderWidth':3,
+          'style':'red'
+
         },
-        'subfeatures': true
+        'subfeatures': true,
+        "glyph": "JBrowse/View/FeatureGlyph/Segments",
+        "subParts": "Marker"
       },
       {
         'urlTemplate': distRoot + 'content/jbrowse/uniprot_sarscov2_features.sorted.gff.gz',
