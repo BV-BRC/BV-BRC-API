@@ -163,13 +163,35 @@ function generateSarsCov2TrackList (req, res, next) {
           'color': 'function(feature) { var f={voColor}; return f(feature); }',
           'showLabels': true,
           'showTooltips': true,
-          'borderWidth':3,
-          'style':'red'
-
+          'borderWidth':3
         },
         'subfeatures': true,
         "glyph": "JBrowse/View/FeatureGlyph/Segments",
         "subParts": "Marker"
+      },
+      {
+        'urlTemplate': distRoot + 'content/jbrowse/SARS_bcell_epitopes_human_02FEB2021_all_v3.sorted.gff.gz',
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'key': 'Human Epitopes',
+        'label': 'HumanBCellEpitopes',
+        'maxExportFeatures': 10000,
+        'maxExportSpan': 10000000,
+        'metadata': {
+          'Description': 'Human BCell Epitopes'
+        },
+        'style': {
+          'className': 'feature3',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth':3,
+          'color':'red'
+
+        },
+        'subfeatures': true,
+        "glyph": "JBrowse/View/FeatureGlyph/Segments",
+        "subParts": "epitope",
+        "topLevelFeatures":"epitope_region"
       },
       {
         'urlTemplate': distRoot + 'content/jbrowse/uniprot_sarscov2_features.sorted.gff.gz',
@@ -185,13 +207,412 @@ function generateSarsCov2TrackList (req, res, next) {
         },
         'style': {
           'className': 'feature3',
-          'color': "function(feature) { return feature.data.type=='Domain' ? 'purple': feature.data.type=='Transmembrane' ? 'red': feature.data.type=='Repeat' ? 'orange' : 'blue'; }",
+           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth':3
         },
         'subfeatures': true
-      }
+      },
+  {
+        "maxExportFeatures": 10000, 
+        "style": {
+            "className": "feature3", 
+           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+            "showLabels": true, 
+            "showTooltips": true, 
+            "borderWidth": 3
+        }, 
+        "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+        "urlTemplate": distRoot + 'content/jbrowse/Region_of_interest.sorted.gff.gz', 
+        "maxExportSpan": 10000000, 
+        "label": "Regionofinterest", 
+        "key": "Region of interest", 
+        "type": "JBrowse/View/Track/CanvasFeatures", 
+        "metadata": {
+            "Description": "Region of interest"
+        }
+    }, 
+    {
+        "maxExportFeatures": 10000, 
+        "style": {
+            "className": "feature3", 
+           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+            "showLabels": true, 
+            "showTooltips": true, 
+            "borderWidth": 3
+        }, 
+        "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+        "urlTemplate": distRoot + 'content/jbrowse/Topological_domain.sorted.gff.gz', 
+        "maxExportSpan": 10000000, 
+        "label": "Topologicaldomain", 
+        "key": "Topological domain", 
+        "type": "JBrowse/View/Track/CanvasFeatures", 
+        "metadata": {
+            "Description": "Topological domain"
+        }
+    }, 
+    {
+        "maxExportFeatures": 10000, 
+        "style": {
+            "className": "feature3", 
+           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+            "showLabels": true, 
+            "showTooltips": true, 
+            "borderWidth": 3
+        }, 
+        "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+        "urlTemplate": distRoot + 'content/jbrowse/Metal_ion-binding_site.sorted.gff.gz', 
+        "maxExportSpan": 10000000, 
+        "label": "Metalionbindingsite", 
+        "key": "Metal ion binding site", 
+        "type": "JBrowse/View/Track/CanvasFeatures", 
+        "metadata": {
+            "Description": "Metal ion binding site"
+        }
+    }, 
+    {
+        "maxExportFeatures": 10000, 
+        "style": {
+            "className": "feature3", 
+           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+            "showLabels": true, 
+            "showTooltips": true, 
+            "borderWidth": 3
+        }, 
+        "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+        "urlTemplate": distRoot + 'content/jbrowse/Transmembrane_region.sorted.gff.gz', 
+        "maxExportSpan": 10000000, 
+        "label": "Transmembraneregion", 
+        "key": "Transmembrane region", 
+        "type": "JBrowse/View/Track/CanvasFeatures", 
+        "metadata": {
+            "Description": "Transmembrane region"
+        }
+    }, 
+    {
+        "maxExportFeatures": 10000, 
+        "style": {
+            "className": "feature3", 
+           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+            "showLabels": true, 
+            "showTooltips": true, 
+            "borderWidth": 3
+        }, 
+        "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+        "urlTemplate": distRoot + 'content/jbrowse/Chain.sorted.gff.gz', 
+        "maxExportSpan": 10000000, 
+        "label": "Chains", 
+        "key": "Chains", 
+        "type": "JBrowse/View/Track/CanvasFeatures", 
+        "metadata": {
+            "Description": "Chains"
+        }
+    }, 
+    {
+        "maxExportFeatures": 10000, 
+        "style": {
+            "className": "feature3", 
+           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+            "showLabels": true, 
+            "showTooltips": true, 
+            "borderWidth": 3
+        }, 
+        "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+        "urlTemplate": distRoot + 'content/jbrowse/Mutagenesis_site.sorted.gff.gz', 
+        "maxExportSpan": 10000000, 
+        "label": "MutagenesisSite", 
+        "key": "Mutagenesis Site", 
+        "type": "JBrowse/View/Track/CanvasFeatures", 
+        "metadata": {
+            "Description": "Mutagenesis Site"
+        }
+    }, 
+    {
+        "maxExportFeatures": 10000, 
+        "style": {
+            "className": "feature3", 
+           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+            "showLabels": true, 
+            "showTooltips": true, 
+            "borderWidth": 3
+        }, 
+        "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+        "urlTemplate": distRoot + 'content/jbrowse/Active_site.sorted.gff.gz', 
+        "maxExportSpan": 10000000, 
+        "label": "Activesite", 
+        "key": "Active site", 
+        "type": "JBrowse/View/Track/CanvasFeatures", 
+        "metadata": {
+            "Description": "Active site"
+        }
+    }, 
+    {
+        "maxExportFeatures": 10000, 
+        "style": {
+            "className": "feature3", 
+           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+            "showLabels": true, 
+            "showTooltips": true, 
+            "borderWidth": 3
+        }, 
+        "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+        "urlTemplate": distRoot + 'content/jbrowse/Modified_residue.sorted.gff.gz', 
+        "maxExportSpan": 10000000, 
+        "label": "Modifiedresidue", 
+        "key": "Modified residue", 
+        "type": "JBrowse/View/Track/CanvasFeatures", 
+        "metadata": {
+            "Description": "Modified residue"
+        }
+    }, 
+    {
+        "maxExportFeatures": 10000, 
+        "style": {
+            "className": "feature3", 
+           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+            "showLabels": true, 
+            "showTooltips": true, 
+            "borderWidth": 3
+        }, 
+        "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+        "urlTemplate": distRoot + 'content/jbrowse/Repeat.sorted.gff.gz', 
+        "maxExportSpan": 10000000, 
+        "label": "RepeatRegion", 
+        "key": "Repeat Region", 
+        "type": "JBrowse/View/Track/CanvasFeatures", 
+        "metadata": {
+            "Description": "Repeat Region"
+        }
+    }, 
+    {
+        "maxExportFeatures": 10000, 
+        "style": {
+            "className": "feature3", 
+           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+            "showLabels": true, 
+            "showTooltips": true, 
+            "borderWidth": 3
+        }, 
+        "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+        "urlTemplate": distRoot + 'content/jbrowse/Nucleotide_phosphate-binding_region.sorted.gff.gz', 
+        "maxExportSpan": 10000000, 
+        "label": "Nucleotidephosphatebinding", 
+        "key": "Nucleotide phosphate binding", 
+        "type": "JBrowse/View/Track/CanvasFeatures", 
+        "metadata": {
+            "Description": "Nucleotide phosphate binding"
+        }
+    }, 
+    {
+        "maxExportFeatures": 10000, 
+        "style": {
+            "className": "feature3", 
+           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+            "showLabels": true, 
+            "showTooltips": true, 
+            "borderWidth": 3
+        }, 
+        "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+        "urlTemplate": distRoot + 'content/jbrowse/Disulfide_bond.sorted.gff.gz', 
+        "maxExportSpan": 10000000, 
+        "label": "Disulfidebond", 
+        "key": "Disulfide bond", 
+        "type": "JBrowse/View/Track/CanvasFeatures", 
+        "metadata": {
+            "Description": "Disulfide bond"
+        }
+    }, 
+    {
+        "maxExportFeatures": 10000, 
+        "style": {
+            "className": "feature3", 
+           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+            "showLabels": true, 
+            "showTooltips": true, 
+            "borderWidth": 3
+        }, 
+        "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+        "urlTemplate": distRoot + 'content/jbrowse/Short_sequence_motif.sorted.gff.gz', 
+        "maxExportSpan": 10000000, 
+        "label": "Shortmotif", 
+        "key": "Short motif", 
+        "type": "JBrowse/View/Track/CanvasFeatures", 
+        "metadata": {
+            "Description": "Short motif"
+        }
+    }, 
+    {
+        "maxExportFeatures": 10000, 
+        "style": {
+            "className": "feature3", 
+           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+            "showLabels": true, 
+            "showTooltips": true, 
+            "borderWidth": 3
+        }, 
+        "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+        "urlTemplate": distRoot + 'content/jbrowse/Signal_peptide.sorted.gff.gz', 
+        "maxExportSpan": 10000000, 
+        "label": "Signalpeptide", 
+        "key": "Signal peptide", 
+        "type": "JBrowse/View/Track/CanvasFeatures", 
+        "metadata": {
+            "Description": "Signal peptide"
+        }
+    }, 
+    {
+        "maxExportFeatures": 10000, 
+        "style": {
+            "className": "feature3", 
+           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+            "showLabels": true, 
+            "showTooltips": true, 
+            "borderWidth": 3
+        }, 
+        "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+        "urlTemplate": distRoot + 'content/jbrowse/Beta_strand.sorted.gff.gz', 
+        "maxExportSpan": 10000000, 
+        "label": "Betastrand", 
+        "key": "Beta strand", 
+        "type": "JBrowse/View/Track/CanvasFeatures", 
+        "metadata": {
+            "Description": "Beta strand"
+        }
+    }, 
+    {
+        "maxExportFeatures": 10000, 
+        "style": {
+            "className": "feature3", 
+           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+            "showLabels": true, 
+            "showTooltips": true, 
+            "borderWidth": 3
+        }, 
+        "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+        "urlTemplate": distRoot + 'content/jbrowse/Zinc_finger_region.sorted.gff.gz', 
+        "maxExportSpan": 10000000, 
+        "label": "Zincfinger", 
+        "key": "Zinc finger", 
+        "type": "JBrowse/View/Track/CanvasFeatures", 
+        "metadata": {
+            "Description": "Zinc finger"
+        }
+    }, 
+    {
+        "maxExportFeatures": 10000, 
+        "style": {
+            "className": "feature3", 
+           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+            "showLabels": true, 
+            "showTooltips": true, 
+            "borderWidth": 3
+        }, 
+        "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+        "urlTemplate": distRoot + 'content/jbrowse/Coiled-coil_region.sorted.gff.gz', 
+        "maxExportSpan": 10000000, 
+        "label": "Coiledcoil", 
+        "key": "Coiled coil", 
+        "type": "JBrowse/View/Track/CanvasFeatures", 
+        "metadata": {
+            "Description": "Coiled coil"
+        }
+    }, 
+    {
+        "maxExportFeatures": 10000, 
+        "style": {
+            "className": "feature3", 
+           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+            "showLabels": true, 
+            "showTooltips": true, 
+            "borderWidth": 3
+        }, 
+        "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+        "urlTemplate": distRoot + 'content/jbrowse/Domain.sorted.gff.gz', 
+        "maxExportSpan": 10000000, 
+        "label": "Domains", 
+        "key": "Domains", 
+        "type": "JBrowse/View/Track/CanvasFeatures", 
+        "metadata": {
+            "Description": "Domains"
+        }
+    }, 
+    {
+        "maxExportFeatures": 10000, 
+        "style": {
+            "className": "feature3", 
+           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+            "showLabels": true, 
+            "showTooltips": true, 
+            "borderWidth": 3
+        }, 
+        "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+        "urlTemplate": distRoot + 'content/jbrowse/Glycosylation_site.sorted.gff.gz', 
+        "maxExportSpan": 10000000, 
+        "label": "Glycosylationsite", 
+        "key": "Glycosylation site", 
+        "type": "JBrowse/View/Track/CanvasFeatures", 
+        "metadata": {
+            "Description": "Glycosylation site"
+        }
+    }, 
+    {
+        "maxExportFeatures": 10000, 
+        "style": {
+            "className": "feature3", 
+           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+            "showLabels": true, 
+            "showTooltips": true, 
+            "borderWidth": 3
+        }, 
+        "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+        "urlTemplate": distRoot + 'content/jbrowse/Helix.sorted.gff.gz', 
+        "maxExportSpan": 10000000, 
+        "label": "HelixSecondaryStructure", 
+        "key": "Helix Secondary Structure", 
+        "type": "JBrowse/View/Track/CanvasFeatures", 
+        "metadata": {
+            "Description": "Helix Secondary Structure"
+        }
+    }, 
+    {
+        "maxExportFeatures": 10000, 
+        "style": {
+            "className": "feature3", 
+           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+            "showLabels": true, 
+            "showTooltips": true, 
+            "borderWidth": 3
+        }, 
+        "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+        "urlTemplate": distRoot + 'content/jbrowse/Site.sorted.gff.gz', 
+        "maxExportSpan": 10000000, 
+        "label": "CleavageSites", 
+        "key": "Cleavage Sites", 
+        "type": "JBrowse/View/Track/CanvasFeatures", 
+        "metadata": {
+            "Description": "Cleavage Sites"
+        }
+    }, 
+    {
+        "maxExportFeatures": 10000, 
+        "style": {
+            "className": "feature3", 
+           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+            "showLabels": true, 
+            "showTooltips": true, 
+            "borderWidth": 3
+        }, 
+        "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+        "urlTemplate": distRoot + 'content/jbrowse/Turn.sorted.gff.gz', 
+        "maxExportSpan": 10000000, 
+        "label": "TurnSecondaryStructure", 
+        "key": "Turn Secondary Structure", 
+        "type": "JBrowse/View/Track/CanvasFeatures", 
+        "metadata": {
+            "Description": "Turn Secondary Structure"
+        }
+    } 
     ]
   })
 }
