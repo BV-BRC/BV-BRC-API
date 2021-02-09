@@ -151,7 +151,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'urlTemplate': distRoot + 'content/jbrowse/voc_sarscov2.sorted.gff.gz',
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
         'type': 'JBrowse/View/Track/CanvasFeatures',
-        'key': 'VOC Markers',
+        'key': 'LOC Markers',
         'label': 'VOCMarkers',
         'maxExportFeatures': 10000,
         'maxExportSpan': 10000000,
@@ -163,17 +163,19 @@ function generateSarsCov2TrackList (req, res, next) {
           'color': 'function(feature) { var f={voColor}; return f(feature); }',
           'showLabels': true,
           'showTooltips': true,
-          'borderWidth':3
+          'borderWidth':3,
+          "connectorColor": "linen"
         },
         'subfeatures': true,
         "glyph": "JBrowse/View/FeatureGlyph/Segments",
-        "subParts": "Marker"
+        "subParts": "Marker",
+        "displayMode":"compact"
       },
       {
         'urlTemplate': distRoot + 'content/jbrowse/SARS_bcell_epitopes_human_02FEB2021_all_v3.sorted.gff.gz',
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
         'type': 'JBrowse/View/Track/CanvasFeatures',
-        'key': 'Human Epitopes',
+        'key': 'Antibody Epitopes',
         'label': 'HumanBCellEpitopes',
         'maxExportFeatures': 10000,
         'maxExportSpan': 10000000,
@@ -191,14 +193,15 @@ function generateSarsCov2TrackList (req, res, next) {
         'subfeatures': true,
         "glyph": "JBrowse/View/FeatureGlyph/Segments",
         "subParts": "epitope",
-        "topLevelFeatures":"epitope_region"
+        "topLevelFeatures":"epitope_region",
+        "displayMode":"collapsed"
       },
       {
         'urlTemplate': distRoot + 'content/jbrowse/uniprot_sarscov2_features.sorted.gff.gz',
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
         '#type': 'JBrowse/View/Track/HTMLVariants',
         'type': 'JBrowse/View/Track/CanvasFeatures',
-        'key': 'Uniprot Features',
+        'key': 'Uniprot Summary',
         'label': 'UniprotFeatures',
         'maxExportFeatures': 10000,
         'maxExportSpan': 10000000,
@@ -231,7 +234,8 @@ function generateSarsCov2TrackList (req, res, next) {
         "type": "JBrowse/View/Track/CanvasFeatures", 
         "metadata": {
             "Description": "Region of interest"
-        }
+        },
+        "displayMode":"compact"
     }, 
     {
         "maxExportFeatures": 10000, 
@@ -326,7 +330,8 @@ function generateSarsCov2TrackList (req, res, next) {
         "type": "JBrowse/View/Track/CanvasFeatures", 
         "metadata": {
             "Description": "Mutagenesis Site"
-        }
+        },
+        "displayMode":"compact"
     }, 
     {
         "maxExportFeatures": 10000, 
@@ -345,7 +350,8 @@ function generateSarsCov2TrackList (req, res, next) {
         "type": "JBrowse/View/Track/CanvasFeatures", 
         "metadata": {
             "Description": "Active site"
-        }
+        },
+        "displayMode":"compact"
     }, 
     {
         "maxExportFeatures": 10000, 
@@ -535,7 +541,8 @@ function generateSarsCov2TrackList (req, res, next) {
         "type": "JBrowse/View/Track/CanvasFeatures", 
         "metadata": {
             "Description": "Domains"
-        }
+        },
+        "displayMode":"compact"
     }, 
     {
         "maxExportFeatures": 10000, 
