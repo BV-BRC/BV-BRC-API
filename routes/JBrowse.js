@@ -118,29 +118,21 @@ function generateSarsCov2TrackList (req, res, next) {
         'type': 'SequenceTrack'
       },
       {
-        'baseUrl': apiRoot + '/genome/2697049.107626',
+        'urlTemplate':distRoot + 'content/jbrowse/GCF_009858895.2_ASM985889v3_genomic.sorted.gff.gz',
         'glyph': 'function(feature) { return "JBrowse/View/FeatureGlyph/" + ( {"gene": "Gene", "mRNA": "ProcessedTranscript", "transcript": "ProcessedTranscript", "segmented": "Segments" }[feature.get("type")] || "Box" ) }',
         'key': 'RefSeq Annotation',
-        'label': 'RefSeqGenes',
+        'label': 'RefSeqGFF',
         'maxExportFeatures': 10000,
         'maxExportSpan': 10000000,
         'metadata': {
             'Description': 'RefSeq annotated genes'
-        },
-        'onClick': {
-          'action': 'function(clickEvent){return window.featureDialogContent(this.feature);}',
-          'label': '<div style="line-height:1.7em"><b>{refseq_locus_tag}</b> | {gene}<br>{product}<br>{type}: {start} .. {end} ({strand})<br> <i>Click for detailed information</i></div>',
-          'title': '{refseq_locus_tag} {gene}'
-        },
-        'query': {
-          'annotation': 'RefSeq'
         },
         'region_stats': true,
         'storeClass': 'p3/store/SeqFeatureREST',
         'style': {
           'className': 'feature3',
           'color': 'function(feature) { return feature.get("feature_type")=="CDS" ? "darkred" : "#4c5e22"; }',
-          'label': 'product,refseq_locus_tag,gene,gene_id,protein_id,feature_type',
+          'label': 'product,protein_id,feature_type',
           'showLabels': true,
           'showTooltips': true
         },
