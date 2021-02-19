@@ -131,7 +131,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'storeClass': 'p3/store/SeqFeatureREST',
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { return feature.get("feature_type")=="CDS" ? "darkred" : "#4c5e22"; }',
+          'color': 'function(feature) { return feature.get("feature_type")=="CDS" ? "darkred" : "darkorange"; }',
           'label': 'product,protein_id,feature_type',
           'showLabels': true,
           'showTooltips': true
@@ -152,11 +152,13 @@ function generateSarsCov2TrackList (req, res, next) {
         },
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { var f={voColor}; return f(feature); }',
+          'color': 'function(feature) { var f={voColor}; return f(feature.data.parent); }',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth':3,
-          "connectorColor": "linen"
+          "connectorColor": "linen",
+          "description":"id",
+          "label":""
         },
         'subfeatures': true,
         "glyph": "JBrowse/View/FeatureGlyph/Segments",
@@ -176,7 +178,7 @@ function generateSarsCov2TrackList (req, res, next) {
         },
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { var f={voColor}; return f(feature); }',
+          'color': 'function(feature) { var f={voColor}; return f(feature.data.parent); }',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth':3,
@@ -213,8 +215,8 @@ function generateSarsCov2TrackList (req, res, next) {
         "topLevelFeatures":"epitope_region",
         "displayMode":"collapsed"
       },
-    {
-        'urlTemplate': distRoot + 'content/jbrowse/SARS-CoV-2_Primers_and_Probes.sorted.gff.gz',
+      {
+        'urlTemplate': distRoot + 'content/jbrowse/SARS-CoV-2_Primers_Probes.sorted.gff.gz',
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
         'type': 'JBrowse/View/Track/CanvasFeatures',
         'key': 'Primers and Probes',
@@ -226,17 +228,17 @@ function generateSarsCov2TrackList (req, res, next) {
         },
         'style': {
           'className': 'feature3',
+          'color': 'function(feature) { var f={voColor}; return f(feature.data.parent); }',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth':3,
-          'color':'red'
-
+          "connectorColor": "linen",
+          'label': 'Variation'
         },
         'subfeatures': true,
         "glyph": "JBrowse/View/FeatureGlyph/Segments",
-        "subParts": "epitope",
-        "topLevelFeatures":"epitope_region",
-        "displayMode":"collapsed"
+        "subParts": "CRISPR-Cas12,Multiplex_PCR,RT-dPCR,Singleplex_RT-PCR,MSSPE",
+        "displayMode":"normal"
       },
       {
         'urlTemplate': distRoot + 'content/jbrowse/uniprot_sarscov2_features.sorted.gff.gz',
