@@ -140,15 +140,15 @@ function generateSarsCov2TrackList (req, res, next) {
         'type': 'JBrowse/View/Track/CanvasFeatures'
       },
       {
-        'urlTemplate': distRoot + 'content/jbrowse/voc_sarscov2.sorted.gff.gz',
+        'urlTemplate': distRoot + 'content/jbrowse/SARS2_LoC_Amino_Acid_Variants.gff.gz',
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
         'type': 'JBrowse/View/Track/CanvasFeatures',
-        'key': 'LOC Markers',
+        'key': 'LoC Markers: AA Variations',
         'label': 'VOCMarkers',
         'maxExportFeatures': 10000,
         'maxExportSpan': 10000000,
         'metadata': {
-          'Description': 'VOC Markers'
+          'Description': 'LoC Markers: Amino Acid Variations'
         },
         'style': {
           'className': 'feature3',
@@ -160,7 +160,32 @@ function generateSarsCov2TrackList (req, res, next) {
         },
         'subfeatures': true,
         "glyph": "JBrowse/View/FeatureGlyph/Segments",
-        "subParts": "Marker",
+        "subParts": "Amino_Acid_Variation",
+        "displayMode":"compact"
+      },
+      {
+        'urlTemplate': distRoot + 'content/jbrowse/SARS2_LoC_Nucleotide_Variants.sorted.gff.gz',
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'key': 'LoC Markers: NT Variations',
+        'label': 'LoCMarkersNucleotideVariations',
+        'maxExportFeatures': 10000,
+        'maxExportSpan': 10000000,
+        'metadata': {
+          'Description': 'LoC Markers: NT Variations'
+        },
+        'style': {
+          'className': 'feature3',
+          'color': 'function(feature) { var f={voColor}; return f(feature); }',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth':3,
+          "connectorColor": "linen",
+          'label': 'Variation'
+        },
+        'subfeatures': true,
+        "glyph": "JBrowse/View/FeatureGlyph/Segments",
+        "subParts": "Nucleotide_Variation",
         "displayMode":"compact"
       },
       {
@@ -173,6 +198,31 @@ function generateSarsCov2TrackList (req, res, next) {
         'maxExportSpan': 10000000,
         'metadata': {
           'Description': 'Human BCell Epitopes'
+        },
+        'style': {
+          'className': 'feature3',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth':3,
+          'color':'red'
+
+        },
+        'subfeatures': true,
+        "glyph": "JBrowse/View/FeatureGlyph/Segments",
+        "subParts": "epitope",
+        "topLevelFeatures":"epitope_region",
+        "displayMode":"collapsed"
+      },
+    {
+        'urlTemplate': distRoot + 'content/jbrowse/SARS-CoV-2_Primers_and_Probes.sorted.gff.gz',
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'key': 'Primers and Probes',
+        'label': 'PrimersandProbes',
+        'maxExportFeatures': 10000,
+        'maxExportSpan': 10000000,
+        'metadata': {
+          'Description': 'Primers and Probes'
         },
         'style': {
           'className': 'feature3',
@@ -323,7 +373,7 @@ function generateSarsCov2TrackList (req, res, next) {
         "metadata": {
             "Description": "Mutagenesis Site"
         },
-        "displayMode":"compact"
+        "displayMode":"collapsed"
     }, 
     {
         "maxExportFeatures": 10000, 
