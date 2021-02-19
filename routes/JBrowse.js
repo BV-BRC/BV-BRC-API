@@ -163,7 +163,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'subfeatures': true,
         "glyph": "JBrowse/View/FeatureGlyph/Segments",
         "subParts": "Amino_Acid_Variation",
-        "displayMode":"normal"
+        "displayMode":"compact"
       },
       {
         'urlTemplate': distRoot + 'content/jbrowse/SARS2_LoC_Nucleotide_Variants.sorted.gff.gz',
