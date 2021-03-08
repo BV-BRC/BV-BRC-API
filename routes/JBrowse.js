@@ -153,8 +153,7 @@ function generateSarsCov2TrackList (req, res, next) {
 		"label": "Polyclonal Plasma Binding",
 		"key": "Polyclonal Plasma Binding",
 		"type": "JBrowse/View/Track/Wiggle/XYPlot",
-		"metadata": {"description":"(Greaney et al., 2021)"},
-		"scale": "log"
+		"metadata": {"description":"(Greaney et al., 2021)"}
 	  },
 	  {
         "urlTemplate"   : distRoot + 'content/jbrowse/LYCoV016_max.bw',
@@ -170,8 +169,7 @@ function generateSarsCov2TrackList (req, res, next) {
 		"label": "LYCoV016 Antibody Binding",
 		"key": "LYCoV016 Antibody Binding",
 		"type": "JBrowse/View/Track/Wiggle/XYPlot",
-		"metadata": {"description":"(Starr et al., 2021),"},
-		"scale": "log"
+		"metadata": {"description":"(Starr et al., 2021),"}
 	  },
 	  {
         "urlTemplate"   : distRoot + 'content/jbrowse/REGN10933_max.bw',
@@ -187,8 +185,7 @@ function generateSarsCov2TrackList (req, res, next) {
 		"label": "REGN10933 Antibody Binding",
 		"key": "REGN10933 Antibody Binding",
 		"type": "JBrowse/View/Track/Wiggle/XYPlot",
-		"metadata": {"description":"(Starr et al., 2021),"},
-		"scale": "log"
+		"metadata": {"description":"(Starr et al., 2021),"}
 	  },
 	  {
         "urlTemplate"   : distRoot + 'content/jbrowse/REGN10987_max.bw',
@@ -204,8 +201,7 @@ function generateSarsCov2TrackList (req, res, next) {
 		"label": "REGN10987 Antibody Binding",
 		"key": "REGN10987 Antibody Binding",
 		"type": "JBrowse/View/Track/Wiggle/XYPlot",
-		"metadata": {"description":"(Starr et al., 2021),"},
-		"scale": "log"
+		"metadata": {"description":"(Starr et al., 2021),"}
 	  },
 	  {
         "urlTemplate"   : distRoot + 'content/jbrowse/REGN10933_REGN10987_max.bw',
@@ -221,8 +217,7 @@ function generateSarsCov2TrackList (req, res, next) {
 		"label": "REGN10933/REGN10987 Cocktail Binding",
 		"key": "REGN10933/REGN10987 Cocktail Binding",
 		"type": "JBrowse/View/Track/Wiggle/XYPlot",
-		"metadata": {"description":"(Starr et al., 2021),"},
-		"scale": "log"
+		"metadata": {"description":"(Starr et al., 2021),"}
 	  },
 	  {
         "urlTemplate"   : distRoot + 'content/jbrowse/ace2_binding_max.bw',
@@ -238,8 +233,7 @@ function generateSarsCov2TrackList (req, res, next) {
 		"label": "ACE2 Binding",
 		"key": "ACE2 Binding",
 		"type": "JBrowse/View/Track/Wiggle/XYPlot",
-		"metadata": {"description":"(Starr et al., 2020),"},
-		"scale": "log"
+		"metadata": {"description":"(Starr et al., 2020),"}
 	  },
 	  {
         "urlTemplate"   : distRoot + 'content/jbrowse/rbd_expression_max.bw',
@@ -255,8 +249,7 @@ function generateSarsCov2TrackList (req, res, next) {
 		"label": "RBD Expression",
 		"key": "RBD Expression",
 		"type": "JBrowse/View/Track/Wiggle/XYPlot",
-		"metadata": {"description":"(Starr et al., 2020),"},
-		"scale": "log"
+		"metadata": {"description":"(Starr et al., 2020),"}
 	  },
       {
         'urlTemplate': distRoot + 'content/jbrowse/SARS2_LoC_Amino_Acid_Variants.gff.gz',
