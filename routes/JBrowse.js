@@ -139,6 +139,118 @@ function generateSarsCov2TrackList (req, res, next) {
         'subfeatures': true,
         'type': 'JBrowse/View/Track/CanvasFeatures'
       },
+	  {
+        "urlTemplate"   : distRoot + 'content/jbrowse/polyclonal_max.bw',
+	 	"storeClass" : "JBrowse/Store/BigWig",
+		"autoscale": "global",
+		"logScaleOption": true,
+		"style": {
+			"pos_color": "function(feature) { return feature.get('score') > 12 ? 'red' : 'blue'; }",
+			"neg_color": "red",
+			"origin_color": "#888",
+			"variance_band_color": "rgba(0,0,0,0.3)"
+		},
+		"label": "Polyclonal Plasma Binding",
+		"key": "Polyclonal Plasma Binding",
+		"type": "JBrowse/View/Track/Wiggle/XYPlot",
+		"metadata": {"description":"(Greaney et al., 2021)"}
+	  },
+	  {
+        "urlTemplate"   : distRoot + 'content/jbrowse/LYCoV016_max.bw',
+	 	"storeClass" : "JBrowse/Store/BigWig",
+		"autoscale": "global",
+		"logScaleOption": true,
+		"style": {
+			"pos_color": "function(feature) { return feature.get('score') > 12 ? 'red' : 'blue'; }",
+			"neg_color": "red",
+			"origin_color": "#888",
+			"variance_band_color": "rgba(0,0,0,0.3)"
+		},
+		"label": "LYCoV016 Antibody Binding",
+		"key": "LYCoV016 Antibody Binding",
+		"type": "JBrowse/View/Track/Wiggle/XYPlot",
+		"metadata": {"description":"(Starr et al., 2021),"}
+	  },
+	  {
+        "urlTemplate"   : distRoot + 'content/jbrowse/REGN10933_max.bw',
+	 	"storeClass" : "JBrowse/Store/BigWig",
+		"autoscale": "global",
+		"logScaleOption": true,
+		"style": {
+			"pos_color": "function(feature) { return feature.get('score') > 12 ? 'red' : 'blue'; }",
+			"neg_color": "red",
+			"origin_color": "#888",
+			"variance_band_color": "rgba(0,0,0,0.3)"
+		},
+		"label": "REGN10933 Antibody Binding",
+		"key": "REGN10933 Antibody Binding",
+		"type": "JBrowse/View/Track/Wiggle/XYPlot",
+		"metadata": {"description":"(Starr et al., 2021),"}
+	  },
+	  {
+        "urlTemplate"   : distRoot + 'content/jbrowse/REGN10987_max.bw',
+	 	"storeClass" : "JBrowse/Store/BigWig",
+		"autoscale": "global",
+		"logScaleOption": true,
+		"style": {
+			"pos_color": "function(feature) { return feature.get('score') > 12 ? 'red' : 'blue'; }",
+			"neg_color": "red",
+			"origin_color": "#888",
+			"variance_band_color": "rgba(0,0,0,0.3)"
+		},
+		"label": "REGN10987 Antibody Binding",
+		"key": "REGN10987 Antibody Binding",
+		"type": "JBrowse/View/Track/Wiggle/XYPlot",
+		"metadata": {"description":"(Starr et al., 2021),"}
+	  },
+	  {
+        "urlTemplate"   : distRoot + 'content/jbrowse/REGN10933_REGN10987_max.bw',
+	 	"storeClass" : "JBrowse/Store/BigWig",
+		"autoscale": "global",
+		"logScaleOption": true,
+		"style": {
+			"pos_color": "function(feature) { return feature.get('score') > 12 ? 'red' : 'blue'; }",
+			"neg_color": "red",
+			"origin_color": "#888",
+			"variance_band_color": "rgba(0,0,0,0.3)"
+		},
+		"label": "REGN10933/REGN10987 Cocktail Binding",
+		"key": "REGN10933/REGN10987 Cocktail Binding",
+		"type": "JBrowse/View/Track/Wiggle/XYPlot",
+		"metadata": {"description":"(Starr et al., 2021),"}
+	  },
+	  {
+        "urlTemplate"   : distRoot + 'content/jbrowse/ace2_binding_max.bw',
+	 	"storeClass" : "JBrowse/Store/BigWig",
+		"autoscale": "global",
+		"logScaleOption": true,
+		"style": {
+			"pos_color": "function(feature) { return feature.get('score') > 12 ? 'red' : 'blue'; }",
+			"neg_color": "red",
+			"origin_color": "#888",
+			"variance_band_color": "rgba(0,0,0,0.3)"
+		},
+		"label": "ACE2 Binding",
+		"key": "ACE2 Binding",
+		"type": "JBrowse/View/Track/Wiggle/XYPlot",
+		"metadata": {"description":"(Starr et al., 2020),"}
+	  },
+	  {
+        "urlTemplate"   : distRoot + 'content/jbrowse/rbd_expression_max.bw',
+	 	"storeClass" : "JBrowse/Store/BigWig",
+		"autoscale": "global",
+		"logScaleOption": true,
+		"style": {
+			"pos_color": "function(feature) { return feature.get('score') > 12 ? 'red' : 'blue'; }",
+			"neg_color": "red",
+			"origin_color": "#888",
+			"variance_band_color": "rgba(0,0,0,0.3)"
+		},
+		"label": "RBD Expression",
+		"key": "RBD Expression",
+		"type": "JBrowse/View/Track/Wiggle/XYPlot",
+		"metadata": {"description":"(Starr et al., 2020),"}
+	  },
       {
         'urlTemplate': distRoot + 'content/jbrowse/SARS2_LoC_Amino_Acid_Variants.gff.gz',
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
@@ -183,7 +295,8 @@ function generateSarsCov2TrackList (req, res, next) {
           'showTooltips': true,
           'borderWidth':3,
           "connectorColor": "linen",
-          'label': 'Variation'
+          "description":"id",
+          "label":""
         },
         'subfeatures': true,
         "glyph": "JBrowse/View/FeatureGlyph/Segments",
