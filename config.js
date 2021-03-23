@@ -38,6 +38,7 @@ var defaults = {
     'transcriptomics_experiment',
     'transcriptomics_gene',
     'transcriptomics_sample',
+    'protein_structure',
     'proteomics_experiment',
     'proteomics_peptide',
     'proteomics_protein'
