@@ -1,0 +1,88 @@
+NC_045512	BV-BRC	Marker	1058	1060	.	.	.	lineage=B.1.351;Protein=nsp2;Note=B.1.351 :  T85I;Variation=T85I
+NC_045512	BV-BRC	Marker	1058	1060	.	.	.	lineage=B.1.375;Protein=nsp2;Note=B.1.375 :  T85I;Variation=T85I
+NC_045512	BV-BRC	Marker	1058	1060	.	.	.	lineage=CAL.20C;Protein=nsp2;Note=CAL.20C :  T85I;Variation=T85I
+NC_045512	BV-BRC	Marker	3266	3268	.	.	.	lineage=B.1.1.7;Protein=nsp3;Note=B.1.1.7 :  T183I;Variation=T183I
+NC_045512	BV-BRC	Marker	3827	3829	.	.	.	lineage=P.1;Protein=nsp3;Note=P.1 :  S370L;Variation=S370L
+NC_045512	BV-BRC	Marker	5228	5230	.	.	.	lineage=B.1.351;Protein=nsp3;Note=B.1.351 :  K837N;Variation=K837N
+NC_045512	BV-BRC	Marker	5387	5389	.	.	.	lineage=B.1.1.7;Protein=nsp3;Note=B.1.1.7 :  A890D;Variation=A890D
+NC_045512	BV-BRC	Marker	5648	5650	.	.	.	lineage=P.1;Protein=nsp3;Note=P.1 :  K977Q;Variation=K977Q
+NC_045512	BV-BRC	Marker	5747	5749	.	.	.	lineage=B.1.375;Protein=nsp3;Note=B.1.375 :  T1010A;Variation=T1010A
+NC_045512	BV-BRC	Marker	6953	6955	.	.	.	lineage=B.1.1.7;Protein=nsp3;Note=B.1.1.7 :  I1412T;Variation=I1412T
+NC_045512	BV-BRC	Marker	9104	9106	.	.	.	lineage=P.1;Protein=nsp4;Note=P.1 :  S184N;Variation=S184N
+NC_045512	BV-BRC	Marker	10322	10324	.	.	.	lineage=B.1.351;Protein=3C-like proteinase;Note=B.1.351 :  K90R;Variation=K90R
+NC_045512	BV-BRC	Marker	10832	10834	.	.	.	lineage=P.1;Protein=3C-like proteinase;Note=P.1 :  A260V;Variation=A260V
+NC_045512	BV-BRC	Marker	11288	11290	.	.	.	lineage=B.1.1.7;Protein=nsp6;Note=B.1.1.7 :  S106-;Variation=S106-
+NC_045512	BV-BRC	Marker	11288	11290	.	.	.	lineage=B.1.351;Protein=nsp6;Note=B.1.351 :  S106-;Variation=S106-
+NC_045512	BV-BRC	Marker	11288	11290	.	.	.	lineage=P.1;Protein=nsp6;Note=P.1 :  S106-;Variation=S106-
+NC_045512	BV-BRC	Marker	11291	11293	.	.	.	lineage=B.1.1.7;Protein=nsp6;Note=B.1.1.7 :  G107-;Variation=G107-
+NC_045512	BV-BRC	Marker	11291	11293	.	.	.	lineage=B.1.351;Protein=nsp6;Note=B.1.351 :  G107-;Variation=G107-
+NC_045512	BV-BRC	Marker	11291	11293	.	.	.	lineage=P.1;Protein=nsp6;Note=P.1 :  G107-;Variation=G107-
+NC_045512	BV-BRC	Marker	11294	11296	.	.	.	lineage=B.1.1.7;Protein=nsp6;Note=B.1.1.7 :  F108-;Variation=F108-
+NC_045512	BV-BRC	Marker	11294	11296	.	.	.	lineage=B.1.351;Protein=nsp6;Note=B.1.351 :  F108-;Variation=F108-
+NC_045512	BV-BRC	Marker	11294	11296	.	.	.	lineage=P.1;Protein=nsp6;Note=P.1 :  F108-;Variation=F108-
+NC_045512	BV-BRC	Marker	12878	12880	.	.	.	lineage=CAL.20C;Protein=nsp9;Note=CAL.20C :  I65V;Variation=I65V
+NC_045512	BV-BRC	Marker	14408	14410	.	.	.	lineage=B.1.1.7;Protein=RNA-dependent RNA polymerase;Note=B.1.1.7 :  P323L;Variation=P323L
+NC_045512	BV-BRC	Marker	14408	14410	.	.	.	lineage=B.1.351;Protein=RNA-dependent RNA polymerase;Note=B.1.351 :  P323L;Variation=P323L
+NC_045512	BV-BRC	Marker	14408	14410	.	.	.	lineage=B.1.375;Protein=RNA-dependent RNA polymerase;Note=B.1.375 :  P323L;Variation=P323L
+NC_045512	BV-BRC	Marker	14408	14410	.	.	.	lineage=CAL.20C;Protein=RNA-dependent RNA polymerase;Note=CAL.20C :  P323L;Variation=P323L
+NC_045512	BV-BRC	Marker	14408	14410	.	.	.	lineage=P.1;Protein=RNA-dependent RNA polymerase;Note=P.1 :  P323L;Variation=P323L
+NC_045512	BV-BRC	Marker	17015	17017	.	.	.	lineage=CAL.20C;Protein=helicase;Note=CAL.20C :  D260Y;Variation=D260Y
+NC_045512	BV-BRC	Marker	17258	17260	.	.	.	lineage=B.1.375;Protein=helicase;Note=B.1.375 :  E341D;Variation=E341D
+NC_045512	BV-BRC	Marker	17258	17260	.	.	.	lineage=P.1;Protein=helicase;Note=P.1 :  E341D;Variation=E341D
+NC_045512	BV-BRC	Marker	17615	17617	.	.	.	lineage=B.1.1.7;Protein=helicase;Note=B.1.1.7 :  K460R;Variation=K460R
+NC_045512	BV-BRC	Marker	21431	21433	.	.	.	lineage=B.1.375;Protein=2'-O-ribose methyltransferase;Note=B.1.375 :  A258V;Variation=A258V
+NC_045512	BV-BRC	Marker	21599	21601	.	.	.	lineage=CAL.20C;Protein=surface glycoprotein;Note=CAL.20C :  S13I;Variation=S13I
+NC_045512	BV-BRC	Marker	21614	21616	.	.	.	lineage=B.1.351;Protein=surface glycoprotein;Note=B.1.351 :  L18F;Variation=L18F
+NC_045512	BV-BRC	Marker	21614	21616	.	.	.	lineage=P.1;Protein=surface glycoprotein;Note=P.1 :  L18F;Variation=L18F
+NC_045512	BV-BRC	Marker	21620	21622	.	.	.	lineage=P.1;Protein=surface glycoprotein;Note=P.1 :  T20N;Variation=T20N
+NC_045512	BV-BRC	Marker	21638	21640	.	.	.	lineage=P.1;Protein=surface glycoprotein;Note=P.1 :  P26S;Variation=P26S
+NC_045512	BV-BRC	Marker	21767	21769	.	.	.	lineage=B.1.1.7;Protein=surface glycoprotein;Note=B.1.1.7 :  H69-;Variation=H69-
+NC_045512	BV-BRC	Marker	21767	21769	.	.	.	lineage=B.1.375;Protein=surface glycoprotein;Note=B.1.375 :  H69-;Variation=H69-
+NC_045512	BV-BRC	Marker	21770	21772	.	.	.	lineage=B.1.1.7;Protein=surface glycoprotein;Note=B.1.1.7 :  V70-;Variation=V70-
+NC_045512	BV-BRC	Marker	21770	21772	.	.	.	lineage=B.1.375;Protein=surface glycoprotein;Note=B.1.375 :  V70-;Variation=V70-
+NC_045512	BV-BRC	Marker	21800	21802	.	.	.	lineage=B.1.351;Protein=surface glycoprotein;Note=B.1.351 :  D80A;Variation=D80A
+NC_045512	BV-BRC	Marker	21974	21976	.	.	.	lineage=P.1;Protein=surface glycoprotein;Note=P.1 :  D138Y;Variation=D138Y
+NC_045512	BV-BRC	Marker	22016	22018	.	.	.	lineage=CAL.20C;Protein=surface glycoprotein;Note=CAL.20C :  W152C;Variation=W152C
+NC_045512	BV-BRC	Marker	22130	22132	.	.	.	lineage=P.1;Protein=surface glycoprotein;Note=P.1 :  R190S;Variation=R190S
+NC_045512	BV-BRC	Marker	22205	22207	.	.	.	lineage=B.1.351;Protein=surface glycoprotein;Note=B.1.351 :  D215G;Variation=D215G
+NC_045512	BV-BRC	Marker	22286	22288	.	.	.	lineage=B.1.351;Protein=surface glycoprotein;Note=B.1.351 :  L242-;Variation=L242-
+NC_045512	BV-BRC	Marker	22289	22291	.	.	.	lineage=B.1.351;Protein=surface glycoprotein;Note=B.1.351 :  A243-;Variation=A243-
+NC_045512	BV-BRC	Marker	22292	22294	.	.	.	lineage=B.1.351;Protein=surface glycoprotein;Note=B.1.351 :  L244-;Variation=L244-
+NC_045512	BV-BRC	Marker	22298	22300	.	.	.	lineage=B.1.351;Protein=surface glycoprotein;Note=B.1.351 :  R246I;Variation=R246I
+NC_045512	BV-BRC	Marker	22811	22813	.	.	.	lineage=B.1.351;Protein=surface glycoprotein;Note=B.1.351 :  K417N;Variation=K417N
+NC_045512	BV-BRC	Marker	22811	22813	.	.	.	lineage=P.1;Protein=surface glycoprotein;Note=P.1 :  K417T;Variation=K417T
+NC_045512	BV-BRC	Marker	22916	22918	.	.	.	lineage=CAL.20C;Protein=surface glycoprotein;Note=CAL.20C :  L452R;Variation=L452R
+NC_045512	BV-BRC	Marker	23012	23014	.	.	.	lineage=B.1.351;Protein=surface glycoprotein;Note=B.1.351 :  E484K;Variation=E484K
+NC_045512	BV-BRC	Marker	23012	23014	.	.	.	lineage=P.1;Protein=surface glycoprotein;Note=P.1 :  E484K;Variation=E484K
+NC_045512	BV-BRC	Marker	23063	23065	.	.	.	lineage=B.1.1.7;Protein=surface glycoprotein;Note=B.1.1.7 :  N501Y;Variation=N501Y
+NC_045512	BV-BRC	Marker	23063	23065	.	.	.	lineage=B.1.351;Protein=surface glycoprotein;Note=B.1.351 :  N501Y;Variation=N501Y
+NC_045512	BV-BRC	Marker	23063	23065	.	.	.	lineage=P.1;Protein=surface glycoprotein;Note=P.1 :  N501Y;Variation=N501Y
+NC_045512	BV-BRC	Marker	23270	23272	.	.	.	lineage=B.1.1.7;Protein=surface glycoprotein;Note=B.1.1.7 :  A570D;Variation=A570D
+NC_045512	BV-BRC	Marker	23402	23404	.	.	.	lineage=B.1.1.7;Protein=surface glycoprotein;Note=B.1.1.7 :  D614G;Variation=D614G
+NC_045512	BV-BRC	Marker	23402	23404	.	.	.	lineage=B.1.351;Protein=surface glycoprotein;Note=B.1.351 :  D614G;Variation=D614G
+NC_045512	BV-BRC	Marker	23402	23404	.	.	.	lineage=B.1.375;Protein=surface glycoprotein;Note=B.1.375 :  D614G;Variation=D614G
+NC_045512	BV-BRC	Marker	23402	23404	.	.	.	lineage=CAL.20C;Protein=surface glycoprotein;Note=CAL.20C :  D614G;Variation=D614G
+NC_045512	BV-BRC	Marker	23402	23404	.	.	.	lineage=P.1;Protein=surface glycoprotein;Note=P.1 :  D614G;Variation=D614G
+NC_045512	BV-BRC	Marker	23525	23527	.	.	.	lineage=P.1;Protein=surface glycoprotein;Note=P.1 :  H655Y;Variation=H655Y
+NC_045512	BV-BRC	Marker	23603	23605	.	.	.	lineage=B.1.1.7;Protein=surface glycoprotein;Note=B.1.1.7 :  P681H;Variation=P681H
+NC_045512	BV-BRC	Marker	23663	23665	.	.	.	lineage=B.1.351;Protein=surface glycoprotein;Note=B.1.351 :  A701V;Variation=A701V
+NC_045512	BV-BRC	Marker	23708	23710	.	.	.	lineage=B.1.1.7;Protein=surface glycoprotein;Note=B.1.1.7 :  T716I;Variation=T716I
+NC_045512	BV-BRC	Marker	24506	24508	.	.	.	lineage=B.1.1.7;Protein=surface glycoprotein;Note=B.1.1.7 :  S982A;Variation=S982A
+NC_045512	BV-BRC	Marker	24641	24643	.	.	.	lineage=P.1;Protein=surface glycoprotein;Note=P.1 :  T1027I;Variation=T1027I
+NC_045512	BV-BRC	Marker	24914	24916	.	.	.	lineage=B.1.1.7;Protein=surface glycoprotein;Note=B.1.1.7 :  D1118H;Variation=D1118H
+NC_045512	BV-BRC	Marker	25088	25090	.	.	.	lineage=P.1;Protein=surface glycoprotein;Note=P.1 :  V1176F;Variation=V1176F
+NC_045512	BV-BRC	Marker	25561	25563	.	.	.	lineage=B.1.351;Protein=ORF3a;Note=B.1.351 :  Q57H;Variation=Q57H
+NC_045512	BV-BRC	Marker	25561	25563	.	.	.	lineage=B.1.375;Protein=ORF3a;Note=B.1.375 :  Q57H;Variation=Q57H
+NC_045512	BV-BRC	Marker	25561	25563	.	.	.	lineage=CAL.20C;Protein=ORF3a;Note=CAL.20C :  Q57H;Variation=Q57H
+NC_045512	BV-BRC	Marker	25903	25905	.	.	.	lineage=B.1.351;Protein=ORF3a;Note=B.1.351 :  S171L;Variation=S171L
+NC_045512	BV-BRC	Marker	26149	26151	.	.	.	lineage=P.1;Protein=ORF3a protein;Note=P.1 :  S253P;Variation=S253P
+NC_045512	BV-BRC	Marker	26455	26457	.	.	.	lineage=B.1.351;Protein=envelope protein;Note=B.1.351 :  P71L;Variation=P71L
+NC_045512	BV-BRC	Marker	26664	26666	.	.	.	lineage=B.1.375;Protein=membrane glycoprotein;Note=B.1.375 :  I48V;Variation=I48V
+NC_045512	BV-BRC	Marker	27972	27974	.	.	.	lineage=B.1.1.7;Protein=ORF8;Note=B.1.1.7 :  Q27stop;Variation=Q27stop
+NC_045512	BV-BRC	Marker	28167	28169	.	.	.	lineage=P.1;Protein=ORF8 protein;Note=P.1 :  E92K;Variation=E92K
+NC_045512	BV-BRC	Marker	28511	28513	.	.	.	lineage=P.1;Protein=nucleocapsid phosphoprotein;Note=P.1 :  P80R;Variation=P80R
+NC_045512	BV-BRC	Marker	28880	28882	.	.	.	lineage=P.1;Protein=nucleocapsid phosphoprotein;Note=P.1 :  R203K;Variation=R203K
+NC_045512	BV-BRC	Marker	28883	28885	.	.	.	lineage=P.1;Protein=nucleocapsid phosphoprotein;Note=P.1 :  G204R;Variation=G204R
+NC_045512	BV-BRC	Marker	28886	28888	.	.	.	lineage=B.1.351;Protein=nucleocapsid phosphoprotein;Note=B.1.351 :  T205I;Variation=T205I
+NC_045512	BV-BRC	Marker	28886	28888	.	.	.	lineage=B.1.375;Protein=nucleocapsid phosphoprotein;Note=B.1.375 :  T205I;Variation=T205I
+NC_045512	BV-BRC	Marker	28886	28888	.	.	.	lineage=CAL.20C;Protein=nucleocapsid phosphoprotein;Note=CAL.20C :  T205I;Variation=T205I

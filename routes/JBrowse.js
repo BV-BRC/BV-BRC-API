@@ -21,7 +21,7 @@ function generateTrackList (req, res, next) {
         'type': 'SequenceTrack',
         'storeClass': 'p3/store/SeqFeatureREST',
         'baseUrl': apiRoot + '/genome/' + req.params.id,
-        'key': 'Reference sequence',
+        'key': 'Reference Sequence',
         'label': 'refseqs',
         'chunkSize': 20000,
         'maxExportSpan': 10000000,
@@ -59,6 +59,7 @@ function generateTrackList (req, res, next) {
         'region_stats': true
       },
       {
+        "category" : "Gene and Protein",
         'type': 'JBrowse/View/Track/CanvasFeatures',
         'storeClass': 'p3/store/SeqFeatureREST',
         'baseUrl': apiRoot + '/genome/' + req.params.id,
@@ -104,12 +105,15 @@ function generateSarsCov2TrackList (req, res, next) {
         'type': 'REST',
         'url': 'names/'
     },
+    "trackSelector" : 
+      {"categoryOrder" : "Gene and Protein, Variants of Concern, Mutation Impact, Functional Features, Epitopes, Structural Features, Primers and Probes"},
     'include': distRoot + 'content/jbrowse/sars_colors.conf',
     'tracks': [
       {
+        "category" : "Gene and Protein",
         'baseUrl': apiRoot + '/genome/2697049.107626',
         'chunkSize': 20000,
-        'key': 'Reference sequence',
+        'key': 'Reference Sequence',
         'label': 'refseqs',
         'maxExportSpan': 10000000,
         'pinned': true,
@@ -118,6 +122,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'type': 'SequenceTrack'
       },
       {
+        "category" : "Gene and Protein",
         'urlTemplate':distRoot + 'content/jbrowse/GCF_009858895.2_ASM985889v3_genomic.sorted.gff.gz',
         'glyph': 'function(feature) { return "JBrowse/View/FeatureGlyph/" + ( {"gene": "Gene", "mRNA": "ProcessedTranscript", "transcript": "ProcessedTranscript", "segmented": "Segments" }[feature.get("type")] || "Box" ) }',
         'key': 'RefSeq Annotation',
@@ -139,119 +144,160 @@ function generateSarsCov2TrackList (req, res, next) {
         'subfeatures': true,
         'type': 'JBrowse/View/Track/CanvasFeatures'
       },
-	  {
-        "urlTemplate"   : distRoot + 'content/jbrowse/polyclonal_max.bw',
-	 	"storeClass" : "JBrowse/Store/BigWig",
-		"autoscale": "global",
-		"logScaleOption": true,
-		"style": {
-			"pos_color": "function(feature) { return feature.get('score') > 12 ? 'red' : 'blue'; }",
-			"neg_color": "red",
-			"origin_color": "#888",
-			"variance_band_color": "rgba(0,0,0,0.3)"
-		},
-		"label": "Polyclonal Plasma Binding",
-		"key": "Polyclonal Plasma Binding",
-		"type": "JBrowse/View/Track/Wiggle/XYPlot",
-		"metadata": {"description":"(Greaney et al., 2021)"}
-	  },
-	  {
-        "urlTemplate"   : distRoot + 'content/jbrowse/LYCoV016_max.bw',
-	 	"storeClass" : "JBrowse/Store/BigWig",
-		"autoscale": "global",
-		"logScaleOption": true,
-		"style": {
-			"pos_color": "function(feature) { return feature.get('score') > 12 ? 'red' : 'blue'; }",
-			"neg_color": "red",
-			"origin_color": "#888",
-			"variance_band_color": "rgba(0,0,0,0.3)"
-		},
-		"label": "LYCoV016 Antibody Binding",
-		"key": "LYCoV016 Antibody Binding",
-		"type": "JBrowse/View/Track/Wiggle/XYPlot",
-		"metadata": {"description":"(Starr et al., 2021),"}
-	  },
-	  {
-        "urlTemplate"   : distRoot + 'content/jbrowse/REGN10933_max.bw',
-	 	"storeClass" : "JBrowse/Store/BigWig",
-		"autoscale": "global",
-		"logScaleOption": true,
-		"style": {
-			"pos_color": "function(feature) { return feature.get('score') > 12 ? 'red' : 'blue'; }",
-			"neg_color": "red",
-			"origin_color": "#888",
-			"variance_band_color": "rgba(0,0,0,0.3)"
-		},
-		"label": "REGN10933 Antibody Binding",
-		"key": "REGN10933 Antibody Binding",
-		"type": "JBrowse/View/Track/Wiggle/XYPlot",
-		"metadata": {"description":"(Starr et al., 2021),"}
-	  },
-	  {
-        "urlTemplate"   : distRoot + 'content/jbrowse/REGN10987_max.bw',
-	 	"storeClass" : "JBrowse/Store/BigWig",
-		"autoscale": "global",
-		"logScaleOption": true,
-		"style": {
-			"pos_color": "function(feature) { return feature.get('score') > 12 ? 'red' : 'blue'; }",
-			"neg_color": "red",
-			"origin_color": "#888",
-			"variance_band_color": "rgba(0,0,0,0.3)"
-		},
-		"label": "REGN10987 Antibody Binding",
-		"key": "REGN10987 Antibody Binding",
-		"type": "JBrowse/View/Track/Wiggle/XYPlot",
-		"metadata": {"description":"(Starr et al., 2021),"}
-	  },
-	  {
-        "urlTemplate"   : distRoot + 'content/jbrowse/REGN10933_REGN10987_max.bw',
-	 	"storeClass" : "JBrowse/Store/BigWig",
-		"autoscale": "global",
-		"logScaleOption": true,
-		"style": {
-			"pos_color": "function(feature) { return feature.get('score') > 12 ? 'red' : 'blue'; }",
-			"neg_color": "red",
-			"origin_color": "#888",
-			"variance_band_color": "rgba(0,0,0,0.3)"
-		},
-		"label": "REGN10933/REGN10987 Cocktail Binding",
-		"key": "REGN10933/REGN10987 Cocktail Binding",
-		"type": "JBrowse/View/Track/Wiggle/XYPlot",
-		"metadata": {"description":"(Starr et al., 2021),"}
-	  },
-	  {
-        "urlTemplate"   : distRoot + 'content/jbrowse/ace2_binding_max.bw',
-	 	"storeClass" : "JBrowse/Store/BigWig",
-		"autoscale": "global",
-		"logScaleOption": true,
-		"style": {
-			"pos_color": "function(feature) { return feature.get('score') > 12 ? 'red' : 'blue'; }",
-			"neg_color": "red",
-			"origin_color": "#888",
-			"variance_band_color": "rgba(0,0,0,0.3)"
-		},
-		"label": "ACE2 Binding",
-		"key": "ACE2 Binding",
-		"type": "JBrowse/View/Track/Wiggle/XYPlot",
-		"metadata": {"description":"(Starr et al., 2020),"}
-	  },
-	  {
-        "urlTemplate"   : distRoot + 'content/jbrowse/rbd_expression_max.bw',
-	 	"storeClass" : "JBrowse/Store/BigWig",
-		"autoscale": "global",
-		"logScaleOption": true,
-		"style": {
-			"pos_color": "function(feature) { return feature.get('score') > 12 ? 'red' : 'blue'; }",
-			"neg_color": "red",
-			"origin_color": "#888",
-			"variance_band_color": "rgba(0,0,0,0.3)"
-		},
-		"label": "RBD Expression",
-		"key": "RBD Expression",
-		"type": "JBrowse/View/Track/Wiggle/XYPlot",
-		"metadata": {"description":"(Starr et al., 2020),"}
-	  },
+
+    // ***************************************
+      { 
+        "category" : "Mutation Impact",
+        "urlTemplates" : [{"url":distRoot + "content/jbrowse/polyclonal_max.bw", "name": "Polyclonal escape fraction maximum", "nonCont": true, "fill": true, "color": "#85C1E9"},
+                          {"url":distRoot + "content/jbrowse/polyclonal_median.bw", "name": "Polyclonal escape fraction median", "nonCont": true, "fill": true, "color": "#E59866"}],
+        "storeClass" : "jbrowse.repo/plugins/multibigwig/js/Store/SeqFeature/MultiBigWig",
+        "autoscale": "global",
+        "style": {"height" : "100"},
+        "max_score" : "1",
+        "autoscale" : "global",
+        "colorizeAbout" : "true",
+        "key": "Polyclonal Sera Escape (Greaney 2021)",
+        "label" : "Polyclonal Sera Escape",
+        "type": "jbrowse.repo/plugins/multibigwig/js/View/Track/MultiWiggle/MultiXYPlot",
+        "metadata": {"description":"These data tracks were constructed from the human sera escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing human polyclonal sera.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the polyclonal plasma based on a FACS analysis post transfection (PMID: 33592168, 33495308)."}
+      },
       {
+        "category" : "Mutation Impact",
+        "urlTemplates" : [{"url":distRoot + "content/jbrowse/LYCoV016_max.bw", "name": "LYCoV016 escape fraction maximum", "nonCont": true, "fill": true, "color": "#85C1E9"},
+                          {"url":distRoot + "content/jbrowse/LYCoV016_median.bw", "name": "LYCoV016 escape fraction median", "nonCont": true, "fill": true, "color": "#E59866"}],
+        "storeClass" : "jbrowse.repo/plugins/multibigwig/js/Store/SeqFeature/MultiBigWig",
+        "autoscale": "global",
+        "style": {"height" : "100"},
+        "max_score" : "1",
+        "autoscale" : "global",
+        "colorizeAbout" : "true",
+        "key": "LYCoV016 Ab Escape (Starr 2021)",
+        "label" : "LYCoV016 Ab Escape",
+        "type": "jbrowse.repo/plugins/multibigwig/js/View/Track/MultiWiggle/MultiXYPlot",
+        "metadata": {"description":"These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33592168, 33495308). The height of the overliad bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the Eli Lilly LYCoV016 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody based on a FACS analysis post transfection (PMID: 33592168, 33495308)."}
+      },
+      {
+        "category" : "Mutation Impact",
+        "urlTemplates" : [{"url":distRoot + "content/jbrowse/REGN10933_max.bw", "name": "REGN10933 escape fraction maximum", "nonCont": true, "fill": true, "color": "#85C1E9"},
+                          {"url":distRoot + "content/jbrowse/REGN10933_median.bw", "name": "REGN10933 escape fraction median", "nonCont": true, "fill": true, "color": "#E59866"}],
+        "storeClass" : "jbrowse.repo/plugins/multibigwig/js/Store/SeqFeature/MultiBigWig",
+        "autoscale": "global",
+        "style": {"height" : "100"},
+        "max_score" : "1",
+        "autoscale" : "global",
+        "colorizeAbout" : "true",
+        "key": "REGN10933 Ab Escape (Starr 2021)",
+        "label" : "REGN10933 Ab Escape",
+        "type": "jbrowse.repo/plugins/multibigwig/js/View/Track/MultiWiggle/MultiXYPlot",
+        "metadata": {"description":"These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33592168, 33495308). The height of overlaid the bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the Regeneron REGN10933 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody based on a FACS analysis post transfection (PMID: 33592168, 33495308)."}
+      },
+      {
+        "category" : "Mutation Impact",
+        "urlTemplates" : [{"url":distRoot + "content/jbrowse/REGN10987_max.bw", "name": "REGN10987 escape fraction maximum", "nonCont": true, "fill": true, "color": "#85C1E9"},
+                          {"url":distRoot + "content/jbrowse/REGN10987_median.bw", "name": "REGN10987 escape fraction median", "nonCont": true, "fill": true, "color": "#E59866"}],
+        "storeClass" : "jbrowse.repo/plugins/multibigwig/js/Store/SeqFeature/MultiBigWig",
+        "autoscale": "global",
+        "style": {"height" : "100"},
+        "max_score" : "1",
+        "autoscale" : "global",
+        "colorizeAbout" : "true",
+        "key": "REGN10987 Ab Escape (Starr 2021)",
+        "label" : "REGN10987 Ab Escape",
+        "type": "jbrowse.repo/plugins/multibigwig/js/View/Track/MultiWiggle/MultiXYPlot",
+        "metadata": {"description":"These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the Regeneron REGN10987 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody based on a FACS analysis post transfection(PMID: 33592168, 33495308)."}
+      },
+      {
+        "category" : "Mutation Impact",
+        "urlTemplates" : [{"url":distRoot + "content/jbrowse/REGN10933_REGN10987_max.bw", "name": "REGN10933+REGN10987 cocktail escape fraction maximum", "nonCont": true, "fill": true, "color": "#85C1E9"},
+                          {"url":distRoot + "content/jbrowse/REGN10933_REGN10987_median.bw", "name": "REGN10933+REGN10987 cocktail escape fraction median", "nonCont": true, "fill": true, "color": "#E59866"}],
+        "storeClass" : "jbrowse.repo/plugins/multibigwig/js/Store/SeqFeature/MultiBigWig",
+        "autoscale": "global",
+        "style": {"height" : "100"},
+        "max_score" : "1",
+        "autoscale" : "global",
+        "colorizeAbout" : "true",
+        "key": "REGN10933+REGN10987 Ab Cocktail Escape (Starr 2021)",
+        "label" : "REGN10933+REGN10987 Ab Cocktail Escape",
+        "type": "jbrowse.repo/plugins/multibigwig/js/View/Track/MultiWiggle/MultiXYPlot",
+        "metadata": {"description":"These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the Regeneron REGN10933+REGN10987 antibody cocktail.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody cocktail based on a FACS analysis post transfection(PMID: 33592168, 33495308)."}
+      },
+      {
+        "category" : "Mutation Impact",
+        "urlTemplates" : [{"url":distRoot + "content/jbrowse/LYCoV555_max.bw", "name": "LYCoV555 escape fraction maximum", "nonCont": true, "fill": true, "color": "#85C1E9"},
+                          {"url":distRoot + "content/jbrowse/LYCoV555_median.bw", "name": "LYCoV555 escape fraction median", "nonCont": true, "fill": true, "color": "#E59866"}],
+        "storeClass" : "jbrowse.repo/plugins/multibigwig/js/Store/SeqFeature/MultiBigWig",
+        "autoscale": "global",
+        "style": {"height" : "100"},
+        "max_score" : "1",
+        "autoscale" : "global",
+        "colorizeAbout" : "true",
+        "key": "LYCoV555 Ab Escape (Starr 2021)",
+        "label" : "LYCoV555 Ab Escape",
+        "type": "jbrowse.repo/plugins/multibigwig/js/View/Track/MultiWiggle/MultiXYPlot",
+        "metadata": {"description":"These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33655250, 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the Eli Lilly LYCoV555 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody based on a FACS analysis post transfection (PMID: 33655250, 33592168, 33495308)."}
+      },
+      {
+        "category" : "Mutation Impact",
+        "urlTemplates" : [{"url":distRoot + "content/jbrowse/LYCoV016_LYCoV555_max.bw", "name": "LYCoV016_LYCoV555 escape fraction maximum", "nonCont": true, "fill": true, "color": "#85C1E9"},
+                          {"url":distRoot + "content/jbrowse/LYCoV016_LYCoV555_median.bw", "name": "LYCoV016_LYCoV555 escape fraction median", "nonCont": true, "fill": true, "color": "#E59866"}],
+        "storeClass" : "jbrowse.repo/plugins/multibigwig/js/Store/SeqFeature/MultiBigWig",
+        "autoscale": "global",
+        "style": {"height" : "100"},
+        "max_score" : "1",
+        "autoscale" : "global",
+        "colorizeAbout" : "true",
+        "key": "LYCoV016+LYCoV555 Ab Cocktail Escape (Starr 2021)",
+        "label" : "LYCoV016+LYCoV555 Ab Cocktail Escape",
+        "type": "jbrowse.repo/plugins/multibigwig/js/View/Track/MultiWiggle/MultiXYPlot",
+        "metadata": {"description":"These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33655250, 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the Eli Lilly LYCoV016+LYCoV555 antibody cocktail.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody cocktail based on a FACS analysis post transfection (PMID: 33655250, 33592168, 33495308)."}
+      },
+      {
+        "category" : "Mutation Impact",
+        "urlTemplates" : [{"url":distRoot + "content/jbrowse/AZCoV22130_max.bw", "name": "AZ_COV2-2130 escape fraction maximum", "nonCont": true, "fill": true, "color": "#85C1E9"},
+                          {"url":distRoot + "content/jbrowse/AZCoV22130_median.bw", "name": "AZ_COV2-2130 escape fraction median", "nonCont": true, "fill": true, "color": "#E59866"}],
+        "storeClass" : "jbrowse.repo/plugins/multibigwig/js/Store/SeqFeature/MultiBigWig",
+        "autoscale": "global",
+        "style": {"height" : "100"},
+        "max_score" : "1",
+        "autoscale" : "global",
+        "colorizeAbout" : "true",
+        "key": "AZ_COV2-2130 Ab Escape (Dong 2021)",
+        "label" : "AZ_COV2-2130 Ab Escape",
+        "type": "jbrowse.repo/plugins/multibigwig/js/View/Track/MultiWiggle/MultiXYPlot",
+        "metadata": {"description":"These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33532768, 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the AstraZeneca COV2-2130 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody based on a FACS analysis post transfection (PMID: 33532768, 33592168, 33495308)."}
+      },
+      {
+        "category" : "Mutation Impact",
+        "urlTemplates" : [{"url":distRoot + "content/jbrowse/AZCoV22196_max.bw", "name": "AZ_COV2-2196 escape fraction maximum", "nonCont": true, "fill": true, "color": "#85C1E9"},
+                          {"url":distRoot + "content/jbrowse/AZCoV22196_median.bw", "name": "AZ_COV2-2196 escape fraction median", "nonCont": true, "fill": true, "color": "#E59866"}],
+        "storeClass" : "jbrowse.repo/plugins/multibigwig/js/Store/SeqFeature/MultiBigWig",
+        "autoscale": "global",
+        "style": {"height" : "100"},
+        "max_score" : "1",
+        "autoscale" : "global",
+        "colorizeAbout" : "true",
+        "key": "AZ_COV2-2196 Ab Escape (Dong 2021)",
+        "label" : "AZ_COV2-2196 Ab Escape",
+        "type": "jbrowse.repo/plugins/multibigwig/js/View/Track/MultiWiggle/MultiXYPlot",
+        "metadata": {"description":"These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33532768, 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the AstraZeneca COV2-2196 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody based on a FACS analysis post transfection (PMID: 33532768, 33592168, 33495308)."}
+      },
+      {
+        "category" : "Mutation Impact",
+        "urlTemplates" : [{"url":distRoot + "content/jbrowse/AZCoV22130_AZCoV22196_max.bw", "name": "AZ_COV2-2130+AZ_COV2-2196 cocktail escape fraction maximum", "nonCont": true, "fill": true, "color": "#85C1E9"},
+                          {"url":distRoot + "content/jbrowse/AZCoV22130_AZCoV22196_median.bw", "name": "AZ_COV2-2130+AZ_COV2-2196 cocktail escape fraction median", "nonCont": true, "fill": true, "color": "#E59866"}],
+        "storeClass" : "jbrowse.repo/plugins/multibigwig/js/Store/SeqFeature/MultiBigWig",
+        "autoscale": "global",
+        "style": {"height" : "100"},
+        "max_score" : "1",
+        "autoscale" : "global",
+        "colorizeAbout" : "true",
+        "key": "AZ_COV2-2130+AZ_COV2-2196 Ab Cocktail Escape (Dong 2021)",
+        "label" : "AZ_COV2-2130+AZ_COV2-2196 Ab Cocktail Escape",
+        "type": "jbrowse.repo/plugins/multibigwig/js/View/Track/MultiWiggle/MultiXYPlot",
+        "metadata": {"description":"These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33532768, 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the AstraZeneca COV2-2130+COV2-2196 antibody cocktail.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody based on a FACS analysis post transfection (PMID: 33532768, 33592168, 33495308)."}
+      },
+      {
+        "category" : "Variants of Concern",
         'urlTemplate': distRoot + 'content/jbrowse/SARS2_LoC_Amino_Acid_Variants.gff.gz',
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
         'type': 'JBrowse/View/Track/CanvasFeatures',
@@ -278,6 +324,7 @@ function generateSarsCov2TrackList (req, res, next) {
         "displayMode":"compact"
       },
       {
+        "category" : "Variants of Concern",
         'urlTemplate': distRoot + 'content/jbrowse/SARS2_LoC_Nucleotide_Variants.sorted.gff.gz',
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
         'type': 'JBrowse/View/Track/CanvasFeatures',
@@ -304,6 +351,7 @@ function generateSarsCov2TrackList (req, res, next) {
         "displayMode":"compact"
       },
       {
+        "category" : "Epitopes",
         'urlTemplate': distRoot + 'content/jbrowse/SARS_bcell_epitopes_human_02FEB2021_all_v3.sorted.gff.gz',
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
         'type': 'JBrowse/View/Track/CanvasFeatures',
@@ -329,6 +377,7 @@ function generateSarsCov2TrackList (req, res, next) {
         "displayMode":"collapsed"
       },
       {
+        "category" : "Primers and Probes",
         'urlTemplate': distRoot + 'content/jbrowse/SARS-CoV-2_Primers_Probes.sorted.gff.gz',
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
         'type': 'JBrowse/View/Track/CanvasFeatures',
@@ -354,27 +403,7 @@ function generateSarsCov2TrackList (req, res, next) {
         "displayMode":"normal"
       },
       {
-        'urlTemplate': distRoot + 'content/jbrowse/uniprot_sarscov2_features.sorted.gff.gz',
-        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        '#type': 'JBrowse/View/Track/HTMLVariants',
-        'type': 'JBrowse/View/Track/CanvasFeatures',
-        'key': 'Uniprot Summary',
-        'label': 'UniprotFeatures',
-        'maxExportFeatures': 10000,
-        'maxExportSpan': 10000000,
-        'metadata': {
-          'Description': 'Uniprot Features'
-        },
-        'style': {
-          'className': 'feature3',
-           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
-          'showLabels': true,
-          'showTooltips': true,
-          'borderWidth':3
-        },
-        'subfeatures': true
-      },
-  {
+    "category" : "Functional Features",
         "maxExportFeatures": 10000, 
         "style": {
             "className": "feature3", 
@@ -387,7 +416,7 @@ function generateSarsCov2TrackList (req, res, next) {
         "urlTemplate": distRoot + 'content/jbrowse/Region_of_interest.sorted.gff.gz', 
         "maxExportSpan": 10000000, 
         "label": "Regionofinterest", 
-        "key": "Region of interest", 
+        "key": "Region of Interest", 
         "type": "JBrowse/View/Track/CanvasFeatures", 
         "metadata": {
             "Description": "Region of interest"
@@ -395,6 +424,7 @@ function generateSarsCov2TrackList (req, res, next) {
         "displayMode":"compact"
     }, 
     {
+      "category" : "Functional Features",
         "maxExportFeatures": 10000, 
         "style": {
             "className": "feature3", 
@@ -407,13 +437,14 @@ function generateSarsCov2TrackList (req, res, next) {
         "urlTemplate": distRoot + 'content/jbrowse/Topological_domain.sorted.gff.gz', 
         "maxExportSpan": 10000000, 
         "label": "Topologicaldomain", 
-        "key": "Topological domain", 
+        "key": "Topological Domain", 
         "type": "JBrowse/View/Track/CanvasFeatures", 
         "metadata": {
             "Description": "Topological domain"
         }
     }, 
     {
+      "category" : "Functional Features",
         "maxExportFeatures": 10000, 
         "style": {
             "className": "feature3", 
@@ -426,13 +457,14 @@ function generateSarsCov2TrackList (req, res, next) {
         "urlTemplate": distRoot + 'content/jbrowse/Metal_ion-binding_site.sorted.gff.gz', 
         "maxExportSpan": 10000000, 
         "label": "Metalionbindingsite", 
-        "key": "Metal ion binding site", 
+        "key": "Metal Ion Binding Site", 
         "type": "JBrowse/View/Track/CanvasFeatures", 
         "metadata": {
             "Description": "Metal ion binding site"
         }
     }, 
     {
+      "category" : "Functional Features",
         "maxExportFeatures": 10000, 
         "style": {
             "className": "feature3", 
@@ -445,13 +477,14 @@ function generateSarsCov2TrackList (req, res, next) {
         "urlTemplate": distRoot + 'content/jbrowse/Transmembrane_region.sorted.gff.gz', 
         "maxExportSpan": 10000000, 
         "label": "Transmembraneregion", 
-        "key": "Transmembrane region", 
+        "key": "Transmembrane Region", 
         "type": "JBrowse/View/Track/CanvasFeatures", 
         "metadata": {
             "Description": "Transmembrane region"
         }
     }, 
     {
+      "category" : "Functional Features",
         "maxExportFeatures": 10000, 
         "style": {
             "className": "feature3", 
@@ -471,6 +504,7 @@ function generateSarsCov2TrackList (req, res, next) {
         }
     }, 
     {
+      "category" : "Functional Features",
         "maxExportFeatures": 10000, 
         "style": {
             "className": "feature3", 
@@ -491,6 +525,7 @@ function generateSarsCov2TrackList (req, res, next) {
         "displayMode":"collapsed"
     }, 
     {
+        "category" : "Functional Features",
         "maxExportFeatures": 10000, 
         "style": {
             "className": "feature3", 
@@ -503,7 +538,7 @@ function generateSarsCov2TrackList (req, res, next) {
         "urlTemplate": distRoot + 'content/jbrowse/Active_site.sorted.gff.gz', 
         "maxExportSpan": 10000000, 
         "label": "Activesite", 
-        "key": "Active site", 
+        "key": "Active Site", 
         "type": "JBrowse/View/Track/CanvasFeatures", 
         "metadata": {
             "Description": "Active site"
@@ -511,6 +546,7 @@ function generateSarsCov2TrackList (req, res, next) {
         "displayMode":"compact"
     }, 
     {
+       "category" : "Functional Features",
         "maxExportFeatures": 10000, 
         "style": {
             "className": "feature3", 
@@ -523,13 +559,14 @@ function generateSarsCov2TrackList (req, res, next) {
         "urlTemplate": distRoot + 'content/jbrowse/Modified_residue.sorted.gff.gz', 
         "maxExportSpan": 10000000, 
         "label": "Modifiedresidue", 
-        "key": "Modified residue", 
+        "key": "Modified Residue", 
         "type": "JBrowse/View/Track/CanvasFeatures", 
         "metadata": {
             "Description": "Modified residue"
         }
     }, 
     {
+      "category" : "Functional Features",
         "maxExportFeatures": 10000, 
         "style": {
             "className": "feature3", 
@@ -549,6 +586,7 @@ function generateSarsCov2TrackList (req, res, next) {
         }
     }, 
     {
+      "category" : "Functional Features",
         "maxExportFeatures": 10000, 
         "style": {
             "className": "feature3", 
@@ -561,13 +599,14 @@ function generateSarsCov2TrackList (req, res, next) {
         "urlTemplate": distRoot + 'content/jbrowse/Nucleotide_phosphate-binding_region.sorted.gff.gz', 
         "maxExportSpan": 10000000, 
         "label": "Nucleotidephosphatebinding", 
-        "key": "Nucleotide phosphate binding", 
+        "key": "Nucleotide Phosphate Binding", 
         "type": "JBrowse/View/Track/CanvasFeatures", 
         "metadata": {
             "Description": "Nucleotide phosphate binding"
         }
     }, 
     {
+      "category" : "Functional Features",
         "maxExportFeatures": 10000, 
         "style": {
             "className": "feature3", 
@@ -580,13 +619,14 @@ function generateSarsCov2TrackList (req, res, next) {
         "urlTemplate": distRoot + 'content/jbrowse/Disulfide_bond.sorted.gff.gz', 
         "maxExportSpan": 10000000, 
         "label": "Disulfidebond", 
-        "key": "Disulfide bond", 
+        "key": "Disulfide Bond", 
         "type": "JBrowse/View/Track/CanvasFeatures", 
         "metadata": {
             "Description": "Disulfide bond"
         }
     }, 
     {
+      "category" : "Functional Features",
         "maxExportFeatures": 10000, 
         "style": {
             "className": "feature3", 
@@ -599,13 +639,14 @@ function generateSarsCov2TrackList (req, res, next) {
         "urlTemplate": distRoot + 'content/jbrowse/Short_sequence_motif.sorted.gff.gz', 
         "maxExportSpan": 10000000, 
         "label": "Shortmotif", 
-        "key": "Short motif", 
+        "key": "Short Motif", 
         "type": "JBrowse/View/Track/CanvasFeatures", 
         "metadata": {
             "Description": "Short motif"
         }
     }, 
     {
+      "category" : "Functional Features",
         "maxExportFeatures": 10000, 
         "style": {
             "className": "feature3", 
@@ -618,13 +659,14 @@ function generateSarsCov2TrackList (req, res, next) {
         "urlTemplate": distRoot + 'content/jbrowse/Signal_peptide.sorted.gff.gz', 
         "maxExportSpan": 10000000, 
         "label": "Signalpeptide", 
-        "key": "Signal peptide", 
+        "key": "Signal Peptide", 
         "type": "JBrowse/View/Track/CanvasFeatures", 
         "metadata": {
             "Description": "Signal peptide"
         }
     }, 
     {
+      "category" : "Structural Features",
         "maxExportFeatures": 10000, 
         "style": {
             "className": "feature3", 
@@ -637,13 +679,14 @@ function generateSarsCov2TrackList (req, res, next) {
         "urlTemplate": distRoot + 'content/jbrowse/Beta_strand.sorted.gff.gz', 
         "maxExportSpan": 10000000, 
         "label": "Betastrand", 
-        "key": "Beta strand", 
+        "key": "Beta Strand", 
         "type": "JBrowse/View/Track/CanvasFeatures", 
         "metadata": {
             "Description": "Beta strand"
         }
     }, 
     {
+      "category" : "Functional Features",
         "maxExportFeatures": 10000, 
         "style": {
             "className": "feature3", 
@@ -656,13 +699,14 @@ function generateSarsCov2TrackList (req, res, next) {
         "urlTemplate": distRoot + 'content/jbrowse/Zinc_finger_region.sorted.gff.gz', 
         "maxExportSpan": 10000000, 
         "label": "Zincfinger", 
-        "key": "Zinc finger", 
+        "key": "Zinc Finger", 
         "type": "JBrowse/View/Track/CanvasFeatures", 
         "metadata": {
             "Description": "Zinc finger"
         }
     }, 
     {
+      "category" : "Structural Features",
         "maxExportFeatures": 10000, 
         "style": {
             "className": "feature3", 
@@ -675,13 +719,14 @@ function generateSarsCov2TrackList (req, res, next) {
         "urlTemplate": distRoot + 'content/jbrowse/Coiled-coil_region.sorted.gff.gz', 
         "maxExportSpan": 10000000, 
         "label": "Coiledcoil", 
-        "key": "Coiled coil", 
+        "key": "Coiled Coil", 
         "type": "JBrowse/View/Track/CanvasFeatures", 
         "metadata": {
             "Description": "Coiled coil"
         }
     }, 
     {
+      "category" : "Functional Features",
         "maxExportFeatures": 10000, 
         "style": {
             "className": "feature3", 
@@ -702,6 +747,7 @@ function generateSarsCov2TrackList (req, res, next) {
         "displayMode":"compact"
     }, 
     {
+      "category" : "Functional Features",
         "maxExportFeatures": 10000, 
         "style": {
             "className": "feature3", 
@@ -714,13 +760,14 @@ function generateSarsCov2TrackList (req, res, next) {
         "urlTemplate": distRoot + 'content/jbrowse/Glycosylation_site.sorted.gff.gz', 
         "maxExportSpan": 10000000, 
         "label": "Glycosylationsite", 
-        "key": "Glycosylation site", 
+        "key": "Glycosylation Site", 
         "type": "JBrowse/View/Track/CanvasFeatures", 
         "metadata": {
             "Description": "Glycosylation site"
         }
     }, 
     {
+      "category" : "Structural Features",
         "maxExportFeatures": 10000, 
         "style": {
             "className": "feature3", 
@@ -733,13 +780,14 @@ function generateSarsCov2TrackList (req, res, next) {
         "urlTemplate": distRoot + 'content/jbrowse/Helix.sorted.gff.gz', 
         "maxExportSpan": 10000000, 
         "label": "HelixSecondaryStructure", 
-        "key": "Helix Secondary Structure", 
+        "key": "Helix", 
         "type": "JBrowse/View/Track/CanvasFeatures", 
         "metadata": {
             "Description": "Helix Secondary Structure"
         }
     }, 
     {
+      "category" : "Functional Features",
         "maxExportFeatures": 10000, 
         "style": {
             "className": "feature3", 
@@ -759,6 +807,7 @@ function generateSarsCov2TrackList (req, res, next) {
         }
     }, 
     {
+      "category" : "Structural Features",
         "maxExportFeatures": 10000, 
         "style": {
             "className": "feature3", 
@@ -771,13 +820,13 @@ function generateSarsCov2TrackList (req, res, next) {
         "urlTemplate": distRoot + 'content/jbrowse/Turn.sorted.gff.gz', 
         "maxExportSpan": 10000000, 
         "label": "TurnSecondaryStructure", 
-        "key": "Turn Secondary Structure", 
+        "key": "Turn", 
         "type": "JBrowse/View/Track/CanvasFeatures", 
         "metadata": {
             "Description": "Turn Secondary Structure"
         }
     } 
-    ]
+    ],
   })
 }
 
