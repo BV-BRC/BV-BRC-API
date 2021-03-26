@@ -118,6 +118,22 @@ module.exports = function (req, res, next) {
           'function', 'classification', 'pmid'
         ]
         break
+       case 'spike_lineage':
+         req.fieldHeader = [
+           'Covariant', 'Loc', 'Sequence Features', 'Country', 'Region', 'Month', 'Total Sequences', 'Covariant Sequences', 'Frequency', 'Growth Rate'
+         ]
+         req.fieldSelection = [
+           'lineage', 'lineage_of_concern', 'sequence_features', 'country', 'region', 'month', 'total_isolates', 'lineage_count', 'prevalence', 'growth_rate'
+         ]
+         break
+       case 'spike_variant':
+         req.fieldHeader = [
+           'Variant', 'Sequence Features', 'Country', 'Region', 'Month', 'Total Sequences', 'Variant Sequences', 'Frequency', 'Growth Rate'
+         ]
+         req.fieldSelection = [
+           'aa_variant', 'sequence_features', 'country', 'region', 'month', 'total_isolates', 'lineage_count', 'prevalence', 'growth_rate'
+         ]
+         break
       case 'transcriptomics_experiment':
         req.fieldHeader = [
           'Experiment ID', 'Title', 'Comparisons', 'Genes', 'PubMed', 'Accession', 'Organism', 'Strain',
