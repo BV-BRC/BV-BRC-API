@@ -298,57 +298,45 @@ function generateSarsCov2TrackList (req, res, next) {
       },
       {
         "category" : "Variants of Concern",
-        'urlTemplate': distRoot + 'content/jbrowse/SARS2_LoC_Amino_Acid_Variants.gff.gz',
-        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'type': 'JBrowse/View/Track/CanvasFeatures',
-        'key': 'LoC Markers: AA Variations',
-        'label': 'VOCMarkers',
-        'maxExportFeatures': 10000,
-        'maxExportSpan': 10000000,
-        'metadata': {
-          'Description': 'LoC Markers: Amino Acid Variations'
+        "maxExportFeatures": 10000, 
+        "style": {
+            "className": "feature3", 
+           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+            "showLabels": true, 
+            "showTooltips": true, 
+            "borderWidth": 3
+        }, 
+        "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+        "urlTemplate": distRoot + 'content/jbrowse/LoC_Markers_AA_v2.sorted.gff.gz', 
+        "maxExportSpan": 10000000, 
+        "label": "LoCMarkdersAAVariations", 
+        "key": "LoC Markers: AA Variations", 
+        "type": "JBrowse/View/Track/CanvasFeatures", 
+        "metadata": {
+            "Description": "LoC Markers: AA Variations"
         },
-        'style': {
-          'className': 'feature3',
-          'color': 'function(feature) { var f={voColor}; return f(feature.data.parent); }',
-          'showLabels': true,
-          'showTooltips': true,
-          'borderWidth':3,
-          "connectorColor": "linen",
-          "description":"id",
-          "label":""
-        },
-        'subfeatures': true,
-        "glyph": "JBrowse/View/FeatureGlyph/Segments",
-        "subParts": "Amino_Acid_Variation",
         "displayMode":"compact"
-      },
-      {
-        "category" : "Variants of Concern",
-        'urlTemplate': distRoot + 'content/jbrowse/SARS2_LoC_Nucleotide_Variants.sorted.gff.gz',
-        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'type': 'JBrowse/View/Track/CanvasFeatures',
-        'key': 'LoC Markers: NT Variations',
-        'label': 'LoCMarkersNucleotideVariations',
-        'maxExportFeatures': 10000,
-        'maxExportSpan': 10000000,
-        'metadata': {
-          'Description': 'LoC Markers: NT Variations'
         },
-        'style': {
-          'className': 'feature3',
-          'color': 'function(feature) { var f={voColor}; return f(feature.data.parent); }',
-          'showLabels': true,
-          'showTooltips': true,
-          'borderWidth':3,
-          "connectorColor": "linen",
-          "description":"id",
-          "label":""
-        },
-        'subfeatures': true,
-        "glyph": "JBrowse/View/FeatureGlyph/Segments",
-        "subParts": "Nucleotide_Variation",
-        "displayMode":"compact"
+        {
+          "category" : "Variants of Concern",
+          "maxExportFeatures": 10000, 
+          "style": {
+              "className": "feature3", 
+            "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+              "showLabels": true, 
+              "showTooltips": true, 
+              "borderWidth": 3
+          }, 
+          "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+          "urlTemplate": distRoot + 'content/jbrowse/LoC_Markers_NA_v2.sorted.gff.gz', 
+          "maxExportSpan": 10000000, 
+          "label": "LoCMarkdersNTVariations", 
+          "key": "LoC Markers: NT Variations", 
+          "type": "JBrowse/View/Track/CanvasFeatures", 
+          "metadata": {
+              "Description": "LoC Markers: NT Variations"
+          },
+          "displayMode":"compact"
       },
       {
         "category" : "Epitopes",
