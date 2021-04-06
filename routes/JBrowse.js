@@ -108,6 +108,8 @@ function generateSarsCov2TrackList (req, res, next) {
     'trackSelector': {
       'categoryOrder': 'Gene and Protein, Variants of Concern, Mutation Impact, Functional Features, Epitopes, Structural Features, Primers and Probes'
     },
+    //"trackSelector" : 
+    //  {"categoryOrder" : "Gene and Protein, Variants of Concern, Mutation Impact, Functional Features, Epitopes, Structural Features, Primers and Probes"},
     'include': distRoot + 'content/jbrowse/sars_colors.conf',
     'tracks': [
       {
@@ -323,58 +325,46 @@ function generateSarsCov2TrackList (req, res, next) {
         'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33532768, 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the AstraZeneca COV2-2130+COV2-2196 antibody cocktail.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody based on a FACS analysis post transfection (PMID: 33532768, 33592168, 33495308).' }
       },
       {
-        'category': 'Variants of Concern',
-        'urlTemplate': distRoot + 'content/jbrowse/SARS2_LoC_Amino_Acid_Variants.gff.gz',
-        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'type': 'JBrowse/View/Track/CanvasFeatures',
-        'key': 'LoC Markers: AA Variations',
-        'label': 'VOCMarkers',
-        'maxExportFeatures': 10000,
-        'maxExportSpan': 10000000,
-        'metadata': {
-          'Description': 'LoC Markers: Amino Acid Variations'
+        "category" : "Variants of Concern",
+        "maxExportFeatures": 10000, 
+        "style": {
+            "className": "feature3", 
+           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+            "showLabels": true, 
+            "showTooltips": true, 
+            "borderWidth": 3
+        }, 
+        "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+        "urlTemplate": distRoot + 'content/jbrowse/LoC_Markers_AA_v2.sorted.gff.gz', 
+        "maxExportSpan": 10000000, 
+        "label": "LoCMarkersAAVariations", 
+        "key": "LoC Markers: AA Variations", 
+        "type": "JBrowse/View/Track/CanvasFeatures", 
+        "metadata": {
+            "Description": "LoC Markers: AA Variations"
         },
-        'style': {
-          'className': 'feature3',
-          'color': 'function(feature) { var f={voColor}; return f(feature.data.parent); }',
-          'showLabels': true,
-          'showTooltips': true,
-          'borderWidth': 3,
-          'connectorColor': 'linen',
-          'description': 'id',
-          'label': ''
+        "displayMode":"normal"
         },
-        'subfeatures': true,
-        'glyph': 'JBrowse/View/FeatureGlyph/Segments',
-        'subParts': 'Amino_Acid_Variation',
-        'displayMode': 'compact'
-      },
-      {
-        'category': 'Variants of Concern',
-        'urlTemplate': distRoot + 'content/jbrowse/SARS2_LoC_Nucleotide_Variants.sorted.gff.gz',
-        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'type': 'JBrowse/View/Track/CanvasFeatures',
-        'key': 'LoC Markers: NT Variations',
-        'label': 'LoCMarkersNucleotideVariations',
-        'maxExportFeatures': 10000,
-        'maxExportSpan': 10000000,
-        'metadata': {
-          'Description': 'LoC Markers: NT Variations'
-        },
-        'style': {
-          'className': 'feature3',
-          'color': 'function(feature) { var f={voColor}; return f(feature.data.parent); }',
-          'showLabels': true,
-          'showTooltips': true,
-          'borderWidth': 3,
-          'connectorColor': 'linen',
-          'description': 'id',
-          'label': ''
-        },
-        'subfeatures': true,
-        'glyph': 'JBrowse/View/FeatureGlyph/Segments',
-        'subParts': 'Nucleotide_Variation',
-        'displayMode': 'compact'
+        {
+          "category" : "Variants of Concern",
+          "maxExportFeatures": 10000, 
+          "style": {
+              "className": "feature3", 
+            "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+              "showLabels": true, 
+              "showTooltips": true, 
+              "borderWidth": 3
+          }, 
+          "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+          "urlTemplate": distRoot + 'content/jbrowse/LoC_Markers_NA_v2.sorted.gff.gz', 
+          "maxExportSpan": 10000000, 
+          "label": "LoCMarkersNTVariations", 
+          "key": "LoC Markers: NT Variations", 
+          "type": "JBrowse/View/Track/CanvasFeatures", 
+          "metadata": {
+              "Description": "LoC Markers: NT Variations"
+          },
+          "displayMode":"normal"
       },
       {
         'category': 'Epitopes',
