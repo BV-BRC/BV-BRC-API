@@ -105,8 +105,8 @@ function generateSarsCov2TrackList (req, res, next) {
         'type': 'REST',
         'url': 'names/'
     },
-    "trackSelector" : 
-      {"categoryOrder" : "Gene and Protein, Variants of Concern, Mutation Impact, Functional Features, Epitopes, Structural Features, Primers and Probes"},
+    //"trackSelector" : 
+    //  {"categoryOrder" : "Gene and Protein, Variants of Concern, Mutation Impact, Functional Features, Epitopes, Structural Features, Primers and Probes"},
     'include': distRoot + 'content/jbrowse/sars_colors.conf',
     'tracks': [
       {
@@ -309,13 +309,13 @@ function generateSarsCov2TrackList (req, res, next) {
         "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
         "urlTemplate": distRoot + 'content/jbrowse/LoC_Markers_AA_v2.sorted.gff.gz', 
         "maxExportSpan": 10000000, 
-        "label": "LoCMarkdersAAVariations", 
+        "label": "LoCMarkersAAVariations", 
         "key": "LoC Markers: AA Variations", 
         "type": "JBrowse/View/Track/CanvasFeatures", 
         "metadata": {
             "Description": "LoC Markers: AA Variations"
         },
-        "displayMode":"compact"
+        "displayMode":"normal"
         },
         {
           "category" : "Variants of Concern",
@@ -330,13 +330,13 @@ function generateSarsCov2TrackList (req, res, next) {
           "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
           "urlTemplate": distRoot + 'content/jbrowse/LoC_Markers_NA_v2.sorted.gff.gz', 
           "maxExportSpan": 10000000, 
-          "label": "LoCMarkdersNTVariations", 
+          "label": "LoCMarkersNTVariations", 
           "key": "LoC Markers: NT Variations", 
           "type": "JBrowse/View/Track/CanvasFeatures", 
           "metadata": {
               "Description": "LoC Markers: NT Variations"
           },
-          "displayMode":"compact"
+          "displayMode":"normal"
       },
       {
         "category" : "Epitopes",
