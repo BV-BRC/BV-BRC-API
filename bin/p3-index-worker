@@ -83,7 +83,7 @@ function processQueue (queue) {
         completedHardCommit = true
         setTimeout(() => {
           processQueue(queue)
-        }, 120000)
+        }, 180000)
       } else {
         setTimeout(() => {
           processQueue(queue)
@@ -188,12 +188,11 @@ function processQueue (queue) {
 
 function updateJSONStreamWithAccessControl (fileName, filePath, core, owner) {
   return new Promise((resolve, reject) => {
-
     try {
       let fileData = []
       const st = (new Date()).getTime()
 
-      fs.createReadStream(filePath, {encoding: 'utf8'})
+      fs.createReadStream(filePath, { encoding: 'utf8' })
         .pipe(JSONStream.parse('*'))
         .pipe(EventStream.mapSync(function (data) {
           fileData.push(data)
@@ -236,7 +235,7 @@ function updateJSONStreamWithAccessControl (fileName, filePath, core, owner) {
             const outfile = fs.createWriteStream(filePath)
             EventStream.readArray(fileData).pipe(JSONStream.stringify()).pipe(outfile)
               .on('close', () => {
-                resolve({status: 'saved'})
+                resolve({ status: 'saved' })
               })
           } else {
             // Console.log(`Processing Errors in ${core} ${processingErrors}`);
@@ -259,7 +258,7 @@ function updateHistory (id, state, msg) {
     fs.readJson(historyPath, (err, data) => {
       if (err) {
         reject(err)
-        return promise
+        return
       }
 
       switch (state) {
