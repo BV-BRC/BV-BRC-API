@@ -1,8 +1,8 @@
 #!/bin/bash
 
-BACKUP_DIR="/vol/p3solrbackup/dynamic_collections/"
+BACKUP_DIR="/vol/p3solrbackup/bio-gp-backup/"
 SNAPSHOT="$(date '+%Y%m%d')"
-SOLR_URL="http://willow.mcs.anl.gov:8983/solr"
+SOLR_URL="http://bio-gp1.mcs.anl.gov:8983/solr"
 
 function synchronous_backup() {
     local collection=$1
@@ -10,7 +10,7 @@ function synchronous_backup() {
     echo "Running Backup: $collection $snapshot"
 
     # fire backup call
-    curl --silent "$SOLR_URL/admin/collections?action=BACKUP&name=$snapshot/$collection&collection=$collection&location=/vol/p3solrbackup/dynamic_collections/&async=$collection.$snapshot"
+    curl --silent "$SOLR_URL/admin/collections?action=BACKUP&name=$snapshot/$collection&collection=$collection&location=$BACKUP_DIR&async=$collection.$snapshot"
 
     # status check
     STATUS="running"
