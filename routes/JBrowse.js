@@ -145,7 +145,12 @@ function generateSarsCov2TrackList (req, res, next) {
           'showTooltips': true
         },
         'subfeatures': true,
-        'type': 'JBrowse/View/Track/CanvasFeatures'
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'onClick': {
+          'title': '{refseq_locus_tag} {gene}',
+          'label': "<div style='line-height:1.7em'><b>{refseq_locus_tag}</b> | {gene}<br>{product}<br>{type}: {start} .. {end} ({strand})<br> <i>Click for detailed information</i></div>",
+          'action': 'function(clickEvent){return window.featureDialogContent(this.feature);}'
+        },
       },
 
       // ***************************************
@@ -429,7 +434,7 @@ function generateSarsCov2TrackList (req, res, next) {
           'borderWidth': 3
         },
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'urlTemplate': distRoot + 'content/jbrowse/Region_of_interest.sorted.gff.gz',
+        'urlTemplate': distRoot + 'content/jbrowse/Region_of_Interest.sorted.gff.gz',
         'maxExportSpan': 10000000,
         'label': 'Regionofinterest',
         'key': 'Region of Interest',
@@ -450,7 +455,7 @@ function generateSarsCov2TrackList (req, res, next) {
           'borderWidth': 3
         },
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'urlTemplate': distRoot + 'content/jbrowse/Topological_domain.sorted.gff.gz',
+        'urlTemplate': distRoot + 'content/jbrowse/Topological_Domain.sorted.gff.gz',
         'maxExportSpan': 10000000,
         'label': 'Topologicaldomain',
         'key': 'Topological Domain',
@@ -470,7 +475,7 @@ function generateSarsCov2TrackList (req, res, next) {
           'borderWidth': 3
         },
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'urlTemplate': distRoot + 'content/jbrowse/Metal_ion-binding_site.sorted.gff.gz',
+        'urlTemplate': distRoot + 'content/jbrowse/Metal_Ion_Binding_Site.sorted.gff.gz',
         'maxExportSpan': 10000000,
         'label': 'Metalionbindingsite',
         'key': 'Metal Ion Binding Site',
@@ -490,7 +495,7 @@ function generateSarsCov2TrackList (req, res, next) {
           'borderWidth': 3
         },
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'urlTemplate': distRoot + 'content/jbrowse/Transmembrane_region.sorted.gff.gz',
+        'urlTemplate': distRoot + 'content/jbrowse/Transmembrane_Region.sorted.gff.gz',
         'maxExportSpan': 10000000,
         'label': 'Transmembraneregion',
         'key': 'Transmembrane Region',
@@ -530,7 +535,7 @@ function generateSarsCov2TrackList (req, res, next) {
           'borderWidth': 3
         },
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'urlTemplate': distRoot + 'content/jbrowse/Mutagenesis_site.sorted.gff.gz',
+        'urlTemplate': distRoot + 'content/jbrowse/Mutagenesis_Site.sorted.gff.gz',
         'maxExportSpan': 10000000,
         'label': 'MutagenesisSite',
         'key': 'Mutagenesis Site',
@@ -551,7 +556,7 @@ function generateSarsCov2TrackList (req, res, next) {
           'borderWidth': 3
         },
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'urlTemplate': distRoot + 'content/jbrowse/Active_site.sorted.gff.gz',
+        'urlTemplate': distRoot + 'content/jbrowse/Active_Site.sorted.gff.gz',
         'maxExportSpan': 10000000,
         'label': 'Activesite',
         'key': 'Active Site',
@@ -559,7 +564,12 @@ function generateSarsCov2TrackList (req, res, next) {
         'metadata': {
           'Description': 'Active site'
         },
-        'displayMode': 'compact'
+        'displayMode': 'compact',
+        'onClick': {
+          'title': '{refseq_locus_tag} {gene}',
+          'label': "<div style='line-height:1.7em'><b>{refseq_locus_tag}</b> | {gene}<br>{product}<br>{type}: {start} .. {end} ({strand})<br> <i>Click for detailed information</i></div>",
+          'action': 'function(clickEvent){return window.featureDialogContent(this.feature);}'
+        },
       },
       {
         'category': 'Functional Features',
@@ -572,7 +582,7 @@ function generateSarsCov2TrackList (req, res, next) {
           'borderWidth': 3
         },
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'urlTemplate': distRoot + 'content/jbrowse/Modified_residue.sorted.gff.gz',
+        'urlTemplate': distRoot + 'content/jbrowse/Modified_Residue.sorted.gff.gz',
         'maxExportSpan': 10000000,
         'label': 'Modifiedresidue',
         'key': 'Modified Residue',
@@ -592,7 +602,7 @@ function generateSarsCov2TrackList (req, res, next) {
           'borderWidth': 3
         },
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'urlTemplate': distRoot + 'content/jbrowse/Repeat.sorted.gff.gz',
+        'urlTemplate': distRoot + 'content/jbrowse/Repeat_Region.sorted.gff.gz',
         'maxExportSpan': 10000000,
         'label': 'RepeatRegion',
         'key': 'Repeat Region',
@@ -612,7 +622,7 @@ function generateSarsCov2TrackList (req, res, next) {
           'borderWidth': 3
         },
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'urlTemplate': distRoot + 'content/jbrowse/Nucleotide_phosphate-binding_region.sorted.gff.gz',
+        'urlTemplate': distRoot + 'content/jbrowse/Nucleotide_Phosphate_Binding.sorted.gff.gz',
         'maxExportSpan': 10000000,
         'label': 'Nucleotidephosphatebinding',
         'key': 'Nucleotide Phosphate Binding',
@@ -632,7 +642,7 @@ function generateSarsCov2TrackList (req, res, next) {
           'borderWidth': 3
         },
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'urlTemplate': distRoot + 'content/jbrowse/Disulfide_bond.sorted.gff.gz',
+        'urlTemplate': distRoot + 'content/jbrowse/Disulfide_Bond.sorted.gff.gz',
         'maxExportSpan': 10000000,
         'label': 'Disulfidebond',
         'key': 'Disulfide Bond',
@@ -652,7 +662,7 @@ function generateSarsCov2TrackList (req, res, next) {
           'borderWidth': 3
         },
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'urlTemplate': distRoot + 'content/jbrowse/Short_sequence_motif.sorted.gff.gz',
+        'urlTemplate': distRoot + 'content/jbrowse/Short_Motif.sorted.gff.gz',
         'maxExportSpan': 10000000,
         'label': 'Shortmotif',
         'key': 'Short Motif',
@@ -672,7 +682,7 @@ function generateSarsCov2TrackList (req, res, next) {
           'borderWidth': 3
         },
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'urlTemplate': distRoot + 'content/jbrowse/Signal_peptide.sorted.gff.gz',
+        'urlTemplate': distRoot + 'content/jbrowse/Signal_Peptide.sorted.gff.gz',
         'maxExportSpan': 10000000,
         'label': 'Signalpeptide',
         'key': 'Signal Peptide',
@@ -692,7 +702,7 @@ function generateSarsCov2TrackList (req, res, next) {
           'borderWidth': 3
         },
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'urlTemplate': distRoot + 'content/jbrowse/Beta_strand.sorted.gff.gz',
+        'urlTemplate': distRoot + 'content/jbrowse/Beta_Strand.sorted.gff.gz',
         'maxExportSpan': 10000000,
         'label': 'Betastrand',
         'key': 'Beta Strand',
@@ -712,7 +722,7 @@ function generateSarsCov2TrackList (req, res, next) {
           'borderWidth': 3
         },
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'urlTemplate': distRoot + 'content/jbrowse/Zinc_finger_region.sorted.gff.gz',
+        'urlTemplate': distRoot + 'content/jbrowse/Zinc_Finger.sorted.gff.gz',
         'maxExportSpan': 10000000,
         'label': 'Zincfinger',
         'key': 'Zinc Finger',
@@ -732,7 +742,7 @@ function generateSarsCov2TrackList (req, res, next) {
           'borderWidth': 3
         },
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'urlTemplate': distRoot + 'content/jbrowse/Coiled-coil_region.sorted.gff.gz',
+        'urlTemplate': distRoot + 'content/jbrowse/Coiled_Coil.sorted.gff.gz',
         'maxExportSpan': 10000000,
         'label': 'Coiledcoil',
         'key': 'Coiled Coil',
@@ -752,7 +762,7 @@ function generateSarsCov2TrackList (req, res, next) {
           'borderWidth': 3
         },
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'urlTemplate': distRoot + 'content/jbrowse/Domain.sorted.gff.gz',
+        'urlTemplate': distRoot + 'content/jbrowse/Domains.sorted.gff.gz',
         'maxExportSpan': 10000000,
         'label': 'Domains',
         'key': 'Domains',
@@ -773,7 +783,7 @@ function generateSarsCov2TrackList (req, res, next) {
           'borderWidth': 3
         },
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'urlTemplate': distRoot + 'content/jbrowse/Glycosylation_site.sorted.gff.gz',
+        'urlTemplate': distRoot + 'content/jbrowse/Glycosylation_Site.sorted.gff.gz',
         'maxExportSpan': 10000000,
         'label': 'Glycosylationsite',
         'key': 'Glycosylation Site',
@@ -813,7 +823,7 @@ function generateSarsCov2TrackList (req, res, next) {
           'borderWidth': 3
         },
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'urlTemplate': distRoot + 'content/jbrowse/Site.sorted.gff.gz',
+        'urlTemplate': distRoot + 'content/jbrowse/Cleavage_Site.sorted.gff.gz',
         'maxExportSpan': 10000000,
         'label': 'CleavageSites',
         'key': 'Cleavage Sites',
