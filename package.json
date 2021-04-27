@@ -34,7 +34,7 @@
     "node-xlsx": "^0.6.0",
     "p3-user": "github:PATRIC3/p3_user",
     "pino": "^6.2.1",
-    "redis": "^2.8.0",
+    "redis": "^3.1.1",
     "request-promise": "4.2.2",
     "rql": "^0.3.3",
     "solrjs": "github:hyoo/solrjs",
