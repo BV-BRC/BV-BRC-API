@@ -680,7 +680,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'metadata': {
           'Description': 'Active site'
         },
-        'displayMode': 'compact'
+        'displayMode': 'compact',
       },
       {
         'category': 'Functional Features',
