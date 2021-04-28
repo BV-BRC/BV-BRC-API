@@ -186,14 +186,14 @@ function generateSarsCov2TrackList (req, res, next) {
         'category': 'Mutation Impact',
         'urlTemplates': [
           {
-            'url': distRoot + 'content/jbrowse/LYCoV016_max.bw',
+            'url': distRoot + 'content/jbrowse/LY-CoV016_max.bw',
             'name': 'Etesevimab escape fraction maximum',
             'nonCont': true,
             'fill': true,
             'color': '#85C1E9'
           },
           {
-            'url': distRoot + 'content/jbrowse/LYCoV016_median.bw',
+            'url': distRoot + 'content/jbrowse/LY-CoV016_median.bw',
             'name': 'Etesevimab escape fraction median',
             'nonCont': true,
             'fill': true,
@@ -257,8 +257,8 @@ function generateSarsCov2TrackList (req, res, next) {
       {
         'category': 'Mutation Impact',
         'urlTemplates': [
-          { 'url': distRoot + 'content/jbrowse/LYCoV555_max.bw', 'name': 'Bamlanivimab escape fraction maximum', 'nonCont': true, 'fill': true, 'color': '#85C1E9' },
-          { 'url': distRoot + 'content/jbrowse/LYCoV555_median.bw', 'name': 'Bamlanivimab escape fraction median', 'nonCont': true, 'fill': true, 'color': '#E59866' }],
+          { 'url': distRoot + 'content/jbrowse/LY-CoV555_max.bw', 'name': 'Bamlanivimab escape fraction maximum', 'nonCont': true, 'fill': true, 'color': '#85C1E9' },
+          { 'url': distRoot + 'content/jbrowse/LY-CoV555_median.bw', 'name': 'Bamlanivimab escape fraction median', 'nonCont': true, 'fill': true, 'color': '#E59866' }],
         'storeClass': 'jbrowse.repo/plugins/MultiBigWig/js/Store/SeqFeature/MultiBigWig',
         'autoscale': 'global',
         'style': { 'height': '100' },
