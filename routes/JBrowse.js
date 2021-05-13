@@ -180,7 +180,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'key': 'Polyclonal Sera Escape (Greaney 2021)',
         'label': 'Polyclonal Sera Escape',
         'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiXYPlot',
-        'metadata': { 'description': 'These data tracks were constructed from the human sera escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing human polyclonal sera.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the polyclonal plasma based on a FACS analysis post transfection (PMID: 33592168, 33495308).' }
+        'metadata': { 'description': 'These data tracks were constructed from the human sera escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing human polyclonal serum.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the antibodies from human polyclonal plasma in vitro (PMID: 33592168, 33495308).' }
       },
       {
         'category': 'Mutation Impact',
@@ -207,7 +207,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'key': 'Etesevimab Ab Escape (Starr 2021)',
         'label': 'Etesevimab Ab Escape',
         'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiXYPlot',
-        'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33592168, 33495308). The height of the overliad bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the Eli Lilly LYCoV016 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody based on a FACS analysis post transfection (PMID: 33592168, 33495308).' }
+        'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33592168, 33495308). The height of the overliad bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the Eli Lilly Etesevimab therapuetic, which is the LYCoV016 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody in vitro (PMID: 33592168, 33495308).' }
       },
       {
         'category': 'Mutation Impact',
@@ -222,7 +222,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'key': 'Casirivimab Ab Escape (Starr 2021)',
         'label': 'Casirivimab Ab Escape',
         'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiXYPlot',
-        'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33592168, 33495308). The height of overlaid the bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the Regeneron REGN10933 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody based on a FACS analysis post transfection (PMID: 33592168, 33495308).' }
+        'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33592168, 33495308). The height of overlaid the bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the Regeneron Casirivimab therapuetic, which is the REGN10933 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody in vitro (PMID: 33592168, 33495308).' }
       },
       {
         'category': 'Mutation Impact',
@@ -237,7 +237,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'key': 'Imdevimab Ab Escape (Starr 2021)',
         'label': 'Imdevimab Ab Escape',
         'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiXYPlot',
-        'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the Regeneron REGN10987 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody based on a FACS analysis post transfection(PMID: 33592168, 33495308).' }
+        'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the Regeneron Imdevimab therapuetic, which is the REGN10987 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody in vitro (PMID: 33592168, 33495308).' }
       },
       {
         'category': 'Mutation Impact',
@@ -252,7 +252,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'key': 'Casirivimab+Imdevimab Ab Cocktail Escape (Starr 2021)',
         'label': 'Casirivimab+Imdevimab Ab Cocktail Escape',
         'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiXYPlot',
-        'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the Regeneron REGN10933+REGN10987 antibody cocktail.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody cocktail based on a FACS analysis post transfection(PMID: 33592168, 33495308).' }
+        'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the Regeneron antibody cocktail, which contains the antibodies REGN10933+REGN10987.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the antibody cocktail in vitro (PMID: 33592168, 33495308).' }
       },
       {
         'category': 'Mutation Impact',
@@ -267,7 +267,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'key': 'Bamlanivimab Ab Escape (Starr 2021)',
         'label': 'Bamlanivimab Ab Escape',
         'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiXYPlot',
-        'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33655250, 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the Eli Lilly LYCoV555 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody based on a FACS analysis post transfection (PMID: 33655250, 33592168, 33495308).' }
+        'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33655250, 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the Eli Lilly Bamlanivimab therapuetic, which is the LYCoV555 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody in vitro (PMID: 33655250, 33592168, 33495308).' }
       },
       {
         'category': 'Mutation Impact',
@@ -282,7 +282,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'key': 'Etesevimab+Bamlanivimab Ab Cocktail Escape (Starr 2021)',
         'label': 'Etesevimab+Bamlanivimab Ab Cocktail Escape',
         'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiXYPlot',
-        'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33655250, 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the Eli Lilly LYCoV016+LYCoV555 antibody cocktail.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody cocktail based on a FACS analysis post transfection (PMID: 33655250, 33592168, 33495308).' }
+        'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33655250, 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the Eli Lilly antibody cocktail, which contains the antibodies LYCoV016+LYCoV555.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the antibody cocktail in vitro (PMID: 33655250, 33592168, 33495308).' }
       },
       {
         'category': 'Mutation Impact',
@@ -297,7 +297,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'key': 'AZD1061 Ab Escape (Dong 2021)',
         'label': 'AZD1061 Ab Escape',
         'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiXYPlot',
-        'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33532768, 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the AstraZeneca COV2-2130 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody based on a FACS analysis post transfection (PMID: 33532768, 33592168, 33495308).' }
+        'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33532768, 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the AstraZeneca AZD1061 therapuetic, which is the COV2-2130 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody in vitro (PMID: 33532768, 33592168, 33495308).' }
       },
       {
         'category': 'Mutation Impact',
@@ -312,7 +312,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'key': 'AZD8895 Ab Escape (Dong 2021)',
         'label': 'AZD8895 Ab Escape',
         'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiXYPlot',
-        'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33532768, 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the AstraZeneca COV2-2196 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody based on a FACS analysis post transfection (PMID: 33532768, 33592168, 33495308).' }
+        'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33532768, 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the AstraZeneca AZD8895 therapuetic, which is the COV2-2196 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody in vitro (PMID: 33532768, 33592168, 33495308).' }
       },
       {
         'category': 'Mutation Impact',
@@ -327,12 +327,12 @@ function generateSarsCov2TrackList (req, res, next) {
         'key': 'AZD1061+AZD8895 Ab Escape (Dong 2021)',
         'label': 'AZD1061+AZD8895 Ab Escape',
         'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiXYPlot',
-        'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33532768, 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the AstraZeneca AZD1061 therapuetic, which is the COV2-2130 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody in vitro (PMID: 33532768, 33592168, 33495308).' }
+        'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33532768, 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the AstraZeneca antibody cocktail, which contains the antibodies COV2-2130+COV2-2196.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the antibody cocktail in vitro (PMID: 33532768, 33592168, 33495308).' }
       },
       {
         'category': 'Mutation Impact',
         'urlTemplates': [
-          { 'url': distRoot + 'content/jbrowse/COV2-2165_max.bw', 'name': 'COV2-2165', 'description': 'Class 1: COV2-2165 escape max (Greaney 2021)', 'nonCont': true, 'fill': true, 'color': '##F5793A' },
+          { 'url': distRoot + 'content/jbrowse/COV2-2165_max.bw', 'name': 'COV2-2165', 'description': 'Class 1: COV2-2165 escape max (Greaney 2021)', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
           { 'url': distRoot + 'content/jbrowse/COV2-2196_norm_total.bw', 'name': 'COV2-2196', 'description': 'Class 1: COV2-2196 escape max (Dong 2021)', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
           { 'url': distRoot + 'content/jbrowse/COV2-2832_max.bw', 'name': 'COV2-2832', 'description': 'Class 1: COV2-2832 escape max (Greaney 2021)', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
           { 'url': distRoot + 'content/jbrowse/C105_max.bw', 'name': 'C105', 'description': 'Class 1: C105 escape max (Greaney 2021)', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
@@ -368,10 +368,11 @@ function generateSarsCov2TrackList (req, res, next) {
           { 'url': distRoot + 'content/jbrowse/COV2-2677_max.bw', 'name': 'COV2-2677', 'description': 'Class 4: COV2-2677 escape max (Greaney 2021)', 'nonCont': true, 'fill': true, 'color': '#CCBE9F' }],
         'storeClass': 'jbrowse.repo/plugins/MultiBigWig/js/Store/SeqFeature/MultiBigWig',
         'autoscale': 'global',
-        'style': { 'height': '1500' },
+        'style': { 'height': '1000' },
         'max_score': '1',
         'colorizeAbout': 'true',
-        'showLabels' : 'true',
+        'showLabels' : true,
+        'showTooltips' : true,
         'labelWidth' : '80',
         'key': 'Bloom Lab Antibodies by Class',
         'label': 'Bloom Lab Antibodies by Class',
@@ -390,11 +391,11 @@ function generateSarsCov2TrackList (req, res, next) {
         'style': { 'height': '125', 'textColor' : '#FFFFFF', },
         'max_score': '1',
         'colorizeAbout': 'true',
-        'showLabels' : 'true',
-        'showTooltips' : 'true',
+        'showLabels' : true,
+        'showTooltips' : true,
         'labelWidth' : '80',
         'key': 'Classes 1-4 Ab Escape',
-        'label': 'Classes 1-4 Ab Escape',
+        'label': 'Classes1to4AbEscape',
         'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiDensity',
         'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33532768, 33592168, 33495308).  This heatmap track analyzes mutational impact towards antibody binding by class, where the class is defined by the structure of the antibody epitope (PMID: 33045718, 33758856).  Each of the four classes are comprised of multiple monoclonal antibodies, both therapuetic and non-therapuetic antibodies (those extracted from convalescent sera).  The heat at each site in this track denotes the maximum of the normalized mutation impact sum (escape fraction) among all antibodies within a class (PMID: 33592168). In other words, each cell within this heatmap represents the monoclonal antibody within the class that is most impacted by mutations overall at the particular site.  This way there is focus on the most vulnerable targets of SARS-CoV-2 RBD mutation.' }
       },
@@ -413,7 +414,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'key': 'ACE2 Binding Affinity (Starr 2020)',
         'label': 'ACE2 Binding Affinity',
         'type': 'JBrowse/View/Track/Wiggle/XYPlot',
-        'metadata': { 'description': 'These data tracks were constructed from the human sera escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33592168, 33495308).  This particular track denotes the mutational impact towards ACE2 binding affinity.  Bars in the positive region (blue) denote sites where a mutation can lead to increase in binding affinity, and bars in the negative region (red) denote sites where a mutation can lead to a decrease in binding affinity.  Note that each site only reports a positive binding affinity if the binding value was greater than or equal to 0.1, otherwise the minimum binding value is reported. Hence, all blue bars represent a maximum binding value at the site and all red bars represent a minimum binding value at the site (PMID: 32841599, 33592168, 33495308).' }
+        'metadata': { 'description': 'These data tracks were constructed from the human sera escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33592168, 33495308).  This particular track denotes the mutational impact towards ACE2 binding affinity.   in the positive region (blue) denote sites where a mutation can lead to increase in binding affinity, and bars in the negative region (red) denote sites where a mutation can lead to a decrease in binding affinity.  Note that each site only reports a positive binding affinity if the binding value was greater than or equal to 0.1, otherwise the minimum binding value is reported. Hence, all blue bars represent a maximum binding value at the site and all red bars represent a minimum binding value at the site (PMID: 32841599, 33592168, 33495308).' }
       },
       {
         'category': 'Mutation Impact',
