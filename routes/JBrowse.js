@@ -489,6 +489,27 @@ function generateSarsCov2TrackList (req, res, next) {
           "displayMode":"normal"
       },
       {
+          "category" : "Variants of Concern",
+          "maxExportFeatures": 10000, 
+          "style": {
+              "className": "feature3", 
+            "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+              "showLabels": true, 
+              "showTooltips": true, 
+              "borderWidth": 3
+          }, 
+          "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+          "urlTemplate": distRoot + 'content/jbrowse/LoI_Markers_AA.sorted.gff.gz', 
+          "maxExportSpan": 10000000, 
+          "label": "LoIMarkersAAVariations", 
+          "key": "LoI Markers: AA Variations", 
+          "type": "JBrowse/View/Track/CanvasFeatures", 
+          "metadata": {
+              "Description": "LoI Markers: AA Variations"
+          },
+          "displayMode":"normal"
+      },
+      {
         'category': 'Epitopes',
         'urlTemplate': distRoot + 'content/jbrowse/SARS_bcell_epitopes_human_02FEB2021_all_v3.sorted.gff.gz',
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
@@ -545,7 +566,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { var f={uniprotColor}; return f(feature); }',
+          'color': 'blue',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth': 3
@@ -557,8 +578,11 @@ function generateSarsCov2TrackList (req, res, next) {
         'key': 'Region of Interest',
         'type': 'JBrowse/View/Track/CanvasFeatures',
         'metadata': {
-          'Description': 'Region of interest'
+          'Description': 'Region of Interest'
         },
+        'subfeatures': true,
+        'glyph': 'JBrowse/View/FeatureGlyph/Segments',
+        'subParts': 'Region',
         'displayMode': 'compact'
       },
       {
