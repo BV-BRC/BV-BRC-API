@@ -41,6 +41,7 @@ var defaults = {
     'protein_structure',
     'protein_feature',
     'surveillance',
+    'serology',
     'proteomics_experiment',
     'proteomics_peptide',
     'proteomics_protein'
