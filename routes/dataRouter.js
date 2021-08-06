@@ -55,6 +55,20 @@ router.get('/summary_by_taxon/:taxon_id', [
         res.results = Object.assign(res.results, feature_type_count)
       })
     )
+    defs.push(
+      subQuery(
+        'protein_structure',
+        `q=*:*&fq=taxon_lineage_ids:${req.params.taxon_id}&rows=0`,
+        {
+          accept: 'application/solr+json'
+        }
+      ).then((results) => {
+        const counts = {
+          'PDB': results.response.numFound
+        }
+        res.results = Object.assign(res.results, counts)
+      })
+    )
 
     Promise.all(defs).then(() => {
       next()
