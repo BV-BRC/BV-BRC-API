@@ -457,7 +457,7 @@ function generateSarsCov2TrackList (req, res, next) {
             "borderWidth": 3
         }, 
         "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
-        "urlTemplate": distRoot + 'content/jbrowse/LoC_Markers_AA_v2.sorted.gff.gz', 
+        "urlTemplate": distRoot + 'content/jbrowse/LoCs_AA_gff3_august.sorted.gff.gz', 
         "maxExportSpan": 10000000, 
         "label": "LoCMarkersAAVariations", 
         "key": "LoC Markers: AA Variations", 
@@ -466,27 +466,6 @@ function generateSarsCov2TrackList (req, res, next) {
             "Description": "LoC Markers: AA Variations"
         },
         "displayMode":"normal"
-        },
-        {
-          "category" : "Variants of Concern",
-          "maxExportFeatures": 10000, 
-          "style": {
-              "className": "feature3", 
-            "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
-              "showLabels": true, 
-              "showTooltips": true, 
-              "borderWidth": 3
-          }, 
-          "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
-          "urlTemplate": distRoot + 'content/jbrowse/LoC_Markers_NA_v2.sorted.gff.gz', 
-          "maxExportSpan": 10000000, 
-          "label": "LoCMarkersNTVariations", 
-          "key": "LoC Markers: NT Variations", 
-          "type": "JBrowse/View/Track/CanvasFeatures", 
-          "metadata": {
-              "Description": "LoC Markers: NT Variations"
-          },
-          "displayMode":"normal"
       },
       {
           "category" : "Variants of Concern",
@@ -499,7 +478,7 @@ function generateSarsCov2TrackList (req, res, next) {
               "borderWidth": 3
           }, 
           "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
-          "urlTemplate": distRoot + 'content/jbrowse/LoI_Markers_AA.sorted.gff.gz', 
+          "urlTemplate": distRoot + 'content/jbrowse/LoIs_AA_gff3_august.sorted.gff.gz', 
           "maxExportSpan": 10000000, 
           "label": "LoIMarkersAAVariations", 
           "key": "LoI Markers: AA Variations", 
