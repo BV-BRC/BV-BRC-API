@@ -10,15 +10,15 @@ Router.use(HttpParamsMiddleWare)
 
 Router.get('*', function (req, res, next) {
   const file = Path.join(CONTENT_FOLDER, req.params[0])
-	if (Fs.existsSync(file)) {
-	if (req.headers["range"] && req.headers["range"].includes("bytes=")){
-		parts = req.headers['range'].replace("bytes=", "").split("-")
-		start = parseInt(parts[0])
-		end = parseInt(parts[1])
-		return Fs.createReadStream(file,{start: start, end: end}).pipe(res)
-	}else{
-		Fs.createReadStream(file).pipe(res)
-	}
+  if (Fs.existsSync(file)) {
+    if (req.headers['range'] && req.headers['range'].includes('bytes=')) {
+      const parts = req.headers['range'].replace('bytes=', '').split('-')
+      const start = parseInt(parts[0])
+      const end = parseInt(parts[1])
+      return Fs.createReadStream(file, { start: start, end: end }).pipe(res)
+    } else {
+      Fs.createReadStream(file).pipe(res)
+    }
   } else {
     console.error(`${file} does not exits`)
     next('route')

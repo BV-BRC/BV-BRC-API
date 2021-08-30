@@ -108,8 +108,6 @@ function generateSarsCov2TrackList (req, res, next) {
     'trackSelector': {
       'categoryOrder': 'Gene and Protein, Variants of Concern, Mutation Impact, Functional Features, Epitopes, Structural Features, Primers and Probes'
     },
-    //"trackSelector" : 
-    //  {"categoryOrder" : "Gene and Protein, Variants of Concern, Mutation Impact, Functional Features, Epitopes, Structural Features, Primers and Probes"},
     'include': distRoot + 'content/jbrowse/sars_colors.conf',
     'tracks': [
       {
@@ -150,7 +148,7 @@ function generateSarsCov2TrackList (req, res, next) {
           'title': '{refseq_locus_tag} {gene}',
           'label': "<div style='line-height:1.7em'><b>{refseq_locus_tag}</b> | {gene}<br>{product}<br>{type}: {start} .. {end} ({strand})<br> <i>Click for detailed information</i></div>",
           'action': 'function(clickEvent){return window.featureDialogContent(this.feature);}'
-        },
+        }
       },
 
       // ***************************************
@@ -371,9 +369,9 @@ function generateSarsCov2TrackList (req, res, next) {
         'style': { 'height': '1000' },
         'max_score': '1',
         'colorizeAbout': 'true',
-        'showLabels' : true,
-        'showTooltips' : true,
-        'labelWidth' : '80',
+        'showLabels': true,
+        'showTooltips': true,
+        'labelWidth': '80',
         'key': 'Bloom Lab Antibodies by Class',
         'label': 'Bloom Lab Antibodies by Class',
         'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiDensity',
@@ -388,12 +386,12 @@ function generateSarsCov2TrackList (req, res, next) {
           { 'url': distRoot + 'content/jbrowse/class4_max_total_track.bw', 'name': 'Class 4', 'description': 'Non-ACE2 blocking antibodies that bind only to "up" RBDs (Barnes 2021)', 'nonCont': true, 'fill': true, 'color': '#CCBE9F' }],
         'storeClass': 'jbrowse.repo/plugins/MultiBigWig/js/Store/SeqFeature/MultiBigWig',
         'autoscale': 'global',
-        'style': { 'height': '125', 'textColor' : '#FFFFFF', },
+        'style': { 'height': '125', 'textColor': '#FFFFFF' },
         'max_score': '1',
         'colorizeAbout': 'true',
-        'showLabels' : true,
-        'showTooltips' : true,
-        'labelWidth' : '80',
+        'showLabels': true,
+        'showTooltips': true,
+        'labelWidth': '80',
         'key': 'Classes 1-4 Ab Escape',
         'label': 'Classes1to4AbEscape',
         'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiDensity',
@@ -406,9 +404,9 @@ function generateSarsCov2TrackList (req, res, next) {
         'storeClass': 'jbrowse.repo/plugins/MultiBigWig/js/Store/SeqFeature/MultiBigWig',
         'autoscale': 'global',
         'style': { 'height': '100',
-                   'pos_color' : "blue",
-                   'neg_color' : "red" 
-       },
+          'pos_color': 'blue',
+          'neg_color': 'red'
+        },
         'max_score': '1',
         'colorizeAbout': 'true',
         'key': 'ACE2 Binding Affinity (Starr 2020)',
@@ -430,7 +428,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'label': 'VIR-7831 Ab Escape',
         'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiXYPlot',
         'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33532768, 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the Vir Biotechnology VIR-7831 therapuetic, which is the 5309 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody in vitro (PMID: 33532768, 33592168, 33495308).' }
-      }, 
+      },
       {
         'category': 'Mutation Impact',
         'urlTemplates': [
@@ -445,48 +443,48 @@ function generateSarsCov2TrackList (req, res, next) {
         'label': 'Moderna Ab Escape',
         'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiXYPlot',
         'metadata': { 'description': 'These data tracks were constructed from the human sera escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing serum antibodies elicited from the Moderna vaccine.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the Moderna vaccine elicted antibodies in vitro (PMID: 33532768, 33592168, 33495308).' }
-      }, 
-      {
-        "category" : "Variants of Concern",
-        "maxExportFeatures": 10000, 
-        "style": {
-            "className": "feature3", 
-           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
-            "showLabels": true, 
-            "showTooltips": true, 
-            "borderWidth": 3
-        }, 
-        "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
-        "urlTemplate": distRoot + 'content/jbrowse/LoCs_AA_gff3_august.sorted.gff.gz', 
-        "maxExportSpan": 10000000, 
-        "label": "LoCMarkersAAVariations", 
-        "key": "LoC Markers: AA Variations", 
-        "type": "JBrowse/View/Track/CanvasFeatures", 
-        "metadata": {
-            "Description": "LoC Markers: AA Variations"
-        },
-        "displayMode":"normal"
       },
       {
-          "category" : "Variants of Concern",
-          "maxExportFeatures": 10000, 
-          "style": {
-              "className": "feature3", 
-            "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
-              "showLabels": true, 
-              "showTooltips": true, 
-              "borderWidth": 3
-          }, 
-          "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
-          "urlTemplate": distRoot + 'content/jbrowse/LoIs_AA_gff3_august.sorted.gff.gz', 
-          "maxExportSpan": 10000000, 
-          "label": "LoIMarkersAAVariations", 
-          "key": "LoI Markers: AA Variations", 
-          "type": "JBrowse/View/Track/CanvasFeatures", 
-          "metadata": {
-              "Description": "LoI Markers: AA Variations"
-          },
-          "displayMode":"normal"
+        'category': 'Variants of Concern',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'function(feature) { var f={uniprotColor}; return f(feature); }',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/LoCs_AA_gff3_august.sorted.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'LoCMarkersAAVariations',
+        'key': 'LoC Markers: AA Variations',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'LoC Markers: AA Variations'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Variants of Concern',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'function(feature) { var f={uniprotColor}; return f(feature); }',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/LoIs_AA_gff3_august.sorted.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'LoIMarkersAAVariations',
+        'key': 'LoI Markers: AA Variations',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'LoI Markers: AA Variations'
+        },
+        'displayMode': 'normal'
       },
       {
         'category': 'Epitopes',
@@ -684,7 +682,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'metadata': {
           'Description': 'Active site'
         },
-        'displayMode': 'compact',
+        'displayMode': 'compact'
       },
       {
         'category': 'Functional Features',
