@@ -14,6 +14,7 @@ var contentRouter = require('./routes/content')
 var rpcHandler = require('./routes/rpcHandler')
 var jbrowseRouter = require('./routes/JBrowse')
 var genomePermissionRouter = require('./routes/genomePermissionRouter')
+var dataRouter = require('./routes/dataRouter')
 var indexer = require('./routes/indexer')
 var cors = require('cors')
 
@@ -112,6 +113,10 @@ app.use('/query', [
 
 app.use('/hpi/search', [
   hpiSearchRouter
+])
+
+app.use('/data', [
+  dataRouter
 ])
 
 app.param('dataType', function (req, res, next, dataType) {
