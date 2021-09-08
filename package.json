@@ -32,7 +32,7 @@
     "morgan": "^1.9.1",
     "nconf": "^0.10.0",
     "node-xlsx": "^0.6.0",
-    "p3-user": "git+https://github.com/PATRIC3/p3_user.git#d06f95060a683dacc2dd3a11e093021712105e49",
+    "p3-user": "git+https://github.com/PATRIC3/p3_user.git#8bbe64603c247cc8dee57f9b215181109b1bbc18",
     "pino": "^6.2.1",
     "redis": "^2.8.0",
     "request-promise": "4.2.2",
