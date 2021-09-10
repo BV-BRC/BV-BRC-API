@@ -5,6 +5,11 @@ const router = express.Router({ strict: true, mergeParams: true })
 const httpParams = require('../middleware/http-params')
 const { httpRequest } = require('../util/http')
 const debug = require('debug')('p3api-server:route/summary')
+const apicache = require('apicache')
+const redis = require('redis')
+const redisOptions = config.get('redis')
+
+const cacheWithRedis = apicache.options({ redisClient: redis.createClient(redisOptions) }).middleware
 
 router.use(httpParams)
 
@@ -25,6 +30,7 @@ async function subQuery (dataType, query, opts) {
 }
 
 router.get('/summary_by_taxon/:taxon_id', [
+  cacheWithRedis('1 day'),
   bodyParser.json({ extended: true }),
   function (req, res, next) {
     const defs = []
