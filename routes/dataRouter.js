@@ -88,5 +88,45 @@ router.get('/summary_by_taxon/:taxon_id', [
     res.end(JSON.stringify(res.results))
   }
 ])
+const allowed = {
+  'genome': ['host_group', 'host_name', 'geographic_group', 'isolation_country'],
+  'genome_feature': ['feature_type'],
+  'sp_gene': ['property', 'source', 'evidence'],
+  'protein_feature': ['source'],
+  'surveillance': ['pathogen_test_type', 'pathogen_test_result', 'subtype', 'host_group', 'host_common_name', 'host_species', 'geographic_group', 'collection_country'],
+  'serology': ['test_type', 'test_result', 'serotype', 'host_type', 'host_common_name', 'geographic_group', 'collection_country']
+}
+
+router.get('/distinct/:collection/:field', [
+  bodyParser.json({ extended: true }),
+  (req, res, next) => {
+    const collection = req.params.collection
+    const field = req.params.field
+    if (allowed.hasOwnProperty(collection) && allowed[collection].includes(field)) {
+      next()
+    } else {
+      res.set('content-type', 'application/json')
+      res.end(JSON.stringify({ status: 405, message: `/distinct/${collection}/${field} is not allowed` }))
+    }
+  },
+  cacheWithRedis('1 hour', onlyStatus200),
+  (req, res, next) => {
+    const collection = req.params.collection
+    const field = req.params.field
+
+    subQuery(collection, `q=*:*&rows=0&facet=true&facet.field=${field}&facet.mincount=1&facet.limit=-1&json.nl=map`, {
+      accept: 'application/solr+json'
+    })
+      .then((body) => {
+        // debug(body.facet_counts.facet_fields[field])
+        res.results = body.facet_counts.facet_fields[field]
+        next()
+      })
+  },
+  (req, res) => {
+    res.set('content-type', 'application/json')
+    res.end(JSON.stringify(res.results))
+  }
+])
 
 module.exports = router
