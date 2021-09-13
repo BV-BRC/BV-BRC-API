@@ -53,7 +53,7 @@ router.get('/summary_by_taxon/:taxon_id', [
     defs.push(
       subQuery(
         'genome_feature',
-        `q=*:*&fq=feature_type:(CDS OR mat_peptide)&fq={!join fromIndex=genome from=genome_id to=genome_id v=taxon_lineage_ids:${req.params.taxon_id} method=crossCollection}&rows=0&facet=true&facet.field=feature_type&facet.mincount=1&json.nl=map`,
+        `q=*:*&fq=feature_type:(CDS OR mat_peptide)&fq={!join fromIndex=genome from=genome_id to=genome_id v=taxon_lineage_ids:${req.params.taxon_id}}&rows=0&facet=true&facet.field=feature_type&facet.mincount=1&json.nl=map`,
         {
           accept: 'application/solr+json'
         }
