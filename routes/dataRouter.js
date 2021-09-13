@@ -89,10 +89,11 @@ router.get('/summary_by_taxon/:taxon_id', [
   }
 ])
 const allowed = {
-  'genome': ['host_group', 'host_name', 'geographic_group', 'isolation_country'],
+  'genome': ['host_group', 'host_name', 'host_common_name', 'geographic_group', 'isolation_country'],
   'genome_feature': ['feature_type'],
   'sp_gene': ['property', 'source', 'evidence'],
   'protein_feature': ['source'],
+  'protein_structure': ['method'],
   'surveillance': ['pathogen_test_type', 'pathogen_test_result', 'subtype', 'host_group', 'host_common_name', 'host_species', 'geographic_group', 'collection_country'],
   'serology': ['test_type', 'test_result', 'serotype', 'host_type', 'host_common_name', 'geographic_group', 'collection_country']
 }
@@ -118,9 +119,13 @@ router.get('/distinct/:collection/:field', [
       accept: 'application/solr+json'
     })
       .then((body) => {
-        // debug(body.facet_counts.facet_fields[field])
-        res.results = body.facet_counts.facet_fields[field]
-        next()
+        if (body && body.facet_counts) {
+          // debug(body.facet_counts.facet_fields[field])
+          res.results = body.facet_counts.facet_fields[field]
+          next()
+        } else {
+          next({ 'status': body.status, 'message': body.error.msg })
+        }
       })
   },
   (req, res) => {
