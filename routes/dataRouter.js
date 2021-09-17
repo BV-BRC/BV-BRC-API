@@ -76,12 +76,39 @@ router.get('/summary_by_taxon/:taxon_id', [
         res.results = Object.assign(res.results, counts)
       })
     )
+    defs.push(
+      subQuery(
+        'strain',
+        `q=*:*&fq=taxon_lineage_ids:${req.params.taxon_id}&rows=0`,
+        {
+          accept: 'application/solr+json'
+        }
+      ).then((results) => {
+        const counts = {
+          'strains_count': results.response.numFound
+        }
+        res.results = Object.assign(res.results, counts)
+      })
+    )
 
     Promise.all(defs).then(() => {
       next()
     }, (err) => {
       next(err)
     })
+  },
+  function (req, res, next) {
+    // post process, delete when count is 1
+    if (res.results['unique_family'] === 1) {
+      delete res.results['unique_family']
+    }
+    if (res.results['unique_genus'] === 1) {
+      delete res.results['unique_genus']
+    }
+    if (res.results['unique_species'] === 1) {
+      delete res.results['unique_species']
+    }
+    next()
   },
   function (req, res, next) {
     res.set('content-type', 'application/json')
