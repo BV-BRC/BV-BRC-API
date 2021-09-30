@@ -56,6 +56,7 @@ var defaults = {
   contentDirectory: './content',
   publicGenomeDir: '/genomes',
   queueDirectory: './index-queue-dir',
+  signingSubjectURL: 'https://user.patricbrc.org/public_key',
   solr: {
     url: 'http://localhost:8983/solr',
     agent: {
