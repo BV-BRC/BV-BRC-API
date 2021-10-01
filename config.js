@@ -6,6 +6,8 @@ var defaults = {
   collections: [
     'antibiotics',
     'enzyme_class_ref',
+    'epitope',
+    'epitope_assay',
     'gene_ontology_ref',
     'genome',
     'strain',
