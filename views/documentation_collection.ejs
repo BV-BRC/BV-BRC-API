@@ -1,0 +1,101 @@
+<html>
+
+<head>
+    <title>
+        <%= doc_data.label || collection %>
+    </title>
+    <link rel="stylesheet" href="../resources/css/compiled.css">
+</head>
+
+<body>
+    <div class="p-4">
+        <div class="mb-4 text-left">
+            <a href=".">< API Documentation Home</a>
+        </div>
+        <h1>
+            <%= doc_data.label || collection %> Data 
+        </h1>
+
+
+        <% if (doc_data.description) { %>
+        <p>
+            <%= doc_data.description %>
+        </p>
+        <% } %>
+
+
+        <div class="mt-2">
+            Data Type: <%= collection %>
+        </div>
+        <div>
+            Primary Key: <%= (results && results.schema && results.schema.uniqueKey)?results.schema.uniqueKey:"UNKNOWN" %>
+        </div>
+
+
+        <h3 class="mb-2 mt-2">Attributes</h3>
+
+
+        <ul class="ml-1 p-1 list-disc list-inside">
+            <% results.schema && results.schema.fields && results.schema.fields.forEach(function(field){ %>
+                <% if (field.stored) { %>
+                    <li>
+                        <%= field.name %>
+                        <% if (field.name==results.schema.uniqueKey) { %>
+                            *
+                        <% } %>
+                        <span>(
+                            <%= render_type(field,results.schema) %>)
+                        </span>
+                    </li>
+                <% } %>
+            <% }) %>
+        </ul>
+        <h2 class="">API</h2>
+        <div class="m-2">
+            <h3 class="">GET :<%= (results && results.schema && results.schema.uniqueKey)?results.schema.uniqueKey:":ID" %></h3>
+            <p class="m-2">Retrieve a <%= collection %> data object by <%= (results && results.schema && results.schema.uniqueKey)?results.schema.uniqueKey:"primary key" %></p>
+            <h3 class="m-2 ml-3">EXAMPLE</h3>
+            <div class="p-0 m-2 ml-3">
+                <pre class="inline m-0"><%= baseURL %>/<%= collection %>/<%= doc_data.example_id?doc_data.example_id:":ID"%></pre>
+                <a target="_blank" class="link" href="<%= baseURL %>/<%= collection %>/<%= doc_data.example_id?doc_data.example_id:':ID'%>">Try It!</a></span>
+            </div>
+
+        </div>
+        <div class="m-2">
+            <h3 class="">QUERY :query</h3>
+            <p class="m-2">Query for <%= collection %> data objects with an RQL Query</p>
+            <h3 class="m-2 ml-2">Return Formats</h3>
+            <p class="m-2">Requests may include an HTTP ACCEPT header from this list to transform the data into the requested type.</p>
+            <ul class="list-disc list-inside">
+                <% default_query_formatters.forEach((ct)=>{ %>
+                    <li class="ml-3 mb-3">
+                        <span class="font-semibold"><%= ct.content_type %></span><span class="ml=3">- <%= ct.description %></span>
+                    </li>
+                <% }) %>
+            </ul>
+            <h3 class="m-2 ml-2">
+                EXAMPLE<% if (doc_data.extra_query_examples && doc_data.extra_query_examples.length>0) { %>S<% } %>
+            </h3>
+            <ul class="list-disc list-inside">
+                <li class="ml-3 mb-3">Query for <%= collection %> data objects with a <%= (results && results.schema && results.schema.uniqueKey)?results.schema.uniqueKey:"Primary Key" %> equal to <%= doc_data.example_id?doc_data.example_id:":ID" %>.  Return results as a JSON Array.
+                    <div class="p-0 m-2 ml-3">
+                      <pre class="inline"><%= baseURL %>/<%= collection %>/?eq(<%= (results && results.schema && results.schema.uniqueKey)?results.schema.uniqueKey:"ID" %>,<%= doc_data.example_id?encodeURIComponent(doc_data.example_id):":ID" %>)&http_accept=application/json</pre>
+                      <a target="_blank" class="link" href="<%= baseURL %>/<%= collection %>/?eq(<%= (results && results.schema && results.schema.uniqueKey)?results.schema.uniqueKey:'ID' %>,<%= doc_data.example_id?encodeURIComponent(doc_data.example_id):':ID' %>)&http_accept=application/json">Try It!</a></span>
+                    </div>
+                </li>
+            <% if (doc_data.extra_query_examples && doc_data.extra_query_examples.length>0) { %>
+                <% doc_data.extra_query_examples.forEach(function(example){ %>
+                    <li class="ml-3 mb-3"><%= example.description %>
+                        <div class="p-0 m-2 ml-3">
+                            <pre class="inline"><%= baseURL %>/<%= collection %>/?<%= example.query %></pre>
+                            <a target="_blank" class="link" href="<%= baseURL %>/<%= collection %>/?<%= example.query %>">Try It!</a></span>
+                        </div>
+                        
+                    </li>
+                <% }) %>
+            <% } %>
+        </div>
+    </div>
+</body>
+
+</html>

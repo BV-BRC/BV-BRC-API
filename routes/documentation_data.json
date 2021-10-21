@@ -1,0 +1,168 @@
+{
+    "default_query_formatters":[
+        {"content_type": "application/json", "description": "Returns results as an array of JSON objects"},
+        {"content_type": "application/solr+json", "description": "Results results in SOLR JSON response format"},
+        {"content_type": "text/csv", "description": "Returns results in Comma Separated values (CSV) format.  Columns are separated by ','.  Multi-value columns are separated by ';'.  Rows are separated by new line"},
+        {"content_type": "text/tsv", "description": "Returns results in Tab Separated values (TSV) format.  Columns are separated by a tab.  Multi-value columns are separated by ';'.  Rows are separated by new line"},
+        {"content_type": "application/vnd.openxmlformats", "description": "Returns objects as an MS Excel document"}
+    ],
+    "rql_operators": [
+        {"op": "eq", "proto": "eq(FIELD,VALUE)", "description": "FIELD equals VALUE"},
+        {"op": "ne", "proto": "ne(FIELD,VALUE)", "description": "FIELD is not equal to VALUE"},
+        {"op": "gt", "proto": "gt(FIELD,VALUE)", "description": "FIELD is greater than VALUE"},
+        {"op": "lt", "proto": "lt(FIELD,VALUE)", "description": "FIELD is less than VALUE"},
+        {"op": "keyword", "proto": "keyword(VALUE)", "description": "Text search accross string values in a data type"},
+        {"op": "in", "proto": "in(FIELD,(VALUE1,VALUE2,VALUE3))", "description": "True for objects whose FIELD contains any of the provided values"},
+        {"op": "and", "proto": "and(EXPRESSION,EXPRESSION,...)", "description": "ANDs two or more expressions together"},
+        {"op": "or", "proto": "or(EXPRESSION,EXPRESSION,...)", "description": "ORs two ore more expressions together"},
+        {"op": "select", "proto": "select(FIELD1,FIELD2,FIELD3,....)", "description": "Returns only the specified fields for query result objects"},
+        {"op": "sort", "proto": "sort([+|-]FIELD,[+|-]FIELD2)", "description": "Sort results by field. Specify + or - to specify the sort direction"},
+        {"op": "limit", "proto": "limit(COUNT,START)", "description": "Limits the results to COUNT records starting at START"},
+        {"op": "GenomeGroup", "proto": "GenomeGroup(WORKSPACE_PATH)", "description": "Retrieves the GenomeGroup from WORKSPACE_PATH for use in a query (e.g., &in(genome_id,GenomeGroup(/path/to/my/group)) )"},
+        {"op": "FeatureGroup", "proto": "FeatureGroup(WORKSPACE_PATH)", "description": "Retrieves the FeatureGroup from WORKSPACE_PATH for use in a query (e.g., &in(feature_id,FeatureGroup(/path/to/my/group)) )"},
+        {"op": "facet", "proto": "facet((FACET_PROPERTY,PROPERTY_VALUE),(FACET_PROPERTY,PROPERTY_VALUE),...)", "description": "Allows facets to be specified along with a query. Facet results are included in the HTTP response header when the response content-type is application/json and included in the response body for application/solr+json"}
+    ],
+    "black_listed_collections":["genome_test","host_resp","model_complex_role","model_compound", "model_reaction","model_template_biomass","model_template_reaction","pig","proteomics_experiment","proteomics_peptide","proteomics_protein"],
+    "collections": {
+        "antibiotics":{
+            "label": "Antibiotics",
+            "description": "Information about antibiotics, inlcuding their chemical and physical properties, pharmacology, and mechanism of action. ",
+            "example_id": "1046",
+            "extra_query_examples": [
+                {"query": "keyword(tuberculosis)&http_accept=application/json", "description": "Query for antibiotics related to tuberculosis.  Return as JSON"}
+            ]
+        },
+        "enzyme_class_ref":{
+            "label": "Enzyme Class Ref",
+            "example_id": "1.1.1.100"
+        },
+        "epitope":{
+            "label": "Epitope",
+            "example_id": "194714"
+        },
+        "epitope_assay":{
+            "label": "Epitope Assay",
+            "example_id":"1206267" 
+        },
+        "gene_ontology_ref":{
+            "label":"Gene Ontology Ref",
+            "example_id": "GO:0000001"
+        },
+        "genome": {
+            "label": "Genome",
+            "description": "Metadata record for a Genome",
+            "example_id": "1313.5458",
+            "extra_query_examples": [
+                {"query": "eq(taxon_id,1313)&limit(5)&http_accept=text/tsv", "description": "Query for sequences with taxon_id == 1313, limit to 5 sequences.  Return TSV data."}
+            ]
+        },
+        "strain":{
+            "label": "Strain",
+            "example_id":"f7f30f66-a465-48e9-8634-cbe43762926f"
+        },
+        "genome_amr": {
+            "label": "Genome AMR",
+            "example_id":"eeff140a-aecf-47e6-96f0-01433711f101"
+        },
+        "feature_sequence": {
+            "label": "Feature Sequence",
+            "example_id": "2795c372e1576629f476795d0b088da4"
+        },
+        "genome_feature": {
+            "label": "Genome Feature",
+            "example_id": "RefSeq.1001732.3.AKUQ01000008.CDS.655540.656001.rev"
+        },
+        "genome_sequence": {
+            "label": "Genome Sequence",
+            "example_id": "170673.13.con.0100"
+        },
+        "id_ref": {
+            "label": "ID Ref",
+            "example_id": "72592846-dea7-40ec-a5fb-2d5e39fe364c"
+        },
+        "misc_niaid_sgc": {
+            "label": "Misc NIAID SGC",
+            "example_id": "AcbaA.00587.b"
+        },
+        "pathway": {
+            "label": "Pathway",
+            "example_id": "894e240c-912e-4200-bca8-42dee8d08176"
+        },
+        "pathway_ref": {
+            "label": "Pathway Ref",
+            "example_id": "001e5b2c-fbc6-4a12-9f52-0567958deeac"
+        },
+        "ppi":{
+            "label": "PPI",
+            "example_id": "9b8046aa-c62b-4110-a5e7-ec665d08a0b2"
+        },
+        "protein_family_ref":{
+            "label": "Protein Family Ref",
+            "example_id": "PLF_32008_00319462"
+        },
+        "sp_gene":{
+            "label": "Specialty Gene",
+            "example_id": "2e08d6b6-72cc-446a-bf94-b487b7902c55"
+        },
+        "sp_gene_evidence": {
+            "label": "Specialty Gene Evidence",
+            "example_id": "008ef9a0-6cf5-4e0a-a751-f85bb652ad32"
+        },
+        "sp_gene_ref":{
+            "label": "Specialty Gene Ref",
+            "example_id": "0002dba6-a28a-4ab7-8d14-aa70ec7b2c59"
+        },
+        "spike_lineage": {
+            "label": "Spike Lineage",
+            "example_id": "5592e523-8699-4e71-ae50-04e40644ca8b"
+        },
+        "spike_variant": {
+            "label": "Spike Variant",
+            "example_id": "99dc67a2-d7d2-4c06-9c89-1688e6ba5057"
+        },
+        "structured_assertion": {
+            "label": "Structured Assertion",
+            "example_id": "001382b1-55e4-4581-ba85-c2744a2dbeb8"
+        },
+        "subsystem": {
+            "label": "Subsystem",
+            "example_id": "00c2c133-a6a9-47d1-99c1-b6a451b65fd0"
+        },
+        "subsystem_ref":{
+            "label": "Subsystem Ref",
+            "example_id": "00c2c133-a6a9-47d1-99c1-b6a451b65fd0"
+        },
+        "taxonomy": {
+            "label": "Taxonomy",
+            "example_id": "27"
+        },
+        "transcriptomics_experiment": {
+            "label": "Transcriptomics Experiment",
+            "example_id": "100493"
+        },
+        "transcriptomics_gene":{
+            "label": "Transcriptomics Gene",
+            "example_id": "05e4172c-8d8a-47d6-8543-e7bc3aad9be3"
+        },
+        "transcriptomics_sample": {
+            "label": "Transcriptomics Sample",
+            "example_id": "100000007"
+        },
+        "protein_structure": {
+            "label": "Protein Structure",
+            "example_id": "103L"
+        },
+        "protein_feature": {
+            "label": "Protein Feature",
+            "example_id": "2fcf1757-996d-456d-998b-d808cf556aa4"
+        },
+        "surveillance":{
+            "label": "Surveillance",
+            "example_id": "0013cd6a-57a3-4bac-80a8-5d85751c38cd"
+        },
+        "serology": {
+            "label": "Serology",
+            "example_id": "00073888-0195-4be6-b236-dde956a6171e"
+        }
+    }
+}

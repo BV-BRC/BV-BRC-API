@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    h1 {
+      @apply text-3xl;
+      @apply font-bold;
+    }
+    h2 {
+      @apply text-2xl;
+      @apply font-bold;
+    }
+    h3 {
+        @apply font-bold;
+    }
+
+    pre {
+        @apply bg-gray-100;
+        @apply p-2;
+        @apply my-4;
+        @apply border;
+        @apply border-gray-200;
+    }
+    .link {
+        @apply font-semibold;
+        @apply text-blue-400;
+        @apply hover:text-blue-600;
+        @apply cursor-pointer;
+    }
+
+    .tabs {
+        @apply relative;
+        @apply min-h-0;
+        @apply clear-both;
+        @apply m-8;
+    }
+    .tab {
+        @apply float-left;
+    }
+
+    .tab label {
+        @apply bg-gray-300;
+        @apply p-8;
+        @apply border-solid;
+        @apply border;
+        @apply border-gray-200;
+        @apply relative;
+        @apply left-1;
+        @apply -m-px;
+        @apply -inset-x-px;
+      }
+
+    .tab [type=radio] {
+        display: none;   
+    }
+
+    .content {
+        position: absolute;
+        top: 28px;
+        left: 0;
+        background: white;
+        right: 0;
+        bottom: 0;
+        padding: 20px;
+        border: 1px solid #ccc; 
+      }
+      [type=radio]:checked ~ label {
+        background: white;
+        border-bottom: 1px solid white;
+        z-index: 2;
+      }
+      [type=radio]:checked ~ label ~ .content {
+        z-index: 1;
+      }
+  }
+
+
+

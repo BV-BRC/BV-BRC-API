@@ -1,0 +1,112 @@
+<html>
+	<head>
+		<title>BV-BRC API Documentation</title>
+		<link rel="stylesheet" href="../resources/css/compiled.css">
+	</head>
+	<body>
+	<div class="p-4">
+		<div class="my-4">
+			<h1>BV-BRC Data API</h1>
+			<p class="m-2">
+				The BV-BRC Data API Service allows developers to query and retrieve both public and private (when authorized) data from the BV-BRC.  The API is common to all data types within the system. 
+			</p>
+		</div>
+
+		<div class="my-4">
+			<h2 class="border-b-2 border-gray-600">Data Types</h2>
+			<p class="m-2">
+				The following data types are exposed from the BV-BRC.  Click on a data type below to go to the data type's detail page for attribute information and specific examples.
+			</p>
+			<ul class="grid 2xl:grid-cols-6 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-2 m-2 p-4">
+				<% config.get("collections").filter(function(c){ return !((doc_data.black_listed_collections||[]).indexOf(c)>=0)}).forEach(function(collection){ %>
+					<a class="text-center border-1 bg-gray-100 p-4 hover:bg-blue-200 hover:cursor-pointer" href="<%= collection %>"><%= collection %></a>
+				<% }) %>
+			</ul>			
+		</div>
+
+		<div class="my-4">
+			<h2 class="border-b-2 border-gray-600">Core API</h2>
+			<p class="m-2">
+				The core BV-BRC Data API is a provided through a simple HTTP interface. The core set of functionality provides object retrieval by ID and querying for any of the above data types.  
+				All of this functionality can be accessed via common HTTP GET and POST requests. 
+			</p>
+			
+			<p class="m-2">
+				There is also a NodeJS client, <a class="link" target="_blank" href="https://github.com/BV-BRC/bvbrc_js_client">BVBRC JS Client</a>, available for developer use.  This client provides access to all of the common methods and may also provide some sugar functions for common queries.  Most of the data is also available through this API via the <a class="link" target="_blank" href="https://docs.patricbrc.org/cli_tutorial/">BV-BRC Command Line Interface</a>.
+			</p>
+
+			<div class="my-4">
+				<h3 class="border-b border-gray-400">Data Retrieval by ID</h3>
+				<p class="m-2">For each of the defined data types, data can be retrieved directly by ID.  The specific type of ID used is defined by the data type's primary key and can be seen by clicking on one of the above data types.</p>
+				<p class="m-2">The endpoint for data object retrieval is in the following form:</p>
+				<pre class="m-auto max-w-1/2 ml-4"><%= baseURL %>/<span class="text-indigo-600">{DATA TYPE}</span>/<span class="text-indigo-600">{ID}</span></pre>
+			</div>
+			
+			<div class="my-4">
+				<h3 class="border-b border-gray-400">Data Querying</h3>
+				<p>Queries can be submitted as GET requests (with the query in the URL) or as POST requests with the query contained in the request body.  The latter is useful for large queries which would exceed the maximum length of URLs supported by browsers/servers.</p>
+				<p class="m-2">The endpoint for data querying with an HTTP GET is in the following form:</p>
+				<pre class="m-auto max-w-1/2 ml-4"><%= baseURL %>/<span class="text-indigo-600">{DATA TYPE}</span>/?<span class="text-indigo-600">{QUERY}</span></pre>
+				<p class="m-2">The endpoint for data querying with an HTTP POST is nearly the same, but the query goes in the body instead of the URL:</p>
+				<pre class="m-auto max-w-1/2 ml-4"><%= baseURL %>/<span class="text-indigo-600">{DATA TYPE}</span>/</pre>
+				<p class="m-2 my-4">There are a couple of options allowed when using the HTTP POST method to submit a query.  By specifying the HTTP CONTENT-TYPE Header, the API allows queries to be submitted as RQL or SOLR queries.  To submit a RQL query, specify CONTENT-TYPE as:</p> 
+				<pre class="inline ml-4">application/x-www-form-url-encoded</pre> or <pre class="inline">application/rqlquery+x-www-form-urlencoded</pre>  
+				<p class="m-2 my-4">To submit a SOLR style query, use</p><pre class="inline ml-4">application/solrquery+x-www-form-urlencoded</pre>
+
+			</div>
+
+			<div class="my-4">
+				<h3 class="border-b border-gray-400">RQL Operators</h3>
+				<p class="m-2">The following operators are available for RQL Queries:</p>
+				<ul class="list-disc m-2">
+					<% doc_data.rql_operators.forEach((op)=>{ %>
+						<li class="flex">
+							<div class="h-16 text-lg text-right align-middle p-2" style="width:150px">
+								<%= op.op %>
+							</div>
+							<div class="flex-1 h-16">
+								<div><%= op.description %></div>
+								<div><%= op.proto %></div>
+							</div>
+						</li>
+					<% }) %>
+				</ul>
+
+				<div class="my-4">
+					<p>Note that it is important to URL Encode FIELD names and VALUES individually (not entire query expressions): </p>
+					<pre class="my-4 m-auto max-w-1/2">const query = `eq(${encodeURIComponent(field)},${encodeURIComponent(value)})`</pre>
+vs
+<pre class="my-4 m-auto max-w-1/2">const query = encodeURIComponent(`eq(${field},${value})`);</pre>
+					<p>The former is correct, while the latter will encode the RQL operators themselves and cause failures.</p>
+				</div>
+			</div>
+
+			<div class="my-4">
+				<h3 class="border-b border-gray-400">Private Data</h3>
+				<p class="m-2">Private data is accessed using the same API as the rest of the system.  To access private data, add an HTTP Authorization header to your request with your BV-BRC Access Token.  No authorization token is currently required to access the PUBLIC data, though this may change in the future.</p>
+
+			</div>
+
+			<div class="my-4">
+				<h3 class="border-b border-gray-400">HTTP Headers</h3>
+				<p class="m-2">Both requests and responses to the API may contain useful information and directives in the HTTP headers.  For requests, developers can do things like control the format of the data response.  Response headers in queries for example contain information about the total size of the result set even though only a portion may be retrieved. </p>
+				<p class="m-2">Important Request Headers</p>
+				<ul class="list-disc list-inside m-2">
+					<li>ACCEPT - Defines the format of the response. Commonly <pre class="inline">application/json</pre>, but other formats are also available.  Formats available for each data type are listed on the data type detail pages.</li>
+					<li>AUTHORIZATION - User Authorization Token, if any.</li>
+					<li>ACCEPT-RANGE - Range of items requested</li>
+					<li>CONTENT-TYPE - For POST requests, this defines the type of data in the body</li>
+				</ul>
+				<p class="m-2">Important Response Headers</p>
+				<ul class="list-disc m-2 list-inside">
+					<li>CONTENT-TYPE - The format of the data being returned</li>
+					<li>CONTENT-RANGE - The range of the data being return; e.g. "items 0-9/99"</li>
+				</ul>
+				
+				<div class="m-auto w-full bg-yellow-50 border-gray-200 border p-4">
+					<p class="my-2">Sometimes it is inconvenient or impossible to set an HTTP Request header.  This API allows HTTP headers to be set by appending a query string to the URL in the form of <pre class="inline">?http_HEADER=VALUE</pre>. For example, <pre class="inline">?http_accept=application/json</pre></p>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

@@ -16,6 +16,9 @@ var jbrowseRouter = require('./routes/JBrowse')
 var genomePermissionRouter = require('./routes/genomePermissionRouter')
 var dataRouter = require('./routes/dataRouter')
 var indexer = require('./routes/indexer')
+var docRouter = require("./routes/documentation")
+var indexRouter = require("./routes/index");
+
 var cors = require('cors')
 
 process.on('uncaughtException', (err, origin) => {
@@ -76,8 +79,10 @@ var collections = config.get('collections')
 
 app.use('/indexer', indexer)
 
+app.get ('/', indexRouter)
+app.use('/doc', docRouter)
 app.post('/', rpcHandler)
-
+app.use("/resources", express.static("public"))
 app.use('/health', function (req, res, next) {
   res.write('OK')
   res.end()

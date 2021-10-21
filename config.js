@@ -49,8 +49,9 @@ var defaults = {
     'proteomics_peptide',
     'proteomics_protein'
   ],
-
+ 
   distributeURL: 'http://localhost:3001/',
+  publicURL: "http://localhost:3001/",
 
   jbrowseAPIRoot: 'http://localhost:3001/jbrowse',
 
