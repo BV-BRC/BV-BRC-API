@@ -6,6 +6,11 @@
         {"content_type": "text/tsv", "description": "Returns results in Tab Separated values (TSV) format.  Columns are separated by a tab.  Multi-value columns are separated by ';'.  Rows are separated by new line"},
         {"content_type": "application/vnd.openxmlformats", "description": "Returns objects as an MS Excel document"}
     ],
+    "specialized_result_formatters": {
+        "application/dna+fasta": "Returns DNA sequences for queries in FASTA format",
+        "application/protein+fasta": "Returns Protein sequences for queries in FASTA format",
+        "application/gff": "Returns a genomic features in GFF format"
+    },
     "rql_operators": [
         {"op": "eq", "proto": "eq(FIELD,VALUE)", "description": "FIELD equals VALUE"},
         {"op": "ne", "proto": "ne(FIELD,VALUE)", "description": "FIELD is not equal to VALUE"},
@@ -70,7 +75,13 @@
         },
         "genome_feature": {
             "label": "Genome Feature",
-            "example_id": "RefSeq.1001732.3.AKUQ01000008.CDS.655540.656001.rev"
+            "example_id": "RefSeq.1001732.3.AKUQ01000008.CDS.655540.656001.rev",
+            "extra_query_examples": [
+                {"query": "eq(genome_id,90370.851)&limit(5)", "description": "Query for genome features for genome 90370.851, limit to 5 sequences.  Return JSON data."},
+                {"query": "eq(genome_id,90370.851)&limit(5)&http_accept=application/dna+fasta", "description": "Query for genome features for genome 90370.851, limit to 5 sequences.  Return DNA Fasta."}
+
+            ],
+            "extra_formatters": ["application/dna+fasta","application/protein+fasta","application/gff"]
         },
         "genome_sequence": {
             "label": "Genome Sequence",

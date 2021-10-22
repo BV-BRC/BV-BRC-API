@@ -69,9 +69,16 @@
             <ul class="list-disc list-inside">
                 <% default_query_formatters.forEach((ct)=>{ %>
                     <li class="ml-3 mb-3">
-                        <span class="font-semibold"><%= ct.content_type %></span><span class="ml=3">- <%= ct.description %></span>
+                        <span class="font-semibold"><%= ct.content_type %></span><span class="ml=3"> - <%= ct.description %></span>
                     </li>
                 <% }) %>
+                <% if (doc_data.extra_formatters && doc_data.extra_formatters.length>0) { 
+                    doc_data.extra_formatters.forEach((ct)=>{ %>
+                        <li class="ml-3 mb-3">
+                            <span class="font-semibold"><%= ct %></span><span class="ml=3"> - <%= specialized_result_formatters[ct] %></span>
+                        </li>
+                <%   })
+                   } %>
             </ul>
             <h3 class="m-2 ml-2">
                 EXAMPLE<% if (doc_data.extra_query_examples && doc_data.extra_query_examples.length>0) { %>S<% } %>
