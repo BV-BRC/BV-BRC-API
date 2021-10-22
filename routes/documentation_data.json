@@ -9,6 +9,8 @@
     "specialized_result_formatters": {
         "application/dna+fasta": "Returns DNA sequences for queries in FASTA format",
         "application/protein+fasta": "Returns Protein sequences for queries in FASTA format",
+        "application/dna+jsonh+fasta": "Returns DNA sequences for queries in JSONH-FASTA format",
+        "application/protein+jsonh+fasta": "Returns Protein sequences for queries in JSONH-FASTA format",
         "application/gff": "Returns a genomic features in GFF format"
     },
     "rql_operators": [
@@ -78,10 +80,10 @@
             "example_id": "RefSeq.1001732.3.AKUQ01000008.CDS.655540.656001.rev",
             "extra_query_examples": [
                 {"query": "eq(genome_id,90370.851)&limit(5)", "description": "Query for genome features for genome 90370.851, limit to 5 sequences.  Return JSON data."},
-                {"query": "eq(genome_id,90370.851)&limit(5)&http_accept=application/dna+fasta", "description": "Query for genome features for genome 90370.851, limit to 5 sequences.  Return DNA Fasta."}
+                {"query": "and(eq(annotation,PATRIC),eq(genome_id,90370.851))&limit(5)&http_accept=application/dna+fasta", "description": "Query for genome features for genome 90370.851 with PATRIC Annotation, limit to 5 sequences.  Return DNA Fasta."}
 
             ],
-            "extra_formatters": ["application/dna+fasta","application/protein+fasta","application/gff"]
+            "extra_formatters": ["application/dna+fasta","application/protein+fasta","application/dna+jsonh+fasta","application/protein+jsonh+fasta","application/gff"]
         },
         "genome_sequence": {
             "label": "Genome Sequence",

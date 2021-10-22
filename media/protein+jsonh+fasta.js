@@ -10,12 +10,14 @@ function formatFASTA (doc) {
   } else if (doc.annotation === 'RefSeq') {
     fasta_id = `gi|${doc.gi}|${(doc.refseq_locus_tag ? (doc.refseq_locus_tag + '|') : '') + (doc.alt_locus_tag ? (doc.alt_locus_tag + '|') : '')}`
   }
-  const header = `>${fasta_id} ${doc.product} [${doc.genome_name} | ${doc.genome_id}]\n`
-  return header + ((doc.sequence) ? LineWrap(doc.sequence, 60) : '') + '\n'
+  const seq = doc.sequence
+  delete doc.sequence;
+  const header = `>${fasta_id} ${JSON.stringify(doc)}\n`
+  return header + ((seq) ? LineWrap(seq, 60) : '') + '\n'
 }
 
 module.exports = {
-  contentType: 'application/protein+fasta',
+  contentType: 'application/protein+jsonh+fasta',
   serialize: async function (req, res, next) {
     if (req.isDownload) {
       res.attachment('PATRIC_' + req.call_collection + '.fasta')

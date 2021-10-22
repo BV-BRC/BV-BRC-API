@@ -1,20 +1,28 @@
 const EventStream = require('event-stream')
 const LineWrap = require('../util/linewrap')
 const { getSequenceByHash, getSequenceDictByHash } = require('../util/featureSequence')
-const SEQUENCE_BATCH = 500
+const SEQUENCE_BATCH = 200
 
-function formatFASTAGenomeSequence (doc) {
-  const header = `>${doc.accession} ${doc.description} [${doc.genome_name || doc.genome_id}]\n`
-  return header + LineWrap(doc.sequence, 60) + '\n'
+function formatFASTAGenomeSequence (o) {
+  const header = `>accn|${o.accession}   ${o.description}   [${o.genome_name} | ${o.genome_id}]\n`
+  return header + LineWrap(o.sequence, 60) + '\n'
 }
 
-function formatFASTAFeatureSequence (doc) {
-  const header = `>${doc.patric_id}|${doc.feature_id} ${doc.product}\n`
-  return header + ((doc.sequence) ? LineWrap(doc.sequence, 60) : '') + '\n'
+function formatFASTAFeatureSequence (o) {
+  let fasta_id
+  if (o.annotation === 'PATRIC') {
+    fasta_id = `${o.patric_id}|${(o.refseq_locus_tag ? (o.refseq_locus_tag + '|') : '') + (o.alt_locus_tag ? (o.alt_locus_tag + '|') : '')}`
+  } else if (o.annotation === 'RefSeq') {
+    fasta_id = `gi|${o.gi}|${(o.refseq_locus_tag ? (o.refseq_locus_tag + '|') : '') + (o.alt_locus_tag ? (o.alt_locus_tag + '|') : '')}`
+  }
+  const seq = o.sequence
+  delete o.sequence;
+  const header = `>${fasta_id} ${JSON.stringify(o)}\n`
+  return header + ((seq) ? LineWrap(seq, 60) : '') + '\n'
 }
 
 module.exports = {
-  contentType: 'application/sralign+dna+fasta',
+  contentType: 'application/dna+jsonh+fasta',
   serialize: async function (req, res, next) {
     if (req.isDownload) {
       res.attachment(`PATRIC_${req.call_collection}.fasta`)
@@ -50,6 +58,7 @@ module.exports = {
             }
           }
         })).on('end', function () {
+          // debug('Exported ' + docCount + ' Documents')
           res.end()
         })
       }, (error) => {
@@ -58,7 +67,7 @@ module.exports = {
     } else {
       if (res.results && res.results.response && res.results.response.docs) {
         const docs = res.results.response.docs
-        const numFound = res.results.response.numFound
+        const numFound = Math.min(res.results.response.numFound, docs.length) // query results can have lesser then it matched
 
         if (req.call_collection === 'genome_feature') {
           // fetch sequences by batch and create a global dictionary
@@ -68,7 +77,7 @@ module.exports = {
             const end = Math.min((i + 1) * SEQUENCE_BATCH, numFound)
             const md5Array = []
             for (let j = start; j < end; j++) {
-              if (docs[j] && docs[j].na_sequence_md5 && docs[j].na_sequence_md5 !== '') {
+              if (docs[j] && docs[j].na_sequence_md5 && docs[j].na_sequence_md5 !== '' && !sequenceDict.hasOwnProperty(docs[j].aa_sequence_md5)) {
                 md5Array.push(docs[j].na_sequence_md5)
               }
             }

@@ -15,7 +15,7 @@ function formatFASTAFeatureSequence (o) {
   } else if (o.annotation === 'RefSeq') {
     fasta_id = `gi|${o.gi}|${(o.refseq_locus_tag ? (o.refseq_locus_tag + '|') : '') + (o.alt_locus_tag ? (o.alt_locus_tag + '|') : '')}`
   }
-  const header = `>${fasta_id}   ${o.product}   [${o.genome_name} | ${o.genome_id}]\n`
+  const header = `>${fasta_id} ${o.product} [${o.genome_name} | ${o.genome_id}]\n`
   return header + ((o.sequence) ? LineWrap(o.sequence, 60) : '') + '\n'
 }
 
