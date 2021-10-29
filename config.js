@@ -1,7 +1,7 @@
-var nconf = require('nconf')
+const nconf = require('nconf')
 
-var defaults = {
-  'http_port': 3001,
+const defaults = {
+  http_port: 3001,
 
   collections: [
     'antibiotics',
@@ -49,9 +49,9 @@ var defaults = {
     'proteomics_peptide',
     'proteomics_protein'
   ],
- 
+
   distributeURL: 'http://localhost:3001/',
-  publicURL: "http://localhost:3001/",
+  publicURL: 'http://localhost:3001/',
 
   jbrowseAPIRoot: 'http://localhost:3001/jbrowse',
 
@@ -84,9 +84,8 @@ var defaults = {
     pass: ''
   },
 
-  'cache': {
-    'enabled': false,
-    'directory': '/tmp/p3api_cache'
+  shards: {
+    preference: 'replica.type:PULL'
   }
 
 }

@@ -126,11 +126,6 @@ function getSchema (req, res, next) {
 }
 
 module.exports = function (req, res, next) {
-  if (req.cacheHit && res.results) {
-    next()
-    return
-  }
-
   res.queryStart = new Date()
 
   switch (req.call_method) {
