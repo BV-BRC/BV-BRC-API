@@ -17,6 +17,7 @@ var media = require('../middleware/media')
 var bodyParser = require('body-parser')
 var debug = require('debug')('p3api-server:route/dataType')
 var querystring = require('querystring')
+const ShardsPreference = require('../middleware/ShardsPreference')
 
 router.use(httpParams)
 
@@ -162,6 +163,7 @@ router.use([
   SOLRQueryParser,
   DecorateQuery,
   Limiter,
+  ShardsPreference,
   function (req, res, next) {
     if (!req.call_method || !req.call_collection) {
       return next('route')
