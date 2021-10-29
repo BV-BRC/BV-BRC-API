@@ -85,7 +85,12 @@ const defaults = {
   },
 
   shards: {
-    preference: 'replica.type:PULL'
+    pathway: {
+      preference: 'replica.type:PULL'
+    },
+    subsystem: {
+      preference: 'replica.type:PULL'
+    }
   }
 
 }
