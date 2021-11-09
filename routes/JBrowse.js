@@ -449,7 +449,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { var f={uniprotColor}; return f(feature); }',
+          'color': 'uiprotColor(feature)',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth': 3
@@ -470,7 +470,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { var f={uniprotColor}; return f(feature); }',
+          'color': 'uniprotColor(feature)',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth': 3
@@ -526,7 +526,7 @@ function generateSarsCov2TrackList (req, res, next) {
         },
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { var f={voColor}; return f(feature.data.parent); }',
+          'color': 'voColor(feature.data.parent)',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth': 3,
@@ -567,7 +567,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { var f={uniprotColor}; return f(feature); }',
+          'color': 'uniprotColor(feature)',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth': 3
@@ -587,7 +587,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { var f={uniprotColor}; return f(feature); }',
+          'color': 'uniprotColor(feature)',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth': 3
@@ -607,7 +607,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { var f={uniprotColor}; return f(feature); }',
+          'color': 'uniprotColor(feature)',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth': 3
@@ -627,7 +627,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { var f={uniprotColor}; return f(feature); }',
+          'color': 'uniprotColor(feature)',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth': 3
@@ -647,7 +647,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { var f={uniprotColor}; return f(feature); }',
+          'color': 'uniprotColor(feature)',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth': 3
@@ -668,7 +668,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { var f={uniprotColor}; return f(feature); }',
+          'color': 'uniprotColor(feature)',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth': 3
@@ -689,7 +689,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { var f={uniprotColor}; return f(feature); }',
+          'color': 'uniprotColor(feature)',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth': 3
@@ -709,7 +709,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { var f={uniprotColor}; return f(feature); }',
+          'color': 'uniprotColor(feature)',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth': 3
@@ -729,7 +729,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { var f={uniprotColor}; return f(feature); }',
+          'color': 'uniprotColor(feature)',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth': 3
@@ -749,7 +749,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { var f={uniprotColor}; return f(feature); }',
+          'color': 'uniprotColor(feature)',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth': 3
@@ -769,7 +769,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { var f={uniprotColor}; return f(feature); }',
+          'color': 'uniprotColor(feature)',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth': 3
@@ -789,7 +789,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { var f={uniprotColor}; return f(feature); }',
+          'color': 'uniprotColor(feature)',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth': 3
@@ -809,7 +809,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { var f={uniprotColor}; return f(feature); }',
+          'color': 'uniprotColor(feature)',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth': 3
@@ -829,7 +829,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { var f={uniprotColor}; return f(feature); }',
+          'color': 'uniprotColor(feature)',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth': 3
@@ -849,7 +849,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { var f={uniprotColor}; return f(feature); }',
+          'color': 'uniprotColor(feature)',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth': 3
@@ -869,7 +869,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { var f={uniprotColor}; return f(feature); }',
+          'color': 'uniprotColor(feature)',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth': 3
@@ -890,7 +890,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { var f={uniprotColor}; return f(feature); }',
+          'color': 'uniprotColor(feature)',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth': 3
@@ -910,7 +910,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { var f={uniprotColor}; return f(feature); }',
+          'color': 'uniprotColor(feature)',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth': 3
@@ -930,7 +930,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { var f={uniprotColor}; return f(feature); }',
+          'color': 'uniprotColor(feature)',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth': 3
@@ -950,7 +950,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
-          'color': 'function(feature) { var f={uniprotColor}; return f(feature); }',
+          'color': 'uniprotColor(feature)',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth': 3
