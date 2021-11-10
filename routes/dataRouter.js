@@ -42,7 +42,7 @@ router.get('/summary_by_taxon/:taxon_id', [
     defs.push(
       subQuery(
         'genome',
-        `q=*:*&fq=taxon_lineage_ids:${req.params.taxon_id}&rows=0&json.facet={unique_family:"unique(family)",unique_genus:"unique(genus)",unique_species:"unique(species)",unique_strain:"unique(strain)"}`,
+        `q=*:*&fq=taxon_lineage_ids:${req.params.taxon_id}&rows=0&json.facet={unique_family:"unique(family)",unique_genus:"unique(genus)",unique_species:"unique(species)"}`,
         {
           accept: 'application/solr+json'
         }
