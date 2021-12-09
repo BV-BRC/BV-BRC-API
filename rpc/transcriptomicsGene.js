@@ -220,20 +220,18 @@ function processTranscriptomicsGene (tgState, options) {
 
       debug('p3 ids: ', p3FeatureIdList.length, 'p2 ids: ', p2FeatureIdList.length)
 
-      const query = {
-        q: [(p3FeatureIdList.length > 0) ? 'feature_id:(' + p3FeatureIdList.join(' OR ') + ')' : '',
-          (p3FeatureIdList.length > 0 && p2FeatureIdList.length > 0) ? ' OR ' : '',
-          (p2FeatureIdList.length > 0) ? 'p2_feature_id:(' + p2FeatureIdList.join(' OR ') + ')' : ''].join(''),
-        fl: 'feature_id,p2_feature_id,strand,product,accession,start,end,patric_id,refseq_locus_tag,alt_locus_tag,genome_name,genome_id,gene'
-      }
+      const query_fl = 'feature_id,p2_feature_id,strand,product,accession,start,end,patric_id,refseq_locus_tag,alt_locus_tag,genome_name,genome_id,gene'
 
-      const q = Object.keys(query).map(p => p + '=' + query[p]).join('&')
-      const fetchSize = 25000
-      const steps = Math.ceil((p3FeatureIdList.length + p2FeatureIdList.length) / fetchSize)
+      const fetchSize = 10000
+      const p3IdSteps = Math.ceil(p3FeatureIdList.length / fetchSize)
+      const p2IdSteps = Math.ceil(p2FeatureIdList.length / fetchSize)
       const allRequests = []
 
-      for (let i = 0; i < steps; i++) {
-        const range = 'items=' + (i * fetchSize) + '-' + ((i + 1) * fetchSize - 1)
+      for (let i = 0; i < p3IdSteps; i++) {
+        const ids = p3FeatureIdList.slice(i * fetchSize, (i + 1) * fetchSize)
+        const partial_q = `q=*:*&fq={!terms f=feature_id method=automaton}${ids.join(',')}&fl=${query_fl}`
+
+        const range = `items=0-${ids.length}`
         const subDef = httpRequest({
           port: Config.get('http_port'),
           headers: {
@@ -245,7 +243,27 @@ function processTranscriptomicsGene (tgState, options) {
           method: 'POST',
           agent: SolrAgent,
           path: '/genome_feature/'
-        }, q).then((body) => JSON.parse(body))
+        }, partial_q).then((body) => JSON.parse(body))
+        allRequests.push(subDef)
+      }
+
+      for (let i = 0; i < p2IdSteps; i++) {
+        const ids = p2FeatureIdList.slice(i * fetchSize, (i + 1) * fetchSize)
+        const partial_q = `q=*:*&fq={!terms f=p2_feature_id method=automaton}${ids.join(',')}&fl=${query_fl}`
+
+        const range = `items=0-${ids.length}`
+        const subDef = httpRequest({
+          port: Config.get('http_port'),
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/solrquery+x-www-form-urlencoded',
+            'Range': range,
+            'Authorization': options.token || ''
+          },
+          method: 'POST',
+          agent: SolrAgent,
+          path: '/genome_feature/'
+        }, partial_q).then((body) => JSON.parse(body))
         allRequests.push(subDef)
       }
 
