@@ -10,7 +10,6 @@ if (baseURL[baseURL.length - 1] === '/') {
 }
 
 const render_type = (field, schema) => {
-  const types = schema.fieldTypes
   var out
 
   switch (field.type) {
@@ -32,7 +31,6 @@ const render_type = (field, schema) => {
     case 'booleans':
       out = 'array of booleans'
       break
-    case 'int':
     case 'int':
       out = 'integer'
       break
