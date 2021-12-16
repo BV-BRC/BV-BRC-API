@@ -382,10 +382,10 @@ function generateSarsCov2TrackList (req, res, next) {
       {
         'category': 'Mutation Impact',
         'urlTemplates': [
-          { 'url': distRoot + 'content/jbrowse/class1_max_total_track.bw', 'name': 'Class 1', 'description': 'ACE2 blocking antibodies that bind only to "up" RBDs (Barnes 2021)', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
-          { 'url': distRoot + 'content/jbrowse/class2_max_total_track.bw', 'name': 'Class 2', 'description': 'ACE2 blocking antibodies that bind to both "up", "down", and contanct adjacent RBDs (Barnes 2021)', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
-          { 'url': distRoot + 'content/jbrowse/class3_max_total_track.bw', 'name': 'Class 3', 'description': 'Antibodies binding outside the ACE2 site and to "up" and "down" RBDs (Barnes 2021)', 'nonCont': true, 'fill': true, 'color': '#85C0F9' },
-          { 'url': distRoot + 'content/jbrowse/class4_max_total_track.bw', 'name': 'Class 4', 'description': 'Non-ACE2 blocking antibodies that bind only to "up" RBDs (Barnes 2021)', 'nonCont': true, 'fill': true, 'color': '#CCBE9F' }],
+          { 'url': distRoot + 'content/jbrowse/class1_max_total_track.bw', 'name': 'Class 1', 'description': 'ACE2 blocking antibodies that bind only to "up" RBDs (Barnes 2020)', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/class2_max_total_track.bw', 'name': 'Class 2', 'description': 'ACE2 blocking antibodies that bind to both "up", "down", and contanct adjacent RBDs (Barnes 2020)', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/class3_max_total_track.bw', 'name': 'Class 3', 'description': 'Antibodies binding outside the ACE2 site and to "up" and "down" RBDs (Barnes 2020)', 'nonCont': true, 'fill': true, 'color': '#85C0F9' },
+          { 'url': distRoot + 'content/jbrowse/class4_max_total_track.bw', 'name': 'Class 4', 'description': 'Non-ACE2 blocking antibodies that bind only to "up" RBDs (Barnes 2020)', 'nonCont': true, 'fill': true, 'color': '#CCBE9F' }],
         'storeClass': 'jbrowse.repo/plugins/MultiBigWig/js/Store/SeqFeature/MultiBigWig',
         'autoscale': 'global',
         'style': { 'height': '125', 'textColor' : '#FFFFFF', },
@@ -447,46 +447,67 @@ function generateSarsCov2TrackList (req, res, next) {
         'metadata': { 'description': 'These data tracks were constructed from the human sera escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing serum antibodies elicited from the Moderna vaccine.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the Moderna vaccine elicted antibodies in vitro (PMID: 33532768, 33592168, 33495308).' }
       }, 
       {
-        "category" : "Variants of Concern",
+        "category" : "Variants",
         "maxExportFeatures": 10000, 
         "style": {
-            "className": "feature3", 
-           "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
-            "showLabels": true, 
-            "showTooltips": true, 
-            "borderWidth": 3
+          "className": "feature3", 
+          "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+          "showLabels": true, 
+          "showTooltips": true, 
+          "borderWidth": 3
         }, 
         "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
-        "urlTemplate": distRoot + 'content/jbrowse/LoCs_AA_gff3_august.sorted.gff.gz', 
+        "urlTemplate": distRoot + 'content/jbrowse/VoC_AA_Markers_Dec.sorted.gff.gz', 
         "maxExportSpan": 10000000, 
-        "label": "LoCMarkersAAVariations", 
-        "key": "LoC Markers: AA Variations", 
+        "label": "VoCMarkersAAVariations", 
+        "key": "Variants of Concern (VoC)", 
         "type": "JBrowse/View/Track/CanvasFeatures", 
         "metadata": {
-            "Description": "LoC Markers: AA Variations"
+          "Description": "Variants of Concern (VoC)"
         },
         "displayMode":"normal"
       },
       {
-          "category" : "Variants of Concern",
-          "maxExportFeatures": 10000, 
-          "style": {
-              "className": "feature3", 
-            "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
-              "showLabels": true, 
-              "showTooltips": true, 
-              "borderWidth": 3
-          }, 
-          "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
-          "urlTemplate": distRoot + 'content/jbrowse/LoIs_AA_gff3_august.sorted.gff.gz', 
-          "maxExportSpan": 10000000, 
-          "label": "LoIMarkersAAVariations", 
-          "key": "LoI Markers: AA Variations", 
-          "type": "JBrowse/View/Track/CanvasFeatures", 
-          "metadata": {
-              "Description": "LoI Markers: AA Variations"
-          },
-          "displayMode":"normal"
+        "category" : "Variants",
+        "maxExportFeatures": 10000, 
+        "style": {
+          "className": "feature3", 
+          "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+          "showLabels": true, 
+          "showTooltips": true, 
+          "borderWidth": 3
+        }, 
+        "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+        "urlTemplate": distRoot + 'content/jbrowse/VoI_AA_Markers_Dec.sorted.gff.gz', 
+        "maxExportSpan": 10000000, 
+        "label": "VoIMarkersAAVariations", 
+        "key": "Variants of Interest (VoI)", 
+        "type": "JBrowse/View/Track/CanvasFeatures", 
+        "metadata": {
+          "Description": "Variants of Interest (VoI)"
+        },
+        "displayMode":"normal"
+      },
+      {
+        "category" : "Variants",
+        "maxExportFeatures": 10000, 
+        "style": {
+          "className": "feature3", 
+          "color":'function(feature) { var f={uniprotColor}; return f(feature); }',
+          "showLabels": true, 
+          "showTooltips": true, 
+          "borderWidth": 3
+        }, 
+        "storeClass": "JBrowse/Store/SeqFeature/GFF3Tabix", 
+        "urlTemplate": distRoot + 'content/jbrowse/VUM_AA_Markers_Dec.sorted.gff.gz', 
+        "maxExportSpan": 10000000, 
+        "label": "VUMMarkersAAVariations", 
+        "key": "Variants Under Monitoring (VUM)", 
+        "type": "JBrowse/View/Track/CanvasFeatures", 
+        "metadata": {
+          "Description": "Variants Under Monitoring (VUM)"
+        },
+        "displayMode":"normal"
       },
       {
         'category': 'Epitopes',
