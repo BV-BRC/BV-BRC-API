@@ -11,7 +11,7 @@ function formatFASTA (doc) {
     fasta_id = `gi|${doc.gi}|${(doc.refseq_locus_tag ? (doc.refseq_locus_tag + '|') : '') + (doc.alt_locus_tag ? (doc.alt_locus_tag + '|') : '')}`
   }
   const seq = doc.sequence
-  delete doc.sequence;
+  delete doc.sequence
   const header = `>${fasta_id} ${JSON.stringify(doc)}\n`
   return header + ((seq) ? LineWrap(seq, 60) : '') + '\n'
 }

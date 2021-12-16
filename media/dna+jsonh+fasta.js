@@ -16,7 +16,7 @@ function formatFASTAFeatureSequence (o) {
     fasta_id = `gi|${o.gi}|${(o.refseq_locus_tag ? (o.refseq_locus_tag + '|') : '') + (o.alt_locus_tag ? (o.alt_locus_tag + '|') : '')}`
   }
   const seq = o.sequence
-  delete o.sequence;
+  delete o.sequence
   const header = `>${fasta_id} ${JSON.stringify(o)}\n`
   return header + ((seq) ? LineWrap(seq, 60) : '') + '\n'
 }
