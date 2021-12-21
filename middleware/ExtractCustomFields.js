@@ -155,6 +155,27 @@ module.exports = function (req, res, next) {
           'organism', 'strain', 'mutant', 'condition', 'timepoint', 'release_date'
         ]
         break
+      case 'experiment':
+        req.fieldHeader = [
+          'Experiment ID', 'Study Name', 'Study Title', 'Experiment Name', 'Experiment Title', 'Public Identifier', 'Experiment Type', 'Organism', 'Strain',
+          'Treatment Type', 'Treatment Name', 'Treatment Amount', 'Treatment Duration', 'Biosets'
+        ]
+        req.fieldSelection = [
+          'exp_id', 'study_name', 'study_title', 'exp_name', 'exp_title', 'public_identifier', 'exp_type', 'organism', 'strain',
+          'treatment_type', 'treatment_name', 'treatment_amount', 'treatment_duration', 'biosets'
+        ]
+        break
+      case 'bioset':
+        req.fieldHeader = [
+          'Experiment ID', 'Study Name', 'Study Title', 'Experiment Name', 'Experiment Title', 'Experiment Type', 'Bioset Name', 'Bioset Description', 'Bioset Type', 'Organism', 'Strain',
+          'Treatment Type', 'Treatment Name', 'Treatment Amount', 'Treatment Duration', 'Result Count'
+        ]
+        req.fieldSelection = [
+          'exp_id', 'study_name', 'study_title', 'exp_name', 'exp_title', 'exp_type', 'bioset_name', 'bioset_description', 'bioset_type', 'organism', 'strain',
+          'treatment_type', 'treatment_name', 'treatment_amount', 'treatment_duration', 'entity_count'
+        ]
+
+        break
       case 'interaction':
       case 'ppi':
         req.fieldHeader = [
