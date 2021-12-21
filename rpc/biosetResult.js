@@ -46,7 +46,7 @@ function readPublicExperiments (tgState, options) {
         method: 'POST',
         agent: SolrAgent,
         path: '/bioset_result/'
-      }, `${tgState.query}&select(bioset_id,entity_id,entity_name,feature_id,patric_id,locus_tag,gene_id,protein_id,uniprot_id,log2_fc,p_value,z_score)`)
+      }, `${tgState.query}&select(bioset_id,entity_id,entity_name,feature_id,patric_id,locus_tag,gene_id,protein_id,uniprot_id,gene,product,log2_fc,p_value,z_score)`)
         .then((body) => JSON.parse(body))
       allRequests.push(subPromise)
     }
