@@ -14,7 +14,7 @@ module.exports = function (req, res, next) {
     switch (req.call_collection) {
       case 'genome_feature':
         req.fieldHeader = [
-          'Genome', 'Genome ID', 'Accession', 'PATRIC ID', 'RefSeq Locus Tag', 'Alt Locus Tag',
+          'Genome', 'Genome ID', 'Accession', 'BRC ID', 'RefSeq Locus Tag', 'Alt Locus Tag',
           'Feature ID', 'Annotation', 'Feature Type', 'Start', 'End', 'Length', 'Strand', 'FIGfam ID',
           'PATRIC genus-specific families (PLfams)', 'PATRIC cross-genus families (PGfams)', 'Protein ID',
           'AA Length', 'Gene Symbol', 'Product', 'GO'
@@ -96,9 +96,61 @@ module.exports = function (req, res, next) {
           'evidence', 'source', 'pmid'
         ]
         break
+      case 'surveillance':
+        req.fieldHeader = [
+          'Project Identifier', 'Contributing Institution', 'Sample Identifier', 'Sequence Accession',
+          'Sample Material', 'Sample Transport Medium', 'Sample Receipt Date', 'Submission Date', 'Last Udpdate Date', 'Longitudinal Study', 'Embargo End Date',
+          'Collector Name', 'Collector Institution', 'Contact Email Address', 'Collection Date', 'Collection Year', 'Collection Season',
+          'Days Elapsed to Sample Collection', 'Collection Country', 'Collection State Province', 'Collection City', 'Collection POI',
+          'Collection Latitude', 'Collection Longitude', 'Pathogen Test Type', 'Pathogen Test Result', 'Pathogen Test Interpretation',
+          'Species', 'Type', 'Subtype', 'Strain', 'Host Identifier', 'Host ID Type', 'Host Species', 'Host Common Name',
+          'Host Group', 'Host Sex', 'Host Age', 'Host Height', 'Host Weight', 'Host Habitat', 'Host Natural State', 'Host Capture Status',
+          'Host Health', 'Exposure', 'Duration of Exposure', 'Exposure Type', 'Use of Personal Protective Equipment', 'Primary Living Situation',
+          'Nursing Home Residence', 'Daycare Attendance', 'Travel History', 'Profession', 'Education', 'Pregnancy', 'Trimester of Pregnancy', 'Breastfeeding',
+          'Hospitalized', 'Hosptializaion Duration', 'Intensive Care Unit', 'Chest Imaging Interpretation', 'Ventilation',
+          'Oxygen Saturation', 'Ecmo', 'Dialysis', 'Disease Status', 'Days Elapsed to Disease Status', 'Disease Severity', 'Alcohol Or Other Drug Use',
+          'Tobacco Use', 'Packs Per Day For How Many Years', 'Chronic Conditions', 'Maintenance Medication', 'Types of Allergies', 'Influenza Like Illiness Over The Past Year',
+          'Infections Within Five Years', 'Human Leukocyte Antigens', 'Symptoms', 'Onset Hours', 'Sudden Onset', 'Diagnosis', 'Pre Visit Medication',
+          'Post Visit Medication', 'Treatment', 'Initiation Of Treatment', 'Duration of Treatment', 'Treatment Dosage', 'Vaccination Type',
+          'Days Elapsed to Vaccination', 'Source of Vaccine Information', 'Vaccine Lot Number', 'Vaccine Manufacturer', 'Vaccine Dosage',
+          'Other Vaccinations', 'Additional Metadata', 'Comments'
+        ]
+        req.fieldSelection = [
+          'project_identifier', 'contributing_institution', 'sample_identifier', 'sequence_accession',
+          'sample_material', 'sample_transport_medium', 'sample_receipt_date', 'submission_date', 'last_update_date', 'longitudinal_study', 'embargo_end_date',
+          'collector_name', 'collector_institution', 'contact_email_address', 'collection_date', 'collection_year', 'collection_season',
+          'days_elapsed_to_sample_collection', 'collection_country', 'collection_state_province', 'collection_city', 'collection_poi',
+          'collection_latitude', 'collection_longitude', 'pathogen_test_type', 'pathogen_test_result', 'pathogen_test_interpretation',
+          'species', 'type', 'subtype', 'strain', 'host_identifier', 'host_id_type', 'host_species', 'host_common_name',
+          'host_group', 'host_sex', 'host_age', 'host_height', 'host_weight', 'host_habitat', 'host_natural_state', 'host_capture_status',
+          'host_health', 'exposure', 'duration_of_exposure', 'exposure_type', 'use_of_personal_protective_equipment', 'primary_living_situation',
+          'nursing_home_residence', 'daycare_attendance', 'travel_history', 'profession', 'education', 'pregnancy', 'trimester_of_pregnancy', 'breastfeeding',
+          'hospitalized', 'hosptializaion_duration', 'intensive_care_unit', 'chest_imaging_interpretation', 'ventilation',
+          'oxygen_saturation', 'ecmo', 'dialysis', 'disease_status', 'days_elapsed_to_disease_status', 'disease_severity', 'alcohol_or_other_drug_use',
+          'tobacco_use', 'packs_per_day_for_how_many_years', 'chronic_conditions', 'maintenance_medication', 'types_of_allergies', 'influenza_like_illiness_over_the_past_year',
+          'infections_within_five_years', 'human_leukocyte_antigens', 'symptoms', 'onset_hours', 'sudden_onset', 'diagnosis', 'pre_visit_medication',
+          'post_visit_medication', 'treatment', 'initiation_of_treatment', 'duration_of_treatment', 'treatment_dosage', 'vaccination_type',
+          'days_elapsed_to_vaccination', 'source_of_vaccine_information', 'vaccine_lot_number', 'vaccine_manufacturer', 'vaccine_dosage',
+          'other_vaccinations', 'additional_metadata', 'comments'
+        ]
+        break
+      case 'serology':
+        req.fieldHeader = [
+          'Project Identifier', 'Contributing Institution', 'Sample Identifier',
+          'Host Identifier', 'Host Type', 'Host Species', 'Host Common Name', 'Host Sex', 'Host Age', 'Host Age Group', 'Host Health',
+          'Collection Country', 'Collection State', 'Collection City', 'Collection Date', 'Collection Year',
+          'Test Type', 'Test Result', 'Test Interpretation', 'Serotype', 'Comments'
+        ]
+        req.fieldSelection = [
+          'project_identifier', 'contributing_institution', 'sample_identifier',
+          'host_identifier', 'host_type', 'host_species', 'host_common_name', 'host_sex', 'host_age', 'host_age_group', 'host_health',
+          'collection_country', 'collection_state', 'collection_city', 'collection_date', 'collection_year',
+          'test_type', 'test_result', 'test_interpretation', 'serotype', 'comments'
+        ]
+        break
       case 'sp_gene':
         req.fieldHeader = [
-          'Evidence', 'Property', 'Source', 'Genome Name', 'PATRIC ID', 'RefSeq Locus Tag', 'Alt Locus Tag', 'Source ID',
+          'Evidence', 'Property', 'Source', 'Genome Name', 'BRC ID', 'RefSeq Locus Tag', 'Alt Locus Tag', 'Source ID',
           'Source Organism', 'Gene', 'Product', 'Function', 'Classification', 'PubMed', 'Subject Coverage', 'Query Coverage',
           'Identity', 'E-value'
         ]
