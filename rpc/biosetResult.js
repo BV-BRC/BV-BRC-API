@@ -1,4 +1,4 @@
-const debug = require('debug')('p3api-server:TranscriptomicsGene')
+const debug = require('debug')('p3api-server:BiosetResult')
 const { httpRequest } = require('../util/http')
 const Config = require('../config')
 const http = require('http')
@@ -7,6 +7,7 @@ const SolrAgent = new http.Agent(SolrAgentConfig)
 
 function readPublicExperiments (tgState, options) {
   return new Promise(async (resolve, reject) => {
+    debug(`readPublicExperiments: ${tgState.query}`)
     const res = await httpRequest({
       port: Config.get('http_port'),
       headers: {
@@ -45,7 +46,7 @@ function readPublicExperiments (tgState, options) {
         method: 'POST',
         agent: SolrAgent,
         path: '/bioset_result/'
-      }, `${tgState.query}&select(exp_id,bioset_id,entity_id,entity_name,feature_id,patric_id,locus_tag,gene_id,protein_id,uniprot_id,log2_fc,p_value,z_score)`)
+      }, `${tgState.query}&select(bioset_id,entity_id,entity_name,feature_id,patric_id,locus_tag,gene_id,protein_id,uniprot_id,log2_fc,p_value,z_score)`)
         .then((body) => JSON.parse(body))
       allRequests.push(subPromise)
     }
@@ -54,13 +55,13 @@ function readPublicExperiments (tgState, options) {
       const expressions = []
       const p3FeatureIdSet = {}
 
-      results.forEach(function (genes) {
-        genes.forEach(function (gene) {
-          expressions.push(gene)
+      results.forEach(function (batch) {
+        batch.forEach(function (entity) {
+          expressions.push(entity)
 
-          if (gene.hasOwnProperty('entity_id')) {
-            if (!p3FeatureIdSet.hasOwnProperty(gene.entity_id)) {
-              p3FeatureIdSet[gene.entity_id] = true
+          if (entity.hasOwnProperty('entity_id')) {
+            if (!p3FeatureIdSet.hasOwnProperty(entity.entity_id)) {
+              p3FeatureIdSet[entity.entity_id] = true
             }
           }
         })
@@ -86,9 +87,7 @@ function processTranscriptomicsGene (tgState, options) {
 
         if (!expressionHash.hasOwnProperty(featureId)) {
           const expr = Object.assign(expression, { samples: {} })
-          delete expr.log2_fc
-          delete expr.z_score
-          delete expr.p_value
+
           const log2_fc = expression.log2_fc
           const z_score = expression.z_score
           const p_value = expression.p_value
@@ -99,6 +98,9 @@ function processTranscriptomicsGene (tgState, options) {
           }
           expr.up = (log2_fc != null && Number(log2_fc) > 0) ? 1 : 0
           expr.down = (log2_fc != null && Number(log2_fc) < 0) ? 1 : 0
+          delete expr.log2_fc
+          delete expr.z_score
+          delete expr.p_value
 
           expressionHash[featureId] = expr
         } else {
