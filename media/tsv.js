@@ -10,7 +10,7 @@ module.exports = {
     var header = req.fieldHeader
 
     if (req.isDownload) {
-      res.attachment(`PATRIC_${req.call_collection}.txt`)
+      res.attachment(`BVBRC_${req.call_collection}.txt`)
     }
 
     if (req.call_method === 'stream') {

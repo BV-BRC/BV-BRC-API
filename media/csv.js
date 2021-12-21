@@ -11,7 +11,7 @@ module.exports = {
     const header = req.fieldHeader
 
     if (req.isDownload) {
-      res.attachment('PATRIC_' + req.call_collection + '.csv')
+      res.attachment('BVBRC_' + req.call_collection + '.csv')
     }
     // console.log(`media type csv, call_method: ${req.call_method}`)
 

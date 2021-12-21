@@ -7,7 +7,7 @@ module.exports = {
     const header = req.fieldHeader
 
     if (req.isDownload) {
-      res.attachment(`PATRIC_${req.call_collection}.xlsx`)
+      res.attachment(`BVBRC_${req.call_collection}.xlsx`)
     }
 
     res.set('Content-Type', 'application/vnd.openxmlformats')

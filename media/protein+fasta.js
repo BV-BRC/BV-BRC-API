@@ -18,7 +18,7 @@ module.exports = {
   contentType: 'application/protein+fasta',
   serialize: async function (req, res, next) {
     if (req.isDownload) {
-      res.attachment('PATRIC_' + req.call_collection + '.fasta')
+      res.attachment('BVBRC_' + req.call_collection + '.fasta')
     }
 
     if (req.call_method === 'stream') {

@@ -51,7 +51,7 @@ module.exports = {
   contentType: 'application/gff',
   serialize: function (req, res, next) {
     if (req.isDownload) {
-      res.attachment(`PATRIC_${req.call_collection}.gff`)
+      res.attachment(`BVBRC_${req.call_collection}.gff`)
     }
 
     if (req.call_method === 'stream') {

@@ -68,7 +68,7 @@ module.exports = {
     // console.log(`media type csv, call_method: ${req.call_method}`)
 
     if (req.isDownload) {
-      res.attachment('PATRIC_' + req.call_collection + '.fasta')
+      res.attachment('BVBRC_' + req.call_collection + '.fasta')
     }
 
     if (req.call_method === 'stream') {
