@@ -96,6 +96,38 @@ module.exports = function (req, res, next) {
           'evidence', 'source', 'pmid'
         ]
         break
+      case 'protein_structure':
+        req.fieldHeader = [
+          'PDB ID', 'Title', 'Organism Name', 'Taxon ID', 'Genome ID', 'BRC ID', 'UniProtKB Accession', 'Gene', 'Product',
+          'Sequence MD5', 'Sequence', 'Alignments', 'Method', 'Resolution', 'PMID', 'Institution', 'Authors', 'Release Date'
+        ]
+        req.fieldSelection = [
+          'pdb_id', 'title', 'organism_name', 'taxon_id', 'genome_id', 'patric_id', 'uniprotkb_accession', 'gene', 'product',
+          'sequence_md5', 'sequence', 'alignments', 'method', 'resolution', 'pmid', 'institution', 'authors', 'release_date'
+        ]
+        break
+      case 'protein_feature':
+        req.fieldHeader = [
+          'ID', 'Genome ID', 'Genome Name', 'Taxon ID', 'Feature ID', 'BRC ID', 'RefSeq Locus Tag', 'AA Sequence MD5', 'Gene', 'Product',
+          'Interpro ID', 'Interpro Description', 'Feature Type', 'Source', 'Source ID', 'Description', 'Classification', 'Score',
+          'E Value', 'Evidence', 'Publication', 'Start', 'End', 'Segments', 'Length', 'Sequence', 'Comments'
+        ]
+        req.fieldSelection = [
+          'id', 'genome_id', 'genome_name', 'taxon_id', 'feature_id', 'patric_id', 'refseq_locus_tag', 'aa_sequence_md5', 'gene', 'product',
+          'interpro_id', 'interpro_description', 'feature_type', 'source', 'source_id', 'description', 'classification', 'score',
+          'e_value', 'evidence', 'publication', 'start', 'end', 'segments', 'length', 'sequence', 'comments'
+        ]
+        break
+      case 'epitope':
+        req.fieldHeader = [
+          'Epitope ID', 'Epitope Type', 'Epitope Sequence', 'Organism', 'Taxon ID', 'Protein Name', 'Protein ID', 'Protein Accession',
+          'Start', 'End', 'Total Assays', 'Bcell Assays', 'Tcell Assays', 'MCH Assays', 'Comments'
+        ]
+        req.fieldSelection = [
+          'epitope_id', 'epitope_type', 'epitope_sequence', 'organism', 'taxon_id', 'protein_name', 'protein_id', 'protein_accession',
+          'start', 'end', 'total_assays', 'bcell_assays', 'tcell_assays', 'mch_assays', 'comments'
+        ]
+        break
       case 'surveillance':
         req.fieldHeader = [
           'Project Identifier', 'Contributing Institution', 'Sample Identifier', 'Sequence Accession',
