@@ -117,7 +117,7 @@ router.get('/summary_by_taxon/:taxon_id', [
 ])
 const allowed = {
   'epitope': ['epitope_type'],
-  'genome': ['host_group', 'host_name', 'host_common_name', 'geographic_group', 'isolation_country', 'segment', 'subtype', 'season'],
+  'genome': ['host_group', 'host_name', 'host_common_name', 'geographic_group', 'isolation_country', 'segment', 'subtype', 'season', 'lineage'],
   'genome_feature': ['feature_type'],
   'sp_gene': ['property', 'source', 'evidence'],
   'pathway_ref': ['pathway_name', 'pathway_class'],
@@ -140,7 +140,7 @@ router.get('/distinct/:collection/:field', [
       res.end(JSON.stringify({ status: 405, message: `/distinct/${collection}/${field} is not allowed` }))
     }
   },
-  cacheWithRedis('1 month', onlyStatus200),
+  cacheWithRedis('1 day', onlyStatus200),
   (req, res, next) => {
     const collection = req.params.collection
     const field = req.params.field
