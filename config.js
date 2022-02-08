@@ -88,11 +88,14 @@ const defaults = {
   },
 
   shards: {
+    genome_feature: {
+      preference: 'replica.type:PULL,replica.type:TLOG'
+    },
     pathway: {
-      preference: 'replica.type:PULL'
+      preference: 'replica.type:PULL,replica.type:TLOG'
     },
     subsystem: {
-      preference: 'replica.type:PULL'
+      preference: 'replica.type:PULL,replica.type:TLOG'
     }
   }
 
