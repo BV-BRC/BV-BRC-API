@@ -35,7 +35,9 @@ done
 
 
 echo "# small collections in sychronous mode"
-COLLECTIONS="genome_amr genome taxonomy"
+COL1="genome_amr genome taxonomy bioset bioset_result epitope epitope_assay experiment"
+COL2="protein_feature protein_structure serology spike_lineage spike_variant strain surveillance"
+COLLECTIONS="$COL1 $COL2"
 for collection in $COLLECTIONS
 do
     echo "Running Backup: $collection $SNAPSHOT"
