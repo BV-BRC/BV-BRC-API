@@ -8,7 +8,8 @@ const EventStream = require('event-stream')
 
 const queueDirectory = Config.get('queueDirectory')
 
-const { httpGet, httpStreamRequest } = require('../util/http')
+// const { httpGet, httpStreamRequest } = require('../util/http')
+const { httpStreamRequest } = require('../util/http')
 const Url = require('url')
 const SOLR_URL = Config.get('solr').url
 const parsedSolrUrl = Url.parse(SOLR_URL)
@@ -30,12 +31,12 @@ const queue = new Queue(queueDirectory, function (err) {
 let completedHardCommit = false
 
 const publicCores = ['taxonomy', 'feature_sequence']
-const IndexingCores = ['genome_feature', 'genome', 'sp_gene', 'pathway', 'genome_sequence', 'genome_amr', 'subsystem']
+// const IndexingCores = ['genome_feature', 'genome', 'sp_gene', 'pathway', 'genome_sequence', 'genome_amr', 'subsystem']
 
 process.on('message', (msg) => {
   if (msg && msg.type === 'start') {
     if (timer) {
-      cancelTimeout(timer)
+      clearTimeout(timer)
       // delete timer;
       timer = null
     }
@@ -46,16 +47,16 @@ process.on('message', (msg) => {
 
 let timer
 
-function deleteDocs (core, genomeId) {
-  return httpGet({
-    hostname: parsedSolrUrl.hostname,
-    port: parsedSolrUrl.port,
-    agent: solrAgent,
-    path: `/solr/${core}/update?stream.body=<delete><query>genome_id:${genomeId}</query></delete>`
-  }).then(() => {
-    console.error(`Sent delete query successfully: [${core}] ${genomeId}`)
-  })
-}
+// function deleteDocs (core, genomeId) {
+//   return httpGet({
+//     hostname: parsedSolrUrl.hostname,
+//     port: parsedSolrUrl.port,
+//     agent: solrAgent,
+//     path: `/solr/${core}/update?stream.body=<delete><query>genome_id:${genomeId}</query></delete>`
+//   }).then(() => {
+//     console.error(`Sent delete query successfully: [${core}] ${genomeId}`)
+//   })
+// }
 
 function postDocs (filePath, type) {
   const readStream = fs.createReadStream(filePath)
@@ -68,8 +69,14 @@ function postDocs (filePath, type) {
       'Content-Type': 'application/json'
     },
     path: `/solr/${type}/update?wt=json&overwrite=true&commit=false`
-  }, readStream).then(() => {
+  }, readStream).then((msg_str) => {
     // console.log(`Posted ${type}`)
+    const msg = JSON.parse(msg_str)
+    if (msg && msg.responseHeader && msg.responseHeader.status === 0) {
+      // success
+    } else {
+      throw new Error(msg.error.msg)
+    }
   }).catch((err) => {
     throw err
   })
@@ -77,6 +84,11 @@ function postDocs (filePath, type) {
 
 function processQueue (queue) {
   queue.length((err, length) => {
+    if (err) {
+      console.log(`error: ${err}`)
+      return
+    }
+
     if (length < 1) {
       if (!completedHardCommit) {
         console.log('Queue is Empty')
@@ -203,7 +215,7 @@ function updateJSONStreamWithAccessControl (fileName, filePath, core, owner) {
 
           if (fileData.length === 0) {
             // console.log(`  Skipping Empty ${fileName}(${filePath})`);
-            resolve({status: 'skip'})
+            resolve({ status: 'skip' })
             return
           }
 
