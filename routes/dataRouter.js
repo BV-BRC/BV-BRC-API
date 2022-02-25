@@ -116,6 +116,7 @@ router.get('/summary_by_taxon/:taxon_id', [
   }
 ])
 const allowed = {
+  'taxonomy': ['taxon_rank'],
   'epitope': ['epitope_type'],
   'genome': ['host_group', 'host_name', 'host_common_name', 'geographic_group', 'isolation_country', 'segment', 'subtype', 'season', 'lineage'],
   'genome_feature': ['feature_type'],
