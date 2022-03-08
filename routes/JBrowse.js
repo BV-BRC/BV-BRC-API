@@ -106,7 +106,7 @@ function generateSarsCov2TrackList (req, res, next) {
       'url': 'names/'
     },
     'trackSelector': {
-      'categoryOrder': 'Gene and Protein, Variants of Concern, Mutation Impact, Functional Features, Epitopes, Structural Features, Primers and Probes'
+      'categoryOrder': 'Gene and Protein, Variants, Mutational Scanning (Bloom Lab), Functional Features, Epitopes, Structural Features, Primers and Probes, Natural Selection Heatmaps (Pond Lab), Positive Selection Sites (Pond Lab), Negative Selection Sites (Pond Lab)'
     },
     'include': distRoot + 'content/jbrowse/sars_colors.conf',
     'tracks': [
@@ -153,7 +153,7 @@ function generateSarsCov2TrackList (req, res, next) {
 
       // ***************************************
       {
-        'category': 'Mutation Impact',
+        'category': 'Mutational Scanning (Bloom Lab)',
         'urlTemplates': [
           {
             'url': distRoot + 'content/jbrowse/polyclonal_max.bw',
@@ -181,7 +181,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'metadata': { 'description': 'These data tracks were constructed from the human sera escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing human polyclonal serum.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the antibodies from human polyclonal plasma in vitro (PMID: 33592168, 33495308).' }
       },
       {
-        'category': 'Mutation Impact',
+        'category': 'Mutational Scanning (Bloom Lab)',
         'urlTemplates': [
           {
             'url': distRoot + 'content/jbrowse/LY-CoV016_max.bw',
@@ -208,7 +208,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33592168, 33495308). The height of the overliad bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the Eli Lilly Etesevimab therapuetic, which is the LYCoV016 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody in vitro (PMID: 33592168, 33495308).' }
       },
       {
-        'category': 'Mutation Impact',
+        'category': 'Mutational Scanning (Bloom Lab)',
         'urlTemplates': [
           { 'url': distRoot + 'content/jbrowse/REGN10933_max.bw', 'name': 'Casirivimab escape fraction maximum', 'nonCont': true, 'fill': true, 'color': '#85C1E9' },
           { 'url': distRoot + 'content/jbrowse/REGN10933_median.bw', 'name': 'Casirivimab escape fraction median', 'nonCont': true, 'fill': true, 'color': '#E59866' }],
@@ -223,7 +223,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33592168, 33495308). The height of overlaid the bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the Regeneron Casirivimab therapuetic, which is the REGN10933 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody in vitro (PMID: 33592168, 33495308).' }
       },
       {
-        'category': 'Mutation Impact',
+        'category': 'Mutational Scanning (Bloom Lab)',
         'urlTemplates': [
           { 'url': distRoot + 'content/jbrowse/REGN10987_max.bw', 'name': 'Imdevimab escape fraction maximum', 'nonCont': true, 'fill': true, 'color': '#85C1E9' },
           { 'url': distRoot + 'content/jbrowse/REGN10987_median.bw', 'name': 'Imdevimab escape fraction median', 'nonCont': true, 'fill': true, 'color': '#E59866' }],
@@ -238,7 +238,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the Regeneron Imdevimab therapuetic, which is the REGN10987 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody in vitro (PMID: 33592168, 33495308).' }
       },
       {
-        'category': 'Mutation Impact',
+        'category': 'Mutational Scanning (Bloom Lab)',
         'urlTemplates': [
           { 'url': distRoot + 'content/jbrowse/REGN10933_REGN10987_max.bw', 'name': 'Casirivimab+Imdevimab cocktail escape fraction maximum', 'nonCont': true, 'fill': true, 'color': '#85C1E9' },
           { 'url': distRoot + 'content/jbrowse/REGN10933_REGN10987_median.bw', 'name': 'Casirivimab+Imdevimab cocktail escape fraction median', 'nonCont': true, 'fill': true, 'color': '#E59866' }],
@@ -253,7 +253,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the Regeneron antibody cocktail, which contains the antibodies REGN10933+REGN10987.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the antibody cocktail in vitro (PMID: 33592168, 33495308).' }
       },
       {
-        'category': 'Mutation Impact',
+        'category': 'Mutational Scanning (Bloom Lab)',
         'urlTemplates': [
           { 'url': distRoot + 'content/jbrowse/LY-CoV555_max.bw', 'name': 'Bamlanivimab escape fraction maximum', 'nonCont': true, 'fill': true, 'color': '#85C1E9' },
           { 'url': distRoot + 'content/jbrowse/LY-CoV555_median.bw', 'name': 'Bamlanivimab escape fraction median', 'nonCont': true, 'fill': true, 'color': '#E59866' }],
@@ -268,7 +268,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33655250, 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the Eli Lilly Bamlanivimab therapuetic, which is the LYCoV555 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody in vitro (PMID: 33655250, 33592168, 33495308).' }
       },
       {
-        'category': 'Mutation Impact',
+        'category': 'Mutational Scanning (Bloom Lab)',
         'urlTemplates': [
           { 'url': distRoot + 'content/jbrowse/LYCoV016_LYCoV555_max.bw', 'name': 'Etesevimab+Bamlanivimab escape fraction maximum', 'nonCont': true, 'fill': true, 'color': '#85C1E9' },
           { 'url': distRoot + 'content/jbrowse/LYCoV016_LYCoV555_median.bw', 'name': 'Etesevimab+Bamlanivimab escape fraction median', 'nonCont': true, 'fill': true, 'color': '#E59866' }],
@@ -283,7 +283,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33655250, 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the Eli Lilly antibody cocktail, which contains the antibodies LYCoV016+LYCoV555.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the antibody cocktail in vitro (PMID: 33655250, 33592168, 33495308).' }
       },
       {
-        'category': 'Mutation Impact',
+        'category': 'Mutational Scanning (Bloom Lab)',
         'urlTemplates': [
           { 'url': distRoot + 'content/jbrowse/AZCoV22130_max.bw', 'name': 'AZD1061 escape fraction maximum', 'nonCont': true, 'fill': true, 'color': '#85C1E9' },
           { 'url': distRoot + 'content/jbrowse/AZCoV22130_median.bw', 'name': 'AZD1061 escape fraction median', 'nonCont': true, 'fill': true, 'color': '#E59866' }],
@@ -298,7 +298,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33532768, 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the AstraZeneca AZD1061 therapuetic, which is the COV2-2130 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody in vitro (PMID: 33532768, 33592168, 33495308).' }
       },
       {
-        'category': 'Mutation Impact',
+        'category': 'Mutational Scanning (Bloom Lab)',
         'urlTemplates': [
           { 'url': distRoot + 'content/jbrowse/AZCoV22196_max.bw', 'name': 'AZD8895 escape fraction maximum', 'nonCont': true, 'fill': true, 'color': '#85C1E9' },
           { 'url': distRoot + 'content/jbrowse/AZCoV22196_median.bw', 'name': 'AZD8895 escape fraction median', 'nonCont': true, 'fill': true, 'color': '#E59866' }],
@@ -313,7 +313,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33532768, 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the AstraZeneca AZD8895 therapuetic, which is the COV2-2196 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody in vitro (PMID: 33532768, 33592168, 33495308).' }
       },
       {
-        'category': 'Mutation Impact',
+        'category': 'Mutational Scanning (Bloom Lab)',
         'urlTemplates': [
           { 'url': distRoot + 'content/jbrowse/AZCoV22130_AZCoV22196_max.bw', 'name': 'AZD1061+AZD8895 escape fraction maximum', 'nonCont': true, 'fill': true, 'color': '#85C1E9' },
           { 'url': distRoot + 'content/jbrowse/AZCoV22130_AZCoV22196_median.bw', 'name': 'AZD1061+AZD8895 escape fraction median', 'nonCont': true, 'fill': true, 'color': '#E59866' }],
@@ -328,7 +328,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33532768, 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the AstraZeneca antibody cocktail, which contains the antibodies COV2-2130+COV2-2196.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the antibody cocktail in vitro (PMID: 33532768, 33592168, 33495308).' }
       },
       {
-        'category': 'Mutation Impact',
+        'category': 'Mutational Scanning (Bloom Lab)',
         'urlTemplates': [
           { 'url': distRoot + 'content/jbrowse/COV2-2165_max.bw', 'name': 'COV2-2165', 'description': 'Class 1: COV2-2165 escape max (Greaney 2021)', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
           { 'url': distRoot + 'content/jbrowse/COV2-2196_norm_total.bw', 'name': 'COV2-2196', 'description': 'Class 1: COV2-2196 escape max (Dong 2021)', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
@@ -378,7 +378,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33532768, 33592168, 33495308).  This heatmap track analyzes mutational impact towards antibody binding for all monoclonal antibodies reported by the Jesse Bloom lab.  Since these monoclonal antibodies can be grouped by class, the antibodies are color coded by their class (PMID: 33045718).  The heat of each cell in this track denotes the normalized mutation impact sum (escape fraction) for all possible mutations at a particular site for a each antibody (PMID: 33592168). The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody in vitro (PMID: 33532768, 33592168, 33495308, 33851154, 33758856).' }
       },
       {
-        'category': 'Mutation Impact',
+        'category': 'Mutational Scanning (Bloom Lab)',
         'urlTemplates': [
           { 'url': distRoot + 'content/jbrowse/class1_max_total_track.bw', 'name': 'Class 1', 'description': 'ACE2 blocking antibodies that bind only to "up" RBDs (Barnes 2020)', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
           { 'url': distRoot + 'content/jbrowse/class2_max_total_track.bw', 'name': 'Class 2', 'description': 'ACE2 blocking antibodies that bind to both "up", "down", and contanct adjacent RBDs (Barnes 2020)', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
@@ -398,7 +398,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33532768, 33592168, 33495308).  This heatmap track analyzes mutational impact towards antibody binding by class, where the class is defined by the structure of the antibody epitope (PMID: 33045718, 33758856).  Each of the four classes are comprised of multiple monoclonal antibodies, both therapuetic and non-therapuetic antibodies (those extracted from convalescent sera).  The heat at each site in this track denotes the maximum of the normalized mutation impact sum (escape fraction) among all antibodies within a class (PMID: 33592168). In other words, each cell within this heatmap represents the monoclonal antibody within the class that is most impacted by mutations overall at the particular site.  This way there is focus on the most vulnerable targets of SARS-CoV-2 RBD mutation.' }
       },
       {
-        'category': 'Mutation Impact',
+        'category': 'Mutational Scanning (Bloom Lab)',
         'urlTemplates': [
           { 'url': distRoot + 'content/jbrowse/ace2_binding_max.bw', 'name': 'ACE2 Binding Affinity', 'nonCont': true, 'fill': true, 'color': '#85C1E9' }],
         'storeClass': 'jbrowse.repo/plugins/MultiBigWig/js/Store/SeqFeature/MultiBigWig',
@@ -415,7 +415,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'metadata': { 'description': 'These data tracks were constructed from the human sera escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33592168, 33495308).  This particular track denotes the mutational impact towards ACE2 binding affinity.   in the positive region (blue) denote sites where a mutation can lead to increase in binding affinity, and bars in the negative region (red) denote sites where a mutation can lead to a decrease in binding affinity.  Note that each site only reports a positive binding affinity if the binding value was greater than or equal to 0.1, otherwise the minimum binding value is reported. Hence, all blue bars represent a maximum binding value at the site and all red bars represent a minimum binding value at the site (PMID: 32841599, 33592168, 33495308).' }
       },
       {
-        'category': 'Mutation Impact',
+        'category': 'Mutational Scanning (Bloom Lab)',
         'urlTemplates': [
           { 'url': distRoot + 'content/jbrowse/S309_max.bw', 'name': 'VIR-7831 escape fraction maximum', 'nonCont': true, 'fill': true, 'color': '#85C1E9' },
           { 'url': distRoot + 'content/jbrowse/S309_median.bw', 'name': 'VIR-7831 escape fraction median', 'nonCont': true, 'fill': true, 'color': '#E59866' }],
@@ -430,7 +430,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'metadata': { 'description': 'These data tracks were constructed from the antibody escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33532768, 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing the Vir Biotechnology VIR-7831 therapuetic, which is the 5309 monoclonal antibody.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the monoclonal antibody in vitro (PMID: 33532768, 33592168, 33495308).' }
       },
       {
-        'category': 'Mutation Impact',
+        'category': 'Mutational Scanning (Bloom Lab)',
         'urlTemplates': [
           { 'url': distRoot + 'content/jbrowse/moderna_max.bw', 'name': 'Moderna escape fraction maximum', 'nonCont': true, 'fill': true, 'color': '#85C1E9' },
           { 'url': distRoot + 'content/jbrowse/moderna_median.bw', 'name': 'Moderna escape fraction median', 'nonCont': true, 'fill': true, 'color': '#E59866' }],
@@ -985,7 +985,1093 @@ function generateSarsCov2TrackList (req, res, next) {
         'metadata': {
           'Description': 'Turn Secondary Structure'
         }
-      }
+      },
+      {
+        'category': 'Natural Selection Heatmaps (Pond Lab)',
+        'urlTemplates': [
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2020-02-29.bw', 'name': 'Feb 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2020-03-31.bw', 'name': 'Mar 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A'},
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2020-04-30.bw', 'name': 'Apr 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2020-05-31.bw', 'name': 'May 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2020-06-30.bw', 'name': 'Jun 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2020-07-31.bw', 'name': 'Jul 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2020-08-31.bw', 'name': 'Aug 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2020-09-30.bw', 'name': 'Sep 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2020-10-31.bw', 'name': 'Oct 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2020-11-30.bw', 'name': 'Nov 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2020-12-31.bw', 'name': 'Dec 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2021-01-31.bw', 'name': 'Jan 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2021-02-28.bw', 'name': 'Feb 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2021-03-31.bw', 'name': 'Mar 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2021-04-30.bw', 'name': 'Apr 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2021-05-31.bw', 'name': 'May 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2021-06-30.bw', 'name': 'Jun 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2021-07-31.bw', 'name': 'Jul 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2021-08-31.bw', 'name': 'Aug 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2021-09-30.bw', 'name': 'Sep 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2021-10-31.bw', 'name': 'Oct 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2021-11-30.bw', 'name': 'Nov 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2021-12-31.bw', 'name': 'Dec 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2022-01-31.bw', 'name': 'Jan 2022', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' }],
+        'storeClass': 'jbrowse.repo/plugins/MultiBigWig/js/Store/SeqFeature/MultiBigWig',
+        'autoscale': 'global',
+        'style': { 'height': '1000' },
+        'colorizeAbout': 'true',
+        'showLabels': true,
+        'showTooltips': true,
+        'labelWidth': '70',
+        'key': 'Postive Selection FEL Pvalue Over Time',
+        'label': 'Positive Selection FEL Pvalue Over Time',
+        'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiDensity',
+        'metadata': { 'description': 'This track provides quantitative insight on the SARS-CoV-2 genomic sites that have been under positive selection since Feb 2020, according to the Pond lab (https://github.com/spond/SARS-CoV-2-variation).  If a site was exhibiting positive selection based on its dN/dS ratio being greater than 1 for each month, a box in the heatmap is shaded based on the -log10 of p-value of the FEL likelihood ratio test.  A darker color indicates a more significant p-value, and therefore a site under stronger positive selection, whereas no color indicates no significant selection.  Only sites with a FEL p-value of 0.05 or less are shaded.' }
+      },
+      {
+        'category': 'Natural Selection Heatmaps (Pond Lab)',
+        'urlTemplates': [
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2020-02-29.bw', 'name': 'Feb 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2020-03-31.bw', 'name': 'Mar 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1'},
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2020-04-30.bw', 'name': 'Apr 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2020-05-31.bw', 'name': 'May 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2020-06-30.bw', 'name': 'Jun 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2020-07-31.bw', 'name': 'Jul 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2020-08-31.bw', 'name': 'Aug 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2020-09-30.bw', 'name': 'Sep 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2020-10-31.bw', 'name': 'Oct 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2020-11-30.bw', 'name': 'Nov 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2020-12-31.bw', 'name': 'Dec 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2021-01-31.bw', 'name': 'Jan 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2021-02-28.bw', 'name': 'Feb 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2021-03-31.bw', 'name': 'Mar 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2021-04-30.bw', 'name': 'Apr 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2021-05-31.bw', 'name': 'May 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2021-06-30.bw', 'name': 'Jun 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2021-07-31.bw', 'name': 'Jul 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2021-08-31.bw', 'name': 'Aug 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2021-09-30.bw', 'name': 'Sep 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2021-10-31.bw', 'name': 'Oct 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2021-11-30.bw', 'name': 'Nov 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2021-12-31.bw', 'name': 'Dec 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2022-01-31.bw', 'name': 'Jan 2022', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' }],
+        'storeClass': 'jbrowse.repo/plugins/MultiBigWig/js/Store/SeqFeature/MultiBigWig',
+        'autoscale': 'global',
+        'style': { 'height': '1000' },
+        'colorizeAbout': 'true',
+        'showLabels': true,
+        'showTooltips': true,
+        'labelWidth': '70',
+        'key': 'Negative Selection FEL Pvalue Over Time',
+        'label': 'Negative Selection FEL Pvalue Over Time',
+        'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiDensity',
+        'metadata': { 'description': 'This track provides quantitative insight on the SARS-CoV-2 genomic sites that have been under negative selection since Feb 2020, according to the Pond lab (https://github.com/spond/SARS-CoV-2-variation).  If a site was exhibiting negative selection based on its dN/dS ratio being less than 1 for each month, a box in the heatmap is shaded based on the -log10 of p-value of the FEL likelihood ratio test.  A darker color indicates a more significant p-value, and therefore a site under stronger negative selection, whereas no color indicates no significant selection.  Only sites with a FEL p-value of 0.05 or less are shaded.' }
+      },
+      {
+        'category': 'Positive Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/positive_selection_2020-02-29.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PositiveSelectionMarkers02/2020',
+        'key': '2020-02',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Positive Selection Sites 02/2020'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Positive Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/positive_selection_2020-03-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PositiveSelectionMarkers03/2020',
+        'key': '2020-03',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Positive Selection Sites 03/2020'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Positive Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/positive_selection_2020-04-30.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PositiveSelectionMarkers04/2020',
+        'key': '2020-04',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Positive Selection Sites 04/2020'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Positive Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/positive_selection_2020-05-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PositiveSelectionMarkers05/2020',
+        'key': '2020-05',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Positive Selection Sites 05/2020'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Positive Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/positive_selection_2020-06-30.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PositiveSelectionMarkers06/2020',
+        'key': '2020-06',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Positive Selection Sites 06/2020'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Positive Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/positive_selection_2020-07-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PositiveSelectionMarkers07/2020',
+        'key': '2020-07',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Positive Selection Sites 07/2020'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Positive Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/positive_selection_2020-08-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PositiveSelectionMarkers08/2020',
+        'key': '2020-08',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Positive Selection Sites 08/2020'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Positive Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/positive_selection_2020-09-30.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PositiveSelectionMarkers09/2020',
+        'key': '2020-09',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Positive Selection Sites 09/2020'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Positive Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/positive_selection_2020-10-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PositiveSelectionMarkers10/2020',
+        'key': '2020-10',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Positive Selection Sites 10/2020'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Positive Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/positive_selection_2020-11-30.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PositiveSelectionMarkers11/2020',
+        'key': '2020-11',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Positive Selection Sites 11/2020'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Positive Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/positive_selection_2020-12-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PositiveSelectionMarkers12/2020',
+        'key': '2020-12',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Positive Selection Sites 12/2020'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Positive Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/positive_selection_2021-01-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PositiveSelectionMarkers01/2021',
+        'key': '2021-01',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Positive Selection Sites 01/2021'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Positive Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/positive_selection_2021-02-28.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PositiveSelectionMarkers02/2021',
+        'key': '2021-02',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Positive Selection Sites 02/2021'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Positive Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/positive_selection_2021-03-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PositiveSelectionMarkers03/2021',
+        'key': '2021-03',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Positive Selection Sites 03/2021'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Positive Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/positive_selection_2021-04-30.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PositiveSelectionMarkers04/2021',
+        'key': '2021-04',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Positive Selection Sites 04/2021'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Positive Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/positive_selection_2021-05-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PositiveSelectionMarkers05/2021',
+        'key': '2021-05',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Positive Selection Sites 05/2021'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Positive Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/positive_selection_2021-06-30.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PositiveSelectionMarkers06/2021',
+        'key': '2021-06',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Positive Selection Sites 06/2021'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Positive Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/positive_selection_2021-07-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PositiveSelectionMarkers07/2021',
+        'key': '2021-07',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Positive Selection Sites 07/2021'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Positive Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/positive_selection_2021-08-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PositiveSelectionMarkers08/2021',
+        'key': '2021-08',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Positive Selection Sites 08/2021'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Positive Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/positive_selection_2021-09-30.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PositiveSelectionMarkers09/2021',
+        'key': '2021-09',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Positive Selection Sites 09/2021'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Positive Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/positive_selection_2021-10-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PositiveSelectionMarkers10/2021',
+        'key': '2021-10',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Positive Selection Sites 10/2021'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Positive Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/positive_selection_2021-11-30.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PositiveSelectionMarkers11/2021',
+        'key': '2021-11',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Positive Selection Sites 11/2021'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Positive Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/positive_selection_2021-12-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PositiveSelectionMarkers12/2021',
+        'key': '2021-12',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Positive Selection Sites 12/2021'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Positive Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/positive_selection_2022-01-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PositiveSelectionMarkers01/2022',
+        'key': '2022-01',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Positive Selection Sites 01/2022'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Negative Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/negative_selection_2020-02-29.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NegativeSelectionMarkers02/2020',
+        'key': '2020-02',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Negative Selection Sites 02/2020'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Negative Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/negative_selection_2020-03-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NegativeSelectionMarkers03/2020',
+        'key': '2020-03',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Negative Selection Sites 03/2020'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Negative Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/negative_selection_2020-04-30.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NegativeSelectionMarkers04/2020',
+        'key': '2020-04',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Negative Selection Sites 04/2020'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Negative Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/negative_selection_2020-05-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NegativeSelectionMarkers05/2020',
+        'key': '2020-05',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Negative Selection Sites 05/2020'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Negative Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/negative_selection_2020-06-30.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NegativeSelectionMarkers06/2020',
+        'key': '2020-06',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Negative Selection Sites 06/2020'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Negative Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/negative_selection_2020-07-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NegativeSelectionMarkers07/2020',
+        'key': '2020-07',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Negative Selection Sites 07/2020'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Negative Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/negative_selection_2020-08-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NegativeSelectionMarkers08/2020',
+        'key': '2020-08',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Negative Selection Sites 08/2020'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Negative Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/negative_selection_2020-09-30.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NegativeSelectionMarkers09/2020',
+        'key': '2020-09',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Negative Selection Sites 09/2020'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Negative Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/negative_selection_2020-10-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NegativeSelectionMarkers10/2020',
+        'key': '2020-10',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Negative Selection Sites 10/2020'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Negative Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/negative_selection_2020-11-30.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NegativeSelectionMarkers11/2020',
+        'key': '2020-11',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Negative Selection Sites 11/2020'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Negative Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/negative_selection_2020-12-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NegativeSelectionMarkers12/2020',
+        'key': '2020-12',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Negative Selection Sites 12/2020'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Negative Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/negative_selection_2021-01-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NegativeSelectionMarkers01/2021',
+        'key': '2021-01',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Negative Selection Sites 01/2021'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Negative Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/negative_selection_2021-02-28.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NegativeSelectionMarkers02/2021',
+        'key': '2021-02',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Negative Selection Sites 02/2021'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Negative Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/negative_selection_2021-03-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NegativeSelectionMarkers03/2021',
+        'key': '2021-03',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Negative Selection Sites 03/2021'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Negative Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/Negative_selection_2021-04-30.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NegativeSelectionMarkers04/2021',
+        'key': '2021-04',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Negative Selection Sites 04/2021'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Negative Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/negative_selection_2021-05-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NegativeSelectionMarkers05/2021',
+        'key': '2021-05',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Negative Selection Sites 05/2021'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Negative Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/negative_selection_2021-06-30.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NegativeSelectionMarkers06/2021',
+        'key': '2021-06',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Negative Selection Sites 06/2021'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Negative Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/negative_selection_2021-07-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NegativeSelectionMarkers07/2021',
+        'key': '2021-07',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Negative Selection Sites 07/2021'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Negative Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/negative_selection_2021-08-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NegativeSelectionMarkers08/2021',
+        'key': '2021-08',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Negative Selection Sites 08/2021'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Negative Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/negative_selection_2021-09-30.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NegativeSelectionMarkers09/2021',
+        'key': '2021-09',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Negative Selection Sites 09/2021'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Negative Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/negative_selection_2021-10-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NegativeSelectionMarkers10/2021',
+        'key': '2021-10',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Negative Selection Sites 10/2021'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Negative Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/negative_selection_2021-11-30.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NegativeSelectionMarkers11/2021',
+        'key': '2021-11',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Negative Selection Sites 11/2021'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Negative Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/negative_selection_2021-12-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NegativeSelectionMarkers12/2021',
+        'key': '2021-12',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Negative Selection Sites 12/2021'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Negative Selection Sites (Pond Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/negative_selection_2022-01-31.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NegativeSelectionMarkers01/2022',
+        'key': '2022-01',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Negative Selection Sites 01/2022'
+        },
+        'displayMode': 'normal'
+      },
     ]
   })
 }
