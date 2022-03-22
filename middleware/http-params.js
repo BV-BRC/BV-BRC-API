@@ -49,7 +49,6 @@ module.exports = function (req, res, next) {
     req._parsedUrl.query = ''
   }
 
-  req.isDownload = !!(req.headers && req.headers.download)
   debug('End http-params Middleware: ', req._parsedUrl, req._parsedUrl.query)
 
   next()
