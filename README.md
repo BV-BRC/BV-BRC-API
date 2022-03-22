@@ -73,6 +73,7 @@ The following operators are available for RQL Queries:
 
 HTTP Headers can be supplied normally or in a url by preceding the header name with "http_".  (e.g., &http_accept=application/json)
 
-Requests can force the server to set content-dispostion (thereby forcing a browser to download the file) by adding &http_download onto the url.
+Requests can force the server to set content-dispostion (thereby forcing a browser to download the file) by adding &http_download=true onto the url.
+This must be used in combination with sort(+UNIQUE_KEY) to increase the download limit to 25 million records.
 
 
