@@ -2,6 +2,9 @@ const express = require('express')
 const config = require('../config')
 const bodyParser = require('body-parser')
 const router = express.Router({ strict: true, mergeParams: true })
+const media = require('../middleware/media')
+const RQLQueryParser = require('../middleware/RQLQueryParser')
+const APIMethodHandler = require('../middleware/APIMethodHandler')
 const httpParams = require('../middleware/http-params')
 const { httpRequest } = require('../util/http')
 const debug = require('debug')('p3api-server:route/summary')
@@ -165,4 +168,36 @@ router.get('/distinct/:collection/:field', [
   }
 ])
 
+router.get('/taxon_category/', [
+  bodyParser.json({ extended: true }),
+  // preset query params
+  (req, res, next) => {
+    const facetQuery = '&facet((field,superkingdom),(field,order),(field,family),(mincount,1))&limit(1)&json(nl,map)'
+    req.queryType = 'rql'
+    req.call_method = 'query'
+    req.call_params = [req._parsedUrl.query + facetQuery]
+    req.call_collection = 'genome'
+
+    next()
+  },
+  RQLQueryParser,
+  APIMethodHandler,
+  // form return object
+  (req, res, next) => {
+    if (res.results && res.results.facet_counts && res.results.facet_counts.facet_fields) {
+      const resp = res.results.facet_counts.facet_fields
+      debug(resp)
+      res.results = {
+        'superkingdom': Object.keys(resp['superkingdom']),
+        'order': Object.keys(resp['order']),
+        'family': Object.keys(resp['family'])
+      }
+      next()
+    } else {
+      debug(res.results)
+      res.status(400).send({ status: 400, message: 'Unable to query' })
+    }
+  },
+  media
+])
 module.exports = router
