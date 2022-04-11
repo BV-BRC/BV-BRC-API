@@ -11,7 +11,7 @@ function formatFASTA (doc) {
     fasta_id = `gi|${doc.gi}|${(doc.refseq_locus_tag ? (doc.refseq_locus_tag + '|') : '') + (doc.alt_locus_tag ? (doc.alt_locus_tag + '|') : '')}`
   }
   const header = `>${fasta_id} ${doc.product} [${doc.genome_name} | ${doc.genome_id}]\n`
-  return header + ((doc.sequence) ? LineWrap(doc.sequence, 60) : '') + '\n'
+  return header + ((doc.sequence) ? LineWrap(doc.sequence, 60) + '\n' : '')
 }
 
 module.exports = {
@@ -30,7 +30,7 @@ module.exports = {
         if (!results.stream) {
           throw Error('Expected ReadStream in Serializer')
         }
-
+        var errs=[];
         results.stream.pipe(EventStream.map(function (data, callback) {
           if (!head) {
             head = data
@@ -42,10 +42,15 @@ module.exports = {
               // docCount++
               callback()
             }).catch((err) => {
-              next(new Error(err))
+              //res.write(formatFASTA(data))
+              errs.push(formatFASTA(data))
+              callback()
             })
           }
         })).on('end', function () {
+          if (errs.length>0) {
+            res.write(errs.join(""));
+          }
           res.end()
         })
       }, (error) => {
