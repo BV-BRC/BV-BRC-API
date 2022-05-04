@@ -106,7 +106,7 @@ function generateSarsCov2TrackList (req, res, next) {
       'url': 'names/'
     },
     'trackSelector': {
-      'categoryOrder': 'Gene and Protein, Variants, Mutational Scanning (Bloom Lab), Functional Features, Epitopes, Structural Features, Primers and Probes, Natural Selection Heatmaps (Pond Lab), Positive Selection Sites (Pond Lab), Negative Selection Sites (Pond Lab)'
+      'categoryOrder': 'Gene and Protein, Variants, Mutational Scanning (Bloom Lab), Functional Features, Epitopes, Structural Features, Primers and Probes, Natural Selection Heatmaps (Pond Lab), Positive Selection Sites (Pond Lab), Negative Selection Sites (Pond Lab), Validated Drug Resistant Mutations, Potential Drug Resistant Mutations (Godzik Lab)'
     },
     'include': distRoot + 'content/jbrowse/sars_colors.conf',
     'tracks': [
@@ -2072,6 +2072,90 @@ function generateSarsCov2TrackList (req, res, next) {
         },
         'displayMode': 'normal'
       },
+      {
+        'category': 'Validated Drug Resistant Mutations',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/resist.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'DrugResistantRdRpMutations',
+        'key': 'RdRp Resist Mutations',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Validated drug resistant RdRp mutations.  These mutations have been experimentally shown to confer drug resistance against Remdesivir and Sotorvimab.'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Potential Drug Resistant Mutations (Godzik Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/nsp3_resist.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PredictedResistantNSP3Mutations',
+        'key': 'NSP3 Resist Mutations',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Potential drug resistant NSP3 mutations.  The mutations on these sites are close to certain COVID drug target binding sites and may potentially cause drug resistance.  The data originates from Coronavirus3d.org.'
+        },
+        'displayMode': 'collapsed'
+      },
+      {
+        'category': 'Potential Drug Resistant Mutations (Godzik Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/nsp5_resist.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PredictedResistantNSP5Mutations',
+        'key': 'NSP5 Resist Mutations',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Potential drug resistant NSP5 mutations.  The mutations on these sites are close to certain COVID drug target binding sites and may potentially cause drug resistance.  The data originates from Coronavirus3d.org.'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Potential Drug Resistant Mutations (Godzik Lab)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/s_resist.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'PredictedResistantSpikeMutations',
+        'key': 'Spike Resist Mutations',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Potential drug resistant Spike mutations.  The mutations on these sites are close to certain COVID drug target binding sites and may potentially cause drug resistance.  The data originates from Coronavirus3d.org.'
+        },
+        'displayMode': 'collapsed'
+      }
     ]
   })
 }
