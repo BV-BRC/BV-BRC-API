@@ -2073,7 +2073,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'displayMode': 'normal'
       },
       {
-        'category': 'Validated Drug Resistant Mutations',
+        'category': 'Drug Resistant Mutations',
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
@@ -2089,12 +2089,12 @@ function generateSarsCov2TrackList (req, res, next) {
         'key': 'RdRp Resist Mutations',
         'type': 'JBrowse/View/Track/CanvasFeatures',
         'metadata': {
-          'Description': 'Validated drug resistant RdRp mutations.  These mutations have been experimentally shown to confer drug resistance against Remdesivir and Sotorvimab.'
+          'Description': 'Drug resistant RdRp mutations.  These mutations on the RdRp have been experimentally shown to confer drug resistance against Remdesivir and Sotorvimab.'
         },
         'displayMode': 'normal'
       },
       {
-        'category': 'Potential Drug Resistant Mutations (Godzik Lab)',
+        'category': 'Antiviral Contact Sites (Coronavirus3d.org)',
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
@@ -2106,16 +2106,16 @@ function generateSarsCov2TrackList (req, res, next) {
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
         'urlTemplate': distRoot + 'content/jbrowse/nsp3_resist.gff.gz',
         'maxExportSpan': 10000000,
-        'label': 'PredictedResistantNSP3Mutations',
-        'key': 'NSP3 Resist Mutations',
+        'label': 'NSP3AntiviralContactSites',
+        'key': 'NSP3 Antiviral Sites',
         'type': 'JBrowse/View/Track/CanvasFeatures',
         'metadata': {
-          'Description': 'Potential drug resistant NSP3 mutations.  The mutations on these sites are close to certain COVID drug target binding sites and may potentially cause drug resistance.  The data originates from Coronavirus3d.org.'
+          'Description': 'These are antiviral drug contact sites located on NSP3.  All of these sites are within a specified distance of a drug inhibitor bound to the selected structure.  The mutations located at these sites idenified in circulating SARS-CoV-2 variants may confer drug resistance. The data orginates from Coronavirus3d.org'
         },
         'displayMode': 'collapsed'
       },
       {
-        'category': 'Potential Drug Resistant Mutations (Godzik Lab)',
+        'category': 'Antiviral Contact Sites (Coronavirus3d.org)',
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
@@ -2127,16 +2127,16 @@ function generateSarsCov2TrackList (req, res, next) {
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
         'urlTemplate': distRoot + 'content/jbrowse/nsp5_resist.gff.gz',
         'maxExportSpan': 10000000,
-        'label': 'PredictedResistantNSP5Mutations',
-        'key': 'NSP5 Resist Mutations',
+        'label': 'NSP5AntiviralContactSites',
+        'key': 'NSP5 Antiviral Sites',
         'type': 'JBrowse/View/Track/CanvasFeatures',
         'metadata': {
-          'Description': 'Potential drug resistant NSP5 mutations.  The mutations on these sites are close to certain COVID drug target binding sites and may potentially cause drug resistance.  The data originates from Coronavirus3d.org.'
+          'Description': 'These are antiviral drug contact sites located on NSP5.  All of these sites are within a specified distance of a drug inhibitor bound to the selected structure.  The mutations located at these sites idenified in circulating SARS-CoV-2 variants may confer drug resistance. The data orginates from Coronavirus3d.org'
         },
         'displayMode': 'normal'
       },
       {
-        'category': 'Potential Drug Resistant Mutations (Godzik Lab)',
+        'category': 'Antiviral Contact Sites (Coronavirus3d.org)',
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
@@ -2148,11 +2148,11 @@ function generateSarsCov2TrackList (req, res, next) {
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
         'urlTemplate': distRoot + 'content/jbrowse/s_resist.gff.gz',
         'maxExportSpan': 10000000,
-        'label': 'PredictedResistantSpikeMutations',
-        'key': 'Spike Resist Mutations',
+        'label': 'SpikeAntiviralContactSites',
+        'key': 'Spike Antiviral Sites',
         'type': 'JBrowse/View/Track/CanvasFeatures',
         'metadata': {
-          'Description': 'Potential drug resistant Spike mutations.  The mutations on these sites are close to certain COVID drug target binding sites and may potentially cause drug resistance.  The data originates from Coronavirus3d.org.'
+          'Description': 'These are antiviral drug contact sites located on the Spike.  All of these sites are within a specified distance of a drug inhibitor bound to the selected structure.  The mutations located at these sites idenified in circulating SARS-CoV-2 variants may confer drug resistance. The data orginates from Coronavirus3d.org'
         },
         'displayMode': 'collapsed'
       }
