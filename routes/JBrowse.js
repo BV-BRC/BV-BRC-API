@@ -106,7 +106,7 @@ function generateSarsCov2TrackList (req, res, next) {
       'url': 'names/'
     },
     'trackSelector': {
-      'categoryOrder': 'Gene and Protein, Variants, Mutational Scanning (Bloom Lab), Functional Features, Epitopes, Structural Features, Primers and Probes, Natural Selection Heatmaps (Pond Lab), Positive Selection Sites (Pond Lab), Negative Selection Sites (Pond Lab)'
+      'categoryOrder': 'Gene and Protein, Variants, Mutational Scanning (Bloom Lab), Functional Features, Epitopes, Structural Features, Primers and Probes, Natural Selection Heatmaps (Pond Lab), Positive Selection Sites (Pond Lab), Negative Selection Sites (Pond Lab), Validated Drug Resistant Mutations, Potential Drug Resistant Mutations (Godzik Lab)'
     },
     'include': distRoot + 'content/jbrowse/sars_colors.conf',
     'tracks': [
@@ -2072,6 +2072,90 @@ function generateSarsCov2TrackList (req, res, next) {
         },
         'displayMode': 'normal'
       },
+      {
+        'category': 'Drug Resistant Mutations',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/resist.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'DrugResistantRdRpMutations',
+        'key': 'RdRp Resist Mutations',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Drug resistant RdRp mutations.  These mutations on the RdRp have been experimentally shown to confer drug resistance against Remdesivir and Sotorvimab.'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Antiviral Contact Sites (Coronavirus3d.org)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/nsp3_resist.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NSP3AntiviralContactSites',
+        'key': 'NSP3 Antiviral Sites',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'These are antiviral drug contact sites located on NSP3.  All of these sites are within a specified distance of a drug inhibitor bound to the selected structure.  The mutations located at these sites idenified in circulating SARS-CoV-2 variants may confer drug resistance. The data orginates from Coronavirus3d.org'
+        },
+        'displayMode': 'collapsed'
+      },
+      {
+        'category': 'Antiviral Contact Sites (Coronavirus3d.org)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/nsp5_resist.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NSP5AntiviralContactSites',
+        'key': 'NSP5 Antiviral Sites',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'These are antiviral drug contact sites located on NSP5.  All of these sites are within a specified distance of a drug inhibitor bound to the selected structure.  The mutations located at these sites idenified in circulating SARS-CoV-2 variants may confer drug resistance. The data orginates from Coronavirus3d.org'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Antiviral Contact Sites (Coronavirus3d.org)',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/s_resist.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'SpikeAntiviralContactSites',
+        'key': 'Spike Antiviral Sites',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'These are antiviral drug contact sites located on the Spike.  All of these sites are within a specified distance of a drug inhibitor bound to the selected structure.  The mutations located at these sites idenified in circulating SARS-CoV-2 variants may confer drug resistance. The data orginates from Coronavirus3d.org'
+        },
+        'displayMode': 'collapsed'
+      }
     ]
   })
 }
