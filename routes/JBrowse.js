@@ -106,7 +106,7 @@ function generateSarsCov2TrackList (req, res, next) {
       'url': 'names/'
     },
     'trackSelector': {
-      'categoryOrder': 'Gene and Protein, Variants, Mutational Scanning (Bloom Lab), Functional Features, Epitopes, Structural Features, Primers and Probes, Natural Selection Heatmaps (Pond Lab), Positive Selection Sites (Pond Lab), Negative Selection Sites (Pond Lab), Validated Drug Resistant Mutations, Potential Drug Resistant Mutations (Godzik Lab)'
+      'categoryOrder': 'Gene and Protein, Variants by WHO Name, Mutational Scanning (Bloom Lab), Functional Features, Epitopes, Structural Features, Primers and Probes, Natural Selection Heatmaps (Pond Lab), Positive Selection Sites (Pond Lab), Negative Selection Sites (Pond Lab), Drug Resistant Mutations'
     },
     'include': distRoot + 'content/jbrowse/sars_colors.conf',
     'tracks': [
@@ -445,7 +445,7 @@ function generateSarsCov2TrackList (req, res, next) {
         'metadata': { 'description': 'These data tracks were constructed from the human sera escape data for the Spike protein RBD Mutant library (PMID: 32841599). The mutant library was constructed such that each site in the RBD was mutated with 19 different substitutions in the genetic background of Wuhan-Hu-1. The resulting library covers 3804 of the 3819 possible amino acid mutations in the RBD (PMID: 33592168, 33495308). The height of the overlaid bar graph at each position represents the maximum (blue) and median (orange) escape fraction of all possible mutations at that position of the RBD when testing serum antibodies elicited from the Moderna vaccine.  The escape fraction refers to the proportion of yeast cells expressing the RBD mutation that escape the Moderna vaccine elicted antibodies in vitro (PMID: 33532768, 33592168, 33495308).' }
       },
       {
-        'category': 'Variants',
+        'category': 'Variants by WHO Name',
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
@@ -455,55 +455,244 @@ function generateSarsCov2TrackList (req, res, next) {
           'borderWidth': 3
         },
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'urlTemplate': distRoot + 'content/jbrowse/VoC_AA_Markers_Dec.sorted.gff.gz',
+        'urlTemplate': distRoot + 'content/jbrowse/Alpha_variants.gff.gz',
         'maxExportSpan': 10000000,
-        'label': 'VoCMarkersAAVariations',
-        'key': 'Variants of Concern (VoC)',
+        'label': 'AlphaAAVariations',
+        'key': 'Alpha',
         'type': 'JBrowse/View/Track/CanvasFeatures',
         'metadata': {
-          'Description': 'Variants of Concern (VoC)'
+          'Description': 'Consensus variant constellation for Alpha'
         },
         'displayMode': 'normal'
       },
       {
-        'category': 'Variants',
+        'category': 'Variants by WHO Name',
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
-          'color': 'uniprotColor(feature)',
+          'color': 'uiprotColor(feature)',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth': 3
         },
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'urlTemplate': distRoot + 'content/jbrowse/VoI_AA_Markers_Dec.sorted.gff.gz',
+        'urlTemplate': distRoot + 'content/jbrowse/Beta_variants.gff.gz',
         'maxExportSpan': 10000000,
-        'label': 'VoIMarkersAAVariations',
-        'key': 'Variants of Interest (VoI)',
+        'label': 'BetaAAVariations',
+        'key': 'Beta',
         'type': 'JBrowse/View/Track/CanvasFeatures',
         'metadata': {
-          'Description': 'Variants of Interest (VoI)'
+          'Description': 'Consensus variant constellation for Beta'
         },
         'displayMode': 'normal'
       },
       {
-        'category': 'Variants',
+        'category': 'Variants by WHO Name',
         'maxExportFeatures': 10000,
         'style': {
           'className': 'feature3',
-          'color': 'uniprotColor(feature)',
+          'color': 'uiprotColor(feature)',
           'showLabels': true,
           'showTooltips': true,
           'borderWidth': 3
         },
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'urlTemplate': distRoot + 'content/jbrowse/VUM_AA_Markers_Dec.sorted.gff.gz',
+        'urlTemplate': distRoot + 'content/jbrowse/Delta_variants.gff.gz',
         'maxExportSpan': 10000000,
-        'label': 'VUMMarkersAAVariations',
-        'key': 'Variants Under Monitoring (VUM)',
+        'label': 'DeltaAAVariations',
+        'key': 'Delta',
         'type': 'JBrowse/View/Track/CanvasFeatures',
         'metadata': {
-          'Description': 'Variants Under Monitoring (VUM)'
+          'Description': 'Consensus variant constellation for Delta'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Variants by WHO Name',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/Epsilon_variants.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'EpsilonAAVariations',
+        'key': 'Epsilon',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Consensus variant constellation for Epsilon'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Variants by WHO Name',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/Eta_variants.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'EtaAAVariations',
+        'key': 'Eta',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Consensus variant constellation for Eta'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Variants by WHO Name',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/Gamma_variants.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'GammaAAVariations',
+        'key': 'Gamma',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Consensus variant constellation for Gamma'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Variants by WHO Name',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/Iota_variants.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'IotaAAVariations',
+        'key': 'Iota',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Consensus variant constellation for Iota'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Variants by WHO Name',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/Kappa_variants.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'KappaAAVariations',
+        'key': 'Kappa',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Consensus variant constellation for Kappa'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Variants by WHO Name',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/Mu_variants.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'MuAAVariations',
+        'key': 'Mu',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Consensus variant constellation for Mu'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Variants by WHO Name',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/None_variants.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'NoneAAVariations',
+        'key': 'No Class (B.1.617.3)',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Consensus variant constellation with no assigned class'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Variants by WHO Name',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/Omicron_variants.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'OmicronAAVariations',
+        'key': 'Omicron',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Consensus variant constellation for Omicron'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Variants by WHO Name',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/Zeta_variants.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'ZetaAAVariations',
+        'key': 'Zeta',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Consensus variant constellation for Zeta'
         },
         'displayMode': 'normal'
       },
@@ -2092,69 +2281,6 @@ function generateSarsCov2TrackList (req, res, next) {
           'Description': 'Drug resistant RdRp mutations.  These mutations on the RdRp have been experimentally shown to confer drug resistance against Remdesivir and Sotorvimab.'
         },
         'displayMode': 'normal'
-      },
-      {
-        'category': 'Antiviral Contact Sites (Coronavirus3d.org)',
-        'maxExportFeatures': 10000,
-        'style': {
-          'className': 'feature3',
-          'color': 'uiprotColor(feature)',
-          'showLabels': true,
-          'showTooltips': true,
-          'borderWidth': 3
-        },
-        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'urlTemplate': distRoot + 'content/jbrowse/nsp3_resist.gff.gz',
-        'maxExportSpan': 10000000,
-        'label': 'NSP3AntiviralContactSites',
-        'key': 'NSP3 Antiviral Sites',
-        'type': 'JBrowse/View/Track/CanvasFeatures',
-        'metadata': {
-          'Description': 'These are antiviral drug contact sites located on NSP3.  All of these sites are within a specified distance of a drug inhibitor bound to the selected structure.  The mutations located at these sites idenified in circulating SARS-CoV-2 variants may confer drug resistance. The data orginates from Coronavirus3d.org'
-        },
-        'displayMode': 'collapsed'
-      },
-      {
-        'category': 'Antiviral Contact Sites (Coronavirus3d.org)',
-        'maxExportFeatures': 10000,
-        'style': {
-          'className': 'feature3',
-          'color': 'uiprotColor(feature)',
-          'showLabels': true,
-          'showTooltips': true,
-          'borderWidth': 3
-        },
-        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'urlTemplate': distRoot + 'content/jbrowse/nsp5_resist.gff.gz',
-        'maxExportSpan': 10000000,
-        'label': 'NSP5AntiviralContactSites',
-        'key': 'NSP5 Antiviral Sites',
-        'type': 'JBrowse/View/Track/CanvasFeatures',
-        'metadata': {
-          'Description': 'These are antiviral drug contact sites located on NSP5.  All of these sites are within a specified distance of a drug inhibitor bound to the selected structure.  The mutations located at these sites idenified in circulating SARS-CoV-2 variants may confer drug resistance. The data orginates from Coronavirus3d.org'
-        },
-        'displayMode': 'normal'
-      },
-      {
-        'category': 'Antiviral Contact Sites (Coronavirus3d.org)',
-        'maxExportFeatures': 10000,
-        'style': {
-          'className': 'feature3',
-          'color': 'uiprotColor(feature)',
-          'showLabels': true,
-          'showTooltips': true,
-          'borderWidth': 3
-        },
-        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'urlTemplate': distRoot + 'content/jbrowse/s_resist.gff.gz',
-        'maxExportSpan': 10000000,
-        'label': 'SpikeAntiviralContactSites',
-        'key': 'Spike Antiviral Sites',
-        'type': 'JBrowse/View/Track/CanvasFeatures',
-        'metadata': {
-          'Description': 'These are antiviral drug contact sites located on the Spike.  All of these sites are within a specified distance of a drug inhibitor bound to the selected structure.  The mutations located at these sites idenified in circulating SARS-CoV-2 variants may confer drug resistance. The data orginates from Coronavirus3d.org'
-        },
-        'displayMode': 'collapsed'
       }
     ]
   })
