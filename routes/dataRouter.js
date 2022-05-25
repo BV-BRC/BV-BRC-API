@@ -200,4 +200,79 @@ router.get('/taxon_category/', [
   },
   media
 ])
+
+router.get('/subsystem_summary/:genome_id', [
+  bodyParser.json({ extended: true }),
+  cacheWithRedis('1 day', onlyStatus200),
+  (req, res, next) => {
+    const genome_id = req.params.genome_id
+    const query = `q=*:*&fq=genome_id:${genome_id}&rows=0&facet=true&facet.limit=-1&facet.pivot.mincount=1&facet.pivot=superclass,class,subclass,subsystem_id`
+
+    subQuery('subsystem', query, {
+      accept: 'application/solr+json'
+    })
+      .then((body) => {
+        if (body && body.facet_counts && body.facet_counts.facet_pivot && body.facet_counts.facet_pivot) {
+          const raw_data = body.facet_counts.facet_pivot['superclass,class,subclass,subsystem_id']
+          const data = []
+          // console.log(raw_data[2]) // superclass
+          // console.log(raw_data[2].pivot[0]) // class
+          // console.log(raw_data[2].pivot[0].pivot[0]) // subclass
+          // console.log(raw_data[2].pivot[0].pivot[0].pivot[0]) // subsystems
+
+          // superclass level
+          raw_data.forEach((superclass) => {
+            let superKlass_ss_count = 0
+            const superKlassChildren = []
+
+            // class level
+            superclass['pivot'].forEach((klass) => {
+              let Klass_ss_count = 0
+              const KlassChildren = []
+
+              // subclass level
+              klass['pivot'].forEach((subclass) => {
+                // final level, grouped by subsystem_id
+                let subclass_ss_count = subclass.pivot.length
+
+                const subKlass = {
+                  'name': subclass.value,
+                  'subsystem_count': subclass_ss_count,
+                  'gene_count': subclass.count
+                }
+                KlassChildren.push(subKlass)
+                Klass_ss_count += subclass_ss_count
+              })
+              const Klass = {
+                'name': klass.value,
+                'subsystem_count': Klass_ss_count,
+                'gene_count': klass.count,
+                'children': KlassChildren
+              }
+              superKlassChildren.push(Klass)
+              superKlass_ss_count += Klass_ss_count
+            })
+            const superKlass = { 'name': superclass.value,
+              'subsystem_count': superKlass_ss_count,
+              'gene_count': superclass.count,
+              'children': superKlassChildren
+            }
+
+            data.push(superKlass)
+          })
+
+          res.results = data
+          next()
+        }
+      }, (err) => {
+        console.log(err)
+        res.status(400).send({ status: 400, message: 'Unable to query' })
+      })
+  },
+  (req, res, next) => {
+    res.set('content-type', 'application/json')
+    res.end(JSON.stringify(res.results))
+  }
+])
+
 module.exports = router
