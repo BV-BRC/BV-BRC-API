@@ -207,6 +207,7 @@ router.get('/subsystem_summary/:genome_id', [
   (req, res, next) => {
     const genome_id = req.params.genome_id
     const query = `q=*:*&fq=genome_id:${genome_id}&rows=0&facet=true&facet.limit=-1&facet.pivot.mincount=1&facet.pivot=superclass,class,subclass,subsystem_id`
+    const sortByGeneCount = (a, b) => a.gene_count > b.gene_count ? -1 : 1
 
     subQuery('subsystem', query, {
       accept: 'application/solr+json'
@@ -247,7 +248,7 @@ router.get('/subsystem_summary/:genome_id', [
                 'name': klass.value,
                 'subsystem_count': Klass_ss_count,
                 'gene_count': klass.count,
-                'children': KlassChildren
+                'children': KlassChildren.sort(sortByGeneCount)
               }
               superKlassChildren.push(Klass)
               superKlass_ss_count += Klass_ss_count
@@ -255,13 +256,13 @@ router.get('/subsystem_summary/:genome_id', [
             const superKlass = { 'name': superclass.value,
               'subsystem_count': superKlass_ss_count,
               'gene_count': superclass.count,
-              'children': superKlassChildren
+              'children': superKlassChildren.sort(sortByGeneCount)
             }
 
             data.push(superKlass)
           })
 
-          res.results = data
+          res.results = data.sort(sortByGeneCount)
           next()
         }
       }, (err) => {
