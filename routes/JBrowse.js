@@ -2272,13 +2272,55 @@ function generateSarsCov2TrackList (req, res, next) {
           'borderWidth': 3
         },
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/3C_resist.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'DrugResistant3CMutations',
+        'key': '3C Resistant Mutations',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Drug resistant 3C-like proteinase mutations.  These mutations on 3C-like proteinase have been experimentally shown to confer drug resistance against Paxlovid/Nirmatrelvir.'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Drug Resistant Mutations',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
         'urlTemplate': distRoot + 'content/jbrowse/resist.gff.gz',
         'maxExportSpan': 10000000,
         'label': 'DrugResistantRdRpMutations',
-        'key': 'RdRp Resist Mutations',
+        'key': 'RdRp Resistant Mutations',
         'type': 'JBrowse/View/Track/CanvasFeatures',
         'metadata': {
-          'Description': 'Drug resistant RdRp mutations.  These mutations on the RdRp have been experimentally shown to confer drug resistance against Remdesivir and Sotorvimab.'
+          'Description': 'Drug resistant RdRp mutations.  These mutations on the RdRp have been experimentally shown to confer drug resistance against Remdesivir.'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Drug Resistant Mutations',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/s_resist.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'DrugResistantSpikeMutations',
+        'key': 'Spike Resistant Mutations',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Drug resistant Spike mutations.  These mutations on the Spike have been experimentally shown to confer drug resistance against Sotorvimab.'
         },
         'displayMode': 'normal'
       }
