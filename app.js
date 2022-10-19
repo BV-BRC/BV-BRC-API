@@ -18,6 +18,7 @@ var dataRouter = require('./routes/dataRouter')
 var indexer = require('./routes/indexer')
 var docRouter = require('./routes/documentation')
 var indexRouter = require('./routes/index')
+var pkgJSON = require("./package.json");
 
 var cors = require('cors')
 
@@ -84,7 +85,7 @@ app.use('/doc', docRouter)
 app.post('/', rpcHandler)
 app.use('/resources', express.static('public'))
 app.use('/health', function (req, res, next) {
-  res.write('OK')
+  res.write(`OK (${pkgJSON.version})`)
   res.end()
 })
 
