@@ -19,6 +19,8 @@ var indexer = require('./routes/indexer')
 var docRouter = require('./routes/documentation')
 var indexRouter = require('./routes/index')
 var pkgJSON = require("./package.json");
+var sleep = require("sleep-promise");
+
 
 var cors = require('cors')
 
@@ -30,7 +32,17 @@ process.on('unhandledRejection', (reason, promise) => {
 })
 
 var app = module.exports = express()
-app.listen(config.get('http_port') || 3001)
+process.send = process.send || function(){}
+const listener  = app.listen(config.get('http_port') || 3001, function(){
+  console.log(`Listening on port ${listener.address().port}`)
+	  process.send("ready")
+})
+
+var draining = false;
+var stats = {
+  active_requests: 0
+}
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
@@ -64,6 +76,24 @@ app.use(function (req, res, next) {
   req.production = (app.get('env') === 'production')
   next()
 })
+
+app.use((req,res,next)=>{
+	if (draining){
+		res.status(503)
+		res.send("Draining")
+		res.end()
+		return;
+	}
+
+	function fn(){
+		stats.active_requests--
+		res.removeListener("finish",fn)
+	}
+	stats.active_requests = stats.active_requests + 1
+	res.on("finish", fn)
+	next()
+});
+
 
 app.use(cookieParser())
 

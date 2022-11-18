@@ -19,3 +19,5 @@ tests/data-files/
 p3_api_service.err.log
 p3_api_service.out.log
 reqeusts_per_min.log
+*.sif
+
