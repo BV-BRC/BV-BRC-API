@@ -100,11 +100,11 @@ run the following command:
 ```
 singularity instance start \
     --bind /PATH/TO/CONFIG/FOLDER:/config \
-		--bind /PATH/TO/LOG/FOLDER:/logs \
-	  --bind /PATH/TO/TREES/FOLDER:/trees \
-		--bind /PATH/TO/PUBLIC/GENOMES/FOLDER:/genomes \
-		--bind /PATH/TO/QUEUE/FOLDER:/queue		
-		/path/to/p3_api-x.x.x.sif p3_api p3_api
+    --bind /PATH/TO/LOG/FOLDER:/logs \
+    --bind /PATH/TO/TREES/FOLDER:/trees \
+    --bind /PATH/TO/PUBLIC/GENOMES/FOLDER:/genomes \
+    --bind /PATH/TO/QUEUE/FOLDER:/queue	\
+    /path/to/p3_api-x.x.x.sif p3_api p3_api
 ```
 
 NOTE: The last two parameters describe the singularity instance name.  The should both exist and they should ALWAYS be the same.
@@ -112,28 +112,27 @@ NOTE: The last two parameters describe the singularity instance name.  The shoul
 This command will start an instance of p3_api with a default config (that may fail to run). Additionally, it will populate the configuration
 a number of additional files.  The p3_api.conf and pm2.config.js files are the p3_api configuration file and a configuration file to tell pm2
 how to behave within the container.  Both of these may be edited and will not get replaced if they exist. An existing p3_api.conf should be
-directly usable without changes in most cases. You may copy an existing p3_api.conf file into the configuration file before running the
-above command, and it will use that from the start.  A number of shell scripts for controlling the application will be generated the first
-time the command is run (or whenever start.sh doesn't exist).
+directly usable for the most part, but will need to have paths pointing at the tree folder, public genomes folder, and the indexer queue folder
+updated to match the container internal mount points (/trees,/genomes,/queue). You may copy an existing p3_api.conf file into the configuration file before running the above command (with the aforementioned changes), and it will use that from the start.  A number of shell scripts for controlling the application will be generated the first time the command is run (or whenever start.sh doesn't exist).
 
-	- start.sh  : Starts the singularity container and the process manager within
-	- stop.sh   : Stops the process manager and the stops the container
-	- restart.sh: Calls ./stop.sh && ./start.sh
-	- start-indexer.sh: Starts the indexer
-	- stop-indexer.sh: Stops just the indexer
-	- reload.sh : Calls "reload" on the process manager.  This is for graceful reload after modifying the configuration file or for some other reason
-	- reload-api.sh: Gracefully reload the api only.
-	- scale.sh <desired instance count> : This modifies the number of running instances in the process manager to <desired instance count>
-	- pm2.sh <pm2 arguments> : This is a simple wrapper around the pm2 process manager running inside the container
-	- shell.sh  : This is simple wrapper around the shell command to connect to the instance
-	- p3-check-history.sh
-	- p3-check-integrity.sh
-	- p3-clear-index-queue.sh
-	- p3-index-completed.sh
-	- p3-index-count.sh
-	- p3-rebuild-history.sh
-	- p3-reindex.sh
-	- p3-update-history.sh
+- start.sh  : Starts the singularity container and the process manager within
+- stop.sh   : Stops the process manager and the stops the container
+- restart.sh: Calls ./stop.sh && ./start.sh
+- start-indexer.sh: Starts the indexer
+- stop-indexer.sh: Stops just the indexer
+- reload.sh : Calls "reload" on the process manager.  This is for graceful reload after modifying the configuration file or for some other reason
+- reload-api.sh: Gracefully reload the api only.
+- scale.sh <desired instance count> : This modifies the number of running instances in the process manager to <desired instance count>
+- pm2.sh <pm2 arguments> : This is a simple wrapper around the pm2 process manager running inside the container
+- shell.sh  : This is simple wrapper around the shell command to connect to the instance
+- p3-check-history.sh
+- p3-check-integrity.sh
+- p3-clear-index-queue.sh
+- p3-index-completed.sh
+- p3-index-count.sh
+- p3-rebuild-history.sh
+- p3-reindex.sh
+- p3-update-history.sh
 
 You will also note an instance.vars file.  This file contains variables pointing at the singularity image, instance name, and bind parameters
 so that they won't need to be provided again.  Further, when an new image comes in,  modify instance.vars to point at the new image, stop the
@@ -141,11 +140,11 @@ existing service (./stop.sh), and then run start.sh to start again with the new 
 
 ### Additional Notes
 
-	- The same image may be used for multiple configuration files.  Deploy an image to alpha (by pointing at the alpha configuration) and when all is good,
+  - The same image may be used for multiple configuration files.  Deploy an image to alpha (by pointing at the alpha configuration) and when all is good,
     simply use the same image for beta and then production.
-	- A configuration folder must NOT be used by multiple instances concurrently.  The configuration folder holds the pm2 specifics for that instance and will
+  - A configuration folder must NOT be used by multiple instances concurrently.  The configuration folder holds the pm2 specifics for that instance and will
     conflict if two instances use the same folder.
-  - Log folder can be shared between multiple applications provided that the log file names themselves are unique.
+   - Log folder can be shared between multiple applications provided that the log file names themselves are unique.
 
 
 
