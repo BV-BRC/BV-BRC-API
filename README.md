@@ -140,11 +140,11 @@ existing service (./stop.sh), and then run start.sh to start again with the new 
 
 ### Additional Notes
 
-	- The same image may be used for multiple configuration files.  Deploy an image to alpha (by pointing at the alpha configuration) and when all is good,
+  - The same image may be used for multiple configuration files.  Deploy an image to alpha (by pointing at the alpha configuration) and when all is good,
     simply use the same image for beta and then production.
-	- A configuration folder must NOT be used by multiple instances concurrently.  The configuration folder holds the pm2 specifics for that instance and will
+  - A configuration folder must NOT be used by multiple instances concurrently.  The configuration folder holds the pm2 specifics for that instance and will
     conflict if two instances use the same folder.
-  - Log folder can be shared between multiple applications provided that the log file names themselves are unique.
+   - Log folder can be shared between multiple applications provided that the log file names themselves are unique.
 
 
 
