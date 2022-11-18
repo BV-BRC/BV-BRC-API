@@ -115,24 +115,24 @@ how to behave within the container.  Both of these may be edited and will not ge
 directly usable for the most part, but will need to have paths pointing at the tree folder, public genomes folder, and the indexer queue folder
 updated to match the container internal mount points (/trees,/genomes,/queue). You may copy an existing p3_api.conf file into the configuration file before running the above command (with the aforementioned changes), and it will use that from the start.  A number of shell scripts for controlling the application will be generated the first time the command is run (or whenever start.sh doesn't exist).
 
-	- start.sh  : Starts the singularity container and the process manager within
-	- stop.sh   : Stops the process manager and the stops the container
-	- restart.sh: Calls ./stop.sh && ./start.sh
-	- start-indexer.sh: Starts the indexer
-	- stop-indexer.sh: Stops just the indexer
-	- reload.sh : Calls "reload" on the process manager.  This is for graceful reload after modifying the configuration file or for some other reason
-	- reload-api.sh: Gracefully reload the api only.
-	- scale.sh <desired instance count> : This modifies the number of running instances in the process manager to <desired instance count>
-	- pm2.sh <pm2 arguments> : This is a simple wrapper around the pm2 process manager running inside the container
-	- shell.sh  : This is simple wrapper around the shell command to connect to the instance
-	- p3-check-history.sh
-	- p3-check-integrity.sh
-	- p3-clear-index-queue.sh
-	- p3-index-completed.sh
-	- p3-index-count.sh
-	- p3-rebuild-history.sh
-	- p3-reindex.sh
-	- p3-update-history.sh
+- start.sh  : Starts the singularity container and the process manager within
+- stop.sh   : Stops the process manager and the stops the container
+- restart.sh: Calls ./stop.sh && ./start.sh
+- start-indexer.sh: Starts the indexer
+- stop-indexer.sh: Stops just the indexer
+- reload.sh : Calls "reload" on the process manager.  This is for graceful reload after modifying the configuration file or for some other reason
+- reload-api.sh: Gracefully reload the api only.
+- scale.sh <desired instance count> : This modifies the number of running instances in the process manager to <desired instance count>
+- pm2.sh <pm2 arguments> : This is a simple wrapper around the pm2 process manager running inside the container
+- shell.sh  : This is simple wrapper around the shell command to connect to the instance
+- p3-check-history.sh
+- p3-check-integrity.sh
+- p3-clear-index-queue.sh
+- p3-index-completed.sh
+- p3-index-count.sh
+- p3-rebuild-history.sh
+- p3-reindex.sh
+- p3-update-history.sh
 
 You will also note an instance.vars file.  This file contains variables pointing at the singularity image, instance name, and bind parameters
 so that they won't need to be provided again.  Further, when an new image comes in,  modify instance.vars to point at the new image, stop the
