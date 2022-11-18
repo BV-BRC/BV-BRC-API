@@ -100,11 +100,11 @@ run the following command:
 ```
 singularity instance start \
     --bind /PATH/TO/CONFIG/FOLDER:/config \
-		--bind /PATH/TO/LOG/FOLDER:/logs \
-	  --bind /PATH/TO/TREES/FOLDER:/trees \
-		--bind /PATH/TO/PUBLIC/GENOMES/FOLDER:/genomes \
-		--bind /PATH/TO/QUEUE/FOLDER:/queue		
-		/path/to/p3_api-x.x.x.sif p3_api p3_api
+    --bind /PATH/TO/LOG/FOLDER:/logs \
+    --bind /PATH/TO/TREES/FOLDER:/trees \
+    --bind /PATH/TO/PUBLIC/GENOMES/FOLDER:/genomes \
+    --bind /PATH/TO/QUEUE/FOLDER:/queue	\
+    /path/to/p3_api-x.x.x.sif p3_api p3_api
 ```
 
 NOTE: The last two parameters describe the singularity instance name.  The should both exist and they should ALWAYS be the same.
@@ -112,9 +112,8 @@ NOTE: The last two parameters describe the singularity instance name.  The shoul
 This command will start an instance of p3_api with a default config (that may fail to run). Additionally, it will populate the configuration
 a number of additional files.  The p3_api.conf and pm2.config.js files are the p3_api configuration file and a configuration file to tell pm2
 how to behave within the container.  Both of these may be edited and will not get replaced if they exist. An existing p3_api.conf should be
-directly usable without changes in most cases. You may copy an existing p3_api.conf file into the configuration file before running the
-above command, and it will use that from the start.  A number of shell scripts for controlling the application will be generated the first
-time the command is run (or whenever start.sh doesn't exist).
+directly usable for the most part, but will need to have paths pointing at the tree folder, public genomes folder, and the indexer queue folder
+updated to match the container internal mount points (/trees,/genomes,/queue). You may copy an existing p3_api.conf file into the configuration file before running the above command (with the aforementioned changes), and it will use that from the start.  A number of shell scripts for controlling the application will be generated the first time the command is run (or whenever start.sh doesn't exist).
 
 	- start.sh  : Starts the singularity container and the process manager within
 	- stop.sh   : Stops the process manager and the stops the container
