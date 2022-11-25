@@ -103,7 +103,7 @@ app.use(cors({
   allowHeaders: ['if-none-match', 'range', 'accept', 'x-range', 'content-type', 'authorization'],
   exposedHeaders: ['facet_counts', 'x-facet-count', 'Content-Range', 'X-Content-Range', 'ETag'],
   credential: true,
-  maxAge: 8200
+  maxAge: 86400
 }))
 
 var collections = config.get('collections')
