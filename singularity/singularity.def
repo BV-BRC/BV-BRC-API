@@ -1,0 +1,138 @@
+Bootstrap: docker
+From: node:18-alpine
+
+%setup
+	mkdir -p $SINGULARITY_ROOTFS/config
+	mkdir -p $SINGULARITY_ROOTFS/logs
+	mkdir -p $SINGULARITY_ROOTFS/trees
+	mkdir -p $SINGULARITY_ROOTFS/genomes
+	mkdir -p $SINGULARITY_ROOTFS/queue
+
+%files
+./app.js /p3_api/
+./bin /p3_api/
+./bundler /p3_api/
+./cache.js /p3_api/
+./config.js /p3_api/
+./content /p3_api/
+./singularity/default_pm2_config.js /p3_api/
+./singularity/scripts /p3_api/singularity_scripts
+./Docs /p3_api/
+./ExpandingQuery.js /p3_api/
+./index-queue-dir /p3_api/
+./LICENSE.md /p3_api/
+./media /p3_api/
+./middleware /p3_api/
+./p3api.conf.sample /p3_api/
+./package.json /p3_api/
+./package-lock.json /p3_api/
+./postcss.config.js /p3_api/
+./public /p3_api/
+./README.md /p3_api/
+./routes /p3_api/
+./rpc /p3_api/
+./rpc.js /p3_api/
+./tailwind.config.js /p3_api/
+./tests /p3_api/
+./trees /p3_api/
+./util /p3_api/
+./views /p3_api/
+
+
+%environment
+	export PM2_HOME=/config/pm2
+  export p3_api_CONFIG=/config/p3_api.conf
+
+%post
+	echo 'http://dl-cdn.alpinelinux.org/alpine/v3.6/main' >> /etc/apk/repositories
+	echo 'http://dl-cdn.alpinelinux.org/alpine/v3.6/community' >> /etc/apk/repositories
+  apk update
+	apk add --no-cache git jq g++ make python3 
+	npm install -g npm pm2 node-gyp
+	cd /p3_api
+	npm install
+	apk del g++ python3 make
+
+%startscript
+  echo "Starting P3 USER"
+	if [ ! -f /config/pm2.config.js ]; then
+		cp /p3_api/default_pm2_config.js /config/pm2.config.js
+  fi
+
+	if [ ! -f /config/p3_api.conf ]; then
+		cp /p3_api/p3api.conf.sample /config/p3_api.conf
+  fi
+
+	if [ ! -f /config/start.sh ]; then
+	  cp /p3_api/singularity_scripts/* /config/
+  fi
+
+  echo "SINGULARITY_CONTAINER=$SINGULARITY_CONTAINER" > /config/instance.vars
+	echo "SINGULARITY_INSTANCE=$1" >> /config/instance.vars
+	echo "SINGULARITY_BIND=$SINGULARITY_BIND" >> /config/instance.vars
+
+	env > /logs/env.log
+
+	pm2-runtime /config/pm2.config.js || exit 1
+
+%apprun generate_scripts
+	cp /p3_api/singularity_scripts/* /config/
+
+%apprun stop
+	pm2 stop p3_indexer 
+	pm2 stop p3_api
+
+%apprun start
+	pm2-runtime /config/pm2.config.js
+
+%apprun reload 
+	pm2 reload /config/pm2.config.js 
+
+%apprun restart 
+	pm2 restart /config/pm2.config.js 
+
+%apprun stop-indexer
+	pm2 stop p3_indexer 
+
+%apprun start-indexer
+	pm2 start /config/pm2.config.js --only p3_indexer
+
+%apprun reload-api
+  pm2 reload p3_api
+
+%apprun restart-indexer
+  pm2 restart p3_indexer
+
+%apprun p3-check-history
+	/p3_api/bin/p3-check-history $@
+
+%apprun p3-clean-completed
+	/p3_api/bin/p3-index-completed $@
+
+%apprun p3-index-count
+  /p3_api/bin/p3-index-count $@
+
+%apprun p3-rebuild-history
+  /p3_api/bin/p3-rebuild-history $@
+
+%apprun p3-update-history
+  /p3_api/bin/p3-update-history $@
+
+%apprun p3-check-integrity
+	/p3_api/bin/p3-check-integrity $@
+
+%apprun p3-clear-index-queue
+	/p3_api/bin/p3-clear-index-queue $@
+
+%apprun p3-reindex
+	/p3_api/bin/p3-reindex $@
+
+%apprun scale
+  pm2 scale p3_api $@
+
+%apprun status 
+	pm2 list
+
+%apprun pm2
+  pm2 $@
+

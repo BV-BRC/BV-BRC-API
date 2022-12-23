@@ -1,6 +1,6 @@
 {
   "name": "p3api",
-  "version": "1.9.1",
+  "version": "1.9.2",
   "private": true,
   "scripts": {
     "start": "node --unhandled-rejections=strict --stack-size=65536 app.js",
@@ -12,7 +12,8 @@
     "test-content": "mocha spec tests/test-content/test.spec.js",
     "test-download": "mocha spec tests/test-download/test.spec.js",
     "test-permissions": "mocha -R spec  \"tests/test-permissions/**/*.spec.js\"",
-		"build-css": "npx postcss public/css/docs.css -o public/css/compiled.css"
+		"build-css": "npx postcss public/css/docs.css -o public/css/compiled.css",
+		"build-image": "./buildImage.sh"
   },
   "dependencies": {
     "JSONStream": "^1.3.1",
@@ -34,7 +35,7 @@
     "morgan": "^1.9.1",
     "nconf": "^0.10.0",
     "node-xlsx": "^0.6.0",
-    "p3-user": "git+https://github.com/PATRIC3/p3_user.git#8bbe64603c247cc8dee57f9b215181109b1bbc18",
+    "p3-user": "git+https://github.com/PATRIC3/p3_user.git#c0fee2a0ac833fa78401266d705f8c5a6b80e4f3",
     "pino": "^6.2.1",
     "postcss-cli": "^9.0.1",
     "redis": "^2.8.0",
