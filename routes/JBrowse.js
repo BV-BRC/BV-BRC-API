@@ -386,12 +386,12 @@ function generateSarsCov2TrackList (req, res, next) {
           { 'url': distRoot + 'content/jbrowse/class4_max_total_track.bw', 'name': 'Class 4', 'description': 'Non-ACE2 blocking antibodies that bind only to "up" RBDs (Barnes 2020)', 'nonCont': true, 'fill': true, 'color': '#CCBE9F' }],
         'storeClass': 'jbrowse.repo/plugins/MultiBigWig/js/Store/SeqFeature/MultiBigWig',
         'autoscale': 'global',
-        'style': { 'height': '125', 'textColor': '#FFFFFF' },
+        'style': { 'height': '90', 'textColor': '#FFFFFF' },
         'max_score': '1',
         'colorizeAbout': 'true',
         'showLabels': true,
         'showTooltips': true,
-        'labelWidth': '80',
+        'labelWidth': '50',
         'key': 'Classes 1-4 Ab Escape',
         'label': 'Classes1to4AbEscape',
         'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiDensity',
@@ -665,13 +665,285 @@ function generateSarsCov2TrackList (req, res, next) {
           'borderWidth': 3
         },
         'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
-        'urlTemplate': distRoot + 'content/jbrowse/Omicron_variants.gff.gz',
+        'urlTemplate': distRoot + 'content/jbrowse/Omicron_BA.1+BA.1.*_variants.gff.gz',
         'maxExportSpan': 10000000,
-        'label': 'OmicronAAVariations',
-        'key': 'Omicron',
+        'label': 'OmicronBA.1AAVariations',
+        'key': 'Omicron - BA.1',
         'type': 'JBrowse/View/Track/CanvasFeatures',
         'metadata': {
-          'Description': 'Consensus variant constellation for Omicron'
+          'Description': 'Consensus variant constellation for Omicron BA.1'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Variants by WHO Name',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/Omicron_BA.2+BA.2*_variants.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'OmicronBA.2AAVariations',
+        'key': 'Omicron - BA.2',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Consensus variant constellation for Omicron BA.2'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Variants by WHO Name',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/Omicron_BA.2.12.1_variants.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'OmicronBA.2.12.1AAVariations',
+        'key': 'Omicron - BA.2.12.1',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Consensus variant constellation for Omicron BA.2.12.1'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Variants by WHO Name',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/Omicron_BA.3_variants.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'OmicronBA.3AAVariations',
+        'key': 'Omicron - BA.3',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Consensus variant constellation for Omicron BA.3'
+        },
+        'displayMode': 'normal'
+      },{
+        'category': 'Variants by WHO Name',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/Omicron_BA.4_variants.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'OmicronBA.4AAVariations',
+        'key': 'Omicron - BA.4',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Consensus variant constellation for Omicron BA.4'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Variants by WHO Name',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/Omicron_BA.5_variants.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'OmicronBA.5AAVariations',
+        'key': 'Omicron - BA.5',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Consensus variant constellation for Omicron BA.5'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Variants by WHO Name',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/Omicron_BA.2.75_variants.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'OmicronBA.2.75AAVariations',
+        'key': 'Omicron - BA.2.75',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Consensus variant constellation for Omicron BA.2.75'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Variants by WHO Name',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/Omicron_BA.4.6_variants.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'OmicronBA.4.6AAVariations',
+        'key': 'Omicron - BA.4.6',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Consensus variant constellation for Omicron BA.4.6'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Variants by WHO Name',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/Omicron_BQ.1_variants.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'OmicronBQ.1AAVariations',
+        'key': 'Omicron - BQ.1',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Consensus variant constellation for Omicron BQ.1'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Variants by WHO Name',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/Omicron_BQ.1.1_variants.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'OmicronBQ.1.1AAVariations',
+        'key': 'Omicron - BQ.1.1',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Consensus variant constellation for Omicron BQ.1.1'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Variants by WHO Name',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/Omicron_XBB_variants.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'OmicronXBBAAVariations',
+        'key': 'Omicron - XBB',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Consensus variant constellation for Omicron XBB'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Variants by WHO Name',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/Omicron_XBB.1_variants.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'OmicronXBB.1AAVariations',
+        'key': 'Omicron - XBB.1',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Consensus variant constellation for Omicron XBB.1'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Variants by WHO Name',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/Omicron_XBB.1.5_variants.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'OmicronXBB.1.5AAVariations',
+        'key': 'Omicron - XBB.1.5',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Consensus variant constellation for Omicron XBB.1.5'
+        },
+        'displayMode': 'normal'
+      },
+      {
+        'category': 'Variants by WHO Name',
+        'maxExportFeatures': 10000,
+        'style': {
+          'className': 'feature3',
+          'color': 'uiprotColor(feature)',
+          'showLabels': true,
+          'showTooltips': true,
+          'borderWidth': 3
+        },
+        'storeClass': 'JBrowse/Store/SeqFeature/GFF3Tabix',
+        'urlTemplate': distRoot + 'content/jbrowse/Omicron_BF.7_variants.gff.gz',
+        'maxExportSpan': 10000000,
+        'label': 'OmicronBF.7AAVariations',
+        'key': 'Omicron - BF.7',
+        'type': 'JBrowse/View/Track/CanvasFeatures',
+        'metadata': {
+          'Description': 'Consensus variant constellation for Omicron BF.7'
         },
         'displayMode': 'normal'
       },
@@ -1175,83 +1447,233 @@ function generateSarsCov2TrackList (req, res, next) {
           'Description': 'Turn Secondary Structure'
         }
       },
-      {
+      {       
         'category': 'Natural Selection Heatmaps (Pond Lab)',
         'urlTemplates': [
           { 'url': distRoot + 'content/jbrowse/positive_selection_2020-02-29.bw', 'name': 'Feb 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
-          { 'url': distRoot + 'content/jbrowse/positive_selection_2020-03-31.bw', 'name': 'Mar 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A'},
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2020-03-31.bw', 'name': 'Mar 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
           { 'url': distRoot + 'content/jbrowse/positive_selection_2020-04-30.bw', 'name': 'Apr 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
-          { 'url': distRoot + 'content/jbrowse/positive_selection_2020-05-31.bw', 'name': 'May 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2020-05-31.bw', 'name': 'May 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' }],
+        'storeClass': 'jbrowse.repo/plugins/MultiBigWig/js/Store/SeqFeature/MultiBigWig',
+        'autoscale': 'global',
+        'style': { 'height': '100' },
+        'colorizeAbout': 'true',
+        'showLabels': true,
+        'showTooltips': true,
+        'labelWidth': '60',
+        'key': 'Postive Selection FEL Pvalue 2020/02 - 2020/05',
+        'label': 'Positive Selection FEL Pvalue 2020/02 - 2020/05',
+        'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiDensity',
+        'metadata': { 'description': 'This track provides quantitative insight on the SARS-CoV-2 genomic sites that have been under positive selection from Feb 2020 - May 2020, according to the Pond lab (https://github.com/spond/SARS-CoV-2-variation).  If a site was exhibiting positive selection based on its dN/dS ratio being greater than 1 for each month, a box in the heatmap is shaded based on the -log10 of p-value of the FEL likelihood ratio test.  A darker color indicates a more significant p-value, and therefore a site under stronger positive selection, whereas no color indicates no significant selection.  Only sites with a FEL p-value of 0.05 or less are shaded.' }
+      },
+      {
+        'category': 'Natural Selection Heatmaps (Pond Lab)',
+        'urlTemplates': [
           { 'url': distRoot + 'content/jbrowse/positive_selection_2020-06-30.bw', 'name': 'Jun 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
           { 'url': distRoot + 'content/jbrowse/positive_selection_2020-07-31.bw', 'name': 'Jul 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
           { 'url': distRoot + 'content/jbrowse/positive_selection_2020-08-31.bw', 'name': 'Aug 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
-          { 'url': distRoot + 'content/jbrowse/positive_selection_2020-09-30.bw', 'name': 'Sep 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2020-09-30.bw', 'name': 'Sep 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' }],
+        'storeClass': 'jbrowse.repo/plugins/MultiBigWig/js/Store/SeqFeature/MultiBigWig',
+        'autoscale': 'global',
+        'style': { 'height': '100' },
+        'colorizeAbout': 'true',
+        'showLabels': true,
+        'showTooltips': true,
+        'labelWidth': '60',
+        'key': 'Postive Selection FEL Pvalue 2020/06 - 2020/09',
+        'label': 'Positive Selection FEL Pvalue 2020/06 - 2020/09',
+        'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiDensity',
+        'metadata': { 'description': 'This track provides quantitative insight on the SARS-CoV-2 genomic sites that have been under positive selection from Jun 2020 - Sep 2020, according to the Pond lab (https://github.com/spond/SARS-CoV-2-variation).  If a site was exhibiting positive selection based on its dN/dS ratio being greater than 1 for each month, a box in the heatmap is shaded based on the -log10 of p-value of the FEL likelihood ratio test.  A darker color indicates a more significant p-value, and therefore a site under stronger positive selection, whereas no color indicates no significant selection.  Only sites with a FEL p-value of 0.05 or less are shaded.' }
+      },
+      {
+        'category': 'Natural Selection Heatmaps (Pond Lab)',
+        'urlTemplates': [
           { 'url': distRoot + 'content/jbrowse/positive_selection_2020-10-31.bw', 'name': 'Oct 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
           { 'url': distRoot + 'content/jbrowse/positive_selection_2020-11-30.bw', 'name': 'Nov 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
           { 'url': distRoot + 'content/jbrowse/positive_selection_2020-12-31.bw', 'name': 'Dec 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
-          { 'url': distRoot + 'content/jbrowse/positive_selection_2021-01-31.bw', 'name': 'Jan 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2021-01-31.bw', 'name': 'Jan 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' }],
+        'storeClass': 'jbrowse.repo/plugins/MultiBigWig/js/Store/SeqFeature/MultiBigWig',
+        'autoscale': 'global',
+        'style': { 'height': '100' },
+        'colorizeAbout': 'true',
+        'showLabels': true,
+        'showTooltips': true,
+        'labelWidth': '60',
+        'key': 'Postive Selection FEL Pvalue 2020/10 - 2021/01',
+        'label': 'Positive Selection FEL Pvalue 2020/10 - 2021/01',
+        'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiDensity',
+        'metadata': { 'description': 'This track provides quantitative insight on the SARS-CoV-2 genomic sites that have been under positive selection from Oct 2020 - Jan 2021, according to the Pond lab (https://github.com/spond/SARS-CoV-2-variation).  If a site was exhibiting positive selection based on its dN/dS ratio being greater than 1 for each month, a box in the heatmap is shaded based on the -log10 of p-value of the FEL likelihood ratio test.  A darker color indicates a more significant p-value, and therefore a site under stronger positive selection, whereas no color indicates no significant selection.  Only sites with a FEL p-value of 0.05 or less are shaded.' }
+      },
+      {
+        'category': 'Natural Selection Heatmaps (Pond Lab)',
+        'urlTemplates': [
           { 'url': distRoot + 'content/jbrowse/positive_selection_2021-02-28.bw', 'name': 'Feb 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
           { 'url': distRoot + 'content/jbrowse/positive_selection_2021-03-31.bw', 'name': 'Mar 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
           { 'url': distRoot + 'content/jbrowse/positive_selection_2021-04-30.bw', 'name': 'Apr 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
-          { 'url': distRoot + 'content/jbrowse/positive_selection_2021-05-31.bw', 'name': 'May 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2021-05-31.bw', 'name': 'May 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' }],
+        'storeClass': 'jbrowse.repo/plugins/MultiBigWig/js/Store/SeqFeature/MultiBigWig',
+        'autoscale': 'global',
+        'style': { 'height': '100' },
+        'colorizeAbout': 'true',
+        'showLabels': true,
+        'showTooltips': true,
+        'labelWidth': '60',
+        'key': 'Postive Selection FEL Pvalue 2021/02 - 2021/05',
+        'label': 'Positive Selection FEL Pvalue 2021/02 - 2021/05',
+        'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiDensity',
+        'metadata': { 'description': 'This track provides quantitative insight on the SARS-CoV-2 genomic sites that have been under positive selection from Feb 2021 - May 2021 , according to the Pond lab (https://github.com/spond/SARS-CoV-2-variation).  If a site was exhibiting positive selection based on its dN/dS ratio being greater than 1 for each month, a box in the heatmap is shaded based on the -log10 of p-value of the FEL likelihood ratio test.  A darker color indicates a more significant p-value, and therefore a site under stronger positive selection, whereas no color indicates no significant selection.  Only sites with a FEL p-value of 0.05 or less are shaded.' }
+      },
+      {
+        'category': 'Natural Selection Heatmaps (Pond Lab)',
+        'urlTemplates': [
           { 'url': distRoot + 'content/jbrowse/positive_selection_2021-06-30.bw', 'name': 'Jun 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
           { 'url': distRoot + 'content/jbrowse/positive_selection_2021-07-31.bw', 'name': 'Jul 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
           { 'url': distRoot + 'content/jbrowse/positive_selection_2021-08-31.bw', 'name': 'Aug 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
-          { 'url': distRoot + 'content/jbrowse/positive_selection_2021-09-30.bw', 'name': 'Sep 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
+          { 'url': distRoot + 'content/jbrowse/positive_selection_2021-09-30.bw', 'name': 'Sep 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' }],
+        'storeClass': 'jbrowse.repo/plugins/MultiBigWig/js/Store/SeqFeature/MultiBigWig',
+        'autoscale': 'global',
+        'style': { 'height': '100' },
+        'colorizeAbout': 'true',
+        'showLabels': true,
+        'showTooltips': true,
+        'labelWidth': '60',
+        'key': 'Postive Selection FEL Pvalue 2021/06 - 2021/09',
+        'label': 'Positive Selection FEL Pvalue 2021/06 - 2021/09',
+        'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiDensity',
+        'metadata': { 'description': 'This track provides quantitative insight on the SARS-CoV-2 genomic sites that have been under positive selection from Jun 2021 - Sep 2021, according to the Pond lab (https://github.com/spond/SARS-CoV-2-variation).  If a site was exhibiting positive selection based on its dN/dS ratio being greater than 1 for each month, a box in the heatmap is shaded based on the -log10 of p-value of the FEL likelihood ratio test.  A darker color indicates a more significant p-value, and therefore a site under stronger positive selection, whereas no color indicates no significant selection.  Only sites with a FEL p-value of 0.05 or less are shaded.' }
+      },
+      {
+        'category': 'Natural Selection Heatmaps (Pond Lab)',
+        'urlTemplates': [
           { 'url': distRoot + 'content/jbrowse/positive_selection_2021-10-31.bw', 'name': 'Oct 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
           { 'url': distRoot + 'content/jbrowse/positive_selection_2021-11-30.bw', 'name': 'Nov 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
           { 'url': distRoot + 'content/jbrowse/positive_selection_2021-12-31.bw', 'name': 'Dec 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' },
           { 'url': distRoot + 'content/jbrowse/positive_selection_2022-01-31.bw', 'name': 'Jan 2022', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#F5793A' }],
         'storeClass': 'jbrowse.repo/plugins/MultiBigWig/js/Store/SeqFeature/MultiBigWig',
         'autoscale': 'global',
-        'style': { 'height': '1000' },
+        'style': { 'height': '100' },
         'colorizeAbout': 'true',
         'showLabels': true,
         'showTooltips': true,
-        'labelWidth': '70',
-        'key': 'Postive Selection FEL Pvalue Over Time',
-        'label': 'Positive Selection FEL Pvalue Over Time',
+        'labelWidth': '60',
+        'key': 'Postive Selection FEL Pvalue 2021/10 - 2022/01',
+        'label': 'Positive Selection FEL Pvalue 2021/10 - 2022/01',
         'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiDensity',
-        'metadata': { 'description': 'This track provides quantitative insight on the SARS-CoV-2 genomic sites that have been under positive selection since Feb 2020, according to the Pond lab (https://github.com/spond/SARS-CoV-2-variation).  If a site was exhibiting positive selection based on its dN/dS ratio being greater than 1 for each month, a box in the heatmap is shaded based on the -log10 of p-value of the FEL likelihood ratio test.  A darker color indicates a more significant p-value, and therefore a site under stronger positive selection, whereas no color indicates no significant selection.  Only sites with a FEL p-value of 0.05 or less are shaded.' }
+        'metadata': { 'description': 'This track provides quantitative insight on the SARS-CoV-2 genomic sites that have been under positive selection from Oct 2021 - Jan 2022, according to the Pond lab (https://github.com/spond/SARS-CoV-2-variation).  If a site was exhibiting positive selection based on its dN/dS ratio being greater than 1 for each month, a box in the heatmap is shaded based on the -log10 of p-value of the FEL likelihood ratio test.  A darker color indicates a more significant p-value, and therefore a site under stronger positive selection, whereas no color indicates no significant selection.  Only sites with a FEL p-value of 0.05 or less are shaded.' }
       },
       {
         'category': 'Natural Selection Heatmaps (Pond Lab)',
         'urlTemplates': [
           { 'url': distRoot + 'content/jbrowse/negative_selection_2020-02-29.bw', 'name': 'Feb 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
-          { 'url': distRoot + 'content/jbrowse/negative_selection_2020-03-31.bw', 'name': 'Mar 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1'},
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2020-03-31.bw', 'name': 'Mar 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
           { 'url': distRoot + 'content/jbrowse/negative_selection_2020-04-30.bw', 'name': 'Apr 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
-          { 'url': distRoot + 'content/jbrowse/negative_selection_2020-05-31.bw', 'name': 'May 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2020-05-31.bw', 'name': 'May 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' }],
+        'storeClass': 'jbrowse.repo/plugins/MultiBigWig/js/Store/SeqFeature/MultiBigWig',
+        'autoscale': 'global',
+        'style': { 'height': '100' },
+        'colorizeAbout': 'true',
+        'showLabels': true,
+        'showTooltips': true,
+        'labelWidth': '60',
+        'key': 'Negative Selection FEL Pvalue 2020/02 - 2020/05',
+        'label': 'Negative Selection FEL Pvalue 2020/02 - 2020/05',
+        'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiDensity',
+        'metadata': { 'description': 'This track provides quantitative insight on the SARS-CoV-2 genomic sites that have been under negative selection from Feb 2020 - May 2020, according to the Pond lab (https://github.com/spond/SARS-CoV-2-variation).  If a site was exhibiting negative selection based on its dN/dS ratio being less than 1 for each month, a box in the heatmap is shaded based on the -log10 of p-value of the FEL likelihood ratio test.  A darker color indicates a more significant p-value, and therefore a site under stronger negative selection, whereas no color indicates no significant selection.  Only sites with a FEL p-value of 0.05 or less are shaded.' }
+      },
+      {
+        'category': 'Natural Selection Heatmaps (Pond Lab)',
+        'urlTemplates': [
           { 'url': distRoot + 'content/jbrowse/negative_selection_2020-06-30.bw', 'name': 'Jun 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
           { 'url': distRoot + 'content/jbrowse/negative_selection_2020-07-31.bw', 'name': 'Jul 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
           { 'url': distRoot + 'content/jbrowse/negative_selection_2020-08-31.bw', 'name': 'Aug 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
-          { 'url': distRoot + 'content/jbrowse/negative_selection_2020-09-30.bw', 'name': 'Sep 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2020-09-30.bw', 'name': 'Sep 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' }],
+        'storeClass': 'jbrowse.repo/plugins/MultiBigWig/js/Store/SeqFeature/MultiBigWig',
+        'autoscale': 'global',
+        'style': { 'height': '100' },
+        'colorizeAbout': 'true',
+        'showLabels': true,
+        'showTooltips': true,
+        'labelWidth': '60',
+        'key': 'Negative Selection FEL Pvalue 2020/06 - 2020/09',
+        'label': 'Negative Selection FEL Pvalue 2020/06 - 2020/09',
+        'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiDensity',
+        'metadata': { 'description': 'This track provides quantitative insight on the SARS-CoV-2 genomic sites that have been under negative selection from Jun 2020 - Sep 2020, according to the Pond lab (https://github.com/spond/SARS-CoV-2-variation).  If a site was exhibiting negative selection based on its dN/dS ratio being less than 1 for each month, a box in the heatmap is shaded based on the -log10 of p-value of the FEL likelihood ratio test.  A darker color indicates a more significant p-value, and therefore a site under stronger negative selection, whereas no color indicates no significant selection.  Only sites with a FEL p-value of 0.05 or less are shaded.' }
+      },
+      {
+        'category': 'Natural Selection Heatmaps (Pond Lab)',
+        'urlTemplates': [
           { 'url': distRoot + 'content/jbrowse/negative_selection_2020-10-31.bw', 'name': 'Oct 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
           { 'url': distRoot + 'content/jbrowse/negative_selection_2020-11-30.bw', 'name': 'Nov 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
           { 'url': distRoot + 'content/jbrowse/negative_selection_2020-12-31.bw', 'name': 'Dec 2020', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
-          { 'url': distRoot + 'content/jbrowse/negative_selection_2021-01-31.bw', 'name': 'Jan 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2021-01-31.bw', 'name': 'Jan 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' }],
+        'storeClass': 'jbrowse.repo/plugins/MultiBigWig/js/Store/SeqFeature/MultiBigWig',
+        'autoscale': 'global',
+        'style': { 'height': '100' },
+        'colorizeAbout': 'true',
+        'showLabels': true,
+        'showTooltips': true,
+        'labelWidth': '60',
+        'key': 'Negative Selection FEL Pvalue 2020/10 - 2021/01',
+        'label': 'Negative Selection FEL Pvalue 2020/10 - 2021/01',
+        'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiDensity',
+        'metadata': { 'description': 'This track provides quantitative insight on the SARS-CoV-2 genomic sites that have been under negative selection from Oct 2020 - Jan 2021, according to the Pond lab (https://github.com/spond/SARS-CoV-2-variation).  If a site was exhibiting negative selection based on its dN/dS ratio being less than 1 for each month, a box in the heatmap is shaded based on the -log10 of p-value of the FEL likelihood ratio test.  A darker color indicates a more significant p-value, and therefore a site under stronger negative selection, whereas no color indicates no significant selection.  Only sites with a FEL p-value of 0.05 or less are shaded.' }
+      },
+      {
+        'category': 'Natural Selection Heatmaps (Pond Lab)',
+        'urlTemplates': [
           { 'url': distRoot + 'content/jbrowse/negative_selection_2021-02-28.bw', 'name': 'Feb 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
           { 'url': distRoot + 'content/jbrowse/negative_selection_2021-03-31.bw', 'name': 'Mar 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
           { 'url': distRoot + 'content/jbrowse/negative_selection_2021-04-30.bw', 'name': 'Apr 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
-          { 'url': distRoot + 'content/jbrowse/negative_selection_2021-05-31.bw', 'name': 'May 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2021-05-31.bw', 'name': 'May 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' }],
+        'storeClass': 'jbrowse.repo/plugins/MultiBigWig/js/Store/SeqFeature/MultiBigWig',
+        'autoscale': 'global',
+        'style': { 'height': '100' },
+        'colorizeAbout': 'true',
+        'showLabels': true,
+        'showTooltips': true,
+        'labelWidth': '60',
+        'key': 'Negative Selection FEL Pvalue 2021/02 - 2021/05',
+        'label': 'Negative Selection FEL Pvalue 2021/02 - 2021/05',
+        'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiDensity',
+        'metadata': { 'description': 'This track provides quantitative insight on the SARS-CoV-2 genomic sites that have been under negative selection from Feb 2021 - May 2021 , according to the Pond lab (https://github.com/spond/SARS-CoV-2-variation).  If a site was exhibiting negative selection based on its dN/dS ratio being greater than 1 for each month, a box in the heatmap is shaded based on the -log10 of p-value of the FEL likelihood ratio test.  A darker color indicates a more significant p-value, and therefore a site under stronger negative selection, whereas no color indicates no significant selection.  Only sites with a FEL p-value of 0.05 or less are shaded.' }
+      },
+      {
+        'category': 'Natural Selection Heatmaps (Pond Lab)',
+        'urlTemplates': [
           { 'url': distRoot + 'content/jbrowse/negative_selection_2021-06-30.bw', 'name': 'Jun 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
           { 'url': distRoot + 'content/jbrowse/negative_selection_2021-07-31.bw', 'name': 'Jul 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
           { 'url': distRoot + 'content/jbrowse/negative_selection_2021-08-31.bw', 'name': 'Aug 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
-          { 'url': distRoot + 'content/jbrowse/negative_selection_2021-09-30.bw', 'name': 'Sep 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
+          { 'url': distRoot + 'content/jbrowse/negative_selection_2021-09-30.bw', 'name': 'Sep 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' }],
+        'storeClass': 'jbrowse.repo/plugins/MultiBigWig/js/Store/SeqFeature/MultiBigWig',
+        'autoscale': 'global',
+        'style': { 'height': '100' },
+        'colorizeAbout': 'true',
+        'showLabels': true,
+        'showTooltips': true,
+        'labelWidth': '60',
+        'key': 'Negative Selection FEL Pvalue 2021/06 - 2021/09',
+        'label': 'Negative Selection FEL Pvalue 2021/06 - 2021/09',
+        'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiDensity',
+        'metadata': { 'description': 'This track provides quantitative insight on the SARS-CoV-2 genomic sites that have been under negative selection from Jun 2021 - Sep 2021, according to the Pond lab (https://github.com/spond/SARS-CoV-2-variation).  If a site was exhibiting negative selection based on its dN/dS ratio being greater than 1 for each month, a box in the heatmap is shaded based on the -log10 of p-value of the FEL likelihood ratio test.  A darker color indicates a more significant p-value, and therefore a site under stronger negative selection, whereas no color indicates no significant selection.  Only sites with a FEL p-value of 0.05 or less are shaded.' }
+      },
+      {
+        'category': 'Natural Selection Heatmaps (Pond Lab)',
+        'urlTemplates': [
           { 'url': distRoot + 'content/jbrowse/negative_selection_2021-10-31.bw', 'name': 'Oct 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
           { 'url': distRoot + 'content/jbrowse/negative_selection_2021-11-30.bw', 'name': 'Nov 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
           { 'url': distRoot + 'content/jbrowse/negative_selection_2021-12-31.bw', 'name': 'Dec 2021', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' },
           { 'url': distRoot + 'content/jbrowse/negative_selection_2022-01-31.bw', 'name': 'Jan 2022', 'description': '-Log10 FEL Likelihood Ratio Test Pvalue', 'nonCont': true, 'fill': true, 'color': '#A95AA1' }],
         'storeClass': 'jbrowse.repo/plugins/MultiBigWig/js/Store/SeqFeature/MultiBigWig',
         'autoscale': 'global',
-        'style': { 'height': '1000' },
+        'style': { 'height': '100' },
         'colorizeAbout': 'true',
         'showLabels': true,
         'showTooltips': true,
-        'labelWidth': '70',
-        'key': 'Negative Selection FEL Pvalue Over Time',
-        'label': 'Negative Selection FEL Pvalue Over Time',
+        'labelWidth': '60',
+        'key': 'Negative Selection FEL Pvalue 2021/10 - 2022/01',
+        'label': 'Negative Selection FEL Pvalue 2021/10 - 2022/01',
         'type': 'jbrowse.repo/plugins/MultiBigWig/js/View/Track/MultiWiggle/MultiDensity',
-        'metadata': { 'description': 'This track provides quantitative insight on the SARS-CoV-2 genomic sites that have been under negative selection since Feb 2020, according to the Pond lab (https://github.com/spond/SARS-CoV-2-variation).  If a site was exhibiting negative selection based on its dN/dS ratio being less than 1 for each month, a box in the heatmap is shaded based on the -log10 of p-value of the FEL likelihood ratio test.  A darker color indicates a more significant p-value, and therefore a site under stronger negative selection, whereas no color indicates no significant selection.  Only sites with a FEL p-value of 0.05 or less are shaded.' }
+        'metadata': { 'description': 'This track provides quantitative insight on the SARS-CoV-2 genomic sites that have been under negative selection from Oct 2021 - Jan 2022, according to the Pond lab (https://github.com/spond/SARS-CoV-2-variation).  If a site was exhibiting negative selection based on its dN/dS ratio being greater than 1 for each month, a box in the heatmap is shaded based on the -log10 of p-value of the FEL likelihood ratio test.  A darker color indicates a more significant p-value, and therefore a site under stronger negative selection, whereas no color indicates no significant selection.  Only sites with a FEL p-value of 0.05 or less are shaded.' }
       },
       {
         'category': 'Positive Selection Sites (Pond Lab)',
