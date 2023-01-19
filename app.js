@@ -51,8 +51,6 @@ app.set('view engine', 'ejs')
 app.enable('etag')
 app.set('etag', 'strong')
 
-var stats = null
-
 logger.token('qtime', function (req, res) {
   var from = 'QUERY '
   if (req.cacheHit) {
