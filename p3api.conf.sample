@@ -5,6 +5,7 @@
 	},
 	"workspaceAPI": "",
 	"distributeURL": "http://localhost:3001/",
-	"queueDirectory": "",
-	"publicGenomeDir": ""
+	"queueDirectory": "/queue",
+	"publicGenomeDir": "/genomes",
+  "treeDirectory": "/trees"
 }

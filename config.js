@@ -101,4 +101,4 @@ const defaults = {
 
 }
 
-module.exports = nconf.argv().env().file('./p3api.conf').defaults(defaults)
+module.exports = nconf.argv().env().file(process.env.P3_API_CONFIG || './p3api.conf').defaults(defaults)

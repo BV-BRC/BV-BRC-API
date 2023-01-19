@@ -18,6 +18,9 @@ var dataRouter = require('./routes/dataRouter')
 var indexer = require('./routes/indexer')
 var docRouter = require('./routes/documentation')
 var indexRouter = require('./routes/index')
+var pkgJSON = require("./package.json");
+var sleep = require("sleep-promise");
+
 
 var cors = require('cors')
 
@@ -29,7 +32,17 @@ process.on('unhandledRejection', (reason, promise) => {
 })
 
 var app = module.exports = express()
-app.listen(config.get('http_port') || 3001)
+process.send = process.send || function(){}
+const listener  = app.listen(config.get('http_port') || 3001, function(){
+  console.log(`Listening on port ${listener.address().port}`)
+	  process.send("ready")
+})
+
+var draining = false;
+var stats = {
+  active_requests: 0
+}
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
@@ -64,6 +77,24 @@ app.use(function (req, res, next) {
   next()
 })
 
+app.use((req,res,next)=>{
+	if (draining){
+		res.status(503)
+		res.send("Draining")
+		res.end()
+		return;
+	}
+
+	function fn(){
+		stats.active_requests--
+		res.removeListener("finish",fn)
+	}
+	stats.active_requests = stats.active_requests + 1
+	res.on("finish", fn)
+	next()
+});
+
+
 app.use(cookieParser())
 
 app.use(cors({
@@ -72,7 +103,7 @@ app.use(cors({
   allowHeaders: ['if-none-match', 'range', 'accept', 'x-range', 'content-type', 'authorization'],
   exposedHeaders: ['facet_counts', 'x-facet-count', 'Content-Range', 'X-Content-Range', 'ETag'],
   credential: true,
-  maxAge: 8200
+  maxAge: 86400
 }))
 
 var collections = config.get('collections')
@@ -84,7 +115,7 @@ app.use('/doc', docRouter)
 app.post('/', rpcHandler)
 app.use('/resources', express.static('public'))
 app.use('/health', function (req, res, next) {
-  res.write('OK')
+  res.write(`OK (${pkgJSON.version})`)
   res.end()
 })
 
