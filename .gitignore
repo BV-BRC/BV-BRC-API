@@ -21,3 +21,4 @@ p3_api_service.out.log
 reqeusts_per_min.log
 *.sif
 
+request_per_min.log

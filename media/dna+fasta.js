@@ -2,6 +2,7 @@ const EventStream = require('event-stream')
 const LineWrap = require('../util/linewrap')
 const { getSequenceByHash, getSequenceDictByHash } = require('../util/featureSequence')
 const SEQUENCE_BATCH = 200
+const transforms = require("async-transforms")
 
 function formatFASTAGenomeSequence (o) {
   const header = `>accn|${o.accession}   ${o.description}   [${o.genome_name} | ${o.genome_id}]\n`
@@ -22,6 +23,7 @@ function formatFASTAFeatureSequence (o) {
 module.exports = {
   contentType: 'application/dna+fasta',
   serialize: async function (req, res, next) {
+    const chunkSize=500
     if (req.isDownload) {
       res.attachment(`BVBRC_${req.call_collection}.fasta`)
     }
@@ -36,29 +38,65 @@ module.exports = {
           throw Error('Expected ReadStream in Serializer')
         }
 
-        results.stream.pipe(EventStream.map(function (data, callback) {
+        const buffer = {data: []}
+
+        var tfunc = async function (data) {
           if (!head) {
             head = data
-            callback()
           } else {
             if (req.call_collection === 'genome_feature') {
-              getSequenceByHash(data.na_sequence_md5).then((seq) => {
-                data.sequence = seq
-                res.write(formatFASTAFeatureSequence(data))
-                // docCount++
-                callback()
-              }, (err) => {
-                next(new Error(err))
-              })
+              buffer.data.push(data)
+              // console.log("Buffer Size: ", buffer.data.length)
+              if (buffer.data.length<chunkSize){
+                // console.log("Buffer not full, continue stream")
+              }else{
+                console.log("Process Buffer")
+                var hashes = buffer.data.map((d)=>{ return d.na_sequence_md5; })
+                var seqhash = await getSequenceDictByHash(hashes,req)
+                // console.log("seqhash: ", seqhash)
+                // console.log("Buffer: ", buffer)
+                buffer.data.forEach((d)=>{
+                  if (!d.na_sequence_md5 || !seqhash[d.na_sequence_md5]){
+                    console.error(`Unable to find sequence for ${d.na_sequence_md5}`)
+                    return
+                  }
+                  // console.log("d.na_sequence_md5", d.na_sequence_md5)
+                  d.sequence=seqhash[d.na_sequence_md5]
+                  res.write(formatFASTAFeatureSequence(d))
+                })
+                buffer.data=[]
+
+
+              }
             } else if (req.call_collection === 'genome_sequence') {
               res.write(formatFASTAGenomeSequence(data))
-              callback()
             }
           }
-        })).on('end', function () {
-          // debug('Exported ' + docCount + ' Documents')
-          res.end()
-        })
+        }
+    
+        results.stream.pipe(transforms.map(tfunc,{order: true, tasks:1}))
+        .on('end', function () {
+          // console.log("on end")
+          
+          if (buffer.data.length>0){
+            // console.log("Process buffered data onEnd")
+            var hashes = buffer.data.map((d)=>{ return d.na_sequence_md5; })
+            getSequenceDictByHash(hashes,req).then((seqhash)=>{
+              buffer.data.forEach((d)=>{
+                if (!d.na_sequence_md5 || !seqhash[d.na_sequence_md5]){
+                  console.error(`Download: Unable to find sequence for ${d.na_sequence_md5}`)
+                  return;
+                }
+                // console.log("d.na_sequence_md5", d.na_sequence_md5)
+                d.sequence=seqhash[d.na_sequence_md5]
+                res.write(formatFASTAFeatureSequence(d))
+              })
+              res.end()
+            })
+          }else{
+            res.end()
+          }         
+        }).resume()
       }, (error) => {
         next(new Error(`Unable to receive stream: ${error}`))
       })
