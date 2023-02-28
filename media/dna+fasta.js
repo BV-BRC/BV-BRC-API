@@ -23,7 +23,6 @@ function formatFASTAFeatureSequence (o) {
 module.exports = {
   contentType: 'application/dna+fasta',
   serialize: async function (req, res, next) {
-    const chunkSize=500
     if (req.isDownload) {
       res.attachment(`BVBRC_${req.call_collection}.fasta`)
     }
@@ -31,60 +30,44 @@ module.exports = {
     if (req.call_method === 'stream') {
       Promise.all([res.results]).then((vals) => {
         const results = vals[0]
-        // let docCount = 0
-        let head
-
         if (!results.stream) {
           throw Error('Expected ReadStream in Serializer')
         }
-
+        let head=false;
         const buffer = {data: []}
 
         var tfunc = async function (data) {
-          if (!head) {
-            head = data
-          } else {
+            if (!head){ head = true; return;}
             if (req.call_collection === 'genome_feature') {
               buffer.data.push(data)
-              // console.log("Buffer Size: ", buffer.data.length)
-              if (buffer.data.length<chunkSize){
-                // console.log("Buffer not full, continue stream")
-              }else{
-                console.log("Process Buffer")
+              if (buffer.data.length>=SEQUENCE_BATCH){
                 var hashes = buffer.data.map((d)=>{ return d.na_sequence_md5; })
+                // console.log("Get sequence batch")
                 var seqhash = await getSequenceDictByHash(hashes,req)
-                // console.log("seqhash: ", seqhash)
-                // console.log("Buffer: ", buffer)
                 buffer.data.forEach((d)=>{
                   if (!d.na_sequence_md5 || !seqhash[d.na_sequence_md5]){
-                    console.error(`Unable to find sequence for ${d.na_sequence_md5}`)
+                    console.error(`Download: Unable to find sequence for ${d.na_sequence_md5}`)
+                    res.write(formatFASTAFeatureSequence(d))
                     return
                   }
-                  // console.log("d.na_sequence_md5", d.na_sequence_md5)
                   d.sequence=seqhash[d.na_sequence_md5]
                   res.write(formatFASTAFeatureSequence(d))
                 })
                 buffer.data=[]
-
-
               }
             } else if (req.call_collection === 'genome_sequence') {
               res.write(formatFASTAGenomeSequence(data))
             }
-          }
         }
-    
         results.stream.pipe(transforms.map(tfunc,{order: true, tasks:1}))
         .on('end', function () {
-          // console.log("on end")
-          
           if (buffer.data.length>0){
-            // console.log("Process buffered data onEnd")
             var hashes = buffer.data.map((d)=>{ return d.na_sequence_md5; })
             getSequenceDictByHash(hashes,req).then((seqhash)=>{
               buffer.data.forEach((d)=>{
                 if (!d.na_sequence_md5 || !seqhash[d.na_sequence_md5]){
                   console.error(`Download: Unable to find sequence for ${d.na_sequence_md5}`)
+                  res.write(formatFASTAFeatureSequence(d))
                   return;
                 }
                 // console.log("d.na_sequence_md5", d.na_sequence_md5)
@@ -96,7 +79,7 @@ module.exports = {
           }else{
             res.end()
           }         
-        }).resume()
+        }).resume() // this .resume() here is to address an issue with older node not triggering the 'end' event with new streaming setups
       }, (error) => {
         next(new Error(`Unable to receive stream: ${error}`))
       })

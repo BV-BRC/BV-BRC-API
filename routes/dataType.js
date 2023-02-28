@@ -160,7 +160,7 @@ router.post('*', [
 
 router.use([
   RQLQueryParser,
-  SOLRQueryParser,
+  // SOLRQueryParser, // this parses the solr query for errors, but doesn't make any chagnes to the stream.  Debugging only.
   DecorateQuery,
   Limiter,
   ShardsPreference,
