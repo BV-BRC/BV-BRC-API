@@ -9,14 +9,15 @@ function synchronous_backup() {
     local snapshot=$2
     echo "Running Backup: $collection $snapshot"
 
+    async_key="$collection.$snapshot.x"
     # fire backup call
-    curl --silent "$SOLR_URL/admin/collections?action=BACKUP&name=$snapshot/$collection&collection=$collection&location=$BACKUP_DIR&async=$collection.$snapshot"
+    curl --silent "$SOLR_URL/admin/collections?action=BACKUP&name=$snapshot/$collection&collection=$collection&location=$BACKUP_DIR&async=$async_key"
 
     # status check
     STATUS="running"
     while [ $STATUS == "running" ]
     do
-        STATUS=$(curl --silent "$SOLR_URL/admin/collections?action=REQUESTSTATUS&requestid=$collection.$snapshot&wt=json" | grep "state" | sed -e 's/[{},"]/''/g' | cut -d ':' -f 2 )
+        STATUS=$(curl --silent "$SOLR_URL/admin/collections?action=REQUESTSTATUS&requestid=$async_key&wt=json" | grep "state" | sed -e 's/[{},"]/''/g' | cut -d ':' -f 2 )
         echo "[$(date '+%m/%d/%Y %H:%M:%S')] $collection $STATUS"
         sleep 2m
     done
@@ -24,6 +25,7 @@ function synchronous_backup() {
 
 # stop indexer
 cd /disks/disk0/p3/production/p3-api/deployment/services/p3_api_service/app/
+export PATH=/disks/patric-common/runtime/node-v14.18.0/bin:$PATH
 ./node_modules/pm2/bin/pm2 stop p3-index-worker
 
 echo "# large collections in asychronous mode"
@@ -45,4 +47,4 @@ do
 done
 
 # start indexer
-./node_modules/pm2/bin/pm2 start p3-index-worker
+# ./node_modules/pm2/bin/pm2 start p3-index-worker
