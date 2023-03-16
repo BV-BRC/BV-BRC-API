@@ -121,7 +121,7 @@ router.get('/summary_by_taxon/:taxon_id', [
 const allowed = {
   'taxonomy': ['taxon_rank'],
   'epitope': ['epitope_type'],
-  'genome': ['host_group', 'host_name', 'host_common_name', 'geographic_group', 'isolation_country', 'segment', 'subtype', 'season', 'lineage'],
+  'genome': ['host_group', 'host_name', 'host_common_name', 'geographic_group', 'isolation_country', 'state_province', 'segment', 'subtype', 'season', 'lineage'],
   'genome_feature': ['feature_type'],
   'sp_gene': ['property', 'source', 'evidence'],
   'pathway_ref': ['pathway_name', 'pathway_class'],
