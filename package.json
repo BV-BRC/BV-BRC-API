@@ -27,7 +27,7 @@
     "debug": "^3.1.0",
     "ejs": "^2.7.4",
     "event-stream": "^3.3.2",
-    "express": "^4.16.3",
+    "express": "^4.17.3",
     "file-queue": "^0.2.1",
     "forever": "^4.0.3",
     "formidable": "^1.2.2",
