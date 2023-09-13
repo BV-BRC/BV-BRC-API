@@ -1,6 +1,7 @@
 const EventStream = require('event-stream')
 const LineWrap = require('../util/linewrap')
 const { getSequenceByHash, getSequenceDictByHash } = require('../util/featureSequence')
+const transforms = require("async-transforms")
 const SEQUENCE_BATCH = 200
 
 function formatFASTA (doc) {
@@ -10,10 +11,8 @@ function formatFASTA (doc) {
   } else if (doc.annotation === 'RefSeq') {
     fasta_id = `gi|${doc.gi}|${(doc.refseq_locus_tag ? (doc.refseq_locus_tag + '|') : '') + (doc.alt_locus_tag ? (doc.alt_locus_tag + '|') : '')}`
   }
-  const seq = doc.sequence
-  delete doc.sequence
-  const header = `>${fasta_id} ${JSON.stringify(doc)}\n`
-  return header + ((seq) ? LineWrap(seq, 60) : '') + '\n'
+  const header = `>${fasta_id} ${JSON.stringify(doc)}]\n`
+  return header + ((doc.sequence) ? LineWrap(doc.sequence, 60) + '\n' : '')
 }
 
 module.exports = {
@@ -27,29 +26,55 @@ module.exports = {
       Promise.all([res.results]).then((vals) => {
         const results = vals[0]
         // let docCount = 0
-        let head
+        let head=false
+        const buffer = {data: []}
 
-        if (!results.stream) {
-          throw Error('Expected ReadStream in Serializer')
-        }
-
-        results.stream.pipe(EventStream.map(function (data, callback) {
-          if (!head) {
-            head = data
-            callback()
-          } else {
-            getSequenceByHash(data.aa_sequence_md5).then((seq) => {
-              data.sequence = seq
+        var tfunc = async function (data) {
+            if (!head){ head = true; return;}
+            if (req.call_collection === 'genome_feature') {
+              buffer.data.push(data)
+              if (buffer.data.length>=SEQUENCE_BATCH){
+                var hashes = buffer.data.map((d)=>{ return d.aa_sequence_md5; })
+                var seqhash = await getSequenceDictByHash(hashes,req)
+                buffer.data.forEach((d)=>{
+                  if (!d.aa_sequence_md5 || !seqhash[d.aa_sequence_md5]){
+                    console.log("D: ", d)
+                    console.error(`Download: Unable to find sequence for ${d.aa_sequence_md5}`)
+                    res.write(formatFASTA(d))
+                    return
+                  }
+                  d.sequence=seqhash[d.aa_sequence_md5]
+                  res.write(formatFASTA(d))
+                })
+                buffer.data=[]
+              }
+            } else if (req.call_collection === 'genome_sequence') {
               res.write(formatFASTA(data))
-              // docCount++
-              callback()
-            }).catch((err) => {
-              next(new Error(err))
+            }
+        }
+        results.stream.pipe(transforms.map(tfunc,{order: true, tasks:1}))
+        .on('end', function () {
+          if (buffer.data.length>0){
+            var hashes = buffer.data.map((d)=>{ return d.aa_sequence_md5; })
+            getSequenceDictByHash(hashes,req).then((seqhash)=>{
+              buffer.data.forEach((d)=>{
+                if (!d.aa_sequence_md5 || !seqhash[d.aa_sequence_md5]){
+                  console.log("D: ", d)
+
+                  console.error(`Download: Unable to find sequence for ${d.aa_sequence_md5}`)
+                  res.write(formatFASTA(d))
+                  return;
+                }
+                // console.log("d.na_sequence_md5", d.na_sequence_md5)
+                d.sequence=seqhash[d.aa_sequence_md5]
+                res.write(formatFASTA(d))
+              })
+              res.end()
             })
-          }
-        })).on('end', function () {
-          res.end()
-        })
+          }else{
+            res.end()
+          }         
+        }).resume()
       }, (error) => {
         next(new Error(`Unable to receive stream: ${error}`))
       })

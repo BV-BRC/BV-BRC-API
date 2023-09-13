@@ -2,6 +2,7 @@ const EventStream = require('event-stream')
 const LineWrap = require('../util/linewrap')
 const { getSequenceByHash, getSequenceDictByHash } = require('../util/featureSequence')
 const SEQUENCE_BATCH = 200
+const transforms = require("async-transforms")
 
 function formatFASTAGenomeSequence (o) {
   const header = `>accn|${o.accession}   ${o.description}   [${o.genome_name} | ${o.genome_id}]\n`
@@ -29,36 +30,56 @@ module.exports = {
     if (req.call_method === 'stream') {
       Promise.all([res.results]).then((vals) => {
         const results = vals[0]
-        // let docCount = 0
-        let head
-
         if (!results.stream) {
           throw Error('Expected ReadStream in Serializer')
         }
+        let head=false;
+        const buffer = {data: []}
 
-        results.stream.pipe(EventStream.map(function (data, callback) {
-          if (!head) {
-            head = data
-            callback()
-          } else {
+        var tfunc = async function (data) {
+            if (!head){ head = true; return;}
             if (req.call_collection === 'genome_feature') {
-              getSequenceByHash(data.na_sequence_md5).then((seq) => {
-                data.sequence = seq
-                res.write(formatFASTAFeatureSequence(data))
-                // docCount++
-                callback()
-              }, (err) => {
-                next(new Error(err))
-              })
+              buffer.data.push(data)
+              if (buffer.data.length>=SEQUENCE_BATCH){
+                var hashes = buffer.data.map((d)=>{ return d.na_sequence_md5; })
+                // console.log("Get sequence batch")
+                var seqhash = await getSequenceDictByHash(hashes,req)
+                buffer.data.forEach((d)=>{
+                  if (!d.na_sequence_md5 || !seqhash[d.na_sequence_md5]){
+                    console.error(`Download: Unable to find sequence for ${d.na_sequence_md5}`)
+                    res.write(formatFASTAFeatureSequence(d))
+                    return
+                  }
+                  d.sequence=seqhash[d.na_sequence_md5]
+                  res.write(formatFASTAFeatureSequence(d))
+                })
+                buffer.data=[]
+              }
             } else if (req.call_collection === 'genome_sequence') {
               res.write(formatFASTAGenomeSequence(data))
-              callback()
             }
-          }
-        })).on('end', function () {
-          // debug('Exported ' + docCount + ' Documents')
-          res.end()
-        })
+        }
+        results.stream.pipe(transforms.map(tfunc,{order: true, tasks:1}))
+        .on('end', function () {
+          if (buffer.data.length>0){
+            var hashes = buffer.data.map((d)=>{ return d.na_sequence_md5; })
+            getSequenceDictByHash(hashes,req).then((seqhash)=>{
+              buffer.data.forEach((d)=>{
+                if (!d.na_sequence_md5 || !seqhash[d.na_sequence_md5]){
+                  console.error(`Download: Unable to find sequence for ${d.na_sequence_md5}`)
+                  res.write(formatFASTAFeatureSequence(d))
+                  return;
+                }
+                // console.log("d.na_sequence_md5", d.na_sequence_md5)
+                d.sequence=seqhash[d.na_sequence_md5]
+                res.write(formatFASTAFeatureSequence(d))
+              })
+              res.end()
+            })
+          }else{
+            res.end()
+          }         
+        }).resume() // this .resume() here is to address an issue with older node not triggering the 'end' event with new streaming setups
       }, (error) => {
         next(new Error(`Unable to receive stream: ${error}`))
       })

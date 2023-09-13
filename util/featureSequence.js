@@ -3,6 +3,8 @@ const { httpGet } = require('./http')
 const Http = require('http')
 const solrAgentConfig = Config.get('solr').shortLiveAgent
 const solrAgent = new Http.Agent(solrAgentConfig)
+const distributeURL = Config.get('distributeURL')
+const axios = require("axios")
 
 async function getSequenceByHash (md5) {
   return httpGet({
@@ -18,7 +20,7 @@ async function getSequenceByHash (md5) {
   })
 }
 
-async function getSequenceDictByHash (md5Array) {
+async function _getSequenceDictByHash (md5Array) { 
   if (md5Array.length === 0) return
 
   const ids = md5Array.join(',')
@@ -50,5 +52,31 @@ async function getSequenceDictByHash (md5Array) {
       console.error(err)
     })
 }
+
+async function getSequenceDictByHash (md5Array,req) { 
+  // console.log("getSequenDictByHash")
+  const ids = md5Array.join(',')
+  const q = `&in(md5,(${ids}))&limit(9999)&select(md5,sequence)` 
+
+  // console.log("query: ", q)
+  if (distributeURL.charAt(distributeURL.length-1)=="/"){
+    var url = `${distributeURL}feature_sequence/`
+  }else{
+    var url = `${distributeURL}/feature_sequence/`
+  }
+  return axios.post(url, q, {
+      headers: {
+        'accept': 'application/json',
+        'authorization': (req && req.headers['authorization']) ? req.headers['authorization'] : ''
+      }
+    }).then((response)=>{
+      var docs = response.data
+      // console.log("Docs: ", docs.length)
+      return docs.reduce((h, cur) => {
+        h[cur.md5] = cur.sequence
+        return h
+      }, {})
+    })
+  }
 
 module.exports = { getSequenceByHash: getSequenceByHash, getSequenceDictByHash: getSequenceDictByHash }
