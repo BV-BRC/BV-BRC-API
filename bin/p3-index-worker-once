@@ -1,0 +1,286 @@
+#!/usr/bin/env node --unhandled-rejections=strict --max-old-space-size=4096
+const Config = require('../config')
+const Queue = require('file-queue').Queue
+const Path = require('path')
+const fs = require('fs-extra')
+const JSONStream = require('JSONStream')
+const EventStream = require('event-stream')
+
+const queueDirectory = Config.get('queueDirectory')
+
+// const { httpGet, httpStreamRequest } = require('../util/http')
+const { httpStreamRequest } = require('../util/http')
+const Url = require('url')
+const SOLR_URL = Config.get('solr').url
+const parsedSolrUrl = Url.parse(SOLR_URL)
+
+const Http = require('http')
+const solrAgentConfig = Config.get('solr').shortLiveAgent
+const solrAgent = new Http.Agent(solrAgentConfig)
+
+// console.log(`Queue Directory: ${queueDirectory}`)
+
+const queue = new Queue(queueDirectory, function (err) {
+  if (err) {
+    console.log(`error: ${err}`)
+    return
+  }
+  processQueue(queue)
+})
+
+let completedHardCommit = false
+
+const publicCores = ['taxonomy', 'feature_sequence']
+// const IndexingCores = ['genome_feature', 'genome', 'sp_gene', 'pathway', 'genome_sequence', 'genome_amr', 'subsystem']
+
+let timer
+
+// function deleteDocs (core, genomeId) {
+//   return httpGet({
+//     hostname: parsedSolrUrl.hostname,
+//     port: parsedSolrUrl.port,
+//     agent: solrAgent,
+//     path: `/solr/${core}/update?stream.body=<delete><query>genome_id:${genomeId}</query></delete>`
+//   }).then(() => {
+//     console.error(`Sent delete query successfully: [${core}] ${genomeId}`)
+//   })
+// }
+
+function postDocs (filePath, type) {
+  const readStream = fs.createReadStream(filePath)
+  return httpStreamRequest({
+    hostname: parsedSolrUrl.hostname,
+    port: parsedSolrUrl.port,
+    agent: solrAgent,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    path: `/solr/${type}/update?wt=json&overwrite=true&commit=false`
+  }, readStream).then((msg_str) => {
+    // console.log(`Posted ${type}`)
+    const msg = JSON.parse(msg_str)
+    if (msg && msg.responseHeader && msg.responseHeader.status === 0) {
+      // success
+    } else {
+      throw new Error(msg.error.msg)
+    }
+  }).catch((err) => {
+    throw err
+  })
+}
+
+function processQueue (queue) {
+  queue.length((err, length) => {
+    if (err) {
+      console.log(`error: ${err}`)
+      return
+    }
+
+    if (length < 1) {
+	process.exit(0);
+    } else {
+      completedHardCommit = false
+      console.log(`Start processing queued items: ${length}`)
+
+      queue.tpop((err, message, commit, rollback) => {
+        if (err) {
+          console.log(`Error popping message item. ${err}`)
+          return
+        }
+        if (!message) {
+          console.log(`No Metadata for: ${message} Discarding Message.`)
+          if (commit) {
+            commit()
+          }
+          processQueue(queue)
+          return
+        }
+
+        try {
+          console.log(`\nStart indexing ${message.id} User: ${message.user}`)
+
+          const fileDefs = []
+          const beforeProcess = (new Date()).getTime()
+
+          const genomeId = fs.readJsonSync(message.files.genome.path)[0]['genome_id']
+
+          Object.keys(message.files).forEach(core => {
+            let files = message.files[core]
+            if (!(files instanceof Array)) {
+              files = [files]
+            }
+            files.forEach(file => {
+              if (!file.path) { return }
+
+              const def = new Promise((resolve, reject) => {
+                updateJSONStreamWithAccessControl(file.name, file.path, core, message.user).then((res) => {
+                  if (res.status === 'skip') {
+                    resolve(true)
+                  } else if (res.status === 'saved') {
+                    postDocs(file.path, core).then(() => {
+                      resolve(true)
+                    }, (err) => {
+                      console.error(`${(new Date()).toISOString()}: Error POSTing documents to SOLR core : ${core}, ${err}`)
+                      reject(err)
+                    })
+                  } else {
+                    // Err
+                    reject(res)
+                  }
+                }, (err) => {
+                  reject(err)
+                })
+              })
+
+              fileDefs.push(def)
+            })
+          })
+
+          Promise.all(fileDefs).then(() => {
+            const afterProcess = (new Date()).getTime()
+            console.log(`  ${(afterProcess - beforeProcess)}ms elapsed for genome (${genomeId})`)
+
+            updateHistory(message.id, 'submitted', genomeId).then(() => {
+              // commit()
+		  //console.log("Ending now 3");
+		  //process.exit(0);
+              processQueue(queue)
+            }, (err) => {
+              console.error(`${(new Date()).toISOString()}: Error in updating history: ${err} while processing ${message.id}`)
+            })
+          }, (err) => {
+            console.error(`${(new Date()).toISOString()}: Error in fullfilling fileDefs: ${err} while processing ${message.id}`)
+
+            // trigger rollback
+            // this operation is very costly. Delete by ID is preferred.
+            // IndexingCores.forEach(core => {
+            //   deleteDocs(core, genomeId)
+            // })
+
+            updateHistory(message.id, 'error', err.message).then(() => {
+              // commit()
+		  //console.log("Ending now 2");
+		  //process.exit(0);
+              processQueue(queue) // Resume
+            }, (err) => {
+              console.error(`${(new Date()).toISOString()}: Error in updating history: ${err} while processing ${message.id}`)
+            })
+          })
+        } catch (err) {
+          updateHistory(message.id, 'error', err.message).then(() => {
+            // commit()
+		  //console.log("Ending now");
+		  //process.exit(0);
+            processQueue(queue) // Resume
+          }, (err) => {
+            console.error(`${(new Date()).toISOString()}: Error in updating history: ${err} while processing ${message.id}`)
+          })
+        }
+      })
+    }
+  })
+}
+
+function updateJSONStreamWithAccessControl (fileName, filePath, core, owner) {
+  return new Promise((resolve, reject) => {
+    try {
+      let fileData = []
+      const st = (new Date()).getTime()
+
+      fs.createReadStream(filePath, { encoding: 'utf8' })
+        .pipe(JSONStream.parse('*'))
+        .pipe(EventStream.mapSync(function (data) {
+          fileData.push(data)
+        }))
+        .on('close', () => {
+          const now = (new Date()).getTime()
+          console.log(`  Reading ${fileName}(${filePath}) took ${(now - st)}ms, ${fileData.length} rows`)
+
+          if (fileData.length === 0) {
+            // console.log(`  Skipping Empty ${fileName}(${filePath})`);
+            resolve({ status: 'skip' })
+            return
+          }
+
+          let processingErrors = false
+
+          if (!publicCores.includes(core)) {
+            fileData = fileData.map(item => {
+              if (!item.public) { item.public = false }
+              if (!item.owner) {
+                item.owner = owner
+              } else if (item.owner !== owner) {
+                if (!item.user_write || (item.user_write && !item.user_write.includes(owner))) {
+                  processingErrors = `Item Owner ${item.owner} != Index User ${owner}`
+                }
+              }
+
+              if (!item.user_read) { item.user_read = [] }
+              if (!item.user_write) { item.user_write = [] }
+
+              if (item._version_) {
+                delete item._version_
+              }
+              return item
+            })
+          }
+
+          if (!processingErrors) {
+            // Update json file
+            const outfile = fs.createWriteStream(filePath)
+            EventStream.readArray(fileData).pipe(JSONStream.stringify()).pipe(outfile)
+              .on('close', () => {
+                resolve({ status: 'saved' })
+              })
+          } else {
+            // Console.log(`Processing Errors in ${core} ${processingErrors}`);
+            reject(processingErrors)
+          }
+        })
+    } catch (err) {
+      console.log(`Error updateJSONStreamWithAccessControl ${filePath}`)
+      reject(err)
+    }
+  })
+}
+
+function updateHistory (id, state, msg) {
+  return new Promise((resolve, reject) => {
+    const historyPath = Path.join(queueDirectory, 'history', id)
+
+    console.log(`Updating History ${historyPath}`)
+
+    fs.readJson(historyPath, (err, data) => {
+      if (err) {
+        reject(err)
+        return
+      }
+
+      switch (state) {
+        case 'submitted':
+          data.state = state
+          data.genomeId = msg
+          data.submissionTime = new Date()
+          break
+        case 'error':
+          data.state = state
+          data.error = msg
+          break
+        default:
+          data.state = state
+          break
+      }
+
+      fs.writeJson(historyPath, data, (err) => {
+        if (err) {
+          console.log(`Error writing to history: ${id}`)
+          reject(err)
+          return
+        }
+
+        resolve(true)
+      })
+    })
+  })
+}
