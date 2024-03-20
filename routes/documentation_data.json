@@ -117,10 +117,6 @@
             "label": "Specialty Gene",
             "example_id": "2e08d6b6-72cc-446a-bf94-b487b7902c55"
         },
-        "sp_gene_evidence": {
-            "label": "Specialty Gene Evidence",
-            "example_id": "008ef9a0-6cf5-4e0a-a751-f85bb652ad32"
-        },
         "sp_gene_ref":{
             "label": "Specialty Gene Ref",
             "example_id": "0002dba6-a28a-4ab7-8d14-aa70ec7b2c59"
@@ -148,18 +144,6 @@
         "taxonomy": {
             "label": "Taxonomy",
             "example_id": "27"
-        },
-        "transcriptomics_experiment": {
-            "label": "Transcriptomics Experiment",
-            "example_id": "100493"
-        },
-        "transcriptomics_gene":{
-            "label": "Transcriptomics Gene",
-            "example_id": "05e4172c-8d8a-47d6-8543-e7bc3aad9be3"
-        },
-        "transcriptomics_sample": {
-            "label": "Transcriptomics Sample",
-            "example_id": "100000007"
         },
         "protein_structure": {
             "label": "Protein Structure",

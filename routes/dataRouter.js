@@ -129,7 +129,8 @@ const allowed = {
   'protein_feature': ['source'],
   'protein_structure': ['method'],
   'surveillance': ['pathogen_test_type', 'pathogen_test_result', 'subtype', 'host_group', 'host_common_name', 'host_species', 'geographic_group', 'collection_country'],
-  'serology': ['test_type', 'test_result', 'serotype', 'host_type', 'host_common_name', 'host_species', 'geographic_group', 'collection_country']
+  'serology': ['test_type', 'test_result', 'serotype', 'host_type', 'host_common_name', 'host_species', 'geographic_group', 'collection_country'],
+  'sequence_feature': ['sf_category']
 }
 
 router.get('/distinct/:collection/:field', [
