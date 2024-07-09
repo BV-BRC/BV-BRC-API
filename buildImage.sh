@@ -1,6 +1,6 @@
 #!/bin/sh
 
-NAME="p3_api"
+NAME="bvbrc_api"
 VERSION=`cat package.json | jq -r .version`;
 IMAGE_NAME=$NAME-$VERSION.sif
 
