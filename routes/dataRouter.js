@@ -149,8 +149,9 @@ router.get('/distinct/:collection/:field', [
   (req, res, next) => {
     const collection = req.params.collection
     const field = req.params.field
+    const query = req.query && req.query.q ? req.query.q : '*:*'
 
-    subQuery(collection, `q=*:*&rows=0&facet=true&facet.field=${field}&facet.mincount=1&facet.limit=-1&json.nl=map`, {
+    subQuery(collection, `q=${query}&rows=0&facet=true&facet.field=${field}&facet.mincount=1&facet.limit=-1&json.nl=map`, {
       accept: 'application/solr+json'
     })
       .then((body) => {
