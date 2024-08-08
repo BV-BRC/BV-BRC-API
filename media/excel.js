@@ -6,6 +6,10 @@ module.exports = {
     let fields = req.fieldSelection
     const header = req.fieldHeader
 
+    console.log(JSON.stringify(["excel serialization start", new Date().toISOString(), { queryType: req.queryType, params: req.call_params, collection: req.call_collection }]));
+
+    // console.log(JSON.stringify(["excel data", new Date().toISOString(), res.results]));
+
     if (req.isDownload) {
       res.attachment(`BVBRC_${req.call_collection}.xlsx`)
     }
@@ -35,7 +39,10 @@ module.exports = {
         data.unshift(fields)
       }
 
-      var d = NodeXlsx.build([{ name: 'patric3_query', data: data }])
+	    console.log(JSON.stringify(["excel start stringify", new Date().toISOString()]));
+	    // console.log(JSON.stringify(["excel data", new Date().toISOString(), data]));
+      var d = NodeXlsx.build([{ name: 'patric3_query', data: data }], { parseOptions: {dense: true}})
+       console.log(JSON.stringify(["excel serialization complete", new Date().toISOString()]));
       res.end(d, 'binary')
     } else {
       res.status(404)
