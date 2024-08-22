@@ -1,19 +1,22 @@
-On schemas -
+# Data API Notes during the Solr9 transition.
+
+## On schemas -
 We have configuration data used in multiple places:
  * Configuring solr
  * Setting default fields in data api
 
+we cannot add to schema as sent to solr:
 
-Note we cannot add to schema as sent to solr:
-
- Error CREATEing SolrCore 'xgenome_shard1_replica_n1': Unable to create core [xgenome_shard1_replica_n1] Caused by: Invalid field property: x-display-default
+```
+Error CREATEing SolrCore 'xgenome_shard1_replica_n1': Unable to create core [xgenome_shard1_replica_n1] Caused by: Invalid field property: x-display-default
+```
 
 Possible solution. Master schema document from which we create our solr and other schemas for various tools. We can start with the solr one
 and simply augment with x-blah fields that are removed to generate the solr schema.
 We can also then maintain a single master set of types since we need to be managing the XML anyway. 
 
 
-== Query flow
+## Query flow
 
 In the dataType router, we flow the request through the following middlewares:
 
@@ -23,12 +26,10 @@ In the dataType router, we flow the request through the following middlewares:
 
 3. DecorateQuery. Add access control clauses to query.
 
-4. Limiter. Skipped if rqeuest call_method != query.
+4. Limiter. Skipped if request call_method != query.
+  Maximum and default limits defined here.
 
-Maximum and default limits defined here.
-
-
-Request variables:
+## Request variables:
 
 call_method:
  * query: set if post and content-type is application/x-www-form-urlencoded, or 
