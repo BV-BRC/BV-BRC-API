@@ -3,8 +3,9 @@ const { httpRequest, httpsGetUrl, httpsRequestUrl } = require('../util/http')
 const Config = require('../config')
 const WORKSPACE_API_URL = Config.get('workspaceAPI')
 const http = require('http')
-const SolrAgentConfig = Config.get('solr').shortLiveAgent
-const SolrAgent = new http.Agent(SolrAgentConfig)
+const Web = require('../web');
+
+const SolrAgent = Web.getSolrShortLiveAgent();
 
 function getWorkspaceObjects (paths, metadataOnly, token) {
   return new Promise((resolve, reject) => {

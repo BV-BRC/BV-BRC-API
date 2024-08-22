@@ -2,10 +2,13 @@ const debug = require('debug')('p3api-server:ProteinFamily')
 const { httpGet, httpRequest } = require('../util/http')
 const Config = require('../config')
 const http = require('http')
-const agent = new http.Agent({
-  keepAlive: true,
-  maxSockets: 1
-})
+const Web = require('../web')
+
+const agent = Web.getSolrAgentForConfig({
+    keepAlive: true,
+    maxSockets: 1
+});
+
 const redis = require('redis')
 const redisOptions = Config.get('redis')
 const redisClient = redis.createClient(redisOptions)

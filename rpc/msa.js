@@ -7,10 +7,12 @@ const fs = require('fs-extra')
 const { httpRequest } = require('../util/http')
 const { getSequenceDictByHash } = require('../util/featureSequence')
 
-const agent = new http.Agent({
-  keepAlive: true,
-  maxSockets: 1
-})
+const Web = require('../web')
+
+const agent = Web.getSolrAgentForConfig({
+    keepAlive: true,
+    maxSockets: 1
+});
 
 async function runQuery (query, opts) {
   const features = await httpRequest({

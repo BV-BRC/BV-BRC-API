@@ -2,8 +2,9 @@ const debug = require('debug')('p3api-server:BiosetResult')
 const { httpRequest } = require('../util/http')
 const Config = require('../config')
 const http = require('http')
-const SolrAgentConfig = Config.get('solr').shortLiveAgent
-const SolrAgent = new http.Agent(SolrAgentConfig)
+const Web = require('../web');
+
+const SolrAgent = Web.getSolrShortLiveAgent();
 
 function readPublicExperiments (tgState, options) {
   return new Promise(async (resolve, reject) => {
