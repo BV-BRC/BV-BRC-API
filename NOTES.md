@@ -20,14 +20,16 @@ We can also then maintain a single master set of types since we need to be manag
 
 In the dataType router, we flow the request through the following middlewares:
 
-1. RQLQueryParser. Translate RQL to Solr vformat if req.queryType = 'rql'
+1.  RQLQueryParser. Translate RQL to Solr vformat if req.queryType = 'rql'
 
-2. Optional SORLQueryParser, commented out. Used for debugging.
+2.  Optional SORLQueryParser, commented out. Used for debugging.
 
-3. DecorateQuery. Add access control clauses to query.
+3.  DecorateQuery. Add access control clauses to query.
 
-4. Limiter. Skipped if request call_method != query.
-  Maximum and default limits defined here.
+4.  Limiter. Skipped if request call_method != query.
+        Maximum and default limits defined here.
+
+1.  ccc
 
 ## Request variables:
 
