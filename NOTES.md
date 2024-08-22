@@ -26,8 +26,9 @@ In the dataType router, we flow the request through the following middlewares:
 
 3.  DecorateQuery. Add access control clauses to query.
 
-4.  Limiter. Skipped if request call_method != query.
-        Maximum and default limits defined here.
+4. Limiter.
+   * Skipped if request call_method != query.
+   *  Maximum and default limits defined here.
 
 1.  ccc
 
