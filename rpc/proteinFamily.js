@@ -1,13 +1,14 @@
 const debug = require('debug')('p3api-server:ProteinFamily')
-const { httpGet, httpRequest } = require('../util/http')
+const { requestUrlForUrl, httpGet, httpRequest } = require('../util/http')
 const Config = require('../config')
-const http = require('http')
-const Web = require('../web')
 
-const agent = Web.getSolrAgentForConfig({
-    keepAlive: true,
-    maxSockets: 1
-});
+/*  Here we use a http agent because we are hitting the local server */
+const http = require('http')
+const agent = new http.Agent({
+  keepAlive: true,
+  maxSockets: 1
+})
+
 
 const redis = require('redis')
 const redisOptions = Config.get('redis')
@@ -36,6 +37,7 @@ function fetchFamilyDescriptionBatch (familyIdList) {
       if (missingIds.length === 0) {
         resolve(familyRefHash)
       } else {
+	reqObj = 
         httpRequest({
           port: Config.get('http_port'),
           agent: agent,
@@ -103,7 +105,7 @@ async function fetchFamilyDataByGenomeId (genomeId, options) {
       }
       if (familyData == null) {
         debug(`no cached data for ${key}`)
-
+	  debug(`doing get for features`);
         httpGet({
           port: Config.get('http_port'),
           agent: agent,
