@@ -1,11 +1,15 @@
 const debug = require('debug')('p3api-server:ProteinFamily')
-const { httpGet, httpRequest } = require('../util/http')
+const { requestUrlForUrl, httpGet, httpRequest } = require('../util/http')
 const Config = require('../config')
+
+/*  Here we use a http agent because we are hitting the local server */
 const http = require('http')
 const agent = new http.Agent({
   keepAlive: true,
   maxSockets: 1
 })
+
+
 const redis = require('redis')
 const redisOptions = Config.get('redis')
 const redisClient = redis.createClient(redisOptions)
@@ -100,7 +104,7 @@ async function fetchFamilyDataByGenomeId (genomeId, options) {
       }
       if (familyData == null) {
         debug(`no cached data for ${key}`)
-
+	  debug(`doing get for features`);
         httpGet({
           port: Config.get('http_port'),
           agent: agent,

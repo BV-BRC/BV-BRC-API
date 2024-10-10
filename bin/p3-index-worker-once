@@ -9,14 +9,16 @@ const EventStream = require('event-stream')
 const queueDirectory = Config.get('queueDirectory')
 
 // const { httpGet, httpStreamRequest } = require('../util/http')
-const { httpStreamRequest } = require('../util/http')
+const { httpsStreamRequest, httpStreamRequest } = require('../util/http')
 const Url = require('url')
-const SOLR_URL = Config.get('solr').url
+const SOLR_URL = Config.get('solr').post_url
 const parsedSolrUrl = Url.parse(SOLR_URL)
+const streamRequest = (parsedSolrUrl.protocol == "https:") ? httpsStreamRequest : httpStreamRequest;
+console.log(streamRequest);
 
-const Http = require('http')
-const solrAgentConfig = Config.get('solr').shortLiveAgent
-const solrAgent = new Http.Agent(solrAgentConfig)
+const Web = require('../web');
+
+var solrAgent = Web.getSolrAgent();
 
 // console.log(`Queue Directory: ${queueDirectory}`)
 
@@ -48,9 +50,10 @@ let timer
 
 function postDocs (filePath, type) {
   const readStream = fs.createReadStream(filePath)
-  return httpStreamRequest({
+  return streamRequest({
     hostname: parsedSolrUrl.hostname,
     port: parsedSolrUrl.port,
+    auth: parsedSolrUrl.auth,
     agent: solrAgent,
     method: 'POST',
     headers: {

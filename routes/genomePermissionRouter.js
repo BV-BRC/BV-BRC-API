@@ -30,10 +30,9 @@ const conf = require('../config')
 const Solrjs = require('solrjs')
 const SOLR_URL = conf.get('solr').url
 const request = require('request-promise')
+const Web = require('../web');
 
-var http = require('http')
-var solrAgentConfig = conf.get('solr').shortLiveAgent
-var solrAgent = new http.Agent(solrAgentConfig)
+var solrAgent = Web.getSolrShortLiveAgent();
 
 const genomeCoresUUIDs = {
   genome: 'genome_id',

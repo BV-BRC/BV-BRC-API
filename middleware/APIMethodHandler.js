@@ -3,9 +3,9 @@ const Config = require('../config')
 const SOLR_URL = Config.get('solr').url
 const debug = require('debug')('p3api-server:middleware/APIMethodHandler')
 const http = require('http')
+const Web = require('../web');
 
-const solrAgentConfig = Config.get('solr').agent
-const solrAgent = new http.Agent(solrAgentConfig)
+var solrAgent = Web.getSolrAgent();
 
 function streamQuery (req, res, next) {
   if (req.call_method !== 'stream') {
