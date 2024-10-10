@@ -37,7 +37,6 @@ function fetchFamilyDescriptionBatch (familyIdList) {
       if (missingIds.length === 0) {
         resolve(familyRefHash)
       } else {
-	reqObj = 
         httpRequest({
           port: Config.get('http_port'),
           agent: agent,
