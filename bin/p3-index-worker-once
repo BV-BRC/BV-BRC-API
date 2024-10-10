@@ -62,7 +62,6 @@ function postDocs (filePath, type) {
     path: `/solr/${type}/update?wt=json&overwrite=true&commit=false`
   }, readStream).then((msg_str) => {
     // console.log(`Posted ${type}`)
-    console.log(msg_str)
     const msg = JSON.parse(msg_str)
     if (msg && msg.responseHeader && msg.responseHeader.status === 0) {
       // success
