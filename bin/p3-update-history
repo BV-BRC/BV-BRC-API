@@ -7,25 +7,73 @@ const fs = require('fs-extra')
 const queueDir = config.get('queueDirectory')
 
 if (require.main === module) {
-  opts.option('-k, --key [value]', 'Index key')
-    .option('-c, --confirm [value]', 'Confirm')
-    .parse(process.argv)
+    opts.option('-k, --key <value>', 'Index key')
+	.option('-a, --age <value>', 'Delete jobs older than <value> days')
+	.option('-c, --confirm', 'Confirm')
+	.parse(process.argv)
 
-  if (!opts.key) {
-    console.error('Must supply key')
-    opts.help()
-  }
-
-  if (!opts.confirm) {
-    console.error('This operation will delete files and cannot be undone.')
-    opts.help()
-  }
-
-  updateHistory(opts.key).then(() => {
-    console.log(`complete updating ${opts.key}`)
-  }).catch((err) => {
-    console.error(err)
-  })
+    
+    if (!opts.confirm) {
+	console.error('This operation will delete files and cannot be undone.')
+	opts.help()
+    }
+    
+    const historyPath = Path.join(queueDir, 'history')
+    
+    if (opts.key) {
+	console.log(`using ${opts.key}`)
+	/*
+	updateHistory(opts.key).then(() => {
+	    console.log(`complete updating ${opts.key}`)
+	}).catch((err) => {
+	    console.error(err)
+	})
+	*/
+    }
+    else if (opts.age)  {
+	// 
+	// Enumerate the contents of the history dir looking for files of the required age
+	//
+	const now = Date.now();
+	console.log(`using ${opts.age}`)
+	var dirent;
+	const dir = fs.opendirSync(historyPath);
+	var count = 1;
+	while (dirent = dir.readSync())
+	{
+	    if (!dirent.isFile()) {
+		continue;
+	    }
+	    try {
+		const path = Path.join(dirent.path, dirent.name);
+		const st = fs.statSync(path);
+		const age = (now - st.ctimeMs) / 1000 / 86400;
+		if (age < opts.age) {
+		    continue;
+		}
+		var ok = true;
+		// console.log(dirent.name, path, age, opts.age);
+		updateHistory(dirent.name).then(() => {
+		    console.log(`completed ${dirent.name}`);
+		}).catch((err) => {
+		    console.log(`update threw error ${err}`);
+		    ok = false;
+		});
+		if (!ok)
+		{
+		    console.log(`update threw error ${err}`);
+		    break;
+		}
+	    } catch (error) {
+		console.log(`Error on ${dirent.name}: ${error}`)
+		break;
+	    }
+	    break;
+	}
+	dir.closeSync();
+	
+    }
+	
 }
 
 function updateHistory (key) {
@@ -47,7 +95,7 @@ function updateHistory (key) {
 
       fs.writeJson(historyPath, data, (err) => {
         if (err) {
-          console.log(`Error writing to history: ${id}`)
+          console.log(`Error writing to history: ${key}: ${err}`)
           reject(err)
           return
         }
