@@ -129,7 +129,7 @@ function updatePermissions (req, res, next) {
   Promise.all(proms)
     .then(r => {
       debug(`success.  Number of Docs Updated: ${numDocsUpdated}`)
-      res.sendStatus(200)
+      res.send(200, { status: "OK" })
     }).catch(err => {
       console.error(`Permission update failed with: ${err}`)
 
