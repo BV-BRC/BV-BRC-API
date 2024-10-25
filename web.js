@@ -11,7 +11,7 @@ module.exports = {
 	return this.getSolrAgentForConfig(solrAgentConfig);
     },
     getSolrShortLiveAgent: function () {
-	const solrAgentConfig = Config.get('solr').shortLiveagent;
+	const solrAgentConfig = Config.get('solr').shortLiveAgent;
 	return this.getSolrAgentForConfig(solrAgentConfig);
     },
     getSolrAgentForConfig: function(cfg) {
