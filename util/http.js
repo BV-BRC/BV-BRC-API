@@ -50,7 +50,6 @@ module.exports = {
     })
   },
   'httpsRequest': async (options, body) => {
-	  console.log("POSTING", options, body);
     return new Promise((resolve, reject) => {
       const req = https.request(options, (res) => {
         res.setEncoding('utf8')

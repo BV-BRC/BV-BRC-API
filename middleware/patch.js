@@ -99,7 +99,6 @@ const userModifiableProperties = [
 
 function postDocs (docs, type) {
   const parsedSolrUrl = Url.parse(SOLR_URL)
-	console.log(`POSTING with `, parsedSolrUrl);
 
   return httpsRequest({
     hostname: parsedSolrUrl.hostname,
@@ -140,7 +139,6 @@ module.exports = function (req, res, next) {
   solrClient.setAgent(solrAgent)
   solrClient.get(target_id).then((body) => {
     if (!body || !body.doc) {
-	    console.log("RETURN 404");
       res.sendStatus(404)
 	      res.end();
 	    return;
@@ -152,10 +150,9 @@ module.exports = function (req, res, next) {
       if (patchBody.some(function (p) {
         const parts = p.path.split('/')
         const val = userModifiableProperties.indexOf(parts[1])
-	console.log(parts[1], val);
+	//console.log(parts[1], val);
 	      return val < 0;
       })) {
-	    console.log("RETURN 406", patchBody);
         res.status(406).send('Patch contains non-modifiable properties')
 	      res.end();
 	      return;
@@ -166,7 +163,6 @@ module.exports = function (req, res, next) {
       try {
         jsonpatch.apply(doc, patchBody)
       } catch (err) {
-	      console.log("RETURN 406")
         res.status(406).send('Error in patching: ' + err)
 	      res.end();
         return
@@ -174,17 +170,13 @@ module.exports = function (req, res, next) {
 
       delete doc._version_
 
-	    console.log("POSTING", JSON.stringify(doc));
       postDocs([doc], collection).then((postRes) => {
         // debug(`post response:`, postRes)
-        console.log(`post response:`, postRes)
 	    console.log("RETURN 201");
         res.sendStatus(201)
 	      res.end();
 	      return;
       }, (postErr) => {
-	      console.log(postErr);
-	      console.log("RETURN 406")
         res.status(406).send(`Error storing patched document: ${postErr}`)
 	      res.end();
 	      return;
@@ -192,13 +184,11 @@ module.exports = function (req, res, next) {
     } else {
       if (!req.user) {
         debug('User not logged in, permission denied')
-	      console.log("RETURN 401")
         res.sendStatus(401)
 	      res.end();
 	      return;
       } else {
         debug('User forbidden from private data')
-	      console.log("RETURN 403")
         res.sendStatus(403)
 	      res.end();
 	      return;
