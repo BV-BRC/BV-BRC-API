@@ -5,7 +5,7 @@ const Url = require('url')
 const Http = require('http')
 const { httpRequest } = require('../util/http')
 const Config = require('../config')
-const SOLR_URL = Config.get('solr').url
+const SOLR_URL = Config.get('solr').post_url
 const solrAgentConfig = Config.get('solr').shortLiveAgent
 const solrAgent = new Http.Agent(solrAgentConfig)
 
