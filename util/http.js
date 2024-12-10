@@ -22,6 +22,26 @@ module.exports = {
         })
     })
   },
+  'httpsGet': async (options) => {
+    return new Promise((resolve, reject) => {
+      https.get(options, (res) => {
+        res.setEncoding('utf8')
+        let rawData = ''
+        res.on('data', (chunk) => {
+          rawData += chunk.toString()
+        })
+        res.on('end', () => {
+          resolve(rawData)
+        })
+        res.on('error', (err) => {
+          reject(err)
+        })
+      })
+        .on('error', (err) => {
+          reject(new Error(`Unable to request the database. ${err.code}`))
+        })
+    })
+  },
     'requestUrlForUrl': (url) => {
 	const parsed = new URL(url);
 	return parsed.protocol === "http:" ? module.exports.httpRequestUrl : module.exports.httpsRequestUrl;
