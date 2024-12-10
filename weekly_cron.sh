@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# This is the solr8 backup
+exit;
+
 BACKUP_DIR="/vol/p3solrbackup/bio-gp-backup/"
 SNAPSHOT="$(date '+%Y%m%d')"
 SOLR_URL="http://bio-gp1.mcs.anl.gov:8983/solr"
