@@ -3,7 +3,7 @@ const Router = Express.Router({
   strict: true,
   mergeParams: true
 })
-const { httpGet } = require('../util/http')
+const { httpsGet } = require('../util/http')
 const Config = require('../config')
 const AuthMiddleware = require('../middleware/auth')
 const HttpParamsMiddleware = require('../middleware/http-params')
@@ -22,7 +22,11 @@ const parsedSolrUrl = Url.parse(SOLR_URL)
 
 const Http = require('http')
 const solrAgentConfig = Config.get('solr').shortLiveAgent
-const solrAgent = new Http.Agent(solrAgentConfig)
+//const solrAgent = new Http.Agent(solrAgentConfig)
+
+const Web = require('../web');
+var solrAgent = Web.getSolrShortLiveAgent();
+
 
 debug('Queue Directory: ', QUEUE_DIRECTORY)
 let queue
@@ -105,9 +109,10 @@ function checkSolr (genome_id) {
     const cores = ['genome_sequence', 'genome_feature', 'genome']
     const check_cores = cores.map((core) => {
       // this should be a direct call to bypass the auth check
-      return httpGet({
+      return httpsGet({
         hostname: parsedSolrUrl.hostname,
         port: parsedSolrUrl.port,
+	auth: parsedSolrUrl.auth,
         agent: solrAgent,
         path: `/solr/${core}/select?q=genome_id:${genome_id}&rows=0&wt=json`
       }).then((body) => {
