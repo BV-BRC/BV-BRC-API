@@ -69,6 +69,28 @@ module.exports = {
       req.end()
     })
   },
+  'httpsRequest': async (options, body) => {
+    return new Promise((resolve, reject) => {
+      const req = https.request(options, (res) => {
+        res.setEncoding('utf8')
+        let rawData = ''
+        res.on('data', (chunk) => {
+          rawData += chunk.toString()
+        })
+        res.on('end', () => {
+          resolve(rawData)
+        })
+      })
+        .on('error', (err) => {
+          reject(err)
+        })
+      req.on('error', (err) => {
+        reject(new Error(`Unable to request the database. ${err.code}`))
+      })
+      req.write(body)
+      req.end()
+    })
+  },
   'httpStreamRequest': async (options, streamableBody) => {
     return new Promise((resolve, reject) => {
       const req = http.request(options, (res) => {

@@ -3,11 +3,14 @@ const Solrjs = require('solrjs')
 const jsonpatch = require('json-patch')
 const Url = require('url')
 const Http = require('http')
-const { httpRequest } = require('../util/http')
+const { httpsRequest } = require('../util/http')
 const Config = require('../config')
+const Web = require('../web')
 const SOLR_URL = Config.get('solr').post_url
 const solrAgentConfig = Config.get('solr').shortLiveAgent
-const solrAgent = new Http.Agent(solrAgentConfig)
+//const solrAgent = new Http.Agent(solrAgentConfig)
+
+const solrAgent = Web.getSolrShortLiveAgent()
 
 const userModifiableProperties = [
   'genome_status',
@@ -49,6 +52,8 @@ const userModifiableProperties = [
   'host_name',
   'host_gender',
   'host_age',
+  'host_common_name',
+  'host_group',
   'host_health',
   'body_sample_site',
   'body_sample_subsite',
@@ -66,16 +71,40 @@ const userModifiableProperties = [
   'habitat',
   'disease',
   'additional_metadata',
-  'comments'
+  'comments',
+	'segment',
+	'subtype',
+	'h_type',
+	'n_type',
+	'h1_clade_global',
+	'h1_clade_us',
+	'h3_clade',
+	'h5_clade',
+	'ph1n1_like',
+	'lineage',
+	'clade',
+	'subclade',
+	'authors',
+	'geographic_group',
+	'lab_host',
+	'nearest_genomes',
+	'other_names',
+	'outgroup_genomes',
+	'passage',
+	'reference_genome',
+	'season',
+	'state_province',
+	'phenotype'
 ]
 
 function postDocs (docs, type) {
   const parsedSolrUrl = Url.parse(SOLR_URL)
 
-  return httpRequest({
+  return httpsRequest({
     hostname: parsedSolrUrl.hostname,
     port: parsedSolrUrl.port,
     method: 'POST',
+    auth: parsedSolrUrl.auth,
     agent: solrAgent,
     headers: {
       'content-type': 'application/json',
@@ -111,6 +140,8 @@ module.exports = function (req, res, next) {
   solrClient.get(target_id).then((body) => {
     if (!body || !body.doc) {
       res.sendStatus(404)
+	      res.end();
+	    return;
     }
 
     const doc = body.doc
@@ -118,9 +149,13 @@ module.exports = function (req, res, next) {
     if (req.user && ((doc.owner === req.user) || (doc.user_write.indexOf(req.user) >= 0))) {
       if (patchBody.some(function (p) {
         const parts = p.path.split('/')
-        return (userModifiableProperties.indexOf(parts[1]) < 0)
+        const val = userModifiableProperties.indexOf(parts[1])
+	//console.log(parts[1], val);
+	      return val < 0;
       })) {
         res.status(406).send('Patch contains non-modifiable properties')
+	      res.end();
+	      return;
       }
 
       debug('PATCH: ', patchBody)
@@ -129,6 +164,7 @@ module.exports = function (req, res, next) {
         jsonpatch.apply(doc, patchBody)
       } catch (err) {
         res.status(406).send('Error in patching: ' + err)
+	      res.end();
         return
       }
 
@@ -136,17 +172,26 @@ module.exports = function (req, res, next) {
 
       postDocs([doc], collection).then((postRes) => {
         // debug(`post response:`, postRes)
+	    console.log("RETURN 201");
         res.sendStatus(201)
+	      res.end();
+	      return;
       }, (postErr) => {
         res.status(406).send(`Error storing patched document: ${postErr}`)
+	      res.end();
+	      return;
       })
     } else {
       if (!req.user) {
         debug('User not logged in, permission denied')
         res.sendStatus(401)
+	      res.end();
+	      return;
       } else {
         debug('User forbidden from private data')
         res.sendStatus(403)
+	      res.end();
+	      return;
       }
     }
   }, (err) => {
