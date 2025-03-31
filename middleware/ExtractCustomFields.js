@@ -42,7 +42,7 @@ module.exports = function (req, res, next) {
                            'CheckM Contamination', 'CheckM Completeness', 'Genome Quality Flags', 
                            'Isolation Source', 'Isolation Comments', 'Collection Date', 'Collection Year', 
                            'Season', 'Isolation Country', 'Geographic Group', 'Geographic Location', 
-                           'Other Environmental', 'Host Name', 'Host Common Name', 'Host Gender', 
+                           'Other Environmental', 'Host Name', 'Host Common Name', 'Host Sex', 
                            'Host Age', 'Host Health', 'Host Group', 'Lab Host', 'Passage', 'Other Clinical', 
                            'Additional Metadata', 'Comments', 'Date Inserted', 'Date Modified']
 
