@@ -34,7 +34,8 @@ function querySOLR (req, res, next) {
   }
 
   const query = req.call_params[0]
-  const solrClient = new Solrjs(SOLR_URL + '/' + req.call_collection)
+  const url = SOLR_URL + '/' + req.call_collection;
+  const solrClient = new Solrjs(url)
   solrClient.setAgent(solrAgent)
 
   debug('querySOLR() query: ', query)
@@ -57,7 +58,7 @@ function querySOLR (req, res, next) {
 
       next()
     }, (err) => {
-      console.error(`Error Querying SOLR: ${err}`)
+      console.error(`Error Querying SOLR: ${err} user=${req.user} url=${url} qry=${query}`)
       next(err)
     })
 }
