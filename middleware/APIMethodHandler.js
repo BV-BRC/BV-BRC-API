@@ -15,6 +15,9 @@ function streamQuery (req, res, next) {
   const query = req.call_params[0]
   const solrClient = new Solrjs(SOLR_URL + '/' + req.call_collection)
   solrClient.setAgent(solrAgent)
+  if (req.user) {
+    solrClient.setHeaders({"X-Authenticated-User": req.user});
+  }
 
   debug('streamSOLR() query: ', query)
 
@@ -37,6 +40,9 @@ function querySOLR (req, res, next) {
   const url = SOLR_URL + '/' + req.call_collection;
   const solrClient = new Solrjs(url)
   solrClient.setAgent(solrAgent)
+  if (req.user) {
+    solrClient.setHeaders({"X-Authenticated-User": req.user});
+  }
 
   debug('querySOLR() query: ', query)
 
@@ -66,6 +72,9 @@ function querySOLR (req, res, next) {
 function getSOLR (req, res, next) {
   const solrClient = new Solrjs(SOLR_URL + '/' + req.call_collection)
   solrClient.setAgent(solrAgent)
+  if (req.user) {
+    solrClient.setHeaders({"X-Authenticated-User": req.user});
+  }
 
   solrClient.get(req.call_params[0])
     .then((sresults) => {
