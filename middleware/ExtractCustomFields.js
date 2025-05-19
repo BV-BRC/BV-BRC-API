@@ -180,14 +180,16 @@ module.exports = function (req, res, next) {
         break
       case 'sp_gene':
         req.fieldHeader = [
-          'Evidence', 'Property', 'Source', 'Genome Name', 'BRC ID', 'RefSeq Locus Tag', 'Alt Locus Tag', 'Source ID',
-          'Source Organism', 'Gene', 'Product', 'Function', 'Classification', 'PubMed', 'Subject Coverage', 'Query Coverage',
-          'Identity', 'E-value'
+          'Evidence', 'Property', 'Source', 'Genome ID', 'Genome Name', 
+          'BRC ID', 'RefSeq Locus Tag', 'Alt Locus Tag',
+          'Source ID', 'Source Organism', 'Gene', 'Product', 'Function', 'Classification', 'Antibiotics Class', 'Antibiotics', 'PubMed', 
+          'Subject Coverage', 'Query Coverage', 'Identity', 'E-value'
         ]
         req.fieldSelection = [
-          'evidence', 'property', 'source', 'genome_name', 'patric_id', 'refseq_locus_tag', 'alt_locus_tag', 'source_id',
-          'organism', 'gene', 'product', 'function', 'classification', 'pmid', 'subject_coverage', 'query_coverage', 'identity',
-          'e_value'
+          'evidence', 'property', 'source', 'genome_id', 'genome_name', 
+          'patric_id', 'refseq_locus_tag', 'alt_locus_tag',
+          'source_id', 'organism', 'gene', 'product', 'function', 'classification', 'antibiotics_class', 'antibiotics', 'pmid', 
+          'subject_coverage', 'query_coverage', 'identity', 'e_value'
         ]
         break
       case 'sp_gene_ref':
