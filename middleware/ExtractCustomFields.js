@@ -41,7 +41,7 @@ module.exports = function (req, res, next) {
                            'TRNA', 'RRNA', 'Mat Peptide', 'CDS', 'Coarse Consistency', 'Fine Consistency', 
                            'CheckM Contamination', 'CheckM Completeness', 'Genome Quality Flags', 
                            'Isolation Source', 'Isolation Comments', 'Collection Date', 'Collection Year', 
-                           'Season', 'Isolation Country', 'Geographic Group', 'Geographic Location', 
+                           'Season', 'Isolation Country', 'State/Province', 'County', 'City', 'Geographic Group', 'Geographic Location', 
                            'Other Environmental', 'Host Name', 'Host Common Name', 'Host Sex', 
                            'Host Age', 'Host Health', 'Host Group', 'Lab Host', 'Passage', 'Other Clinical', 
                            'Additional Metadata', 'Comments', 'Date Inserted', 'Date Modified']
@@ -60,7 +60,7 @@ module.exports = function (req, res, next) {
                               'trna', 'rrna', 'mat_peptide', 'cds', 'coarse_consistency', 'fine_consistency', 
                               'checkm_contamination', 'checkm_completeness', 'genome_quality_flags', 
                               'isolation_source', 'isolation_comments', 'collection_date', 'collection_year', 
-                              'season', 'isolation_country', 'geographic_group', 'geographic_location', 
+                              'season', 'isolation_country', 'state_province', 'county', 'city', 'geographic_group', 'geographic_location', 
                               'other_environmental', 'host_name', 'host_common_name', 'host_gender', 
                               'host_age', 'host_health', 'host_group', 'lab_host', 'passage', 'other_clinical', 
                               'additional_metadata', 'comments', 'date_inserted', 'date_modified']
