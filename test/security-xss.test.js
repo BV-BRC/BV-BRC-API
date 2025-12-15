@@ -44,6 +44,20 @@ describe('XSS Vulnerability Tests', () => {
       
       expect(response.status).not.toBe(403)
     })
+    
+    test('should allow RQL queries with asterisks', async () => {
+      const response = await request(app)
+        .get('/genome?eq(genome_id,*)')
+      
+      expect(response.status).not.toBe(403)
+    })
+    
+    test('should allow RQL queries with slashes and colons', async () => {
+      const response = await request(app)
+        .get('/genome?eq(path,/some/path)')
+      
+      expect(response.status).not.toBe(403)
+    })
   })
   
   describe('HTTP Header Injection Prevention', () => {
@@ -182,4 +196,3 @@ describe('XSS Vulnerability Tests', () => {
     })
   })
 })
-"

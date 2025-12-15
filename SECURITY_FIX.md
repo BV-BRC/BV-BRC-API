@@ -42,16 +42,18 @@ This would set `req.headers['accept']` to the malicious payload.
 
 ### 1. Parameter Name Validation (`middleware/http-params.js`)
 
-Added `isValidParameterName()` function that only allows safe characters:
-- Alphanumeric: `a-zA-Z0-9`
-- Special chars for RQL syntax: `_-.,()` 
-- Blocks: `<>'"&` and other HTML/script characters
+Added `isValidParameterName()` function that blocks dangerous characters:
+- **Blocks:** `<>"'&;` (HTML/script injection characters)
+- **Allows:** All other characters including RQL syntax: `eq()`, `and()`, `*`, `/`, etc.
 
 ```javascript
 function isValidParameterName(name) {
-  return /^[a-zA-Z0-9_\-.,()]+$/.test(name)
+  // Block dangerous characters that enable XSS
+  return !/[<>"'&;]/.test(name)
 }
 ```
+
+This blacklist approach allows all valid RQL queries while preventing XSS attacks.
 
 Invalid parameter names are now:
 - Blocked and not processed

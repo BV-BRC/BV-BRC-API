@@ -13,9 +13,11 @@ function sanitizeHeaderValue(value) {
 
 // Validate parameter names to prevent XSS via parameter names
 function isValidParameterName(name) {
-  // Only allow alphanumeric, underscore, hyphen, dot, parentheses, and comma
-  // This allows RQL syntax like eq(field,value) but blocks <script> tags
-  return /^[a-zA-Z0-9_\-.,()]+$/.test(name)
+  // Allow RQL syntax: eq(field,value), and(eq(...),eq(...)), etc.
+  // Also allow: alphanumeric, underscore, hyphen, dot, parentheses, comma, asterisk, colon, slash, percent
+  // Block dangerous characters: <, >, ", ', &, semicolon
+  // This regex allows RQL queries while blocking XSS attempts
+  return !/[<>"'&;]/.test(name)
 }
 
 module.exports = function (req, res, next) {
