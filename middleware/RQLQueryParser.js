@@ -2,6 +2,13 @@ const Rql = require('solrjs/rql')
 const debug = require('debug')('RQLQueryParser')
 const Expander = require('../ExpandingQuery')
 
+// Sanitize error messages to prevent XSS
+function sanitizeErrorMessage(message) {
+  if (!message) return 'Invalid query'
+  // Remove HTML tags and limit length
+  return String(message).replace(/[<>"'&]/g, '').substring(0, 200)
+}
+
 module.exports = function (req, res, next) {
   if (req.queryType === 'rql') {
     req.call_params[0] = req.call_params[0] || ''
@@ -21,11 +28,13 @@ module.exports = function (req, res, next) {
         })
         .catch((err) => {
           console.error(`${err}`)
-          res.status(400).send({ status: 400, message: err.message })
+          const safeMessage = sanitizeErrorMessage(err.message)
+          res.status(400).send({ status: 400, message: safeMessage })
         })
     } catch (err) {
-      console.error(`[${(new Date()).toISOString()}] Unable to resolve RQL query for ${req.call_params[0]}. ${err.message}. Send 400`)
-      res.status(400).send({ status: 400, message: err.message })
+      console.error(`[${(new Date()).toISOString()}] Unable to resolve RQL query. ${err.message}. Send 400`)
+      const safeMessage = sanitizeErrorMessage(err.message)
+      res.status(400).send({ status: 400, message: safeMessage })
     }
   } else {
     next()
