@@ -14,7 +14,7 @@ const parsedSolrUrl = Url.parse(SOLR_URL)
 
 const QUEUE_DIRECTORY = Config.get('queueDirectory')
 
-const keyCores = ['genome', 'genome_amr', 'genome_feature', 'genome_sequence',
+const keyCores = ['genome', 'genome_amr', 'genome_typing', 'genome_feature', 'genome_sequence',
   'pathway', 'sp_gene']
 
 if (require.main === module) {

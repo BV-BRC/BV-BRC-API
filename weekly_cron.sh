@@ -40,7 +40,7 @@ done
 
 
 echo "# small collections in sychronous mode"
-COL1="genome_amr genome taxonomy bioset bioset_result epitope epitope_assay experiment"
+COL1="genome_amr genome_typing genome taxonomy bioset bioset_result epitope epitope_assay experiment"
 COL2="protein_structure serology spike_lineage spike_variant strain surveillance"
 COLLECTIONS="$COL1 $COL2"
 for collection in $COLLECTIONS

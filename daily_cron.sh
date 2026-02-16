@@ -11,7 +11,7 @@ cd /disks/disk0/p3/production/p3-api/deployment/services/p3_api_service/app/
 #./bin/p3-clean-completed
 touch clean_requested
 
-for collection in feature_sequence genome genome_amr genome_feature genome_sequence pathway subsystem sp_gene
+for collection in feature_sequence genome genome_amr genome_typing genome_feature genome_sequence pathway subsystem sp_gene
 do
   echo "Rebalance Leader $collection"
   curl -s "http://bio-gp1.mcs.anl.gov:8983/solr/admin/collections?action=REBALANCELEADERS&collection=$collection"

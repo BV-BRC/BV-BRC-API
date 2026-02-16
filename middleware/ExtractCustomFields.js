@@ -94,6 +94,14 @@ module.exports = function (req, res, next) {
           'evidence', 'source', 'pmid'
         ]
         break
+      case 'genome_typing':
+        req.fieldHeader = [
+          'Genome ID', 'Scheme Name', 'ID', 'Allele Profile'
+        ]
+        req.fieldSelection = [
+          'genome_id', 'scheme_name', 'id', 'allele_profile'
+        ]
+        break
       case 'protein_structure':
         req.fieldHeader = [
           'PDB ID', 'Title', 'Organism Name', 'Taxon ID', 'Genome ID', 'BRC ID', 'UniProtKB Accession', 'Gene', 'Product',

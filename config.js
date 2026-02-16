@@ -16,6 +16,7 @@ const defaults = {
     'strain',
     'genome_test',
     'genome_amr',
+    'genome_typing',
     'feature_sequence',
     'genome_feature',
     'genome_sequence',
