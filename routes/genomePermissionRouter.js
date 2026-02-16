@@ -41,6 +41,7 @@ const genomeCoresUUIDs = {
   pathway: 'id',
   sp_gene: 'id',
   genome_amr: 'id',
+  genome_typing: 'id',
   subsystem: 'id'
 }
 
