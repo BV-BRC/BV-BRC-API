@@ -100,6 +100,8 @@ function guessFileType (path) {
           myGuess.push('taxonomy')
         } else if (row.hasOwnProperty('resistant_phenotype')) {
           myGuess.push('genome_amr')
+        } else if (row.hasOwnProperty('scheme_name') && row.hasOwnProperty('allele_profile')) {
+          myGuess.push('genome_typing')
         }
       }))
       .on('error', (err) => {
