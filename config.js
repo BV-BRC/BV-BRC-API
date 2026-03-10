@@ -96,6 +96,32 @@ const defaults = {
     subsystem: {
       preference: 'replica.type:PULL,replica.type:TLOG'
     }
+  },
+
+  distributedQuery: {
+    // Maximum concurrent shard queries
+    maxParallelism: 8,
+
+    // Retry configuration
+    maxRetries: 3,
+    initialRetryDelayMs: 100,
+
+    // Cache TTLs
+    schemaCacheTTLMinutes: 60,
+    clusterStatusCacheTTLSeconds: 60,
+
+    // Memory limits
+    maxMergeSortHeapDocs: 10000,
+    maxMemoryMB: 32,
+
+    // Batch size for cursor pagination
+    cursorBatchSize: 2000,
+
+    // Node exclusion patterns (regex strings)
+    excludeNodes: [],
+
+    // Admin users who can modify runtime config
+    adminUsers: []
   }
 
 }

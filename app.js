@@ -18,6 +18,7 @@ var dataRouter = require('./routes/dataRouter')
 var indexer = require('./routes/indexer')
 var docRouter = require('./routes/documentation')
 var indexRouter = require('./routes/index')
+var distributedQueryRouter = require('./routes/distributedQueryRouter')
 var pkgJSON = require("./package.json");
 var sleep = require("sleep-promise");
 
@@ -176,6 +177,10 @@ app.use('/bundle/:dataType/', [
 
 app.use('/permissions/genome', [
   genomePermissionRouter
+])
+
+app.use('/test/distributed-query', [
+  distributedQueryRouter
 ])
 
 app.use('/:dataType/', [
