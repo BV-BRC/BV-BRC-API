@@ -146,6 +146,7 @@ router.post('/', [
       res.setHeader('X-Query-Id', result.queryId)
       res.setHeader('X-Stream-Type', result.metadata.streamType)
       res.setHeader('X-Shard-Count', result.metadata.shardCount)
+      res.setHeader('X-Parallelism', result.metadata.parallelism)
 
       // Include prewarm results in headers if available
       if (result.metadata.totalFound !== null) {
@@ -183,7 +184,8 @@ router.post('/', [
           documentCount: docCount,
           elapsedMs: elapsed,
           streamType: result.metadata.streamType,
-          shardCount: result.metadata.shardCount
+          shardCount: result.metadata.shardCount,
+          parallelism: result.metadata.parallelism
         }
 
         // Include prewarm results if available
