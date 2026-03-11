@@ -198,6 +198,59 @@ describe('DistributedQueryManager', function () {
     })
   })
 
+  describe('_hasSortRequirement()', function () {
+    let manager
+
+    before(function () {
+      manager = new DistributedQueryManager('http://localhost:8983/solr')
+    })
+
+    after(function () {
+      manager.destroy()
+    })
+
+    it('should return false when no sort specified', function () {
+      assert.strictEqual(manager._hasSortRequirement(null, 'id'), false)
+      assert.strictEqual(manager._hasSortRequirement(undefined, 'id'), false)
+      assert.strictEqual(manager._hasSortRequirement('', 'id'), false)
+    })
+
+    it('should return false when sorting by unique key only', function () {
+      // Default unique key "id"
+      assert.strictEqual(manager._hasSortRequirement('id', 'id'), false)
+      assert.strictEqual(manager._hasSortRequirement('id asc', 'id'), false)
+      assert.strictEqual(manager._hasSortRequirement('id desc', 'id'), false)
+      assert.strictEqual(manager._hasSortRequirement('ID ASC', 'id'), false)
+      assert.strictEqual(manager._hasSortRequirement('  id  asc  ', 'id'), false)
+    })
+
+    it('should return false when sorting by collection-specific unique key', function () {
+      // genome_feature uses feature_id
+      assert.strictEqual(manager._hasSortRequirement('feature_id', 'feature_id'), false)
+      assert.strictEqual(manager._hasSortRequirement('feature_id asc', 'feature_id'), false)
+      assert.strictEqual(manager._hasSortRequirement('feature_id desc', 'feature_id'), false)
+      assert.strictEqual(manager._hasSortRequirement('FEATURE_ID ASC', 'feature_id'), false)
+    })
+
+    it('should return true when sorting by non-unique field', function () {
+      assert.strictEqual(manager._hasSortRequirement('patric_id asc', 'feature_id'), true)
+      assert.strictEqual(manager._hasSortRequirement('genome_id asc', 'id'), true)
+      assert.strictEqual(manager._hasSortRequirement('start asc', 'feature_id'), true)
+    })
+
+    it('should return true for multi-field sort even if unique key included', function () {
+      // Multi-field sorts require merge-sort to maintain global order
+      assert.strictEqual(manager._hasSortRequirement('genome_id asc, feature_id asc', 'feature_id'), true)
+      assert.strictEqual(manager._hasSortRequirement('patric_id asc, id asc', 'id'), true)
+    })
+
+    it('should handle missing uniqueKey by defaulting to id', function () {
+      assert.strictEqual(manager._hasSortRequirement('id asc', null), false)
+      assert.strictEqual(manager._hasSortRequirement('id asc', undefined), false)
+      assert.strictEqual(manager._hasSortRequirement('other asc', null), true)
+    })
+  })
+
   describe('_createEmptyQueryResult()', function () {
     let manager
 
