@@ -147,6 +147,14 @@ router.post('/', [
       res.setHeader('X-Stream-Type', result.metadata.streamType)
       res.setHeader('X-Shard-Count', result.metadata.shardCount)
 
+      // Include prewarm results in headers if available
+      if (result.metadata.totalFound !== null) {
+        res.setHeader('X-Total-Found', result.metadata.totalFound)
+      }
+      if (result.metadata.prewarmElapsedMs !== null) {
+        res.setHeader('X-Prewarm-Time-Ms', result.metadata.prewarmElapsedMs)
+      }
+
       let docCount = 0
 
       // Stream documents as newline-delimited JSON with backpressure handling
@@ -170,15 +178,24 @@ router.post('/', [
         debug(`Query ${result.queryId} complete: ${docCount} docs in ${elapsed}ms`)
 
         // Write final stats as a JSON line with special marker
-        res.write(JSON.stringify({
-          _meta: {
-            queryId: result.queryId,
-            documentCount: docCount,
-            elapsedMs: elapsed,
-            streamType: result.metadata.streamType,
-            shardCount: result.metadata.shardCount
+        const meta = {
+          queryId: result.queryId,
+          documentCount: docCount,
+          elapsedMs: elapsed,
+          streamType: result.metadata.streamType,
+          shardCount: result.metadata.shardCount
+        }
+
+        // Include prewarm results if available
+        if (result.metadata.totalFound !== null) {
+          meta.totalFound = result.metadata.totalFound
+          meta.prewarmElapsedMs = result.metadata.prewarmElapsedMs
+          if (result.metadata.prewarmErrors > 0) {
+            meta.prewarmErrors = result.metadata.prewarmErrors
           }
-        }) + '\n')
+        }
+
+        res.write(JSON.stringify({ _meta: meta }) + '\n')
 
         res.end()
       })

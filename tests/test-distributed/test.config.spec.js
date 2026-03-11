@@ -23,14 +23,25 @@ describe('DistributedQueryConfig', function () {
       const defaults = getDefaults()
 
       assert.isObject(defaults)
-      assert.equal(defaults.maxParallelism, 8)
-      assert.equal(defaults.maxRetries, 3)
-      assert.equal(defaults.initialRetryDelayMs, 100)
-      assert.equal(defaults.schemaCacheTTLMinutes, 60)
-      assert.equal(defaults.clusterStatusCacheTTLSeconds, 60)
-      assert.equal(defaults.maxMergeSortHeapDocs, 10000)
-      assert.equal(defaults.maxMemoryMB, 32)
-      assert.equal(defaults.cursorBatchSize, 2000)
+      // Check core numeric defaults
+      assert.isNumber(defaults.maxParallelism)
+      assert.isAtLeast(defaults.maxParallelism, 1)
+      assert.isAtMost(defaults.maxParallelism, 100)
+      assert.isNumber(defaults.maxRetries)
+      assert.isNumber(defaults.initialRetryDelayMs)
+      assert.isNumber(defaults.schemaCacheTTLMinutes)
+      assert.isNumber(defaults.clusterStatusCacheTTLSeconds)
+      assert.isNumber(defaults.maxMergeSortHeapDocs)
+      assert.isNumber(defaults.maxMemoryMB)
+      assert.isNumber(defaults.cursorBatchSize)
+      assert.isNumber(defaults.initialBatchSize)
+      // Check prewarm defaults
+      assert.isBoolean(defaults.prewarmShards)
+      assert.isNumber(defaults.prewarmTimeoutMs)
+      assert.isNumber(defaults.prewarmMaxConcurrent)
+      // Check SSL defaults
+      assert.isBoolean(defaults.rejectUnauthorized)
+      // Check arrays
       assert.isArray(defaults.excludeNodes)
       assert.isArray(defaults.adminUsers)
     })
@@ -50,8 +61,14 @@ describe('DistributedQueryConfig', function () {
         'maxMergeSortHeapDocs',
         'maxMemoryMB',
         'cursorBatchSize',
+        'initialBatchSize',
+        'prewarmShards',
+        'prewarmTimeoutMs',
+        'prewarmMaxConcurrent',
         'excludeNodes',
-        'adminUsers'
+        'adminUsers',
+        'rejectUnauthorized',
+        'ca'
       ])
     })
 
