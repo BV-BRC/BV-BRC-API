@@ -330,6 +330,42 @@ router.get('/stats', function (req, res, next) {
 })
 
 /**
+ * GET /test/distributed-query/cluster-load
+ *
+ * Get current load metrics for all Solr nodes in the cluster.
+ * Returns per-node metrics including query rates, latency, and heap usage.
+ */
+router.get('/cluster-load', async function (req, res, next) {
+  try {
+    const mgr = getManager()
+    const clusterLoad = await mgr.getClusterLoad()
+
+    res.json(clusterLoad)
+  } catch (err) {
+    debug(`Cluster load error: ${err.message}`)
+    res.status(500).json({ error: err.message })
+  }
+})
+
+/**
+ * GET /test/distributed-query/adaptive-parallelism
+ *
+ * Get recommended parallelism based on current cluster load.
+ * Useful for monitoring and tuning distributed query performance.
+ */
+router.get('/adaptive-parallelism', async function (req, res, next) {
+  try {
+    const mgr = getManager()
+    const recommendation = await mgr.getAdaptiveParallelism()
+
+    res.json(recommendation)
+  } catch (err) {
+    debug(`Adaptive parallelism error: ${err.message}`)
+    res.status(500).json({ error: err.message })
+  }
+})
+
+/**
  * GET /test/distributed-query/shards/:collection
  *
  * Get shard information for a collection.
