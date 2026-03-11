@@ -97,6 +97,33 @@ router.post('/', [
         return
       }
 
+      // Validate partitioning parameters
+      let clientCount = null
+      let clientIndex = null
+
+      if (req.body.clientCount !== undefined) {
+        clientCount = parseInt(req.body.clientCount, 10)
+        if (isNaN(clientCount) || clientCount < 1) {
+          res.status(400).json({ error: 'clientCount must be >= 1' })
+          return
+        }
+
+        if (req.body.clientIndex === undefined) {
+          res.status(400).json({
+            error: 'clientIndex required when clientCount specified'
+          })
+          return
+        }
+
+        clientIndex = parseInt(req.body.clientIndex, 10)
+        if (isNaN(clientIndex) || clientIndex < 0 || clientIndex >= clientCount) {
+          res.status(400).json({
+            error: `clientIndex must be in range [0, ${clientCount - 1}]`
+          })
+          return
+        }
+      }
+
       debug(`Distributed query request: collection=${req.body.collection}, query=${req.body.query.substring(0, 100)}...`)
 
       const mgr = getManager()
@@ -109,7 +136,9 @@ router.post('/', [
         sort: req.body.sort,
         fields: req.body.fields,
         limit: req.body.limit,
-        requireSorted: req.body.requireSorted
+        requireSorted: req.body.requireSorted,
+        clientCount,
+        clientIndex
       })
 
       // Set response headers
