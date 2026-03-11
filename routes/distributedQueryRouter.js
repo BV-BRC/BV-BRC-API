@@ -12,8 +12,6 @@
 
 const express = require('express')
 const bodyParser = require('body-parser')
-const { Transform } = require('stream')
-const { pipeline } = require('stream/promises')
 const debug = require('debug')('p3api-server:route/distributed-query')
 const config = require('../config')
 
@@ -151,34 +149,54 @@ router.post('/', [
 
       let docCount = 0
 
-      // Transform stream that converts objects to NDJSON lines
-      const ndjsonTransform = new Transform({
-        objectMode: true,
-        highWaterMark: 1000,
-        transform (doc, encoding, callback) {
-          docCount++
-          callback(null, JSON.stringify(doc) + '\n')
-        },
-        flush (callback) {
-          // Write final stats as a JSON line with special marker
-          const elapsed = Date.now() - startTime
-          debug(`Query ${result.queryId} complete: ${docCount} docs in ${elapsed}ms`)
+      // Stream documents as newline-delimited JSON with backpressure handling
+      result.stream.on('data', (doc) => {
+        docCount++
+        const canContinue = res.write(JSON.stringify(doc) + '\n')
 
-          const meta = JSON.stringify({
-            _meta: {
-              queryId: result.queryId,
-              documentCount: docCount,
-              elapsedMs: elapsed,
-              streamType: result.metadata.streamType,
-              shardCount: result.metadata.shardCount
-            }
-          }) + '\n'
-
-          callback(null, meta)
+        // Handle backpressure - pause stream if response buffer is full
+        if (!canContinue) {
+          result.stream.pause()
         }
       })
 
-      // Handle client disconnect
+      // Resume stream when response buffer drains
+      res.on('drain', () => {
+        result.stream.resume()
+      })
+
+      result.stream.on('end', () => {
+        const elapsed = Date.now() - startTime
+        debug(`Query ${result.queryId} complete: ${docCount} docs in ${elapsed}ms`)
+
+        // Write final stats as a JSON line with special marker
+        res.write(JSON.stringify({
+          _meta: {
+            queryId: result.queryId,
+            documentCount: docCount,
+            elapsedMs: elapsed,
+            streamType: result.metadata.streamType,
+            shardCount: result.metadata.shardCount
+          }
+        }) + '\n')
+
+        res.end()
+      })
+
+      result.stream.on('error', (err) => {
+        debug(`Query ${result.queryId} error: ${err.message}`)
+
+        // If headers not sent, send error response
+        if (!res.headersSent) {
+          res.status(500).json({ error: err.message })
+        } else {
+          // Headers already sent, write error as JSON line
+          res.write(JSON.stringify({ _error: err.message }) + '\n')
+          res.end()
+        }
+      })
+
+      // Handle client disconnect - listen on both req and res for reliability
       const handleDisconnect = () => {
         if (!res.writableEnded) {
           debug(`Query ${result.queryId}: Client disconnected, cancelling`)
@@ -188,19 +206,6 @@ router.post('/', [
 
       req.on('close', handleDisconnect)
       res.on('close', handleDisconnect)
-
-      // Use pipeline for proper backpressure handling
-      try {
-        await pipeline(result.stream, ndjsonTransform, res)
-      } catch (err) {
-        // Pipeline errors are expected on client disconnect
-        if (err.code !== 'ERR_STREAM_PREMATURE_CLOSE') {
-          debug(`Query ${result.queryId} pipeline error: ${err.message}`)
-          if (!res.headersSent) {
-            res.status(500).json({ error: err.message })
-          }
-        }
-      }
     } catch (err) {
       debug(`Distributed query error: ${err.message}`)
       res.status(500).json({ error: err.message })
