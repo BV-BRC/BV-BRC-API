@@ -14,10 +14,11 @@ const {
 describe('DistributedQuery Middleware', function () {
   describe('parseLimit()', function () {
     it('should parse rows parameter', function () {
-      // Note: regex requires & or ? before rows
+      // Note: regex matches rows at start, or after & or ?
       assert.equal(parseLimit('q=*:*&rows=100'), 100)
       assert.equal(parseLimit('&rows=50000'), 50000)
       assert.equal(parseLimit('fq=genome_id:123&rows=25'), 25)
+      assert.equal(parseLimit('rows=500'), 500) // rows at start
     })
 
     it('should return 0 when no rows parameter', function () {
@@ -28,15 +29,16 @@ describe('DistributedQuery Middleware', function () {
 
     it('should handle rows at start of query', function () {
       assert.equal(parseLimit('?rows=100'), 100)
+      assert.equal(parseLimit('rows=200'), 200)
     })
   })
 
   describe('parseSort()', function () {
     it('should parse sort parameter', function () {
-      // URL encoding: + is decoded to space by decodeURIComponent when encoded as %2B
-      // But + in URL is also a space, so we test with %20
+      // URL encoding: + is decoded to space, %20 is also space
       assert.equal(parseSort('q=*:*&sort=feature_id%20asc'), 'feature_id asc')
       assert.equal(parseSort('&sort=genome_id%20desc'), 'genome_id desc')
+      assert.equal(parseSort('sort=id+asc'), 'id asc') // sort at start
     })
 
     it('should return null when no sort parameter', function () {
@@ -58,6 +60,7 @@ describe('DistributedQuery Middleware', function () {
   describe('parseFields()', function () {
     it('should parse fl parameter', function () {
       assert.equal(parseFields('q=*:*&fl=feature_id,genome_id'), 'feature_id,genome_id')
+      assert.equal(parseFields('fl=id,name'), 'id,name') // fl at start
     })
 
     it('should return null when no fl parameter', function () {
@@ -67,28 +70,36 @@ describe('DistributedQuery Middleware', function () {
   })
 
   describe('stripManagedParams()', function () {
-    it('should strip q, rows, sort, fl parameters', function () {
-      const query = 'q=*:*&rows=10000&sort=feature_id+asc&fl=patric_id,product&fq=genome_id:123'
+    it('should strip rows, sort, fl parameters but convert q to fq', function () {
+      const query = 'q=genome_id:123&rows=10000&sort=feature_id+asc&fl=patric_id,product&fq=public:true'
       const stripped = stripManagedParams(query)
-      assert.equal(stripped, '&fq=genome_id:123')
+      // q=genome_id:123 should become fq=genome_id:123
+      assert.equal(stripped, '&fq=genome_id:123&fq=public:true')
     })
 
     it('should preserve multiple fq parameters', function () {
       const query = 'q=*:*&fq=annotation:PATRIC&fq=public:true&rows=50000'
       const stripped = stripManagedParams(query)
+      // q=*:* is dropped (default), only fq params kept
       assert.equal(stripped, '&fq=annotation:PATRIC&fq=public:true')
     })
 
-    it('should handle query starting with ?', function () {
-      const query = '?q=*:*&fq=genome_id:123&rows=100'
+    it('should convert non-default q to fq', function () {
+      const query = 'q=genome_id:562.*&fq=annotation:PATRIC&rows=100'
       const stripped = stripManagedParams(query)
-      assert.equal(stripped, '&fq=genome_id:123')
+      assert.equal(stripped, '&fq=genome_id:562.*&fq=annotation:PATRIC')
+    })
+
+    it('should handle query starting with ?', function () {
+      const query = '?q=test:value&fq=genome_id:123&rows=100'
+      const stripped = stripManagedParams(query)
+      assert.equal(stripped, '&fq=test:value&fq=genome_id:123')
     })
 
     it('should handle query starting with &', function () {
-      const query = '&q=*:*&fq=genome_id:123&rows=100'
+      const query = '&q=test:value&fq=genome_id:123&rows=100'
       const stripped = stripManagedParams(query)
-      assert.equal(stripped, '&fq=genome_id:123')
+      assert.equal(stripped, '&fq=test:value&fq=genome_id:123')
     })
 
     it('should return empty string when no non-managed params', function () {

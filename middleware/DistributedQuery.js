@@ -59,7 +59,8 @@ async function getManager () {
  * @returns {number} The limit (rows) value, or 0 if not found
  */
 function parseLimit (query) {
-  const match = query.match(/[&?]rows=(\d+)/)
+  // Match rows= at start of string, or after & or ?
+  const match = query.match(/(?:^|[&?])rows=(\d+)/)
   if (match) {
     return parseInt(match[1], 10)
   }
@@ -72,7 +73,8 @@ function parseLimit (query) {
  * @returns {string|null} The sort value, or null if not found
  */
 function parseSort (query) {
-  const match = query.match(/[&?]sort=([^&]+)/)
+  // Match sort= at start of string, or after & or ?
+  const match = query.match(/(?:^|[&?])sort=([^&]+)/)
   if (match) {
     // Replace + with space before decoding (+ is space in URL query strings)
     return decodeURIComponent(match[1].replace(/\+/g, ' '))
@@ -86,7 +88,8 @@ function parseSort (query) {
  * @returns {string|null} The fl value, or null if not found
  */
 function parseFields (query) {
-  const match = query.match(/[&?]fl=([^&]+)/)
+  // Match fl= at start of string, or after & or ?
+  const match = query.match(/(?:^|[&?])fl=([^&]+)/)
   if (match) {
     // Replace + with space before decoding (+ is space in URL query strings)
     return decodeURIComponent(match[1].replace(/\+/g, ' '))
@@ -96,17 +99,20 @@ function parseFields (query) {
 
 /**
  * Strip parameters from a query string that will be added by ShardCursorStream.
- * These include: q, rows, sort, fl, cursorMark, wt, shards, preferLocalShards
+ * These include: rows, sort, fl, cursorMark, wt, shards, preferLocalShards
  *
  * The distributed query system adds its own versions of these parameters,
  * so we need to remove them from the original query to avoid duplication.
+ *
+ * Special handling for 'q' parameter: ShardCursorStream uses q=*:* as a base,
+ * so we convert the original q= value to fq= to preserve the filter.
  *
  * @param {string} query - Solr query string
  * @returns {string} Query string with only fq and other non-conflicting parameters
  */
 function stripManagedParams (query) {
-  // Parameters that ShardCursorStream will add/manage
-  const managedParams = ['q', 'rows', 'sort', 'fl', 'cursorMark', 'wt', 'shards', 'preferLocalShards', 'start', 'distributed']
+  // Parameters that ShardCursorStream will add/manage (not including 'q' - handled specially)
+  const managedParams = ['rows', 'sort', 'fl', 'cursorMark', 'wt', 'shards', 'preferLocalShards', 'start', 'distributed']
 
   // Handle query strings that may or may not start with ? or &
   let queryStr = query
@@ -122,9 +128,15 @@ function stripManagedParams (query) {
 
     const eqIndex = part.indexOf('=')
     const paramName = eqIndex > 0 ? part.substring(0, eqIndex) : part
+    const paramValue = eqIndex > 0 ? part.substring(eqIndex + 1) : ''
 
-    // Keep this param if it's not in the managed list
-    if (!managedParams.includes(paramName)) {
+    if (paramName === 'q') {
+      // Convert q= to fq= (unless it's just *:* which is the default)
+      if (paramValue && paramValue !== '*:*' && paramValue !== '*%3A*') {
+        params.push('fq=' + paramValue)
+      }
+    } else if (!managedParams.includes(paramName)) {
+      // Keep this param if it's not in the managed list
       params.push(part)
     }
   }
@@ -161,7 +173,7 @@ function shouldUseDistributedQuery (req, config) {
 
   // Check for query param override
   const query = req.call_params[0] || ''
-  const distributedParam = query.match(/[&?]distributed=(true|false|1|0)/)
+  const distributedParam = query.match(/(?:^|[&?])distributed=(true|false|1|0)/)
   if (distributedParam) {
     const useIt = distributedParam[1] === 'true' || distributedParam[1] === '1'
     return {
