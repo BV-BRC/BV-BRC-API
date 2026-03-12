@@ -99,6 +99,13 @@ const defaults = {
   },
 
   distributedQuery: {
+    // Integration settings - controls when distributed queries are used
+    enabled: true,
+    minLimitThreshold: 10000,
+    enabledCollections: ['genome_feature'], // Start with just genome_feature
+    disabledCollections: [],
+    exposeMetadataHeaders: true,
+
     // Maximum concurrent shard queries
     maxParallelism: 8,
 

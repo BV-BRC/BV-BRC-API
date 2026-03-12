@@ -23,6 +23,12 @@ describe('DistributedQueryConfig', function () {
       const defaults = getDefaults()
 
       assert.isObject(defaults)
+      // Check integration settings
+      assert.isBoolean(defaults.enabled)
+      assert.isNumber(defaults.minLimitThreshold)
+      assert.isArray(defaults.enabledCollections)
+      assert.isArray(defaults.disabledCollections)
+      assert.isBoolean(defaults.exposeMetadataHeaders)
       // Check core numeric defaults
       assert.isNumber(defaults.maxParallelism)
       assert.isAtLeast(defaults.maxParallelism, 1)
@@ -53,6 +59,13 @@ describe('DistributedQueryConfig', function () {
 
       assert.isObject(config)
       assert.hasAllKeys(config, [
+        // Integration settings
+        'enabled',
+        'minLimitThreshold',
+        'enabledCollections',
+        'disabledCollections',
+        'exposeMetadataHeaders',
+        // Core settings
         'maxParallelism',
         'maxRetries',
         'initialRetryDelayMs',

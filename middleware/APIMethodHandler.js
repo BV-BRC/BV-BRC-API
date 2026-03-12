@@ -12,6 +12,12 @@ function streamQuery (req, res, next) {
     return next()
   }
 
+  // Skip if distributed query already handled this request
+  if (req.skipAPIMethodHandler && res.results) {
+    debug('Skipping streamQuery - handled by distributed query')
+    return next()
+  }
+
   const query = req.call_params[0]
   const solrClient = new Solrjs(SOLR_URL + '/' + req.call_collection)
   solrClient.setAgent(solrAgent)
@@ -33,6 +39,12 @@ function streamQuery (req, res, next) {
 
 function querySOLR (req, res, next) {
   if (req.call_method !== 'query') {
+    return next()
+  }
+
+  // Skip if distributed query already handled this request
+  if (req.skipAPIMethodHandler && res.results) {
+    debug('Skipping querySOLR - handled by distributed query')
     return next()
   }
 
