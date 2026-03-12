@@ -49,9 +49,9 @@ describe('DistributedQuery Middleware', function () {
     })
 
     it('should handle plus signs in sort (URL space encoding)', function () {
-      // + in URLs represents a space, but decodeURIComponent doesn't decode it
-      // The actual parsing should handle both forms
-      assert.equal(parseSort('&sort=feature_id+asc'), 'feature_id+asc')
+      // + in URLs represents a space in query strings
+      // Our parser should decode + as space
+      assert.equal(parseSort('&sort=feature_id+asc'), 'feature_id asc')
     })
   })
 

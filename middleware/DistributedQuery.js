@@ -74,7 +74,8 @@ function parseLimit (query) {
 function parseSort (query) {
   const match = query.match(/[&?]sort=([^&]+)/)
   if (match) {
-    return decodeURIComponent(match[1])
+    // Replace + with space before decoding (+ is space in URL query strings)
+    return decodeURIComponent(match[1].replace(/\+/g, ' '))
   }
   return null
 }
@@ -87,7 +88,8 @@ function parseSort (query) {
 function parseFields (query) {
   const match = query.match(/[&?]fl=([^&]+)/)
   if (match) {
-    return decodeURIComponent(match[1])
+    // Replace + with space before decoding (+ is space in URL query strings)
+    return decodeURIComponent(match[1].replace(/\+/g, ' '))
   }
   return null
 }
