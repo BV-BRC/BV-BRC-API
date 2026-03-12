@@ -93,6 +93,48 @@ function parseFields (query) {
 }
 
 /**
+ * Strip parameters from a query string that will be added by ShardCursorStream.
+ * These include: q, rows, sort, fl, cursorMark, wt, shards, preferLocalShards
+ *
+ * The distributed query system adds its own versions of these parameters,
+ * so we need to remove them from the original query to avoid duplication.
+ *
+ * @param {string} query - Solr query string
+ * @returns {string} Query string with only fq and other non-conflicting parameters
+ */
+function stripManagedParams (query) {
+  // Parameters that ShardCursorStream will add/manage
+  const managedParams = ['q', 'rows', 'sort', 'fl', 'cursorMark', 'wt', 'shards', 'preferLocalShards', 'start', 'distributed']
+
+  // Handle query strings that may or may not start with ? or &
+  let queryStr = query
+  if (queryStr.startsWith('?') || queryStr.startsWith('&')) {
+    queryStr = queryStr.substring(1)
+  }
+
+  // Split by & and filter out managed params
+  const params = []
+  const parts = queryStr.split('&')
+  for (const part of parts) {
+    if (!part) continue
+
+    const eqIndex = part.indexOf('=')
+    const paramName = eqIndex > 0 ? part.substring(0, eqIndex) : part
+
+    // Keep this param if it's not in the managed list
+    if (!managedParams.includes(paramName)) {
+      params.push(part)
+    }
+  }
+
+  // Return the filtered query string (with leading & for appending)
+  if (params.length === 0) {
+    return ''
+  }
+  return '&' + params.join('&')
+}
+
+/**
  * Check if distributed query should be used for this request.
  *
  * @param {Object} req - Express request object
@@ -233,19 +275,24 @@ module.exports = async function distributedQueryMiddleware (req, res, next) {
     const manager = await getManager()
     const query = req.call_params[0] || ''
 
-    // Parse query parameters
+    // Parse query parameters before stripping
     const limit = parseLimit(query)
     const sort = parseSort(query)
     const fields = parseFields(query)
 
+    // Strip parameters that ShardCursorStream will add to avoid duplication
+    // Keep only fq (filter queries) and other non-conflicting parameters
+    const strippedQuery = stripManagedParams(query)
+
     debug(`Executing distributed query: collection=${req.call_collection}, limit=${limit}, sort=${sort}`)
+    debug(`Stripped query for shards: ${strippedQuery}`)
 
     const startTime = Date.now()
 
     // Execute the distributed query
     const queryResult = await manager.executeQuery({
       collection: req.call_collection,
-      query: query,
+      query: strippedQuery,
       queryType: 'solr', // Query is already in Solr format after RQLQueryParser
       sort: sort,
       fields: fields,
@@ -315,4 +362,5 @@ module.exports.shouldUseDistributedQuery = shouldUseDistributedQuery
 module.exports.parseLimit = parseLimit
 module.exports.parseSort = parseSort
 module.exports.parseFields = parseFields
+module.exports.stripManagedParams = stripManagedParams
 module.exports.getManager = getManager

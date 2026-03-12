@@ -7,7 +7,8 @@ const {
   shouldUseDistributedQuery,
   parseLimit,
   parseSort,
-  parseFields
+  parseFields,
+  stripManagedParams
 } = require('../../middleware/DistributedQuery')
 
 describe('DistributedQuery Middleware', function () {
@@ -62,6 +63,50 @@ describe('DistributedQuery Middleware', function () {
     it('should return null when no fl parameter', function () {
       assert.isNull(parseFields('q=*:*'))
       assert.isNull(parseFields(''))
+    })
+  })
+
+  describe('stripManagedParams()', function () {
+    it('should strip q, rows, sort, fl parameters', function () {
+      const query = 'q=*:*&rows=10000&sort=feature_id+asc&fl=patric_id,product&fq=genome_id:123'
+      const stripped = stripManagedParams(query)
+      assert.equal(stripped, '&fq=genome_id:123')
+    })
+
+    it('should preserve multiple fq parameters', function () {
+      const query = 'q=*:*&fq=annotation:PATRIC&fq=public:true&rows=50000'
+      const stripped = stripManagedParams(query)
+      assert.equal(stripped, '&fq=annotation:PATRIC&fq=public:true')
+    })
+
+    it('should handle query starting with ?', function () {
+      const query = '?q=*:*&fq=genome_id:123&rows=100'
+      const stripped = stripManagedParams(query)
+      assert.equal(stripped, '&fq=genome_id:123')
+    })
+
+    it('should handle query starting with &', function () {
+      const query = '&q=*:*&fq=genome_id:123&rows=100'
+      const stripped = stripManagedParams(query)
+      assert.equal(stripped, '&fq=genome_id:123')
+    })
+
+    it('should return empty string when no non-managed params', function () {
+      const query = 'q=*:*&rows=100&sort=id+asc&fl=id,name'
+      const stripped = stripManagedParams(query)
+      assert.equal(stripped, '')
+    })
+
+    it('should strip distributed param', function () {
+      const query = 'q=*:*&fq=genome_id:123&distributed=true&rows=100'
+      const stripped = stripManagedParams(query)
+      assert.equal(stripped, '&fq=genome_id:123')
+    })
+
+    it('should preserve unknown parameters', function () {
+      const query = 'q=*:*&customParam=value&fq=test:1&rows=100'
+      const stripped = stripManagedParams(query)
+      assert.equal(stripped, '&customParam=value&fq=test:1')
     })
   })
 
