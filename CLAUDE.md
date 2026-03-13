@@ -165,3 +165,103 @@ Recent XSS fixes documented in `SECURITY_FIX.md`:
 - Parameter name validation in `http-params.js`
 - Error message sanitization in `RQLQueryParser.js`
 - Security headers (CSP, X-Frame-Options, etc.) in `app.js`
+
+## Debug Logging
+
+The application uses the `debug` module for logging. Enable debug output by setting the `DEBUG` environment variable.
+
+### Common Debug Patterns
+
+```bash
+# All p3api-server debug output
+DEBUG=p3api-server:* npm start
+
+# All debug output (very verbose, includes solrjs)
+DEBUG=* npm start
+
+# Multiple specific namespaces
+DEBUG=p3api-server:app,p3api-server:media,RQLQueryParser npm start
+```
+
+### Available Debug Namespaces
+
+#### Core Application
+| Namespace | File | Description |
+|-----------|------|-------------|
+| `p3api-server:app` | app.js | Express app initialization, request handling |
+| `p3api-server:web` | web.js | Web server startup |
+| `p3api-server:cacheClass` | cache.js | Cache class operations |
+| `p3api-server:ExpandingQuery` | ExpandingQuery.js | Query expansion logic |
+
+#### Middleware
+| Namespace | File | Description |
+|-----------|------|-------------|
+| `p3api-server:middleware/APIMethodHandler` | middleware/APIMethodHandler.js | Solr query execution |
+| `p3api-server:middleware/DistributedQuery` | middleware/DistributedQuery.js | Distributed query routing decisions |
+| `p3api-server:http-params` | middleware/http-params.js | HTTP parameter extraction |
+| `p3api-server:cachemiddleware` | middleware/cache.js | Response caching |
+| `p3api-server:patchmiddleware` | middleware/patch.js | PATCH request handling |
+| `p3api-server:media` | middleware/media.js | Content negotiation, response formatting |
+| `RQLQueryParser` | middleware/RQLQueryParser.js | RQL to Solr query conversion |
+| `SOLRQueryParser` | middleware/SolrQueryParser.js | Direct Solr query parsing |
+| `ShardsPreference` | middleware/ShardsPreference.js | Shard preference selection |
+
+#### Routes
+| Namespace | File | Description |
+|-----------|------|-------------|
+| `p3api-server:route/dataType` | routes/dataType.js | Main data endpoint (`/:dataType/`) |
+| `p3api-server:route/summary` | routes/dataRouter.js | Summary data endpoints (`/data/`) |
+| `p3api-server:route/download` | routes/download.js | File download handling |
+| `p3api-server:route/JBrowse` | routes/JBrowse.js | JBrowse genome browser API |
+| `p3api-server:route/indexer` | routes/indexer.js | Solr indexing operations |
+| `p3api-server:route/multiQuery` | routes/multiQuery.js | Multi-query batch requests |
+| `p3api-server:route/rpcHandler` | routes/rpcHandler.js | JSON-RPC endpoint |
+| `p3api-server:route/distributed-query` | routes/distributedQueryRouter.js | Distributed query test endpoints |
+| `p3api-server:genomePermissions` | routes/genomePermissionRouter.js | Genome permission management |
+
+#### Distributed Query System
+| Namespace | File | Description |
+|-----------|------|-------------|
+| `p3api-server:distributed:manager` | lib/distributed/DistributedQueryManager.js | Query orchestration, stream type selection |
+| `p3api-server:distributed:coordinator` | lib/distributed/ParallelQueryCoordinator.js | Parallel shard queries, backpressure handling |
+| `p3api-server:distributed:merge-sort` | lib/distributed/MergeSortStream.js | K-way merge sort operations |
+| `p3api-server:distributed:shard-cursor` | lib/distributed/ShardCursorStream.js | Cursor pagination per shard |
+| `p3api-server:distributed:cluster` | lib/distributed/SolrClusterClient.js | Cluster state, shard/replica discovery |
+| `p3api-server:distributed:cache` | lib/distributed/CacheManager.js | Schema/cluster cache hits/misses |
+| `p3api-server:distributed:config` | lib/distributed/DistributedQueryConfig.js | Config loading and updates |
+| `p3api-server:distributed:utils` | lib/distributed/utils.js | Prewarm queries, URL sanitization |
+
+#### RPC Handlers
+| Namespace | File | Description |
+|-----------|------|-------------|
+| `p3api-server:cluster` | rpc/cluster.js | Cluster analysis RPC |
+| `p3api-server:msa` | rpc/msa.js | Multiple sequence alignment |
+| `p3api-server:ProteinFamily` | rpc/proteinFamily.js | Protein family analysis |
+| `p3api-server:panaconda` | rpc/panaconda.js | Panaconda analysis |
+| `p3api-server:BiosetResult` | rpc/biosetResult.js | Bioset result processing |
+| `p3api-server:TranscriptomicsGene` | rpc/transcriptomicsGene.js | Transcriptomics gene analysis |
+
+#### External Libraries
+| Namespace | File | Description |
+|-----------|------|-------------|
+| `solrjs` | solrjs | Solr client library |
+| `solrjs:rql` | solrjs/rql.js | RQL to Solr conversion in solrjs |
+
+### Debug Examples
+
+```bash
+# Debug distributed query with backpressure monitoring
+DEBUG=p3api-server:distributed:coordinator,p3api-server:distributed:shard-cursor npm start
+
+# Debug query parsing and execution
+DEBUG=RQLQueryParser,p3api-server:middleware/APIMethodHandler npm start
+
+# Debug media serialization (CSV, JSON, etc.)
+DEBUG=p3api-server:media npm start
+
+# Debug RPC calls
+DEBUG=p3api-server:route/rpcHandler,p3api-server:msa,p3api-server:cluster npm start
+
+# Full distributed query debugging
+DEBUG=p3api-server:distributed:*,p3api-server:middleware/DistributedQuery npm start
+```
