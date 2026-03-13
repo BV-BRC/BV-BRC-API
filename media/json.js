@@ -1,27 +1,25 @@
-const EventStream = require('event-stream')
+const { streamWithBackpressure } = require('../util/streamWithBackpressure')
 
 module.exports = {
   contentType: 'application/json',
   serialize: function (req, res, next) {
     if (req.call_method === 'stream') {
-      Promise.all([res.results]).then((vals) => {
+      Promise.all([res.results]).then(async (vals) => {
         const results = vals[0]
-        let docCount = 0
-        let head
+        let isFirst = true
 
         res.write('[')
-        results.stream.pipe(EventStream.mapSync(function (data) {
-          if (!head) {
-            head = data
-          } else {
-            res.write(((docCount > 0) ? ',' : '') + JSON.stringify(data))
-            docCount++
+        await streamWithBackpressure(results.stream, res, {
+          transform: (data) => {
+            const prefix = isFirst ? '' : ','
+            isFirst = false
+            return prefix + JSON.stringify(data)
+          },
+          onEnd: () => {
+            res.write(']')
           }
-        })).on('end', function () {
-          res.write(']')
-          res.end()
         })
-      }, (error) => {
+      }).catch((error) => {
         next(new Error(`Unable to receive stream: ${error}`))
       })
     } else if (req.call_method === 'query') {

@@ -12,6 +12,7 @@
     "test-hpi": "mocha spec tests/test-hpi/test.spec.js",
     "test-content": "mocha spec tests/test-content/test.spec.js",
     "test-download": "mocha spec tests/test-download/test.spec.js",
+    "test-util": "mocha -R spec tests/test-util/test.*.spec.js",
     "test-permissions": "mocha -R spec  \"tests/test-permissions/**/*.spec.js\"",
     "build-css": "npx postcss public/css/docs.css -o public/css/compiled.css",
     "build-image": "./buildImage.sh"
