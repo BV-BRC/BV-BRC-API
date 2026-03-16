@@ -115,9 +115,41 @@ function initializeDirectSolr () {
     DirectSolrClient = require('../lib/distributed/DirectSolrClient')
     SolrClusterClient = require('../lib/distributed/SolrClusterClient')
 
+    // Get TLS options from distributed query config
+    const { getConfig } = require('../lib/distributed/DistributedQueryConfig')
+    const distributedConfig = getConfig()
+    const https = require('https')
+    const fs = require('fs')
+
+    const tlsOptions = {}
+    if (distributedConfig.ca) {
+      if (distributedConfig.ca.startsWith('/') || distributedConfig.ca.startsWith('./')) {
+        try {
+          tlsOptions.ca = fs.readFileSync(distributedConfig.ca)
+          debug(`Loaded CA certificate from: ${distributedConfig.ca}`)
+        } catch (err) {
+          debug(`Warning: Could not read CA file: ${err.message}`)
+        }
+      } else {
+        tlsOptions.ca = distributedConfig.ca
+      }
+    }
+    if (distributedConfig.rejectUnauthorized === false) {
+      tlsOptions.rejectUnauthorized = false
+      debug('SSL certificate validation disabled')
+    }
+
+    const httpsAgent = new https.Agent({
+      keepAlive: true,
+      maxSockets: 10,
+      ...tlsOptions
+    })
+
     // Create cluster client (reuse if exists)
     if (!solrClusterClientInstance) {
-      solrClusterClientInstance = new SolrClusterClient(solrUrl)
+      solrClusterClientInstance = new SolrClusterClient(solrUrl, {
+        agent: solrUrl.startsWith('https:') ? httpsAgent : undefined
+      })
     }
 
     // Create direct client for sequence lookups
