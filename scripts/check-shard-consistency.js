@@ -28,6 +28,7 @@ function parseArgs() {
     fq: null,
     rows: 10,
     field: null,  // Field to compare values across replicas
+    sort: null,   // Sort field (auto-detected from schema if not provided)
     config: null,
     timeout: 30000,
     verbose: false,
@@ -56,6 +57,10 @@ function parseArgs() {
       case '--field':
       case '-f':
         args.field = argv[++i]
+        break
+      case '--sort':
+      case '-s':
+        args.sort = argv[++i]
         break
       case '--config':
         args.config = argv[++i]
@@ -110,6 +115,7 @@ Options:
   --query, -q <query>        Solr query (default: "*:*")
   --fq <filter>              Filter query
   --rows, -r <num>           Number of rows to fetch per shard (default: 10)
+  --sort, -s <field>         Sort field (auto-detected from schema if not specified)
   --field, -f <field>        Field to compare across replicas (shows value differences)
   --config <path>            Path to p3api.conf (default: ./p3api.conf)
   --timeout, -t <ms>         Request timeout in milliseconds (default: 30000)
@@ -222,6 +228,20 @@ async function getClusterStatus(solrBaseUrl, options) {
   return response.cluster
 }
 
+// Get schema for a collection to find the unique key
+async function getSchema(solrBaseUrl, collection, options) {
+  const url = `${solrBaseUrl}/${collection}/schema`
+  try {
+    const response = await httpRequest(url, options)
+    return response.schema
+  } catch (err) {
+    if (options.verbose) {
+      console.log(`Warning: Could not fetch schema: ${err.message}`)
+    }
+    return null
+  }
+}
+
 // Get all shards and replicas for a collection
 function getShardsAndReplicas(clusterStatus, collection, allReplicas = false) {
   const collectionInfo = clusterStatus.collections[collection]
@@ -266,7 +286,7 @@ function getShardsAndReplicas(clusterStatus, collection, allReplicas = false) {
 }
 
 // Query a specific replica
-async function queryReplica(replica, query, fq, rows, auth, options) {
+async function queryReplica(replica, query, fq, rows, sort, auth, options) {
   // Build the query URL - replica.baseUrl is like "http://host:port/solr"
   const baseUrl = replica.baseUrl.replace(/\/$/, '')
   let url = `${baseUrl}/${replica.core}/select`
@@ -275,7 +295,9 @@ async function queryReplica(replica, query, fq, rows, auth, options) {
   params.set('q', query)
   params.set('rows', rows.toString())
   params.set('wt', 'json')
-  params.set('sort', 'id asc')  // Consistent ordering
+  if (sort) {
+    params.set('sort', `${sort} asc`)  // Consistent ordering
+  }
 
   if (fq) {
     params.set('fq', fq)
@@ -552,11 +574,25 @@ async function main() {
       process.exit(1)
     }
 
+    // Determine sort field - use provided value, or fetch from schema
+    let sortField = args.sort
+    if (!sortField && args.rows > 0) {
+      // Need a sort field for consistent document ordering
+      console.log('Fetching schema for unique key...')
+      const schema = await getSchema(solrBaseUrl, args.collection, requestOptions)
+      if (schema && schema.uniqueKey) {
+        sortField = schema.uniqueKey
+        console.log(`Using unique key for sort: ${sortField}`)
+      } else {
+        console.log('Warning: Could not determine unique key, results may be unordered')
+      }
+    }
+
     // Query all replicas in parallel
     console.log('Querying replicas...\n')
     const results = await Promise.all(
       replicas.map(replica =>
-        queryReplica(replica, args.query, args.fq, args.rows, auth, requestOptions)
+        queryReplica(replica, args.query, args.fq, args.rows, sortField, auth, requestOptions)
       )
     )
 
