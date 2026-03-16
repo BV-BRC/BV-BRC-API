@@ -44,15 +44,25 @@ module.exports = function (req, res, next) {
     debug('req.url', req.url, parsed)
 
     if (parsed) {
+      // Store http_fasta_* params separately before processing
+      // These are used by FASTA serializers and should not go to Solr
+      req.fastaParams = {}
+
       Object.keys(parsed).forEach((key) => {
+        if (key.match(/^http_fasta_/)) {
+          // Store FASTA params for serializer access
+          req.fastaParams[key] = decodeURIComponent(parsed[key])
+          delete parsed[key]
+          return
+        }
+
         if (key.match(/^http_/)) {
           const header = key.split('_')[1]
 
           // Only process headers that are in the whitelist
-          // Non-whitelisted http_* params (like http_fasta_*) are kept as query params
           if (!ALLOWED_HEADERS.includes(header.toLowerCase())) {
-            debug(`Keeping non-header http_* param as query param: ${key}`)
-            // Don't delete - keep it in parsed so it remains in the query string
+            debug(`Blocked attempt to set unauthorized header: ${header}`)
+            delete parsed[key]
             return
           }
 

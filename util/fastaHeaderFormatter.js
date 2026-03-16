@@ -54,32 +54,41 @@ const DEFAULT_CONFIG = {
 /**
  * Get query parameters from request.
  * Handles both Express req.query and custom http-params middleware.
+ * Also checks req.fastaParams for FASTA-specific parameters extracted by http-params.
  *
  * @param {Object} req - Express request object
  * @returns {Object} Query parameters object
  */
 function getQueryParams (req) {
+  let params = {}
+
   // If Express has parsed query params, use them
   if (req.query && Object.keys(req.query).length > 0) {
-    return req.query
+    params = { ...req.query }
+  } else {
+    // Otherwise parse from _parsedUrl.query (set by http-params middleware)
+    // or from call_params[0]
+    let queryString = ''
+    if (req._parsedUrl && req._parsedUrl.query) {
+      queryString = req._parsedUrl.query
+    } else if (req.call_params && req.call_params[0]) {
+      queryString = req.call_params[0]
+    }
+
+    if (queryString) {
+      // Parse the query string
+      const parsed = url.parse('?' + queryString, true)
+      params = parsed.query || {}
+    }
   }
 
-  // Otherwise parse from _parsedUrl.query (set by http-params middleware)
-  // or from call_params[0]
-  let queryString = ''
-  if (req._parsedUrl && req._parsedUrl.query) {
-    queryString = req._parsedUrl.query
-  } else if (req.call_params && req.call_params[0]) {
-    queryString = req.call_params[0]
+  // Merge in FASTA params from http-params middleware
+  // These are stored separately to avoid being sent to Solr
+  if (req.fastaParams && Object.keys(req.fastaParams).length > 0) {
+    params = { ...params, ...req.fastaParams }
   }
 
-  if (!queryString) {
-    return {}
-  }
-
-  // Parse the query string
-  const parsed = url.parse('?' + queryString, true)
-  return parsed.query || {}
+  return params
 }
 
 /**
