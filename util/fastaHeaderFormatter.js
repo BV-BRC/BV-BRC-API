@@ -15,6 +15,7 @@
  */
 
 const debug = require('debug')('p3api-server:util:fasta-header')
+const url = require('url')
 
 /**
  * Default FASTA header configuration by collection and annotation type
@@ -51,6 +52,37 @@ const DEFAULT_CONFIG = {
 }
 
 /**
+ * Get query parameters from request.
+ * Handles both Express req.query and custom http-params middleware.
+ *
+ * @param {Object} req - Express request object
+ * @returns {Object} Query parameters object
+ */
+function getQueryParams (req) {
+  // If Express has parsed query params, use them
+  if (req.query && Object.keys(req.query).length > 0) {
+    return req.query
+  }
+
+  // Otherwise parse from _parsedUrl.query (set by http-params middleware)
+  // or from call_params[0]
+  let queryString = ''
+  if (req._parsedUrl && req._parsedUrl.query) {
+    queryString = req._parsedUrl.query
+  } else if (req.call_params && req.call_params[0]) {
+    queryString = req.call_params[0]
+  }
+
+  if (!queryString) {
+    return {}
+  }
+
+  // Parse the query string
+  const parsed = url.parse('?' + queryString, true)
+  return parsed.query || {}
+}
+
+/**
  * Parse FASTA header configuration from request.
  *
  * @param {Object} req - Express request object
@@ -58,44 +90,45 @@ const DEFAULT_CONFIG = {
  */
 function parseConfigFromRequest (req) {
   const config = {}
+  const query = getQueryParams(req)
 
   // ID fields configuration
-  if (req.query.http_fasta_id_fields) {
-    config.idFields = req.query.http_fasta_id_fields
+  if (query.http_fasta_id_fields) {
+    config.idFields = query.http_fasta_id_fields
       .split(',')
       .map(f => f.trim())
       .filter(f => f.length > 0)
   }
 
   // ID delimiter
-  if (req.query.http_fasta_id_delimiter !== undefined) {
-    config.idDelimiter = req.query.http_fasta_id_delimiter
+  if (query.http_fasta_id_delimiter !== undefined) {
+    config.idDelimiter = query.http_fasta_id_delimiter
   }
 
   // ID prefix (e.g., 'gi|' or 'accn|')
-  if (req.query.http_fasta_id_prefix !== undefined) {
-    config.idPrefix = req.query.http_fasta_id_prefix
+  if (query.http_fasta_id_prefix !== undefined) {
+    config.idPrefix = query.http_fasta_id_prefix
   }
 
   // Description fields
-  if (req.query.http_fasta_description_fields) {
-    config.descriptionFields = req.query.http_fasta_description_fields
+  if (query.http_fasta_description_fields) {
+    config.descriptionFields = query.http_fasta_description_fields
       .split(',')
       .map(f => f.trim())
       .filter(f => f.length > 0)
   }
 
   // Context fields (shown in brackets)
-  if (req.query.http_fasta_context_fields) {
-    config.contextFields = req.query.http_fasta_context_fields
+  if (query.http_fasta_context_fields) {
+    config.contextFields = query.http_fasta_context_fields
       .split(',')
       .map(f => f.trim())
       .filter(f => f.length > 0)
   }
 
   // Context delimiter (between fields in brackets)
-  if (req.query.http_fasta_context_delimiter !== undefined) {
-    config.contextDelimiter = req.query.http_fasta_context_delimiter
+  if (query.http_fasta_context_delimiter !== undefined) {
+    config.contextDelimiter = query.http_fasta_context_delimiter
   }
 
   return config
@@ -226,7 +259,8 @@ function createFastaHeaderFormatter (options = {}) {
  */
 function createFastaHeaderFormatterFromRequest (req, options = {}) {
   const collection = req.call_collection || 'genome_feature'
-  const annotation = req.query.annotation || null
+  const query = getQueryParams(req)
+  const annotation = query.annotation || null
 
   // Get defaults for this collection/annotation
   const collectionDefaults = DEFAULT_CONFIG[collection] || DEFAULT_CONFIG.genome_feature
@@ -312,5 +346,6 @@ module.exports = {
   formatLegacyGenomeSequenceHeader,
   getFieldValue,
   formatFields,
+  getQueryParams,
   DEFAULT_CONFIG
 }
