@@ -34,6 +34,8 @@ function parseArgs() {
     verbose: false,
     allReplicas: false,  // Query all replicas, not just one per shard
     countOnly: false,    // Only compare counts, not documents
+    fix: false,          // Attempt to fix inconsistencies by triggering replication
+    dryRun: false,       // Show what would be fixed without actually fixing
   }
 
   const argv = process.argv.slice(2)
@@ -80,6 +82,12 @@ function parseArgs() {
       case '--count-only':
         args.countOnly = true
         break
+      case '--fix':
+        args.fix = true
+        break
+      case '--dry-run':
+        args.dryRun = true
+        break
       case '--help':
       case '-h':
         printUsage()
@@ -122,6 +130,8 @@ Options:
   --verbose, -v              Verbose output
   --all-replicas, -a         Query ALL replicas (not just one per shard)
   --count-only               Only compare document counts, skip document comparison
+  --fix                      Attempt to fix inconsistencies by triggering replication
+  --dry-run                  Show what --fix would do without actually doing it
   --help, -h                 Show this help
 
 Examples:
@@ -158,6 +168,61 @@ function loadConfig(configPath) {
   }
 
   throw new Error(`Config file not found. Searched: ${searchPaths.join(', ')}`)
+}
+
+// Trigger replication fetch on a follower replica
+async function triggerReplication(replica, auth, options) {
+  // Build URL to the replication handler
+  const baseUrl = replica.baseUrl.replace(/\/$/, '')
+  let url = `${baseUrl}/${replica.core}/replication?command=fetchindex&wt=json`
+
+  // Inject auth if present
+  if (auth) {
+    const parsedUrl = new URL(url)
+    parsedUrl.username = encodeURIComponent(auth.username)
+    parsedUrl.password = encodeURIComponent(auth.password)
+    url = parsedUrl.toString()
+  }
+
+  if (options.verbose) {
+    console.log(`  Triggering replication: ${url.replace(/\/\/[^:]+:[^@]+@/, '//***:***@')}`)
+  }
+
+  try {
+    const response = await httpRequest(url, options)
+    return {
+      success: true,
+      status: response.status || 'OK',
+      message: response.message || 'Replication triggered'
+    }
+  } catch (err) {
+    return {
+      success: false,
+      error: err.message
+    }
+  }
+}
+
+// Force a hard commit on the collection
+async function forceCommit(solrBaseUrl, collection, options) {
+  let url = `${solrBaseUrl}/${collection}/update?commit=true&openSearcher=true&wt=json`
+
+  if (options.verbose) {
+    console.log(`  Forcing commit: ${url.replace(/\/\/[^:]+:[^@]+@/, '//***:***@')}`)
+  }
+
+  try {
+    const response = await httpRequest(url, options)
+    return {
+      success: true,
+      status: response.responseHeader?.status === 0 ? 'OK' : 'Unknown'
+    }
+  } catch (err) {
+    return {
+      success: false,
+      error: err.message
+    }
+  }
 }
 
 // HTTP request helper
@@ -578,6 +643,109 @@ function printReport(summary, args) {
   console.log('\n')
 }
 
+// Fix inconsistencies by triggering replication
+async function fixInconsistencies(summary, results, solrBaseUrl, auth, requestOptions, args) {
+  const leaderFollowerMismatches = summary.inconsistencies.filter(
+    i => i.type === 'LEADER_FOLLOWER_MISMATCH'
+  )
+
+  if (leaderFollowerMismatches.length === 0) {
+    console.log('\nNo leader/follower mismatches to fix.')
+    return
+  }
+
+  console.log('\n' + '='.repeat(80))
+  console.log(args.dryRun ? 'FIX PLAN (DRY RUN)' : 'APPLYING FIXES')
+  console.log('='.repeat(80))
+
+  // Step 1: Force a commit on the collection to ensure all data is committed
+  console.log('\nStep 1: Forcing commit on collection...')
+  if (args.dryRun) {
+    console.log(`  [DRY RUN] Would force commit on ${args.collection}`)
+  } else {
+    const commitResult = await forceCommit(solrBaseUrl, args.collection, requestOptions)
+    if (commitResult.success) {
+      console.log(`  ✓ Commit successful`)
+    } else {
+      console.log(`  ✗ Commit failed: ${commitResult.error}`)
+    }
+  }
+
+  // Step 2: Trigger replication on each affected follower
+  console.log('\nStep 2: Triggering replication on affected followers...')
+
+  // Group mismatches by follower replica to avoid duplicate triggers
+  const affectedFollowers = new Map()
+  for (const mismatch of leaderFollowerMismatches) {
+    // Find the follower replica info from results
+    const followerResult = results.find(r =>
+      r.replica.shard === mismatch.shard &&
+      !r.replica.leader &&
+      r.replica.nodeName === mismatch.followerNode
+    )
+
+    if (followerResult) {
+      const key = `${followerResult.replica.baseUrl}/${followerResult.replica.core}`
+      if (!affectedFollowers.has(key)) {
+        affectedFollowers.set(key, {
+          replica: followerResult.replica,
+          shards: [mismatch.shard],
+          totalDiff: mismatch.difference
+        })
+      } else {
+        const existing = affectedFollowers.get(key)
+        existing.shards.push(mismatch.shard)
+        existing.totalDiff += mismatch.difference
+      }
+    }
+  }
+
+  console.log(`\nFound ${affectedFollowers.size} follower replicas needing replication:`)
+
+  const fixResults = []
+  for (const [key, info] of affectedFollowers) {
+    const { replica, shards, totalDiff } = info
+    console.log(`\n  ${replica.core} on ${replica.nodeName?.split(':')[0]}`)
+    console.log(`    Shards affected: ${shards.join(', ')}`)
+    console.log(`    Total missing docs: ${totalDiff}`)
+
+    if (args.dryRun) {
+      console.log(`    [DRY RUN] Would trigger: ${replica.baseUrl}/${replica.core}/replication?command=fetchindex`)
+      fixResults.push({ replica: key, success: true, dryRun: true })
+    } else {
+      const result = await triggerReplication(replica, auth, requestOptions)
+      if (result.success) {
+        console.log(`    ✓ Replication triggered: ${result.status}`)
+        fixResults.push({ replica: key, success: true })
+      } else {
+        console.log(`    ✗ Failed: ${result.error}`)
+        fixResults.push({ replica: key, success: false, error: result.error })
+      }
+    }
+  }
+
+  // Summary
+  console.log('\n' + '-'.repeat(40))
+  console.log('FIX SUMMARY')
+  console.log('-'.repeat(40))
+
+  const successful = fixResults.filter(r => r.success).length
+  const failed = fixResults.filter(r => !r.success).length
+
+  if (args.dryRun) {
+    console.log(`Would trigger replication on ${successful} replicas`)
+    console.log('\nRun without --dry-run to apply fixes.')
+  } else {
+    console.log(`Successful: ${successful}`)
+    console.log(`Failed: ${failed}`)
+
+    if (successful > 0) {
+      console.log('\n⚠️  Replication has been triggered but may take time to complete.')
+      console.log('   Run this script again in a few minutes to verify consistency.')
+    }
+  }
+}
+
 // Main function
 async function main() {
   const args = parseArgs()
@@ -656,6 +824,11 @@ async function main() {
 
     // Print report
     printReport(summary, args)
+
+    // Fix inconsistencies if requested
+    if ((args.fix || args.dryRun) && summary.inconsistencies.length > 0) {
+      await fixInconsistencies(summary, results, solrBaseUrl, auth, requestOptions, args)
+    }
 
     // Exit with error code if inconsistencies found
     if (summary.inconsistencies.length > 0 || summary.failedQueries > 0) {
