@@ -162,7 +162,7 @@ function httpRequest(url, options = {}) {
 
     const reqOptions = {
       hostname: parsedUrl.hostname,
-      port: parsedUrl.port,
+      port: parsedUrl.port || (parsedUrl.protocol === 'https:' ? 443 : 80),
       path: parsedUrl.pathname + parsedUrl.search,
       method: 'GET',
       headers: {
@@ -175,8 +175,18 @@ function httpRequest(url, options = {}) {
         : true
     }
 
+    // Handle basic auth - must decode URI components since URL encodes them
     if (parsedUrl.username && parsedUrl.password) {
-      reqOptions.auth = `${decodeURIComponent(parsedUrl.username)}:${decodeURIComponent(parsedUrl.password)}`
+      const username = decodeURIComponent(parsedUrl.username)
+      const password = decodeURIComponent(parsedUrl.password)
+      reqOptions.auth = `${username}:${password}`
+      if (options.verbose) {
+        console.log(`  Auth: ${username}:***`)
+      }
+    }
+
+    if (options.verbose) {
+      console.log(`  Request: ${parsedUrl.protocol}//${parsedUrl.host}${parsedUrl.pathname}${parsedUrl.search}`)
     }
 
     const req = httpModule.request(reqOptions, (res) => {
@@ -257,7 +267,10 @@ function getShardsAndReplicas(clusterStatus, collection, allReplicas = false) {
 
 // Query a specific replica
 async function queryReplica(replica, query, fq, rows, auth, options) {
-  let url = `${replica.baseUrl}/${replica.core}/select?`
+  // Build the query URL - replica.baseUrl is like "http://host:port/solr"
+  const baseUrl = replica.baseUrl.replace(/\/$/, '')
+  let url = `${baseUrl}/${replica.core}/select`
+
   const params = new URLSearchParams()
   params.set('q', query)
   params.set('rows', rows.toString())
@@ -268,14 +281,19 @@ async function queryReplica(replica, query, fq, rows, auth, options) {
     params.set('fq', fq)
   }
 
-  url += params.toString()
-
-  // Inject auth if present
+  // Inject auth into URL if present
   if (auth) {
     const parsedUrl = new URL(url)
-    parsedUrl.username = auth.username
-    parsedUrl.password = auth.password
-    url = parsedUrl.toString()
+    parsedUrl.username = encodeURIComponent(auth.username)
+    parsedUrl.password = encodeURIComponent(auth.password)
+    url = parsedUrl.toString().replace(/\/$/, '')
+  }
+
+  url = `${url}?${params.toString()}`
+
+  if (options.verbose) {
+    console.log(`\nQuerying replica: ${replica.shard}/${replica.replica}`)
+    console.log(`  URL: ${url.replace(/\/\/[^:]+:[^@]+@/, '//***:***@')}`)
   }
 
   const startTime = Date.now()
@@ -492,16 +510,27 @@ async function main() {
 
     console.log(`\nConnecting to Solr: ${solrBaseUrl.replace(/\/\/[^:]+:[^@]+@/, '//***:***@')}`)
 
-    // Extract auth from URL
+    // Extract auth from URL - need to decode since URL object encodes them
     const parsedSolrUrl = new URL(solrBaseUrl)
     const auth = parsedSolrUrl.username && parsedSolrUrl.password
-      ? { username: parsedSolrUrl.username, password: parsedSolrUrl.password }
+      ? {
+          username: decodeURIComponent(parsedSolrUrl.username),
+          password: decodeURIComponent(parsedSolrUrl.password)
+        }
       : null
+
+    if (args.verbose) {
+      console.log(`Auth present: ${auth ? 'yes' : 'no'}`)
+      if (auth) {
+        console.log(`Auth username: ${auth.username}`)
+      }
+    }
 
     // Determine SSL options
     const requestOptions = {
       timeout: args.timeout,
-      rejectUnauthorized: config.distributedQuery?.rejectUnauthorized !== false
+      rejectUnauthorized: config.distributedQuery?.rejectUnauthorized !== false,
+      verbose: args.verbose
     }
 
     // Get cluster status
