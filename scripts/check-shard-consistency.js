@@ -37,6 +37,7 @@ function parseArgs() {
     fix: false,          // Attempt to fix inconsistencies by triggering replication
     dryRun: false,       // Show what would be fixed without actually fixing
     checkLeaders: false, // Check all leaders for replication status
+    forceSync: false,    // After fixing leaders, trigger recovery on all followers
   }
 
   const argv = process.argv.slice(2)
@@ -92,6 +93,9 @@ function parseArgs() {
       case '--check-leaders':
         args.checkLeaders = true
         break
+      case '--force-sync':
+        args.forceSync = true
+        break
       case '--help':
       case '-h':
         printUsage()
@@ -137,6 +141,7 @@ Options:
   --fix                      Attempt to fix inconsistencies by triggering replication
   --dry-run                  Show what --fix would do without actually doing it
   --check-leaders            Check replication status on ALL leaders (no query needed)
+  --force-sync               With --check-leaders --fix, also trigger recovery on followers
   --help, -h                 Show this help
 
 Examples:
@@ -1093,15 +1098,18 @@ async function checkAllLeaders(clusterStatus, collection, auth, requestOptions, 
     if (args.fix || args.dryRun) {
       console.log('\nFixing disabled leaders...\n')
       let fixed = 0
+      const fixedShards = []
       for (const result of results.disabledLeaders) {
         console.log(`  ${result.shard}: ${result.leader.core} on ${formatNodeName(result.leader.nodeName)}`)
         if (args.dryRun) {
           console.log(`    [DRY RUN] Would enable replication`)
+          fixedShards.push(result.shard)
         } else {
           const enableResult = await enableReplication(result.leader, auth, requestOptions)
           if (enableResult.success) {
             console.log(`    ✓ Replication enabled`)
             fixed++
+            fixedShards.push(result.shard)
           } else {
             console.log(`    ✗ Failed: ${enableResult.error}`)
           }
@@ -1109,6 +1117,65 @@ async function checkAllLeaders(clusterStatus, collection, auth, requestOptions, 
       }
       if (!args.dryRun) {
         console.log(`\nFixed ${fixed}/${results.disabled} leaders`)
+      }
+
+      // If --force-sync, trigger recovery on followers of fixed shards
+      if (args.forceSync && fixedShards.length > 0) {
+        console.log('\n' + '-'.repeat(40))
+        console.log('TRIGGERING FOLLOWER SYNC')
+        console.log('-'.repeat(40))
+
+        if (fixed > 0 && !args.dryRun) {
+          console.log('\nWaiting 2 seconds for replication to be ready...')
+          await new Promise(resolve => setTimeout(resolve, 2000))
+        }
+
+        const collectionInfo = clusterStatus.collections[collection]
+        const shards = collectionInfo.shards || {}
+
+        let syncTriggered = 0
+        let syncFailed = 0
+
+        for (const shardName of fixedShards) {
+          const shardData = shards[shardName]
+          if (!shardData) continue
+
+          const replicas = shardData.replicas || {}
+
+          // Find all followers (non-leaders) for this shard
+          for (const [replicaName, replicaData] of Object.entries(replicas)) {
+            if (replicaData.leader === 'true') continue // Skip leader
+            if (replicaData.state !== 'active') continue // Skip inactive
+
+            const follower = {
+              name: replicaName,
+              core: replicaData.core,
+              baseUrl: replicaData.base_url,
+              nodeName: replicaData.node_name
+            }
+
+            console.log(`\n  ${shardName}: ${follower.core} on ${formatNodeName(follower.nodeName)}`)
+
+            if (args.dryRun) {
+              console.log(`    [DRY RUN] Would trigger recovery`)
+            } else {
+              const recoveryResult = await requestRecovery(follower, auth, requestOptions)
+              if (recoveryResult.success) {
+                console.log(`    ✓ Recovery triggered`)
+                syncTriggered++
+              } else {
+                console.log(`    ✗ Failed: ${recoveryResult.error}`)
+                syncFailed++
+              }
+            }
+          }
+        }
+
+        if (!args.dryRun) {
+          console.log(`\nSync triggered: ${syncTriggered}, Failed: ${syncFailed}`)
+        }
+      } else if (args.fix && !args.forceSync && fixedShards.length > 0) {
+        console.log('\n💡 Tip: Use --force-sync to also trigger recovery on followers.')
       }
     } else {
       console.log('\nRun with --fix to enable replication on these leaders.')
