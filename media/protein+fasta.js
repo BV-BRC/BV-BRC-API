@@ -6,6 +6,7 @@
  * Features:
  * - Streaming with proper backpressure handling
  * - Efficient batch sequence lookups via SequenceJoinStream
+ * - Optional genome metadata enrichment via GenomeMetadataJoinStream
  * - Configurable FASTA headers via request parameters
  * - Falls back to legacy HTTP-based lookups if direct Solr not available
  *
@@ -14,6 +15,13 @@
  *   - http_fasta_id_delimiter: delimiter between ID fields (default: '|')
  *   - http_fasta_description_fields: comma-separated fields for description
  *   - http_fasta_context_fields: comma-separated fields for [context]
+ *
+ * Genome metadata fields (when genome join is enabled):
+ *   Use 'genome_metadata.field_name' syntax to access genome collection fields.
+ *   Available fields: genome_name, taxon_id, genome_status, strain,
+ *   assembly_accession, bioproject_accession, biosample_accession
+ *
+ *   Example: http_fasta_context_fields=genome_metadata.strain,genome_metadata.assembly_accession
  */
 
 const debug = require('debug')('p3api-server:media:protein-fasta')
@@ -26,6 +34,7 @@ const {
 
 // Lazy-loaded dependencies for direct Solr access
 let SequenceJoinStream = null
+let GenomeMetadataJoinStream = null
 let DirectSolrClient = null
 let SolrClusterClient = null
 let solrClusterClientInstance = null
@@ -53,6 +62,7 @@ function initializeDirectSolr () {
     }
 
     SequenceJoinStream = require('../lib/distributed/SequenceJoinStream')
+    GenomeMetadataJoinStream = require('../lib/distributed/GenomeMetadataJoinStream')
     DirectSolrClient = require('../lib/distributed/DirectSolrClient')
     SolrClusterClient = require('../lib/distributed/SolrClusterClient')
 
@@ -84,7 +94,27 @@ function formatFastaRecord (doc, headerFormatter) {
 }
 
 /**
+ * Check if any FASTA header fields reference genome_metadata.
+ *
+ * @param {Object} req - Express request object
+ * @returns {boolean} True if genome join is needed
+ */
+function needsGenomeJoin (req) {
+  const fastaParams = req.fastaParams || {}
+  const fieldsToCheck = [
+    fastaParams.http_fasta_id_fields,
+    fastaParams.http_fasta_description_fields,
+    fastaParams.http_fasta_context_fields
+  ]
+
+  return fieldsToCheck.some(fields => {
+    return fields && fields.includes('genome_metadata.')
+  })
+}
+
+/**
  * Serialize genome_feature stream using SequenceJoinStream (efficient path).
+ * Optionally enriches with genome metadata if genome_metadata.* fields are requested.
  */
 async function serializeFeatureStreamDirect (stream, res, req, directSolrClient) {
   const headerFormatter = createFastaHeaderFormatterFromRequest(req, { sequenceType: 'protein' })
@@ -94,21 +124,37 @@ async function serializeFeatureStreamDirect (stream, res, req, directSolrClient)
   const batchSize = joinConfig.batchSize || SEQUENCE_BATCH
   const prefetchBatches = joinConfig.prefetchBatches || 2
 
+  // Determine if we need to join with genome collection
+  const includeGenomeMetadata = needsGenomeJoin(req)
+
+  let pipelineStream = stream
+
+  // Add genome metadata join if needed
+  if (includeGenomeMetadata && GenomeMetadataJoinStream) {
+    debug('Adding genome metadata join to pipeline')
+    const genomeJoinStream = new GenomeMetadataJoinStream(directSolrClient, {
+      batchSize: 50,
+      cacheSize: 100,
+      skipHeader: true
+    })
+    pipelineStream = stream.pipe(genomeJoinStream)
+  }
+
   // Create sequence join stream for protein sequences
-  const joinStream = new SequenceJoinStream(directSolrClient, {
+  const sequenceJoinStream = new SequenceJoinStream(directSolrClient, {
     sequenceField: 'aa_sequence_md5', // Protein sequences
     batchSize,
     prefetchBatches,
-    skipHeader: true
+    skipHeader: !includeGenomeMetadata // Only skip header if genome join didn't already
   })
 
-  stream.pipe(joinStream)
+  pipelineStream = pipelineStream.pipe(sequenceJoinStream)
 
-  await streamWithBackpressure(joinStream, res, {
+  await streamWithBackpressure(pipelineStream, res, {
     skipFirstDoc: false,
     transform: (doc) => formatFastaRecord(doc, headerFormatter),
     onEnd: (count) => {
-      const stats = joinStream.getStats()
+      const stats = sequenceJoinStream.getStats()
       debug(`Protein FASTA complete: ${count} records, ${stats.totalSequences} sequences, ${stats.missingSequences} missing`)
     }
   })
