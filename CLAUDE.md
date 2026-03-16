@@ -265,3 +265,32 @@ DEBUG=p3api-server:route/rpcHandler,p3api-server:msa,p3api-server:cluster npm st
 # Full distributed query debugging
 DEBUG=p3api-server:distributed:*,p3api-server:middleware/DistributedQuery npm start
 ```
+
+## SolrCloud Maintenance
+
+### Shard Consistency Checker
+
+The `scripts/check-shard-consistency.js` tool diagnoses and fixes SolrCloud replication issues. See `REPLICATION_LAG.md` for detailed documentation.
+
+#### Quick Reference
+
+```bash
+# Check consistency for a specific query
+node scripts/check-shard-consistency.js -c genome_feature \
+  -q "genome_id:123.456" --all-replicas --count-only
+
+# Check ALL leaders for disabled replication
+node scripts/check-shard-consistency.js -c genome_feature --check-leaders
+
+# Fix disabled leaders and sync followers
+node scripts/check-shard-consistency.js -c genome_feature \
+  --check-leaders --fix --force-sync
+```
+
+#### Common Issues
+
+1. **Leader replication disabled**: Leaders have `replicationEnabled: false`, preventing followers from syncing
+2. **Follower lag**: Followers have fewer documents than leaders
+3. **Recovery needed**: Followers need to trigger REQUESTRECOVERY to sync
+
+The tool can automatically detect and fix these issues. See `REPLICATION_LAG.md` for root cause analysis and manual remediation steps.
