@@ -180,18 +180,15 @@ function formatFastaRecord (doc, headerFormatter) {
  */
 function needsGenomeJoin (req) {
   const fastaParams = req.fastaParams || {}
-  console.log(`[FASTA DEBUG] needsGenomeJoin: fastaParams = ${JSON.stringify(fastaParams)}`)
   const fieldsToCheck = [
     fastaParams.http_fasta_id_fields,
     fastaParams.http_fasta_description_fields,
     fastaParams.http_fasta_context_fields
   ]
 
-  const result = fieldsToCheck.some(fields => {
+  return fieldsToCheck.some(fields => {
     return fields && fields.includes('genome_metadata.')
   })
-  console.log(`[FASTA DEBUG] needsGenomeJoin: result = ${result}`)
-  return result
 }
 
 /**
@@ -404,8 +401,6 @@ module.exports = {
   contentType: 'application/protein+fasta',
 
   serialize: async function (req, res, next) {
-    console.log(`[FASTA DEBUG] serialize: call_method=${req.call_method}, fastaParams=${JSON.stringify(req.fastaParams || {})}`)
-
     if (req.isDownload) {
       res.attachment(`BVBRC_${req.call_collection}.fasta`)
     }
