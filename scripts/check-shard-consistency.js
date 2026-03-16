@@ -177,6 +177,66 @@ function formatNodeName(nodeName) {
   return nodeName.replace(/_solr$/, '')
 }
 
+// Enable replication on a leader replica
+async function enableReplication(replica, auth, options) {
+  const baseUrl = replica.baseUrl.replace(/\/$/, '')
+  let url = `${baseUrl}/${replica.core}/replication?command=enablereplication&wt=json`
+
+  // Inject auth if present
+  if (auth) {
+    const parsedUrl = new URL(url)
+    parsedUrl.username = encodeURIComponent(auth.username)
+    parsedUrl.password = encodeURIComponent(auth.password)
+    url = parsedUrl.toString()
+  }
+
+  if (options.verbose) {
+    console.log(`  Enabling replication: ${url.replace(/\/\/[^:]+:[^@]+@/, '//***:***@')}`)
+  }
+
+  try {
+    const response = await httpRequest(url, options)
+    const success = response.status === 'OK' || response.responseHeader?.status === 0
+    return {
+      success,
+      status: success ? 'Replication enabled' : 'Failed',
+      message: response.message || (success ? 'OK' : 'Unknown error')
+    }
+  } catch (err) {
+    return {
+      success: false,
+      error: err.message
+    }
+  }
+}
+
+// Get replication details for a replica
+async function getReplicationDetails(replica, auth, options) {
+  const baseUrl = replica.baseUrl.replace(/\/$/, '')
+  let url = `${baseUrl}/${replica.core}/replication?command=details&wt=json`
+
+  // Inject auth if present
+  if (auth) {
+    const parsedUrl = new URL(url)
+    parsedUrl.username = encodeURIComponent(auth.username)
+    parsedUrl.password = encodeURIComponent(auth.password)
+    url = parsedUrl.toString()
+  }
+
+  try {
+    const response = await httpRequest(url, options)
+    return {
+      success: true,
+      details: response.details || {}
+    }
+  } catch (err) {
+    return {
+      success: false,
+      error: err.message
+    }
+  }
+}
+
 // Trigger replication fetch on a follower replica
 async function triggerReplication(replica, auth, options) {
   // Build URL to the replication handler
@@ -748,8 +808,74 @@ async function fixInconsistencies(summary, results, solrBaseUrl, auth, requestOp
     }
   }
 
-  // Step 2: Trigger replication on each affected follower
-  console.log('\nStep 2: Triggering replication on affected followers...')
+  // Step 2: Check and enable replication on leaders
+  console.log('\nStep 2: Checking replication status on leaders...')
+
+  // Find unique leaders for affected shards
+  const affectedLeaders = new Map()
+  for (const mismatch of leaderFollowerMismatches) {
+    const leaderResult = results.find(r =>
+      r.replica.shard === mismatch.shard && r.replica.leader
+    )
+    if (leaderResult) {
+      const key = `${leaderResult.replica.baseUrl}/${leaderResult.replica.core}`
+      if (!affectedLeaders.has(key)) {
+        affectedLeaders.set(key, {
+          replica: leaderResult.replica,
+          shards: [mismatch.shard]
+        })
+      } else {
+        affectedLeaders.get(key).shards.push(mismatch.shard)
+      }
+    }
+  }
+
+  let leadersFixed = 0
+  for (const [key, info] of affectedLeaders) {
+    const { replica, shards } = info
+    console.log(`\n  Checking ${replica.core} on ${formatNodeName(replica.nodeName)}`)
+
+    if (args.dryRun) {
+      console.log(`    [DRY RUN] Would check replication status and enable if disabled`)
+      continue
+    }
+
+    // Get replication details
+    const details = await getReplicationDetails(replica, auth, requestOptions)
+    if (!details.success) {
+      console.log(`    ✗ Could not get replication details: ${details.error}`)
+      continue
+    }
+
+    const isLeader = details.details.isLeader === 'true'
+    const replicationEnabled = details.details.leader?.replicationEnabled === 'true'
+
+    if (!isLeader) {
+      console.log(`    ⚠ Not actually a leader (cluster state may be stale)`)
+      continue
+    }
+
+    if (replicationEnabled) {
+      console.log(`    ✓ Replication already enabled`)
+    } else {
+      console.log(`    ⚠ Replication DISABLED - enabling...`)
+      const enableResult = await enableReplication(replica, auth, requestOptions)
+      if (enableResult.success) {
+        console.log(`    ✓ Replication enabled successfully`)
+        leadersFixed++
+      } else {
+        console.log(`    ✗ Failed to enable replication: ${enableResult.error}`)
+      }
+    }
+  }
+
+  if (leadersFixed > 0) {
+    console.log(`\n  Enabled replication on ${leadersFixed} leader(s). Waiting 2 seconds...`)
+    await new Promise(resolve => setTimeout(resolve, 2000))
+  }
+
+  // Step 3: Trigger replication on each affected follower
+  console.log('\nStep 3: Triggering replication on affected followers...')
 
   // Group mismatches by follower replica to avoid duplicate triggers
   const affectedFollowers = new Map()
@@ -821,13 +947,15 @@ async function fixInconsistencies(summary, results, solrBaseUrl, auth, requestOp
   const failed = fixResults.filter(r => !r.success).length
 
   if (args.dryRun) {
-    console.log(`Would trigger replication on ${successful} replicas`)
+    console.log(`Leaders to check: ${affectedLeaders.size}`)
+    console.log(`Followers to trigger: ${successful}`)
     console.log('\nRun without --dry-run to apply fixes.')
   } else {
-    console.log(`Successful: ${successful}`)
+    console.log(`Leaders with replication enabled: ${leadersFixed}`)
+    console.log(`Follower recovery triggered: ${successful}`)
     console.log(`Failed: ${failed}`)
 
-    if (successful > 0) {
+    if (successful > 0 || leadersFixed > 0) {
       console.log('\n⚠️  Replication has been triggered but may take time to complete.')
       console.log('   Run this script again in a few minutes to verify consistency.')
     }
