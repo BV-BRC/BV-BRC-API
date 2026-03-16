@@ -102,7 +102,8 @@ function parseConfigFromRequest (req) {
   const query = getQueryParams(req)
 
   // ID fields configuration
-  if (query.http_fasta_id_fields) {
+  // Use !== undefined to allow empty string to mean "no ID fields"
+  if (query.http_fasta_id_fields !== undefined) {
     config.idFields = query.http_fasta_id_fields
       .split(',')
       .map(f => f.trim())
@@ -120,7 +121,8 @@ function parseConfigFromRequest (req) {
   }
 
   // Description fields
-  if (query.http_fasta_description_fields) {
+  // Use !== undefined to allow empty string to mean "no description fields"
+  if (query.http_fasta_description_fields !== undefined) {
     config.descriptionFields = query.http_fasta_description_fields
       .split(',')
       .map(f => f.trim())
@@ -128,7 +130,8 @@ function parseConfigFromRequest (req) {
   }
 
   // Context fields (shown in brackets)
-  if (query.http_fasta_context_fields) {
+  // Use !== undefined to allow empty string to mean "no context fields"
+  if (query.http_fasta_context_fields !== undefined) {
     config.contextFields = query.http_fasta_context_fields
       .split(',')
       .map(f => f.trim())
