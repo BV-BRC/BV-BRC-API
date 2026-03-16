@@ -200,7 +200,7 @@ function httpRequest(url, options = {}) {
             reject(new Error(`Failed to parse JSON: ${err.message}`))
           }
         } else {
-          reject(new Error(`HTTP ${res.statusCode}: ${data.substring(0, 200)}`))
+          reject(new Error(`HTTP ${res.statusCode}: ${data.substring(0, 500)}`))
         }
       })
     })
@@ -310,9 +310,15 @@ async function queryReplica(replica, query, fq, rows, auth, options) {
       replica
     }
   } catch (err) {
+    // Extract more error details for 400 errors
+    let errorMsg = err.message
+    if (options.verbose && err.message.includes('HTTP 400')) {
+      console.error(`\n  Full error from ${replica.shard}/${replica.replica}:`)
+      console.error(`  ${err.message}`)
+    }
     return {
       success: false,
-      error: err.message,
+      error: errorMsg,
       elapsed: Date.now() - startTime,
       replica
     }
