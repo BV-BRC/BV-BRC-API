@@ -7,5 +7,24 @@
 	"distributeURL": "http://localhost:3001/",
 	"queueDirectory": "/queue",
 	"publicGenomeDir": "/genomes",
-  "treeDirectory": "/trees"
+	"treeDirectory": "/trees",
+
+	"distributedQuery": {
+		"enabled": true,
+		"minLimitThreshold": 10000,
+		"maxParallelism": 8,
+		"cursorBatchSize": 2000,
+		"excludeNodes": [],
+		"rejectUnauthorized": true
+	},
+
+	"sequenceJoin": {
+		"batchSize": 200,
+		"prefetchBatches": 2
+	},
+
+	"genomeMetadataCache": {
+		"maxSize": 100,
+		"batchSize": 50
+	}
 }
