@@ -44,6 +44,51 @@ let directSolrClientInstance = null
 const { getSequenceDictByHash } = require('../util/featureSequence')
 const SEQUENCE_BATCH = 200
 
+// For genome metadata lookups via HTTP
+const axios = require('axios')
+const Config = require('../config')
+
+/**
+ * Fetch genome metadata via HTTP API.
+ * Similar to getSequenceDictByHash but for genome collection.
+ *
+ * @param {Array<string>} genomeIds - Genome IDs to fetch
+ * @param {Object} req - Express request for auth headers
+ * @returns {Promise<Object>} Dictionary mapping genome_id to metadata
+ */
+async function getGenomeMetadataDict (genomeIds, req) {
+  if (genomeIds.length === 0) return {}
+
+  const ids = genomeIds.join(',')
+  const fields = 'genome_id,genome_name,taxon_id,genome_status,strain,assembly_accession,bioproject_accession,biosample_accession'
+  const q = `&in(genome_id,(${ids}))&limit(${genomeIds.length})&select(${fields})`
+
+  const distributeURL = Config.get('distributeURL')
+  let url = distributeURL
+  if (url.charAt(url.length - 1) !== '/') {
+    url += '/'
+  }
+  url += 'genome/'
+
+  try {
+    const response = await axios.post(url, q, {
+      headers: {
+        accept: 'application/json',
+        authorization: (req && req.headers.authorization) ? req.headers.authorization : ''
+      }
+    })
+
+    const docs = response.data
+    return docs.reduce((h, cur) => {
+      h[cur.genome_id] = cur
+      return h
+    }, {})
+  } catch (err) {
+    debug(`Failed to fetch genome metadata: ${err.message}`)
+    return {}
+  }
+}
+
 /**
  * Initialize direct Solr clients for efficient sequence lookups.
  */
@@ -252,6 +297,20 @@ async function serializeFeatureStreamLegacy (stream, res, req) {
 async function serializeQueryResults (docs, res, req) {
   const headerFormatter = createFastaHeaderFormatterFromRequest(req, { sequenceType: 'protein' })
   const numFound = docs.length
+
+  // Enrich with genome metadata if needed
+  if (needsGenomeJoin(req) && numFound > 0) {
+    const genomeIds = [...new Set(docs.map(d => d.genome_id).filter(id => id))]
+    debug(`Query mode: enriching ${numFound} docs with genome metadata for ${genomeIds.length} genomes`)
+
+    const genomeMetadata = await getGenomeMetadataDict(genomeIds, req)
+
+    for (const doc of docs) {
+      if (doc.genome_id && genomeMetadata[doc.genome_id]) {
+        doc.genome_metadata = genomeMetadata[doc.genome_id]
+      }
+    }
+  }
 
   const directClient = initializeDirectSolr()
 
