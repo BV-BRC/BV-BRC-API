@@ -237,12 +237,23 @@ async function requestSyncFromLeader(solrBaseUrl, collection, shard, replica, au
 }
 
 // Trigger recovery on a SolrCloud replica using REQUESTRECOVERY
-async function requestRecovery(solrBaseUrl, collection, shard, replicaCore, auth, options) {
+// Must be called on the specific node where the replica lives
+async function requestRecovery(replica, auth, options) {
   // The REQUESTRECOVERY action tells a replica to sync from the leader
-  let url = `${solrBaseUrl}/admin/cores?action=REQUESTRECOVERY&core=${replicaCore}&wt=json`
+  // Must be sent to the node hosting the replica, not the central Solr URL
+  const baseUrl = replica.baseUrl.replace(/\/$/, '')
+  let url = `${baseUrl}/admin/cores?action=REQUESTRECOVERY&core=${replica.core}&wt=json`
+
+  // Inject auth if present
+  if (auth) {
+    const parsedUrl = new URL(url)
+    parsedUrl.username = encodeURIComponent(auth.username)
+    parsedUrl.password = encodeURIComponent(auth.password)
+    url = parsedUrl.toString()
+  }
 
   if (options.verbose) {
-    console.log(`  Requesting recovery for ${replicaCore}: ${url.replace(/\/\/[^:]+:[^@]+@/, '//***:***@')}`)
+    console.log(`  Requesting recovery for ${replica.core}: ${url.replace(/\/\/[^:]+:[^@]+@/, '//***:***@')}`)
   }
 
   try {
@@ -773,7 +784,8 @@ async function fixInconsistencies(summary, results, solrBaseUrl, auth, requestOp
       fixResults.push({ replica: key, success: true, dryRun: true })
     } else {
       // Use REQUESTRECOVERY - this tells the replica to sync from the leader
-      const result = await requestRecovery(solrBaseUrl, args.collection, shards[0], replica.core, auth, requestOptions)
+      // Must be sent to the node hosting the replica
+      const result = await requestRecovery(replica, auth, requestOptions)
       if (result.success) {
         console.log(`    ✓ ${result.status}`)
         fixResults.push({ replica: key, success: true })
