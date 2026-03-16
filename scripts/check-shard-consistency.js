@@ -190,10 +190,69 @@ async function triggerReplication(replica, auth, options) {
 
   try {
     const response = await httpRequest(url, options)
+
+    // Check for error in response
+    if (response.status === 'ERROR' || response.error) {
+      return {
+        success: false,
+        error: response.message || response.error || 'Replication returned ERROR status'
+      }
+    }
+
     return {
       success: true,
       status: response.status || 'OK',
       message: response.message || 'Replication triggered'
+    }
+  } catch (err) {
+    return {
+      success: false,
+      error: err.message
+    }
+  }
+}
+
+// Request a sync from leader in SolrCloud (alternative to fetchindex)
+async function requestSyncFromLeader(solrBaseUrl, collection, shard, replica, auth, options) {
+  // Use the Collections API to force a sync
+  let url = `${solrBaseUrl}/admin/collections?action=FORCELEADER&collection=${collection}&shard=${shard}&wt=json`
+
+  if (options.verbose) {
+    console.log(`  Requesting sync for shard ${shard}: ${url.replace(/\/\/[^:]+:[^@]+@/, '//***:***@')}`)
+  }
+
+  try {
+    const response = await httpRequest(url, options)
+    return {
+      success: response.responseHeader?.status === 0,
+      status: response.responseHeader?.status === 0 ? 'OK' : 'Failed',
+      message: response.error?.msg || 'Sync requested'
+    }
+  } catch (err) {
+    return {
+      success: false,
+      error: err.message
+    }
+  }
+}
+
+// Trigger recovery on a SolrCloud replica using REQUESTRECOVERY
+async function requestRecovery(solrBaseUrl, collection, shard, replicaCore, auth, options) {
+  // The REQUESTRECOVERY action tells a replica to sync from the leader
+  let url = `${solrBaseUrl}/admin/cores?action=REQUESTRECOVERY&core=${replicaCore}&wt=json`
+
+  if (options.verbose) {
+    console.log(`  Requesting recovery for ${replicaCore}: ${url.replace(/\/\/[^:]+:[^@]+@/, '//***:***@')}`)
+  }
+
+  try {
+    const response = await httpRequest(url, options)
+    // REQUESTRECOVERY returns status 0 on success
+    const success = response.responseHeader?.status === 0
+    return {
+      success,
+      status: success ? 'Recovery initiated' : 'Failed',
+      message: response.error?.msg || (success ? 'Recovery triggered' : 'Unknown error')
     }
   } catch (err) {
     return {
@@ -710,16 +769,26 @@ async function fixInconsistencies(summary, results, solrBaseUrl, auth, requestOp
     console.log(`    Total missing docs: ${totalDiff}`)
 
     if (args.dryRun) {
-      console.log(`    [DRY RUN] Would trigger: ${replica.baseUrl}/${replica.core}/replication?command=fetchindex`)
+      console.log(`    [DRY RUN] Would request recovery via: /admin/cores?action=REQUESTRECOVERY&core=${replica.core}`)
       fixResults.push({ replica: key, success: true, dryRun: true })
     } else {
-      const result = await triggerReplication(replica, auth, requestOptions)
+      // Use REQUESTRECOVERY - this tells the replica to sync from the leader
+      const result = await requestRecovery(solrBaseUrl, args.collection, shards[0], replica.core, auth, requestOptions)
       if (result.success) {
-        console.log(`    ✓ Replication triggered: ${result.status}`)
+        console.log(`    ✓ ${result.status}`)
         fixResults.push({ replica: key, success: true })
       } else {
         console.log(`    ✗ Failed: ${result.error}`)
-        fixResults.push({ replica: key, success: false, error: result.error })
+        // If REQUESTRECOVERY fails, try the old replication method as fallback
+        console.log(`    Trying fallback (replication handler)...`)
+        const fallbackResult = await triggerReplication(replica, auth, requestOptions)
+        if (fallbackResult.success) {
+          console.log(`    ✓ Fallback succeeded: ${fallbackResult.status}`)
+          fixResults.push({ replica: key, success: true, fallback: true })
+        } else {
+          console.log(`    ✗ Fallback also failed: ${fallbackResult.error}`)
+          fixResults.push({ replica: key, success: false, error: result.error })
+        }
       }
     }
   }
