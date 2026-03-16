@@ -295,6 +295,7 @@ async function queryReplica(replica, query, fq, rows, sort, auth, options) {
   params.set('q', query)
   params.set('rows', rows.toString())
   params.set('wt', 'json')
+  params.set('distrib', 'false')  // Query only the local shard, don't distribute
   if (sort) {
     params.set('sort', `${sort} asc`)  // Consistent ordering
   }
@@ -355,6 +356,9 @@ function analyzeResults(results, args) {
     successfulQueries: results.filter(r => r.success).length,
     failedQueries: results.filter(r => !r.success).length,
     totalDocuments: 0,
+    totalLeaderDocuments: 0,
+    totalFollowerDocuments: 0,
+    leaderFollowerDiff: 0,
     inconsistencies: [],
     shardBreakdown: {},
     replicaDetails: []
@@ -389,16 +393,58 @@ function analyzeResults(results, args) {
       const counts = new Set(successfulResults.map(r => r.numFound))
       if (counts.size > 1) {
         shardInfo.consistent = false
-        summary.inconsistencies.push({
-          type: 'COUNT_MISMATCH',
-          shard: shardName,
-          message: `Replica count mismatch in shard ${shardName}: ${[...counts].join(' vs ')}`
-        })
+
+        // Analyze leader vs follower difference
+        const leaderResult = successfulResults.find(r => r.replica.leader)
+        const followerResults = successfulResults.filter(r => !r.replica.leader)
+
+        if (leaderResult && followerResults.length > 0) {
+          const leaderCount = leaderResult.numFound
+          for (const follower of followerResults) {
+            const diff = leaderCount - follower.numFound
+            if (diff !== 0) {
+              summary.inconsistencies.push({
+                type: 'LEADER_FOLLOWER_MISMATCH',
+                shard: shardName,
+                leaderCount,
+                followerCount: follower.numFound,
+                difference: diff,
+                followerNode: follower.replica.nodeName,
+                message: `Shard ${shardName}: Leader has ${leaderCount}, follower on ${follower.replica.nodeName?.split(':')[0]} has ${follower.numFound} (diff: ${diff > 0 ? '+' : ''}${diff})`
+              })
+            }
+          }
+        } else {
+          summary.inconsistencies.push({
+            type: 'COUNT_MISMATCH',
+            shard: shardName,
+            message: `Replica count mismatch in shard ${shardName}: ${[...counts].join(' vs ')}`
+          })
+        }
       }
     }
 
-    // Add to total (use first successful result's count)
-    if (successfulResults.length > 0) {
+    // Add to totals - track leader vs follower separately
+    const leaderResult = successfulResults.find(r => r.replica.leader)
+    const followerResults = successfulResults.filter(r => !r.replica.leader)
+
+    if (leaderResult) {
+      summary.totalLeaderDocuments += leaderResult.numFound
+      shardInfo.leaderCount = leaderResult.numFound
+    }
+    if (followerResults.length > 0) {
+      // Use average of follower counts
+      const avgFollowerCount = Math.round(
+        followerResults.reduce((sum, r) => sum + r.numFound, 0) / followerResults.length
+      )
+      summary.totalFollowerDocuments += avgFollowerCount
+      shardInfo.avgFollowerCount = avgFollowerCount
+    }
+
+    // Use leader count for total if available, otherwise first successful
+    if (leaderResult) {
+      summary.totalDocuments += leaderResult.numFound
+    } else if (successfulResults.length > 0) {
       summary.totalDocuments += successfulResults[0].numFound
     }
 
@@ -467,7 +513,16 @@ function printReport(summary, args) {
   console.log(`Total Replicas Queried: ${summary.totalReplicas}`)
   console.log(`Successful Queries: ${summary.successfulQueries}`)
   console.log(`Failed Queries: ${summary.failedQueries}`)
-  console.log(`Total Documents (sum across shards): ${summary.totalDocuments}`)
+  console.log(`Total Documents (sum of leaders): ${summary.totalDocuments}`)
+
+  // Show leader/follower comparison if we have both
+  if (summary.totalLeaderDocuments > 0 && summary.totalFollowerDocuments > 0) {
+    const diff = summary.totalLeaderDocuments - summary.totalFollowerDocuments
+    console.log(`\nLeader vs Follower Comparison:`)
+    console.log(`  Total in Leaders:   ${summary.totalLeaderDocuments}`)
+    console.log(`  Total in Followers: ${summary.totalFollowerDocuments} (avg per shard)`)
+    console.log(`  Difference:         ${diff > 0 ? '+' : ''}${diff} (${((diff / summary.totalLeaderDocuments) * 100).toFixed(2)}%)`)
+  }
 
   console.log('\n' + '-'.repeat(40))
   console.log('SHARD BREAKDOWN')
