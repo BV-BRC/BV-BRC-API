@@ -170,6 +170,13 @@ function loadConfig(configPath) {
   throw new Error(`Config file not found. Searched: ${searchPaths.join(', ')}`)
 }
 
+// Format node name for display (e.g., "magnolia.cels.anl.gov:8983_solr" -> "magnolia.cels.anl.gov:8983")
+function formatNodeName(nodeName) {
+  if (!nodeName) return 'unknown'
+  // Remove the _solr suffix if present
+  return nodeName.replace(/_solr$/, '')
+}
+
 // Trigger replication fetch on a follower replica
 async function triggerReplication(replica, auth, options) {
   // Build URL to the replication handler
@@ -545,7 +552,7 @@ function analyzeResults(results, args) {
                 followerCount: follower.numFound,
                 difference: diff,
                 followerNode: follower.replica.nodeName,
-                message: `Shard ${shardName}: Leader has ${leaderCount}, follower on ${follower.replica.nodeName?.split(':')[0]} has ${follower.numFound} (diff: ${diff > 0 ? '+' : ''}${diff})`
+                message: `Shard ${shardName}: Leader has ${leaderCount}, follower on ${formatNodeName(follower.replica.nodeName)} has ${follower.numFound} (diff: ${diff > 0 ? '+' : ''}${diff})`
               })
             }
           }
@@ -682,7 +689,7 @@ function printReport(summary, args) {
     const replicaTable = summary.replicaDetails.map(r => ({
       Shard: r.shard,
       Replica: r.replica.substring(0, 20),
-      Node: r.node?.split(':')[0] || 'N/A',
+      Node: formatNodeName(r.node),
       Leader: r.leader ? '✓' : '',
       State: r.state,
       Count: r.numFound !== null ? r.numFound : 'ERR',
@@ -775,7 +782,7 @@ async function fixInconsistencies(summary, results, solrBaseUrl, auth, requestOp
   const fixResults = []
   for (const [key, info] of affectedFollowers) {
     const { replica, shards, totalDiff } = info
-    console.log(`\n  ${replica.core} on ${replica.nodeName?.split(':')[0]}`)
+    console.log(`\n  ${replica.core} on ${formatNodeName(replica.nodeName)}`)
     console.log(`    Shards affected: ${shards.join(', ')}`)
     console.log(`    Total missing docs: ${totalDiff}`)
 
