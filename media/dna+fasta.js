@@ -153,7 +153,9 @@ function initializeDirectSolr () {
     }
 
     // Create direct client for sequence lookups
-    directSolrClientInstance = new DirectSolrClient(solrClusterClientInstance)
+    directSolrClientInstance = new DirectSolrClient(solrClusterClientInstance, {
+      agent: solrUrl.startsWith('https:') ? httpsAgent : undefined
+    })
 
     debug('Direct Solr client initialized for sequence lookups')
     return directSolrClientInstance

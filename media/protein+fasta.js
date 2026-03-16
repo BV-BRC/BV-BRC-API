@@ -147,7 +147,9 @@ function initializeDirectSolr () {
       })
     }
 
-    directSolrClientInstance = new DirectSolrClient(solrClusterClientInstance)
+    directSolrClientInstance = new DirectSolrClient(solrClusterClientInstance, {
+      agent: solrUrl.startsWith('https:') ? httpsAgent : undefined
+    })
 
     debug('Direct Solr client initialized for protein sequence lookups')
     return directSolrClientInstance
