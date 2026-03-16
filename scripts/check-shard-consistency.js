@@ -36,6 +36,7 @@ function parseArgs() {
     countOnly: false,    // Only compare counts, not documents
     fix: false,          // Attempt to fix inconsistencies by triggering replication
     dryRun: false,       // Show what would be fixed without actually fixing
+    checkLeaders: false, // Check all leaders for replication status
   }
 
   const argv = process.argv.slice(2)
@@ -88,6 +89,9 @@ function parseArgs() {
       case '--dry-run':
         args.dryRun = true
         break
+      case '--check-leaders':
+        args.checkLeaders = true
+        break
       case '--help':
       case '-h':
         printUsage()
@@ -132,6 +136,7 @@ Options:
   --count-only               Only compare document counts, skip document comparison
   --fix                      Attempt to fix inconsistencies by triggering replication
   --dry-run                  Show what --fix would do without actually doing it
+  --check-leaders            Check replication status on ALL leaders (no query needed)
   --help, -h                 Show this help
 
 Examples:
@@ -962,6 +967,161 @@ async function fixInconsistencies(summary, results, solrBaseUrl, auth, requestOp
   }
 }
 
+// Check all leaders for replication status
+async function checkAllLeaders(clusterStatus, collection, auth, requestOptions, args) {
+  console.log('\n' + '='.repeat(80))
+  console.log('LEADER REPLICATION STATUS CHECK')
+  console.log('='.repeat(80))
+
+  const collectionInfo = clusterStatus.collections[collection]
+  if (!collectionInfo) {
+    throw new Error(`Collection not found: ${collection}`)
+  }
+
+  const shards = collectionInfo.shards || {}
+  const shardNames = Object.keys(shards).sort()
+
+  console.log(`\nCollection: ${collection}`)
+  console.log(`Total shards: ${shardNames.length}`)
+  console.log(`\nChecking replication status on all leaders...\n`)
+
+  const results = {
+    total: 0,
+    enabled: 0,
+    disabled: 0,
+    noLeader: 0,
+    errors: 0,
+    disabledLeaders: []
+  }
+
+  // Process shards with some parallelism but not too much
+  const BATCH_SIZE = 10
+  for (let i = 0; i < shardNames.length; i += BATCH_SIZE) {
+    const batch = shardNames.slice(i, i + BATCH_SIZE)
+    const batchResults = await Promise.all(batch.map(async (shardName) => {
+      const shardData = shards[shardName]
+      const replicas = shardData.replicas || {}
+
+      // Find the leader
+      let leader = null
+      for (const [replicaName, replicaData] of Object.entries(replicas)) {
+        if (replicaData.leader === 'true' && replicaData.state === 'active') {
+          leader = {
+            name: replicaName,
+            core: replicaData.core,
+            baseUrl: replicaData.base_url,
+            nodeName: replicaData.node_name
+          }
+          break
+        }
+      }
+
+      if (!leader) {
+        return { shard: shardName, status: 'no_leader' }
+      }
+
+      // Get replication details
+      const details = await getReplicationDetails(leader, auth, requestOptions)
+      if (!details.success) {
+        return { shard: shardName, status: 'error', error: details.error, leader }
+      }
+
+      const replicationEnabled = details.details.leader?.replicationEnabled === 'true'
+      return {
+        shard: shardName,
+        status: replicationEnabled ? 'enabled' : 'disabled',
+        leader,
+        details: details.details
+      }
+    }))
+
+    // Process batch results
+    for (const result of batchResults) {
+      results.total++
+
+      if (result.status === 'no_leader') {
+        results.noLeader++
+        if (args.verbose) {
+          console.log(`  ${result.shard}: ⚠ No active leader found`)
+        }
+      } else if (result.status === 'error') {
+        results.errors++
+        if (args.verbose) {
+          console.log(`  ${result.shard}: ✗ Error - ${result.error}`)
+        }
+      } else if (result.status === 'disabled') {
+        results.disabled++
+        results.disabledLeaders.push(result)
+        console.log(`  ${result.shard}: ⚠ DISABLED on ${formatNodeName(result.leader.nodeName)} (${result.leader.core})`)
+      } else {
+        results.enabled++
+        if (args.verbose) {
+          console.log(`  ${result.shard}: ✓ enabled`)
+        }
+      }
+    }
+
+    // Progress indicator for large collections
+    if (!args.verbose && shardNames.length > 20) {
+      process.stdout.write(`\r  Checked ${Math.min(i + BATCH_SIZE, shardNames.length)}/${shardNames.length} shards...`)
+    }
+  }
+
+  if (!args.verbose && shardNames.length > 20) {
+    console.log() // newline after progress
+  }
+
+  // Summary
+  console.log('\n' + '-'.repeat(40))
+  console.log('SUMMARY')
+  console.log('-'.repeat(40))
+  console.log(`Total shards checked: ${results.total}`)
+  console.log(`Replication enabled:  ${results.enabled}`)
+  console.log(`Replication DISABLED: ${results.disabled}`)
+  if (results.noLeader > 0) {
+    console.log(`No active leader:     ${results.noLeader}`)
+  }
+  if (results.errors > 0) {
+    console.log(`Errors:               ${results.errors}`)
+  }
+
+  if (results.disabled > 0) {
+    console.log('\n' + '!'.repeat(80))
+    console.log(`WARNING: ${results.disabled} leader(s) have replication DISABLED`)
+    console.log('!'.repeat(80))
+
+    if (args.fix || args.dryRun) {
+      console.log('\nFixing disabled leaders...\n')
+      let fixed = 0
+      for (const result of results.disabledLeaders) {
+        console.log(`  ${result.shard}: ${result.leader.core} on ${formatNodeName(result.leader.nodeName)}`)
+        if (args.dryRun) {
+          console.log(`    [DRY RUN] Would enable replication`)
+        } else {
+          const enableResult = await enableReplication(result.leader, auth, requestOptions)
+          if (enableResult.success) {
+            console.log(`    ✓ Replication enabled`)
+            fixed++
+          } else {
+            console.log(`    ✗ Failed: ${enableResult.error}`)
+          }
+        }
+      }
+      if (!args.dryRun) {
+        console.log(`\nFixed ${fixed}/${results.disabled} leaders`)
+      }
+    } else {
+      console.log('\nRun with --fix to enable replication on these leaders.')
+    }
+  } else {
+    console.log('\n✓ All leaders have replication enabled.')
+  }
+
+  console.log('\n')
+
+  return results
+}
+
 // Main function
 async function main() {
   const args = parseArgs()
@@ -1003,6 +1163,12 @@ async function main() {
     // Get cluster status
     console.log('Fetching cluster status...')
     const clusterStatus = await getClusterStatus(solrBaseUrl, requestOptions)
+
+    // If --check-leaders mode, just check all leaders and exit
+    if (args.checkLeaders) {
+      const results = await checkAllLeaders(clusterStatus, args.collection, auth, requestOptions, args)
+      process.exit(results.disabled > 0 ? 1 : 0)
+    }
 
     // Get shards and replicas
     const replicas = getShardsAndReplicas(clusterStatus, args.collection, args.allReplicas)
