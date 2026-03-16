@@ -47,23 +47,24 @@ module.exports = function (req, res, next) {
       Object.keys(parsed).forEach((key) => {
         if (key.match(/^http_/)) {
           const header = key.split('_')[1]
-          
-          // Only allow whitelisted headers
+
+          // Only process headers that are in the whitelist
+          // Non-whitelisted http_* params (like http_fasta_*) are kept as query params
           if (!ALLOWED_HEADERS.includes(header.toLowerCase())) {
-            debug(`Blocked attempt to set unauthorized header: ${header}`)
-            delete parsed[key]
+            debug(`Keeping non-header http_* param as query param: ${key}`)
+            // Don't delete - keep it in parsed so it remains in the query string
             return
           }
-          
+
           // Sanitize the header value to prevent XSS
           const rawValue = decodeURIComponent(parsed[key])
           const sanitizedValue = sanitizeHeaderValue(rawValue)
-          
+
           // Log if sanitization changed the value (potential attack)
           if (rawValue !== sanitizedValue) {
             console.warn(`[SECURITY] Sanitized potentially malicious header value for ${header}: ${rawValue}`)
           }
-          
+
           req.headers[header] = sanitizedValue
           delete parsed[key]
         }
