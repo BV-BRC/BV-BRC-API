@@ -55,6 +55,9 @@ function pad (str, width, char = ' ') {
  * Wrap text with proper Genbank indentation
  */
 function wrapText (text, indent = 12, width = 80) {
+  if (!text || typeof text !== 'string') {
+    return ''
+  }
   const lines = []
   const words = text.split(/\s+/)
   let currentLine = ''
@@ -181,6 +184,9 @@ function formatFeature (feature, featureType) {
  * Wrap a qualifier value across multiple lines
  */
 function wrapQualifierValue (name, value, maxLen) {
+  if (value === undefined || value === null) {
+    return []
+  }
   const lines = []
   const escaped = String(value).replace(/"/g, '')
 
