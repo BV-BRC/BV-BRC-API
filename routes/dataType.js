@@ -19,6 +19,7 @@ var debug = require('debug')('p3api-server:route/dataType')
 var querystring = require('querystring')
 const ShardsPreference = require('../middleware/ShardsPreference')
 const DistributedQuery = require('../middleware/DistributedQuery')
+const JoinEnrichment = require('../middleware/JoinEnrichment')
 
 router.use(httpParams)
 
@@ -236,6 +237,7 @@ router.use([
   reqCounter,
   ExtractCustomFields,
   ContentRange,
+  JoinEnrichment,  // Enrichment joins for paginated queries (after ContentRange, before media)
   media
 ])
 

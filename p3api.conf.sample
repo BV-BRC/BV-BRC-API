@@ -26,5 +26,26 @@
 	"genomeMetadataCache": {
 		"maxSize": 100,
 		"batchSize": 50
+	},
+
+	"joinEnrichment": {
+		"enabled": true,
+		"cacheSize": 200,
+		"collections": {
+			"genome_feature": {
+				"joinableFields": {
+					"genome_name": { "from": "genome", "via": "genome_id", "field": "genome_name" },
+					"taxon_id": { "from": "genome", "via": "genome_id", "field": "taxon_id" },
+					"genome_status": { "from": "genome", "via": "genome_id", "field": "genome_status" },
+					"strain": { "from": "genome", "via": "genome_id", "field": "strain" }
+				}
+			},
+			"pathway": {
+				"joinableFields": {
+					"genome_name": { "from": "genome", "via": "genome_id", "field": "genome_name" },
+					"taxon_id": { "from": "genome", "via": "genome_id", "field": "taxon_id" }
+				}
+			}
+		}
 	}
 }
