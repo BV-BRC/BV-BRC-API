@@ -257,7 +257,7 @@ Set via `Accept` header or `http_accept` query parameter.
 | `application/dna+fasta` | DNA FASTA | ✓ |
 | `application/protein+fasta` | Protein FASTA | ✓ |
 | `application/gff` | GFF3 format | ✓ |
-| `application/genbank` | Genbank flat file | ✗ |
+| `application/genbank` | Genbank flat file | ✓ (multi-record mode) |
 | `application/newick` | Newick tree (taxonomy) | ✗ |
 | `application/newick+json` | JSON tree representation | ✗ |
 | `application/cufflinks+gff` | Cufflinks GFF format | ✗ |
@@ -351,9 +351,13 @@ curl "http://localhost:3001/genome_sequence/?eq(genome_id,83332.12)&sort(+access
 
 ### Output Modes
 
-**Multi-record mode (default):**
+**Multi-record mode (default) - Streaming:**
 
-Each contig produces a separate Genbank record:
+Each contig produces a separate Genbank record. This mode uses streaming:
+- Contigs are processed one at a time
+- Features for each contig are streamed individually
+- Minimal memory usage regardless of genome size
+
 ```
 LOCUS       NC_000962            4411532 bp    DNA
 DEFINITION  Mycobacterium tuberculosis H37Rv chromosome
@@ -364,9 +368,10 @@ LOCUS       NC_000963            5000 bp    DNA
 //
 ```
 
-**Merged mode (`http_genbank_merged=true`):**
+**Merged mode (`http_genbank_merged=true`) - Non-streaming:**
 
 All contigs combined into one record with adjusted coordinates:
+- Requires all data in memory for coordinate adjustment
 - Features have coordinates adjusted to merged sequence
 - `assembly_gap` features mark contig boundaries
 - Useful for tools expecting single-record genomes
