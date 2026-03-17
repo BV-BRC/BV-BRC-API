@@ -2,11 +2,15 @@
  * Genbank Format Serializer
  *
  * Generates Genbank flat file format for genome data.
- * Produces one Genbank record per contig, concatenated.
+ * Produces one Genbank record per contig (default) or a single merged record.
  *
  * Usage:
  *   GET /genome/GENOME_ID?http_accept=application/genbank
  *   GET /genome_feature/?eq(genome_id,GENOME_ID)&http_accept=application/genbank
+ *
+ * Options (via query parameters):
+ *   http_genbank_merged=true - Merge all contigs into a single record
+ *                              (useful for tools like Artemis)
  *
  * The serializer fetches:
  *   - Genome metadata (organism, taxon_id, etc.)
@@ -119,6 +123,16 @@ function formatFeature (feature, featureType) {
 
   // Add qualifiers with 21-character indent
   const qualIndent = ' '.repeat(21)
+
+  // Handle assembly_gap (contig boundary markers) specially
+  if (featureType === 'assembly_gap') {
+    lines.push(`${qualIndent}/estimated_length=0`)
+    lines.push(`${qualIndent}/gap_type="within scaffold"`)
+    if (feature.product) {
+      lines.push(`${qualIndent}/note="${feature.product}"`)
+    }
+    return lines.join('\n')
+  }
 
   // Locus tag
   if (feature.patric_id) {
@@ -251,9 +265,109 @@ function mapFeatureType (featureType) {
     tmRNA: 'tmRNA',
     pseudogene: 'gene',
     repeat_region: 'repeat_region',
-    source: 'source'
+    source: 'source',
+    assembly_gap: 'assembly_gap'
   }
   return mapping[featureType] || 'misc_feature'
+}
+
+/**
+ * Generate a merged Genbank record from multiple contigs.
+ * All contigs are concatenated into a single sequence with adjusted feature coordinates.
+ * Contig boundaries are marked with misc_feature records.
+ *
+ * @param {Object} genome - Genome metadata
+ * @param {Array} contigs - Array of contig objects
+ * @param {Object} featuresByAccession - Features grouped by accession
+ * @returns {string} Complete Genbank record
+ */
+function generateMergedGenbankRecord (genome, contigs, featuresByAccession) {
+  // 1. Build offset map and concatenate sequences
+  const contigOffsets = {}
+  const contigBoundaries = [] // Track boundaries for misc_feature records
+  let mergedSequence = ''
+  let offset = 0
+
+  for (const contig of contigs) {
+    const acc = contig.accession || contig.sequence_id
+    const seq = contig.sequence || ''
+    const len = seq.length || contig.length || 0
+
+    contigOffsets[acc] = offset
+
+    // Record contig boundary (except for first contig)
+    if (offset > 0) {
+      contigBoundaries.push({
+        position: offset + 1, // 1-based position where new contig starts
+        accession: acc,
+        previousEnd: offset
+      })
+    }
+
+    mergedSequence += seq
+    offset += len
+  }
+
+  debug(`Merged ${contigs.length} contigs: total length ${mergedSequence.length}`)
+
+  // 2. Collect and adjust all features
+  const allFeatures = []
+  for (const [accession, features] of Object.entries(featuresByAccession)) {
+    const contigOffset = contigOffsets[accession] || 0
+    for (const feature of features) {
+      allFeatures.push({
+        ...feature,
+        start: feature.start + contigOffset,
+        end: feature.end + contigOffset,
+        original_accession: accession // Keep track of original contig
+      })
+    }
+  }
+
+  // 3. Add contig boundary markers as misc_feature
+  for (const boundary of contigBoundaries) {
+    allFeatures.push({
+      feature_type: 'assembly_gap',
+      start: boundary.position,
+      end: boundary.position,
+      strand: '+',
+      product: `Contig junction: ${boundary.accession}`,
+      _is_boundary: true
+    })
+  }
+
+  // 4. Sort features by adjusted position
+  allFeatures.sort((a, b) => a.start - b.start)
+
+  debug(`Total features after merge: ${allFeatures.length} (including ${contigBoundaries.length} boundaries)`)
+
+  // 5. Create merged contig object
+  const mergedContig = {
+    accession: genome.genome_id,
+    sequence_id: genome.genome_id,
+    sequence: mergedSequence,
+    length: mergedSequence.length,
+    description: `${genome.genome_name || genome.organism_name || 'Unknown organism'}, complete genome`,
+    topology: 'linear'
+  }
+
+  // 6. Generate the record
+  return generateGenbankRecord(genome, mergedContig, allFeatures)
+}
+
+/**
+ * Format a contig boundary as a misc_feature
+ */
+function formatBoundaryFeature (boundary) {
+  const lines = []
+  const qualIndent = ' '.repeat(21)
+
+  lines.push(`     assembly_gap    ${boundary.start}..${boundary.start}`)
+  lines.push(`${qualIndent}/estimated_length=0`)
+  lines.push(`${qualIndent}/gap_type="within scaffold"`)
+  lines.push(`${qualIndent}/note="Contig boundary: ${boundary.accession}"`)
+
+  return lines.join('\n')
 }
 
 /**
@@ -513,20 +627,32 @@ module.exports = {
         return
       }
 
-      // Generate Genbank record for each contig
-      for (let i = 0; i < contigs.length; i++) {
-        const contig = contigs[i]
-        const accession = contig.accession || contig.sequence_id
-        const features = featuresByAccession[accession] || []
+      // Check if merged format is requested
+      const genbankParams = req.genbankParams || {}
+      const isMerged = genbankParams.http_genbank_merged === 'true' ||
+                       genbankParams.http_genbank_merged === true
 
-        debug(`Generating record for contig ${accession}: ${features.length} features`)
-
-        const record = generateGenbankRecord(genome, contig, features)
+      if (isMerged) {
+        // Generate single merged record
+        debug(`Generating merged Genbank record for ${contigs.length} contigs`)
+        const record = generateMergedGenbankRecord(genome, contigs, featuresByAccession)
         res.write(record)
+      } else {
+        // Generate Genbank record for each contig
+        for (let i = 0; i < contigs.length; i++) {
+          const contig = contigs[i]
+          const accession = contig.accession || contig.sequence_id
+          const features = featuresByAccession[accession] || []
 
-        // Add newline between records (but not after the last one)
-        if (i < contigs.length - 1) {
-          res.write('\n')
+          debug(`Generating record for contig ${accession}: ${features.length} features`)
+
+          const record = generateGenbankRecord(genome, contig, features)
+          res.write(record)
+
+          // Add newline between records (but not after the last one)
+          if (i < contigs.length - 1) {
+            res.write('\n')
+          }
         }
       }
 

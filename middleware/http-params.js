@@ -48,10 +48,21 @@ module.exports = function (req, res, next) {
       // These are used by FASTA serializers and should not go to Solr
       req.fastaParams = {}
 
+      // Store http_genbank_* params separately before processing
+      // These are used by Genbank serializer and should not go to Solr
+      req.genbankParams = {}
+
       Object.keys(parsed).forEach((key) => {
         if (key.match(/^http_fasta_/)) {
           // Store FASTA params for serializer access
           req.fastaParams[key] = decodeURIComponent(parsed[key])
+          delete parsed[key]
+          return
+        }
+
+        if (key.match(/^http_genbank_/)) {
+          // Store Genbank params for serializer access
+          req.genbankParams[key] = decodeURIComponent(parsed[key])
           delete parsed[key]
           return
         }
