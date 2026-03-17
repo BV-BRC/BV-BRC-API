@@ -38,15 +38,48 @@ async function getJoiner () {
   joinerInitPromise = (async () => {
     const SolrClusterClient = require('../lib/distributed/SolrClusterClient')
     const DirectSolrClient = require('../lib/distributed/DirectSolrClient')
+    const { getConfig: getDistributedConfig } = require('../lib/distributed/DistributedQueryConfig')
+    const https = require('https')
+    const fs = require('fs')
 
     const solrUrl = Config.get('solr').url
     const joinConfig = getJoinConfig()
+    const distributedConfig = getDistributedConfig()
 
-    // Create cluster client (reuses existing caching infrastructure)
-    const clusterClient = new SolrClusterClient(solrUrl)
+    // Build SSL/TLS options from distributed query config
+    const tlsOptions = {}
+    if (distributedConfig.ca) {
+      if (distributedConfig.ca.startsWith('/') || distributedConfig.ca.startsWith('./')) {
+        try {
+          tlsOptions.ca = fs.readFileSync(distributedConfig.ca)
+          debug(`Loaded CA certificate from: ${distributedConfig.ca}`)
+        } catch (err) {
+          debug(`Warning: Could not read CA file ${distributedConfig.ca}: ${err.message}`)
+        }
+      } else {
+        tlsOptions.ca = distributedConfig.ca
+      }
+    }
+    if (distributedConfig.rejectUnauthorized === false) {
+      tlsOptions.rejectUnauthorized = false
+      debug('SSL certificate validation disabled')
+    }
+
+    // Create HTTPS agent with TLS options if using HTTPS
+    let agent = null
+    if (solrUrl.startsWith('https:')) {
+      agent = new https.Agent({
+        keepAlive: true,
+        maxSockets: 10,
+        ...tlsOptions
+      })
+    }
+
+    // Create cluster client with agent
+    const clusterClient = new SolrClusterClient(solrUrl, { agent })
 
     // Create direct Solr client for batch lookups
-    const directClient = new DirectSolrClient(clusterClient)
+    const directClient = new DirectSolrClient(clusterClient, { agent })
 
     // Create BatchJoiner with configured cache size
     batchJoiner = new BatchJoiner(directClient, {
