@@ -968,68 +968,89 @@ module.exports = {
     }
 
     try {
-      // Determine genome ID from request
-      let genomeId = null
-
-      if (req.call_collection === 'genome') {
-        if (res.results?.response?.docs?.[0]?.genome_id) {
-          genomeId = res.results.response.docs[0].genome_id
-        } else if (req.call_params?.[1]) {
-          genomeId = req.call_params[1]
-        }
-      } else if (req.call_collection === 'genome_feature' || req.call_collection === 'genome_sequence') {
-        if (res.results?.response?.docs?.[0]?.genome_id) {
-          genomeId = res.results.response.docs[0].genome_id
-        }
-      }
-
-      if (!genomeId) {
-        res.status(400).send('Genome ID is required for Genbank export')
-        return
-      }
-
-      debug(`Generating Genbank for genome: ${genomeId}`)
-
       // Check if merged format is requested
       const genbankParams = req.genbankParams || {}
       const isMerged = genbankParams.http_genbank_merged === 'true' ||
                        genbankParams.http_genbank_merged === true
 
-      // Fetch genome metadata (small, always needed)
-      const genome = await fetchGenome(genomeId, req)
+      // Collect genome IDs to process
+      let genomeIds = []
 
-      if (isMerged) {
-        // Merged mode: non-streaming, needs all data in memory
-        debug(`Generating merged Genbank record for genome ${genomeId}`)
-
-        const [contigs, featuresByAccession] = await Promise.all([
-          fetchContigs(genomeId, req),
-          fetchFeatures(genomeId, req)
-        ])
-
-        if (contigs.length === 0) {
-          res.status(404).send(`No sequence data found for genome ${genomeId}`)
-          return
+      if (req.call_collection === 'genome') {
+        // For genome collection queries, process ALL genomes in result
+        if (res.results?.response?.docs && res.results.response.docs.length > 0) {
+          genomeIds = res.results.response.docs
+            .map(doc => doc.genome_id)
+            .filter(id => id)
+        } else if (req.call_params?.[1]) {
+          // Direct ID lookup
+          genomeIds = [req.call_params[1]]
         }
-
-        const record = generateMergedGenbankRecord(genome, contigs, featuresByAccession)
-        res.write(record)
-        res.end()
-      } else {
-        // Multi-record mode: streaming
-        debug(`Streaming Genbank records for genome ${genomeId}`)
-
-        const contigCount = await streamGenbankMultiRecord(res, genomeId, genome, req)
-
-        if (contigCount === 0) {
-          // No contigs found - this shouldn't happen as we'd have thrown earlier
-          // but handle gracefully
-          res.status(404).send(`No sequence data found for genome ${genomeId}`)
-          return
+      } else if (req.call_collection === 'genome_feature' || req.call_collection === 'genome_sequence') {
+        // For feature/sequence queries, get unique genome_id from first result
+        if (res.results?.response?.docs?.[0]?.genome_id) {
+          genomeIds = [res.results.response.docs[0].genome_id]
         }
-
-        res.end()
       }
+
+      if (genomeIds.length === 0) {
+        res.status(400).send('Genome ID is required for Genbank export')
+        return
+      }
+
+      debug(`Generating Genbank for ${genomeIds.length} genome(s): ${genomeIds.slice(0, 5).join(', ')}${genomeIds.length > 5 ? '...' : ''}`)
+
+      let isFirstGenome = true
+      let totalContigs = 0
+
+      for (const genomeId of genomeIds) {
+        // Add newline separator between genomes (but records within a genome are already separated)
+        if (!isFirstGenome) {
+          res.write('\n')
+        }
+        isFirstGenome = false
+
+        // Fetch genome metadata
+        const genome = await fetchGenome(genomeId, req)
+
+        if (isMerged) {
+          // Merged mode: non-streaming, needs all data in memory per genome
+          debug(`Generating merged Genbank record for genome ${genomeId}`)
+
+          const [contigs, featuresByAccession] = await Promise.all([
+            fetchContigs(genomeId, req),
+            fetchFeatures(genomeId, req)
+          ])
+
+          if (contigs.length === 0) {
+            debug(`No sequence data found for genome ${genomeId}, skipping`)
+            continue
+          }
+
+          const record = generateMergedGenbankRecord(genome, contigs, featuresByAccession)
+          res.write(record)
+          totalContigs++
+        } else {
+          // Multi-record mode: streaming
+          debug(`Streaming Genbank records for genome ${genomeId}`)
+
+          const contigCount = await streamGenbankMultiRecord(res, genomeId, genome, req)
+          totalContigs += contigCount
+
+          if (contigCount === 0) {
+            debug(`No contigs found for genome ${genomeId}`)
+          }
+        }
+      }
+
+      if (totalContigs === 0) {
+        if (!res.headersSent) {
+          res.status(404).send('No sequence data found for the specified genome(s)')
+          return
+        }
+      }
+
+      res.end()
     } catch (error) {
       debug(`Genbank serialization error: ${error.message}`)
       if (!res.headersSent) {
