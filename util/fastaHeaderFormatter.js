@@ -35,7 +35,7 @@ const DEFAULT_CONFIG = {
       contextFields: ['genome_name', 'genome_id']
     },
     default: {
-      idFields: ['feature_id', 'patric_id', 'refseq_locus_tag'],
+      idFields: ['patric_id', 'refseq_locus_tag', 'alt_locus_tag'],
       descriptionFields: ['product'],
       contextFields: ['genome_name', 'genome_id']
     }
