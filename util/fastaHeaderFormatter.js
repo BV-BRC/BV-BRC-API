@@ -238,6 +238,10 @@ function createFastaHeaderFormatter (options = {}) {
     if (config.idPrefix && id) {
       id = config.idPrefix + id
     }
+    // Add trailing delimiter to ID section (matches legacy format)
+    if (id && config.idDelimiter) {
+      id = id + config.idDelimiter
+    }
     parts.push('>' + (id || 'unknown'))
 
     // Description portion
