@@ -532,45 +532,69 @@ async function streamGenbankMultiRecord (res, genomeId, genome, req) {
       let isFirstContig = true
       const contigQueue = []
       let processing = false
+      let streamEnded = false
+      let currentProcessingPromise = null
 
-      const processNextContig = async () => {
-        if (processing || contigQueue.length === 0) return
+      const processContigQueue = async () => {
+        if (processing) return currentProcessingPromise
+        if (contigQueue.length === 0) return Promise.resolve()
+
         processing = true
+        currentProcessingPromise = (async () => {
+          while (contigQueue.length > 0) {
+            const contig = contigQueue.shift()
+            const accession = contig.accession || contig.sequence_id
 
-        while (contigQueue.length > 0) {
-          const contig = contigQueue.shift()
-          const accession = contig.accession || contig.sequence_id
+            debug(`Processing contig ${accession}`)
 
-          debug(`Processing contig ${accession}`)
+            // Add newline between records
+            if (!isFirstContig) {
+              res.write('\n')
+            }
+            isFirstContig = false
 
-          // Add newline between records
-          if (!isFirstContig) {
-            res.write('\n')
+            // Write header
+            writeRecordHeader(res, genome, contig)
+
+            // Stream features
+            try {
+              await streamFeaturesForContig(res, genomeId, accession, req)
+            } catch (err) {
+              debug(`Error streaming features for ${accession}: ${err.message}`)
+            }
+
+            // Write sequence
+            writeOrigin(res, contig.sequence)
+            contigCount++
           }
-          isFirstContig = false
+          processing = false
+        })()
 
-          // Write header
-          writeRecordHeader(res, genome, contig)
+        return currentProcessingPromise
+      }
 
-          // Stream features
-          try {
-            await streamFeaturesForContig(res, genomeId, accession, req)
-          } catch (err) {
-            debug(`Error streaming features for ${accession}: ${err.message}`)
+      const checkComplete = async () => {
+        if (streamEnded && contigQueue.length === 0 && !processing) {
+          debug(`Streamed ${contigCount} contigs for genome ${genomeId}`)
+          resolve(contigCount)
+        } else if (streamEnded && (contigQueue.length > 0 || processing)) {
+          // Wait for processing to complete
+          if (currentProcessingPromise) {
+            await currentProcessingPromise
           }
-
-          // Write sequence
-          writeOrigin(res, contig.sequence)
-          contigCount++
+          // Process any remaining items
+          if (contigQueue.length > 0) {
+            await processContigQueue()
+          }
+          debug(`Streamed ${contigCount} contigs for genome ${genomeId}`)
+          resolve(contigCount)
         }
-
-        processing = false
       }
 
       response.data.on('data', (chunk) => {
         buffer += chunk.toString()
 
-        // Parse JSON array incrementally - same logic as feature streaming
+        // Parse JSON array incrementally
         let startIdx = 0
 
         while (startIdx < buffer.length) {
@@ -634,15 +658,13 @@ async function streamGenbankMultiRecord (res, genomeId, genome, req) {
           buffer = ''
         }
 
-        // Process queued contigs
-        processNextContig()
+        // Start processing if not already running
+        processContigQueue()
       })
 
       response.data.on('end', async () => {
-        // Process any remaining contigs
-        await processNextContig()
-        debug(`Streamed ${contigCount} contigs for genome ${genomeId}`)
-        resolve(contigCount)
+        streamEnded = true
+        await checkComplete()
       })
 
       response.data.on('error', (err) => {
