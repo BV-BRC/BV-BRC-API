@@ -41,8 +41,10 @@ Authentication uses Bearer tokens validated against a signing subject URL.
 ### Header Authentication
 
 ```
-Authorization: Bearer <token>
+Authorization: <token>
 ```
+
+The token is passed directly without a "Bearer" prefix.
 
 ### Query Parameter Authentication
 
@@ -913,6 +915,6 @@ curl -X POST "http://localhost:3001/" \
 ```bash
 # Query private data with authentication
 curl "http://localhost:3001/genome/?eq(owner,user@example.com)" \
-  -H "Authorization: Bearer <token>" \
+  -H "Authorization: <token>" \
   -H "Accept: application/json"
 ```
