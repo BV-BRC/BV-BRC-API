@@ -294,3 +294,60 @@ node scripts/check-shard-consistency.js -c genome_feature \
 3. **Recovery needed**: Followers need to trigger REQUESTRECOVERY to sync
 
 The tool can automatically detect and fix these issues. See `REPLICATION_LAG.md` for root cause analysis and manual remediation steps.
+
+## Development Notes
+
+### SSL/TLS Agent Configuration
+
+When creating new HTTP clients that connect to Solr (or other HTTPS endpoints), you **must** pass the properly configured HTTPS agent with SSL/TLS options. The production Solr cluster uses self-signed certificates.
+
+**Pattern to follow:**
+
+```javascript
+const { getConfig } = require('../lib/distributed/DistributedQueryConfig')
+const https = require('https')
+const fs = require('fs')
+
+const config = getConfig()
+const tlsOptions = {}
+
+// Load CA certificate if configured
+if (config.ca) {
+  if (config.ca.startsWith('/') || config.ca.startsWith('./')) {
+    tlsOptions.ca = fs.readFileSync(config.ca)
+  } else {
+    tlsOptions.ca = config.ca
+  }
+}
+
+// Allow self-signed certificates if configured
+if (config.rejectUnauthorized === false) {
+  tlsOptions.rejectUnauthorized = false
+}
+
+// Create agent with TLS options
+const agent = new https.Agent({
+  keepAlive: true,
+  maxSockets: 10,
+  ...tlsOptions
+})
+
+// Pass agent to clients
+const clusterClient = new SolrClusterClient(solrUrl, { agent })
+const directClient = new DirectSolrClient(clusterClient, { agent })
+```
+
+**Configuration in `p3api.conf`:**
+```json
+{
+  "distributedQuery": {
+    "rejectUnauthorized": false,
+    "ca": "/path/to/ca-cert.pem"
+  }
+}
+```
+
+**Common error if agent is not configured:**
+```
+Error: self-signed certificate
+```
