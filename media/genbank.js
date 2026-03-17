@@ -287,12 +287,20 @@ function generateGenbankRecord (genome, contig, features) {
   const version = contig.version ? `${accession}.${contig.version}` : accession
   lines.push(`VERSION     ${version}`)
 
-  // DBLINK (BioProject, BioSample)
-  if (genome.bioproject_accession) {
-    lines.push(`DBLINK      BioProject: ${genome.bioproject_accession}`)
-  }
-  if (genome.biosample_accession) {
-    lines.push(`            BioSample: ${genome.biosample_accession}`)
+  // DBLINK (BioProject, BioSample, BV-BRC genome ID)
+  if (genome.bioproject_accession || genome.biosample_accession || genome.genome_id) {
+    let firstDblink = true
+    if (genome.bioproject_accession) {
+      lines.push(`DBLINK      BioProject: ${genome.bioproject_accession}`)
+      firstDblink = false
+    }
+    if (genome.biosample_accession) {
+      lines.push(`${firstDblink ? 'DBLINK      ' : '            '}BioSample: ${genome.biosample_accession}`)
+      firstDblink = false
+    }
+    if (genome.genome_id) {
+      lines.push(`${firstDblink ? 'DBLINK      ' : '            '}BV-BRC: ${genome.genome_id}`)
+    }
   }
 
   // KEYWORDS
@@ -334,6 +342,9 @@ function generateGenbankRecord (genome, contig, features) {
   }
   if (genome.taxon_id) {
     lines.push(`                     /db_xref="taxon:${genome.taxon_id}"`)
+  }
+  if (genome.genome_id) {
+    lines.push(`                     /db_xref="BV-BRC:${genome.genome_id}"`)
   }
 
   // Sort features by start position
