@@ -2,6 +2,17 @@ const MAX_LIMIT = 50000
 const DEFAULT_LIMIT = 25
 const DOWNLOAD_LIMIT = 2500000
 const ID_COUNT_BUFFER = 10
+const crypto = require('crypto')
+
+// Generate a short unique request ID for tracing, or use one from nginx
+function getRequestId (req) {
+  // Prefer X-Request-ID from nginx if available
+  if (req.headers['x-request-id']) {
+    return req.headers['x-request-id']
+  }
+  // Fall back to generating our own
+  return 'p3api-' + crypto.randomBytes(6).toString('hex')
+}
 
 /**
  * Detect queries with fixed ID lists and return the count of IDs.
@@ -37,6 +48,11 @@ function detectFixedIdCount (query) {
 
 module.exports = function (req, res, next) {
   if (req.call_method !== 'query') { return next() }
+
+  // Generate request ID for tracing between API and Solr logs
+  const requestId = getRequestId(req)
+  req.requestId = requestId
+
   let limit = MAX_LIMIT
   const q = req.call_params[0]
   const rowsRegPattern = /(&rows=)(\d*)/
@@ -44,6 +60,13 @@ module.exports = function (req, res, next) {
   const groupRegMatches = q.match(groupRegPattern)
   const rowsRegMatches = q.match(rowsRegPattern)
   let queryOffset
+
+  // Log incoming query for debugging large row requests
+  const incomingRows = rowsRegMatches ? rowsRegMatches[2] : 'not specified'
+  if (incomingRows > 100000) {
+    console.log(`[Limiter] ${requestId} Incoming query with rows=${incomingRows}, collection=${req.call_collection}, queryType=${req.queryType}`)
+  }
+
   if (groupRegMatches) {
     limit = 99999999
   } else {
@@ -85,10 +108,18 @@ module.exports = function (req, res, next) {
   if (idCount) {
     const idBasedLimit = idCount + ID_COUNT_BUFFER
     if (idBasedLimit < limit) {
-      console.log(`[Limiter] Fixed ID query detected: ${idCount} IDs, capping limit from ${limit} to ${idBasedLimit}`)
+      console.log(`[Limiter] ${requestId} Fixed ID query detected: ${idCount} IDs, capping limit from ${limit} to ${idBasedLimit}`)
       req.call_params[0] = req.call_params[0].replace(/&rows=\d+/, '&rows=' + idBasedLimit)
       limit = idBasedLimit
     }
+  }
+
+  // Add request ID to query for Solr log correlation
+  req.call_params[0] = req.call_params[0] + '&p3api_rid=' + requestId
+
+  // Log summary for feature_sequence queries (debugging OOM issue)
+  if (req.call_collection === 'feature_sequence') {
+    console.log(`[Limiter] ${requestId} feature_sequence query: rows=${limit} idCount=${idCount || 'N/A'}`)
   }
 
   if (queryOffset) {
