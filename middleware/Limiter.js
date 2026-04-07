@@ -2,17 +2,6 @@ const MAX_LIMIT = 50000
 const DEFAULT_LIMIT = 25
 const DOWNLOAD_LIMIT = 2500000
 const ID_COUNT_BUFFER = 10
-const crypto = require('crypto')
-
-// Generate a short unique request ID for tracing, or use one from nginx
-function getRequestId (req) {
-  // Prefer X-Request-ID from nginx if available
-  if (req.headers['x-request-id']) {
-    return req.headers['x-request-id']
-  }
-  // Fall back to generating our own
-  return 'p3api-' + crypto.randomBytes(6).toString('hex')
-}
 
 /**
  * Detect queries with fixed ID lists and return the count of IDs.
@@ -49,9 +38,8 @@ function detectFixedIdCount (query) {
 module.exports = function (req, res, next) {
   if (req.call_method !== 'query') { return next() }
 
-  // Generate request ID for tracing between API and Solr logs
-  const requestId = getRequestId(req)
-  req.requestId = requestId
+  // Use request ID set by app.js middleware
+  const requestId = req.requestId || 'unknown'
 
   let limit = MAX_LIMIT
   const q = req.call_params[0]
