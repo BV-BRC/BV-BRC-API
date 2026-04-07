@@ -56,7 +56,7 @@ async function _getSequenceDictByHash (md5Array) {
 async function getSequenceDictByHash (md5Array,req) { 
   // console.log("getSequenDictByHash")
   const ids = md5Array.join(',')
-  const q = `&in(md5,(${ids}))&limit(9999)&select(md5,sequence)` 
+  const q = `&in(md5,(${ids}))&limit(${md5Array.length})&select(md5,sequence)` 
 
   // console.log("query: ", q)
   if (distributeURL.charAt(distributeURL.length-1)=="/"){

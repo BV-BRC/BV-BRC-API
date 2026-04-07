@@ -1,6 +1,39 @@
-const MAX_LIMIT = 25000
+const MAX_LIMIT = 50000
 const DEFAULT_LIMIT = 25
 const DOWNLOAD_LIMIT = 2500000
+const ID_COUNT_BUFFER = 10
+
+/**
+ * Detect queries with fixed ID lists and return the count of IDs.
+ * Matches patterns like: field:(id1 OR id2 OR id3...)
+ * This helps optimize queries where we know the maximum possible results.
+ *
+ * @param {string} query - The Solr query string
+ * @returns {number|null} - The count of IDs if detected, null otherwise
+ */
+function detectFixedIdCount (query) {
+  if (!query) return null
+
+  // Match patterns like: field:(val1 OR val2 OR val3) or field:(val1+OR+val2+OR+val3)
+  // Common fields: md5, genome_id, feature_id, patric_id, id, subsystem_id
+  const orPattern = /\b(md5|genome_id|feature_id|patric_id|id|subsystem_id):\(([^)]+)\)/gi
+
+  let maxIdCount = 0
+
+  let match
+  while ((match = orPattern.exec(query)) !== null) {
+    const idsClause = match[2]
+    // Count OR separators (handles both " OR " and "+OR+")
+    const orCount = (idsClause.match(/(\+OR\+|\sOR\s)/gi) || []).length
+    // Number of IDs = OR count + 1
+    const idCount = orCount + 1
+    if (idCount > maxIdCount) {
+      maxIdCount = idCount
+    }
+  }
+
+  return maxIdCount > 1 ? maxIdCount : null
+}
 
 module.exports = function (req, res, next) {
   if (req.call_method !== 'query') { return next() }
@@ -45,6 +78,17 @@ module.exports = function (req, res, next) {
     req.call_params[0] = q.replace(rowsRegMatches[0], '&rows=' + limit)
   } else {
     req.call_params[0] = req.call_params[0] + '&rows=' + limit
+  }
+
+  // Check for fixed ID list queries and cap limit if appropriate
+  const idCount = detectFixedIdCount(req.call_params[0])
+  if (idCount) {
+    const idBasedLimit = idCount + ID_COUNT_BUFFER
+    if (idBasedLimit < limit) {
+      console.log(`[Limiter] Fixed ID query detected: ${idCount} IDs, capping limit from ${limit} to ${idBasedLimit}`)
+      req.call_params[0] = req.call_params[0].replace(/&rows=\d+/, '&rows=' + idBasedLimit)
+      limit = idBasedLimit
+    }
   }
 
   if (queryOffset) {
