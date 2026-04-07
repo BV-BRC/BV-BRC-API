@@ -103,7 +103,8 @@ module.exports = function (req, res, next) {
   }
 
   // Add request ID to query for Solr log correlation
-  req.call_params[0] = req.call_params[0] + '&p3api_rid=' + requestId
+  // Using 'appRid' to avoid conflict with Solr's internal 'rid' parameter
+  req.call_params[0] = req.call_params[0] + '&appRid=' + requestId
 
   // Log summary for feature_sequence queries (debugging OOM issue)
   if (req.call_collection === 'feature_sequence') {
