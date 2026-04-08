@@ -5,18 +5,36 @@ const ID_COUNT_BUFFER = 10
 
 /**
  * Detect queries with fixed ID lists and return the count of IDs.
- * Matches patterns like: field:(id1 OR id2 OR id3...)
- * This helps optimize queries where we know the maximum possible results.
+ * Only applies when querying by the PRIMARY KEY of a collection,
+ * where we know the max results equals the number of IDs.
  *
  * @param {string} query - The Solr query string
+ * @param {string} collection - The collection being queried
  * @returns {number|null} - The count of IDs if detected, null otherwise
  */
-function detectFixedIdCount (query) {
-  if (!query) return null
+function detectFixedIdCount (query, collection) {
+  if (!query || !collection) return null
 
-  // Match patterns like: field:(val1 OR val2 OR val3) or field:(val1+OR+val2+OR+val3)
-  // Common fields: md5, genome_id, feature_id, patric_id, id, subsystem_id
-  const orPattern = /\b(md5|genome_id|feature_id|patric_id|id|subsystem_id):\(([^)]+)\)/gi
+  // Map of collection -> primary key field(s)
+  // Only these combinations should trigger ID-based limiting
+  const primaryKeyMap = {
+    'feature_sequence': ['md5'],
+    'genome': ['genome_id'],
+    'genome_feature': ['feature_id', 'patric_id'],
+    'genome_sequence': ['sequence_id'],
+    'pathway': ['pathway_id'],
+    'subsystem': ['subsystem_id'],
+    'taxonomy': ['taxon_id'],
+    'sp_gene': ['id'],
+    'protein_family_ref': ['family_id']
+  }
+
+  const primaryKeys = primaryKeyMap[collection]
+  if (!primaryKeys) return null
+
+  // Build regex pattern for this collection's primary keys only
+  const keysPattern = primaryKeys.join('|')
+  const orPattern = new RegExp(`\\b(${keysPattern}):\\(([^)]+)\\)`, 'gi')
 
   let maxIdCount = 0
 
@@ -92,7 +110,8 @@ module.exports = function (req, res, next) {
   }
 
   // Check for fixed ID list queries and cap limit if appropriate
-  const idCount = detectFixedIdCount(req.call_params[0])
+  // Only applies when querying by primary key of the collection
+  const idCount = detectFixedIdCount(req.call_params[0], req.call_collection)
   if (idCount) {
     const idBasedLimit = idCount + ID_COUNT_BUFFER
     if (idBasedLimit < limit) {
