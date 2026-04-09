@@ -72,6 +72,9 @@ logger.token('qtime', function (req, res) {
 logger.token('remote-ip', function (req, res) {
   return req.headers['x-forwarded-for'] || req.connection.remoteAddress
 })
+logger.token('auth-user', function (req, res) {
+  return req.authUser || '<unauth>'
+})
 
 logger.token('request-id', function (req, res) {
   // Use X-Request-ID from nginx if available, or requestId set by Limiter middleware

@@ -60,7 +60,7 @@ Responses from queries are available in a number of formats:
 - text/csv : Returns objects in comma separated values format. Columns are separated by ',', Multi-value columns are separated by ';', and rows are separated by "\n"
 - text/tsv : Returns objects in tab separated values format. Columns are separted by "\t", Multi-value columns are separated by ";", and rows are separted by "\n"
 - application/vnd.openxmlformats : Returns objects for use in MS Excel
-- application/dna+fasta : Returns DNA sequences for queries in FASTA format (this currently only makes sense for the 'genome_feature' collection)
+- application/dna+fasta : Returns DNA sequences for queries in FASTA format (supported for the 'genome_feature' and 'genome_sequence' collections)
 - application/protein+fasta: Returns Protein sequences for queries in FASTA format (this currently only makes sense for the 'genome_feature' collection)
 - application/gff : Returns a genomic features in GFF format (This only makes sense for the 'genome_feature' collection)
 
