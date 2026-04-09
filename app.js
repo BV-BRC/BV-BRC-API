@@ -126,7 +126,7 @@ app.use(cors({
   origin: true,
   methods: ['GET,POST,PUT,DELETE'],
   allowHeaders: ['if-none-match', 'range', 'accept', 'x-range', 'content-type', 'authorization'],
-  exposedHeaders: ['facet_counts', 'x-facet-count', 'Content-Range', 'X-Content-Range', 'ETag'],
+  exposedHeaders: ['facet_counts', 'x-facet-count', 'Content-Range', 'X-Content-Range', 'X-Cursor-Mark', 'ETag'],
   credential: true,
   maxAge: 86400
 }))

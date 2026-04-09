@@ -7,5 +7,11 @@ module.exports = function (req, res, next) {
   } else if (res.results && res.results.response && res.results.response.docs) {
     res.set('Content-Range', `items ${(res.results.response.start || 0)}-${((res.results.response.start || 0) + res.results.response.docs.length)}/${res.results.response.numFound}`)
   }
+
+  // Emit cursor mark header for cursor-based pagination
+  if (res.nextCursorMark) {
+    res.set('X-Cursor-Mark', res.nextCursorMark)
+  }
+
   next()
 }

@@ -52,6 +52,10 @@ function querySOLR (req, res, next) {
         res.results = []
       } else if (results.response) {
         res.results = results
+        // Capture nextCursorMark for cursor-based pagination
+        if (results.nextCursorMark) {
+          res.nextCursorMark = results.nextCursorMark
+        }
       } else if (results.grouped) {
         res.results = results
       } else if (results.error) {

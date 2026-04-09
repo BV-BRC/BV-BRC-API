@@ -86,7 +86,10 @@ module.exports = function (req, res, next) {
       limit = rowsRegMatches[2]
     }
   }
-  if (req.headers.range) {
+
+  // Skip Range header / start injection when cursor pagination is active
+  // Cursors and offsets are mutually exclusive in Solr
+  if (!req.cursorMark && req.headers.range) {
     const rangeMatches = req.headers.range.match(/^items=(\d+)-(\d+)?$/)
 
     if (rangeMatches) {

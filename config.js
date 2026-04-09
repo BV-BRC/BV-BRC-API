@@ -86,6 +86,45 @@ const defaults = {
     pass: ''
   },
 
+  collectionUniqueKeys: {
+    antibiotics: 'pubchem_cid',
+    bioset: 'bioset_id',
+    bioset_result: 'id',
+    enzyme_class_ref: 'ec_number',
+    epitope: 'epitope_id',
+    epitope_assay: 'assay_id',
+    experiment: 'exp_id',
+    feature_sequence: 'md5',
+    gene_ontology_ref: 'go_id',
+    genome: 'genome_id',
+    genome_amr: 'id',
+    genome_feature: 'feature_id',
+    genome_sequence: 'sequence_id',
+    genome_test: 'genome_id',
+    genome_typing: 'id',
+    id_ref: 'id',
+    misc_niaid_sgc: 'target_id',
+    pathway: 'id',
+    pathway_ref: 'id',
+    ppi: 'id',
+    protein_family_ref: 'family_id',
+    protein_feature: 'id',
+    protein_structure: 'pdb_id',
+    sequence_feature: 'id',
+    sequence_feature_vt: 'id',
+    serology: 'id',
+    sp_gene: 'id',
+    sp_gene_ref: 'id',
+    spike_lineage: 'id',
+    spike_variant: 'id',
+    strain: 'id',
+    structured_assertion: 'id',
+    subsystem: 'id',
+    subsystem_ref: 'id',
+    surveillance: 'id',
+    taxonomy: 'taxon_id'
+  },
+
   shards: {
     genome_feature: {
       preference: 'replica.type:PULL,replica.type:TLOG'
