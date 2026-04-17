@@ -1,13 +1,8 @@
-var logger = require('morgan')
-
 const ValidateToken = require('p3-user/validateToken')
 var config = require('../config')
 const signingSubjectURL = config.get('signingSubjectURL')
 
 module.exports = function (req, res, next) {
-	logger.token('auth-user', function (req, res) {
-	  return "<unauth>";
-	})
   if (!signingSubjectURL) {
     return next(new Error('Missing signingSubjectURL in config'))
   }
@@ -18,10 +13,7 @@ module.exports = function (req, res, next) {
         .then((valid) => {
           if (valid && valid.id) {
             req.user = valid.id
-	  logger.token('auth-user', function (req, res) {
-		  return valid.id;
-	   })
-
+            req.authUser = valid.id
           }
           next()
         }, (err) => {

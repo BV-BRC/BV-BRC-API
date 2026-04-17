@@ -18,6 +18,7 @@ var bodyParser = require('body-parser')
 var debug = require('debug')('p3api-server:route/dataType')
 var querystring = require('querystring')
 const ShardsPreference = require('../middleware/ShardsPreference')
+const SolrQuerySanitizer = require('../middleware/SolrQuerySanitizer')
 
 router.use(httpParams)
 
@@ -214,6 +215,7 @@ router.post('*', [
 router.use([
   RQLQueryParser,
   // SOLRQueryParser, // this parses the solr query for errors, but doesn't make any chagnes to the stream.  Debugging only.
+  SolrQuerySanitizer,
   DecorateQuery,
   Limiter,
   ShardsPreference,

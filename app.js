@@ -23,6 +23,12 @@ var sleep = require("sleep-promise");
 
 
 var cors = require('cors')
+var crypto = require('crypto')
+
+// Generate request ID for all requests (used for log correlation)
+function generateRequestId () {
+  return 'p3api-' + crypto.randomBytes(6).toString('hex')
+}
 
 process.on('uncaughtException', (err, origin) => {
   console.log(`Uncaught Expcetion. [${(new Date()).toISOString()}] ${err}, ${origin}`)
@@ -66,8 +72,23 @@ logger.token('qtime', function (req, res) {
 logger.token('remote-ip', function (req, res) {
   return req.headers['x-forwarded-for'] || req.connection.remoteAddress
 })
+logger.token('auth-user', function (req, res) {
+  return req.authUser || '<unauth>'
+})
 
-app.use(logger('[:date[iso]] :remote-ip :method :url :status :response-time [:qtime] ms - :res[content-length] :auth-user'))
+logger.token('request-id', function (req, res) {
+  // Use X-Request-ID from nginx if available, or requestId set by Limiter middleware
+  return req.headers['x-request-id'] || req.requestId || '-'
+})
+
+app.use(logger('[:date[iso]] :remote-ip :method :url :status :response-time [:qtime] ms - :res[content-length] :auth-user rid=:request-id'))
+
+// Set request ID early for all requests (before other middleware)
+app.use(function (req, res, next) {
+  // Use X-Request-ID from nginx if available, otherwise generate one
+  req.requestId = req.headers['x-request-id'] || generateRequestId()
+  next()
+})
 
 app.use(function (req, res, next) {
   debug('APP MODE: ', app.get('env'))
@@ -108,7 +129,7 @@ app.use(cors({
   origin: true,
   methods: ['GET,POST,PUT,DELETE'],
   allowHeaders: ['if-none-match', 'range', 'accept', 'x-range', 'content-type', 'authorization'],
-  exposedHeaders: ['facet_counts', 'x-facet-count', 'Content-Range', 'X-Content-Range', 'ETag'],
+  exposedHeaders: ['facet_counts', 'x-facet-count', 'Content-Range', 'X-Content-Range', 'X-Cursor-Mark', 'ETag'],
   credential: true,
   maxAge: 86400
 }))
