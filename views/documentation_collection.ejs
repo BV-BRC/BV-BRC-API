@@ -39,13 +39,14 @@
             <% results.schema && results.schema.fields && results.schema.fields.forEach(function(field){ %>
                 <% if (field.stored) { %>
                     <li>
-                        <%= field.name %>
+                        <span class="font-bold"><%= field.name %></span>
                         <% if (field.name==results.schema.uniqueKey) { %>
                             *
                         <% } %>
-                        <span>(
-                            <%= render_type(field,results.schema) %>)
-                        </span>
+                        <span>(<%= render_type(field,results.schema) %>)</span>
+                        <% if (doc_data.fields && doc_data.fields[field.name] && doc_data.fields[field.name].description) { %>
+                            <span class="text-black ml-1">- <%= doc_data.fields[field.name].description %></span>
+                        <% } %>
                     </li>
                 <% } %>
             <% }) %>

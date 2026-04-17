@@ -173,6 +173,12 @@ tttgccctaaaatggcaagagcttttccaggctattcagtaa
 
 Replace `Accept:application/dna+fasta` with `Accept:application/protein+fasta` if you like to retrieve protein sequence in FASTA format.
 
+You can also retrieve whole contig/chromosome/plasmid sequences in FASTA format from the genome_sequence collection:
+```
+curl -H 'Accept:application/dna+fasta' \
+'https://www.bv-brc.org/api/genome_sequence/?eq(genome_id,83332.12)&limit(5)'
+```
+
 ## Retrieving private data with Authorization Token
 In order to access your private genome, you will need Authorization Token and send a request to API with that in header. 
 

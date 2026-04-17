@@ -52,13 +52,14 @@ sub get_ids_to_clean {
 
     # Get all files with their modification times
     opendir(my $dh, $dir) or die "Cannot open directory '$dir': $!";
-    my @files = grep { -f "$dir/$_" } readdir($dh);
+    my @files = grep { /^[a-z0-9]/i && -d "$dir/$_" } readdir($dh);
     closedir($dh);
 
     # Sort by modification time, newest first (like ls -lt)
     my @sorted = sort {
         (stat("$dir/$b"))[9] <=> (stat("$dir/$a"))[9]
     } @files;
+    printf "%d files\n", scalar @files;
 
     # Skip the newest $keep files, return the rest
     if (@sorted > $keep) {
@@ -143,12 +144,26 @@ if (@ids == 0) {
     exit 0;
 }
 
+#
+# Chunk the ids
+#
+my $chunk_size = 1000;
+my @chunks;
+
+while (@ids)
+{
+    my @s = splice(@ids, 0, $chunk_size);
+    push(@chunks, [@s]);
+}
+
 # Use Proc::ParallelLoop to process IDs in parallel
 pareach(
-    \@ids,
+    \@chunks,
     sub {
-        my $id = shift;
-        process_id($id);
+	my $chunk = shift;
+	for my $id (@$chunk) {
+	    process_id($id);
+	}
     },
     { Max_Workers => $max_workers }
 );
