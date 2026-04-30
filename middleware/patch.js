@@ -94,6 +94,8 @@ const userModifiableProperties = [
 	'reference_genome',
 	'season',
 	'state_province',
+	'county',
+	'city',
 	'phenotype'
 ]
 
