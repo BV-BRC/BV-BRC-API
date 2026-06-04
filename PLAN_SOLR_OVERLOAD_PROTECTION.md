@@ -27,7 +27,7 @@ GenBank completely bypasses the direct Solr path and its socket limits. All its 
 
 ### Infrastructure
 
-- **API instances**: 3 main (p3-api), 3 web, 3 internal, 3 bulk — on walnut and chestnut
+- **API instances**: 3 main (p3-api), 3 web, 3 internal, 3 bulk — on elm
 - **Solr coordinators**: walnut, chestnut (via HAProxy, 6 backends each)
 - **Solr shard hosts**: arborvitae (21 JVMs), balsam (19), walnut (18), chestnut (15), bio-gp2 (11), bio-gp1 (10), butternut (9), magnolia (7), larch (7), bio-gp3 (6), cottonwood (3)
 - **Host CPUs**: ~80 cores per host
@@ -141,7 +141,73 @@ A genome with 100 contigs → **3 direct Solr queries** regardless of contig cou
 - Reuse: `lib/distributed/DirectSolrClient.js` — no changes needed, existing `query()` and `fetchGenomeMetadata()` methods suffice
 - Reuse: `lib/distributed/SolrClusterClient.js` — singleton instance shared with FASTA serializers
 
-### Layer 3: Solr Self-Protection (safety net)
+### Layer 3: Per-Host Admission Control (distributed query path)
+
+The API admission control (Layer 1) limits total concurrent heavy requests, and the serializer throttle (Layer 2) limits sockets per request, but neither knows which **physical Solr host** the queries are hitting. Arborvitae runs 21 JVMs — queries to any of those JVMs load the same host. The Solr rate limiter (Layer 4) is per-JVM, so 21 JVMs each allowing N queries means the host still gets 21×N.
+
+This layer tracks active queries per physical host (`hostname`, not `hostname:port`) in the distributed query path, where the target host is known.
+
+**Where it fits:**
+
+The distributed query system queries shard replicas directly via `ShardCursorStream._request()`, where `parsedUrl.hostname` is available. This is the point to track and limit per-host concurrency.
+
+**Implementation:**
+
+A `HostAdmissionControl` module (or extend `SolrAdmissionControl`) that tracks:
+- Active query count per hostname (not per hostname:port — all JVMs on a host share the limit)
+- Configurable max concurrent queries per host (e.g., 15-20)
+
+**Integration points:**
+
+1. **`ShardCursorStream._request()`** (`lib/distributed/ShardCursorStream.js:183`): Before making the HTTP request, call `hostAdmission.acquire(hostname)`. On response completion or error, call `hostAdmission.release(hostname)`. If acquire fails, return a retriable error so `_requestWithRetry()` can back off.
+
+2. **`SolrClusterClient.getShardsForCollection()`** (`lib/distributed/SolrClusterClient.js:222`): Make replica selection load-aware. Instead of random selection:
+   ```
+   // Current: random
+   const selectedReplica = activeReplicas[Math.floor(Math.random() * activeReplicas.length)]
+
+   // New: prefer least-loaded host
+   const selectedReplica = activeReplicas.reduce((best, replica) => {
+     const bestHost = extractHostname(best.base_url)
+     const thisHost = extractHostname(replica.base_url)
+     return hostAdmission.getLoad(thisHost) < hostAdmission.getLoad(bestHost) ? replica : best
+   })
+   ```
+   This steers queries toward replicas on less-loaded hosts rather than randomly hitting saturated ones.
+
+3. **`DirectSolrClient._request()`** (`lib/distributed/DirectSolrClient.js:47`): Same acquire/release pattern. This covers the serializer sequence lookups that go through direct Solr.
+
+4. **Pass instance through**: `DistributedQueryManager` → coordinators/streams → `ShardCursorStream`. Also pass to `DirectSolrClient` instances created by the serializers.
+
+**What this covers vs. doesn't:**
+
+| Path | Per-host control? | Why |
+|---|---|---|
+| Distributed queries | Yes — `ShardCursorStream` knows the target host | Queries go direct to shard replicas |
+| Direct Solr (serializer sequence lookups) | Yes — `DirectSolrClient` knows the target host | Queries go direct to shard replicas |
+| Proxy queries (via coordinators) | **No** — coordinator fans out internally | API doesn't know which shard host the coordinator selects |
+
+For proxy queries, Layer 4 (Solr circuit breakers) serves as the backstop — the shard hosts themselves reject queries when overloaded.
+
+**Configuration** (in `p3api.conf`):
+```json
+{
+  "queryAdmission": {
+    "maxPerHost": 15
+  }
+}
+```
+
+**Stats**: Expose per-host active counts at `/stats` alongside the global admission stats.
+
+**Files**:
+- New or extend: `lib/SolrAdmissionControl.js` — add per-host tracking (acquire/release/getLoad by hostname)
+- Edit: `lib/distributed/ShardCursorStream.js:183` — acquire/release around `_request()`
+- Edit: `lib/distributed/DirectSolrClient.js:47` — acquire/release around `_request()`
+- Edit: `lib/distributed/SolrClusterClient.js:222` — load-aware replica selection
+- Edit: `lib/distributed/DistributedQueryManager.js` — pass admission control instance through
+
+### Layer 4: Solr Self-Protection (safety net)
 
 Optional defense-in-depth for anything the API-side controls don't catch.
 
@@ -162,7 +228,7 @@ Both return 429, requiring all callers to handle it (see 429 requirements below)
 
 ## 429 System-Wide Requirements
 
-All three layers return 429 when they activate. Every consumer must handle it.
+All four layers can return 429 when they activate. Every consumer must handle it.
 
 | Component | Current handling | Required |
 |---|---|---|
@@ -181,18 +247,21 @@ All three layers return 429 when they activate. Every consumer must handle it.
 
 - Lower `maxSockets` on serializer agents (dna+fasta.js, protein+fasta.js)
 - Add connection-limited axios instance for genbank.js and featureSequence.js
+- Port genbank.js to use DirectSolrClient (eliminates per-contig amplification)
 - Downloads run slower during spikes but nothing breaks, no 429s issued
 
-### Phase 2: API admission control
+### Phase 2: API admission control + per-host admission
 
-- Build QueryClassifier middleware and SolrAdmissionControl
+- Build QueryClassifier middleware and SolrAdmissionControl (Layer 1)
 - Wire into APIMethodHandler and DistributedQuery
+- Add per-host tracking to ShardCursorStream and DirectSolrClient (Layer 3)
+- Add load-aware replica selection to SolrClusterClient
 - Returns 429 — requires concurrent client updates
 - Update CLI tools and website to handle 429
 
 ### Phase 3: Solr safety net
 
-- Enable circuit breakers on all Solr nodes
+- Enable circuit breakers on all Solr nodes (Layer 4)
 - Enable rate limiter via cluster API
 - Ensure API handles 429 from Solr (propagate or try alternate replica)
 

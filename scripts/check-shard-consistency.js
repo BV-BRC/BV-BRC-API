@@ -447,9 +447,7 @@ async function getSchema(solrBaseUrl, collection, options) {
     const response = await httpRequest(url, options)
     return response.schema
   } catch (err) {
-    if (options.verbose) {
-      console.log(`Warning: Could not fetch schema: ${err.message}`)
-    }
+    console.log(`Warning: Could not fetch schema: ${err.message}`)
     return null
   }
 }
@@ -1257,6 +1255,7 @@ async function main() {
         console.log(`Using unique key for sort: ${sortField}`)
       } else {
         console.log('Warning: Could not determine unique key, results may be unordered')
+        console.log('         Document comparison will use full document content, which may produce false inconsistencies')
       }
     }
 
