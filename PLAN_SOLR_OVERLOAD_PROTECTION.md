@@ -300,6 +300,192 @@ All four layers can return 429 when they activate. Every consumer must handle it
 
 ---
 
+## Detailed Code Changes
+
+### Phase 1: Serializer Throttling (no 429, no client changes)
+
+#### `media/dna+fasta.js`
+- **Line 144**: Change `maxSockets: 10` to `maxSockets: 5` on the HTTPS agent
+- **Line 243** (optional): Change `prefetchBatches` default from 2 to 1
+
+#### `media/protein+fasta.js`
+- Same `maxSockets` and `prefetchBatches` changes as dna+fasta.js (uses identical pattern)
+
+#### `media/genbank.js` — Port to DirectSolrClient
+- Add `initializeDirectSolr()` function (copy pattern from `dna+fasta.js:98-166`)
+- Replace `fetchGenome()` (lines 681-705): Use `directClient.fetchGenomeMetadata([genomeId])`, fall back to axios if direct client unavailable
+- Replace `fetchContigs()` (lines 710-733): Use `directClient.query('genome_sequence', {fq: 'genome_id:X', rows: 10000, sort: 'accession asc'})`, fall back to axios
+- Replace `fetchFeatures()` (lines 738-773): Use `directClient.query('genome_feature', {fq: 'genome_id:X', rows: 100000, fl: fields, sort: 'start asc'})`, fall back to axios
+- Rewrite `streamGenbankMultiRecord()` (lines 506-676): Remove streaming contig parser and per-contig feature fetching. Instead:
+  1. Fetch all contigs via `directClient.query()` (one call)
+  2. Fetch all features via `directClient.query()` (one call)
+  3. Group features by accession in a `Map`
+  4. Iterate contigs, writing header + features from map + origin for each
+- Remove `streamFeaturesForContig()` (lines 368-490) — no longer needed
+- For legacy fallback: wrap remaining axios calls with a shared connection-limited axios instance (see featureSequence.js below)
+
+#### `util/featureSequence.js`
+- **Line 67**: Replace bare `axios.post()` with a shared connection-limited instance:
+  ```javascript
+  const http = require('http')
+  const limitedAgent = new http.Agent({ maxSockets: 5, keepAlive: true })
+  // ... use limitedAgent in axios config
+  ```
+- This also fixes the `UnhandledRejection` issue — the axios error at line 67 propagates to the caller but isn't caught in the media serializer fallback paths
+
+### Phase 2: Admission Control (returns 429, requires client updates)
+
+#### New: `lib/SolrAdmissionControl.js`
+- Singleton class with three concerns:
+  - **Global heavy/interactive pools**: `acquireGlobal(category)`, `releaseGlobal(category)` — counting semaphore, returns true/false
+  - **Per-host tracking**: `acquireHost(hostname)`, `releaseHost(hostname)`, `getHostLoad(hostname)` — `Map<hostname, count>`, keyed by hostname not hostname:port
+  - **Stats**: `stats()` returning `{ heavy: {active, max}, interactive: {active, max}, hosts: {hostname: count, ...} }`
+- Configuration from `config.get('queryAdmission')`:
+  ```javascript
+  {
+    heavyMax: 3,           // concurrent heavy requests per API instance
+    interactiveMax: 20,    // concurrent interactive requests per API instance
+    heavyThreshold: 10000, // rows threshold for heavy classification
+    maxPerHost: 15         // concurrent queries per physical Solr host
+  }
+  ```
+- Export singleton: `module.exports = new SolrAdmissionControl(config)`
+
+#### New: `middleware/QueryClassifier.js`
+- Express middleware, runs after Limiter
+- Sets `req.queryCategory = 'heavy' | 'interactive'` based on:
+  ```javascript
+  if (req.call_method === 'stream') return 'heavy'
+  if (req.isDownload) return 'heavy'
+  if (req.call_method === 'get' || req.call_method === 'schema') return 'interactive'
+  const rowsMatch = (req.call_params[0] || '').match(/&rows=(\d+)/)
+  const rows = rowsMatch ? parseInt(rowsMatch[1], 10) : 25
+  if (rows >= config.heavyThreshold) return 'heavy'
+  return 'interactive'
+  ```
+- Does not block — classification only
+
+#### `middleware/APIMethodHandler.js`
+- Import `SolrAdmissionControl`
+- In `querySOLR()` (line 40): Before `solrClient.query()`, call `admissionControl.acquireGlobal(req.queryCategory)`. If returns false, respond with `res.status(429).set('Retry-After', '5').json({status: 429, message: 'Too many concurrent requests'})` and return
+- On query completion (resolve or reject in the `.then()` at line 62): call `admissionControl.releaseGlobal(req.queryCategory)`
+- In `streamQuery()` (line 10): Same pattern around `solrClient.stream()` at line 30
+- `getSOLR()` and `getSchema()` bypass admission control — lightweight single-doc lookups
+
+#### `middleware/DistributedQuery.js`
+- Import `SolrAdmissionControl`
+- Before dispatching distributed query (~line 340): `acquireGlobal(req.queryCategory)`. If false, return 429
+- On completion: `releaseGlobal(req.queryCategory)`
+
+#### `routes/dataType.js`
+- Import `QueryClassifier`
+- Insert in middleware chain after Limiter (currently position 4, line ~224), before JoinFieldInjector:
+  ```javascript
+  // Current:  ...Limiter, JoinFieldInjector, DistributedQuery...
+  // New:      ...Limiter, QueryClassifier, JoinFieldInjector, DistributedQuery...
+  ```
+
+#### `lib/distributed/ShardCursorStream.js`
+- Accept `admissionControl` in constructor options
+- In `_request()` (line 183):
+  - Extract hostname: `const hostname = new URL(url).hostname`
+  - Before HTTP request: `if (!this.admissionControl.acquireHost(hostname))` — throw retriable error
+  - On response end/error: `this.admissionControl.releaseHost(hostname)`
+  - Ensure release in all code paths (success, error, timeout, destroy)
+
+#### `lib/distributed/DirectSolrClient.js`
+- Accept `admissionControl` in constructor options
+- In `_request()` (line 47):
+  - Same acquire/release pattern as ShardCursorStream
+  - Extract hostname from URL, acquire before request, release on completion/error
+
+#### `lib/distributed/SolrClusterClient.js`
+- Accept `admissionControl` in constructor options
+- In `getShardsForCollection()` (line 222): Replace random replica selection with load-aware:
+  ```javascript
+  // Sort by host load ascending, pick first (least loaded)
+  const selectedReplica = activeReplicas
+    .map(r => ({ replica: r, load: this.admissionControl?.getHostLoad(extractHostname(r.base_url)) || 0 }))
+    .sort((a, b) => a.load - b.load)[0].replica
+  ```
+- Falls back to random if `admissionControl` is not set (backward compatible)
+
+#### `lib/distributed/DistributedQueryManager.js`
+- Import and instantiate `SolrAdmissionControl` (or accept via options)
+- Pass `admissionControl` to:
+  - `SolrClusterClient` constructor
+  - `ParallelQueryCoordinator` and `MergeSortStream` constructors (which pass to `ShardCursorStream`)
+  - `DirectSolrClient` constructor
+
+#### `lib/distributed/ParallelQueryCoordinator.js`
+- Accept `admissionControl` in options, pass through to `ShardCursorStream` constructor (line 122-130)
+
+#### `lib/distributed/MergeSortStream.js`
+- Accept `admissionControl` in options, pass through to `ShardCursorStream` constructor (line 160-168)
+
+#### `config.js`
+- Add `queryAdmission` to nconf defaults:
+  ```javascript
+  queryAdmission: {
+    heavyMax: 3,
+    interactiveMax: 20,
+    heavyThreshold: 10000,
+    maxPerHost: 15
+  }
+  ```
+
+#### `app.js`
+- Import `SolrAdmissionControl`
+- Update `/stats` endpoint (lines 151-158) to include admission stats:
+  ```javascript
+  app.use('/stats', function (req, res, next) {
+    const admissionStats = admissionControl.stats()
+    res.write(JSON.stringify({ ...stats, solrAdmission: admissionStats }))
+    res.end()
+  })
+  ```
+
+### Phase 2 (client-side): 429 Handling
+
+#### `middleware/APIMethodHandler.js` (additional change)
+- In `querySOLR()`: When Solr response has `responseHeader.status !== 0`, check if it's a 429. If so, propagate as 429 to client instead of generic error
+
+#### `lib/distributed/ShardCursorStream.js` (additional change)
+- In `_requestWithRetry()` (line 160): On 429 from Solr, treat as retriable but try a **different replica** rather than the same one. This requires access to alternate replica URLs from `SolrClusterClient`
+
+#### CLI tools (external repos)
+- Add 429 detection and exponential backoff retry to HTTP client code
+- Respect `Retry-After` header
+
+#### Website / BV-BRC web app (external repos)
+- Add 429 detection to API client
+- Show user-facing "server busy, retrying..." message
+- Auto-retry with backoff
+
+### Phase 3: Solr Configuration (no code changes)
+
+#### Solr nodes — `solr.in.sh` on each host
+```bash
+SOLR_CIRCUITBREAKER_QUERY_LOADAVG=50
+SOLR_CIRCUITBREAKER_QUERY_CPU=90
+```
+
+#### Solr cluster — via admin API
+```bash
+curl -X POST 'https://solr-host/solr/admin/collections?action=SET-RATELIMITER' \
+  -d '{"enabled": true, "allowedRequests": 20, "slotAcquisitionTimeoutInMS": -1}'
+```
+
+#### HAProxy (Solr-facing) — optional
+```
+backend solr_servers
+    option redispatch
+    retries 2
+    retry-on 429
+```
+
+---
+
 ## Open Questions
 
 - **How many API instances to run?** Fewer instances makes per-process admission control simpler to reason about. Node.js handles I/O-bound work well in a single process. 2 instances provides redundancy without coordination complexity.
