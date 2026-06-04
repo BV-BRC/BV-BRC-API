@@ -2,240 +2,238 @@
 
 ## Context
 
-A single IP (`58.250.174.76`) made parallel `POST /genome_sequence` requests using `libwww-perl/6.61` — 168 successful requests over 80 minutes, each returning ~2.8MB and taking 5-43 seconds. Multiple heavy queries in flight simultaneously drove Solr host load averages over 500. The problem is concurrent expensive queries saturating individual Solr nodes, not request rate.
+Coordinated scraping attacks have overwhelmed the BV-BRC API and Solr cluster. Two incidents on 2026-06-02:
 
-This document surveys the available protection layers, their trade-offs, and the system-wide implications of each.
+1. **Single-IP scrape** (58.250.174.76): 168 genome_sequence downloads over 80 minutes, ~470MB extracted
+2. **Distributed scrape** (9 Azure VMs): 245 genome downloads over 2 hours, **10.4 GB genome data**, **136.6 GB total bandwidth**, driving Solr host load averages to 200 (2x core count on balsam) and causing **43 x 502 errors** for legitimate users
 
----
+### Root Cause: Query Amplification
 
-## Protection Layers Available
+The primary damage is not from the genome queries themselves (genome is a single-shard collection). It comes from the **media serializers** (FASTA, GenBank) making massive numbers of secondary queries during response streaming.
 
-### Layer 1: HAProxy (edge, before API)
+Each genome FASTA download triggers ~370 `feature_sequence` lookups via the serializer. During the peak (13:30-14:00), this produced **15,000+ feature_sequence queries in 30 minutes** across the two Solr HAProxy proxies — 500/minute — saturating shard hosts like arborvitae (21 JVMs) and balsam (19 JVMs).
 
-**Stick-table rate limiting** — per-source-IP request rate limiting at the load balancer:
+The 502 errors were caused by the API layer being unable to service new requests while streaming multiple 50MB genome responses with concurrent secondary queries, not by Solr rejecting queries directly.
 
-```
-frontend http
-    stick-table type ip size 100k expire 1m store http_req_rate(1m)
-    http-request track-sc0 src
-    http-request deny deny_status 429 if { sc_http_req_rate(0) gt 60 }
-```
+### Serializer Code Paths
 
-**`retry-on 429`** — if a Solr backend returns 429, HAProxy retries on a different server:
+| Serializer | Direct Solr path | Legacy axios path | Concurrency control |
+|---|---|---|---|
+| `media/dna+fasta.js` | Yes (SequenceJoinStream, DirectSolrClient) | Fallback + genome metadata | maxSockets: 10 on direct agent; **none** on axios fallback |
+| `media/protein+fasta.js` | Yes (same pattern) | Fallback + genome metadata | Same as dna+fasta |
+| `media/genbank.js` | **No** | 5 separate axios call sites, all via distributeURL | **None** — unlimited default axios |
 
-```
-backend solr_servers
-    option redispatch
-    retries 2
-    retry-on 429
-```
+GenBank completely bypasses the direct Solr path and its socket limits. All its sequence fetches go through the full API roundtrip (axios → distributeURL → API → HAProxy → Solr coordinator → shards) with no concurrency control.
 
-| Pros | Cons |
-|------|------|
-| Stops abuse before it reaches the API or Solr | No heavy/light classification |
-| No code changes | POST retry requires care (though Solr queries are idempotent) |
-| Per-IP rate limiting at the edge | If all backends are overloaded, retries cascade |
-| Already deployed infrastructure | Rate-based, not concurrency-based |
-| Protects against non-API clients too | Config changes require HAProxy reload |
+### Infrastructure
 
-**429 implications:** Clients hitting HAProxy rate limits get 429 directly. Currently no client (CLI tools, website) handles 429.
+- **API instances**: 3 main (p3-api), 3 web, 3 internal, 3 bulk — on walnut and chestnut
+- **Solr coordinators**: walnut, chestnut (via HAProxy, 6 backends each)
+- **Solr shard hosts**: arborvitae (21 JVMs), balsam (19), walnut (18), chestnut (15), bio-gp2 (11), bio-gp1 (10), butternut (9), magnolia (7), larch (7), bio-gp3 (6), cottonwood (3)
+- **Host CPUs**: ~80 cores per host
+- **HAProxy**: Two Solr-facing proxies; showed zero 5xx, max 18 active connections during spike — coordinators were fine; shard hosts were not
 
 ---
 
-### Layer 2: Solr Circuit Breakers (per Solr node)
+## Recommended Throttling / Admission Strategy
 
-Solr 9.6 has built-in circuit breakers configured globally via `solr.in.sh` or per-collection via `solrconfig.xml`. Returns HTTP 429 when tripped.
+### Goal
 
-**Types available:**
+Prevent any single client or traffic burst from saturating individual Solr shard hosts, while allowing full cluster utilization for legitimate concurrent workloads.
 
-| Breaker | What it monitors | Scope | Key parameter |
-|---------|-----------------|-------|---------------|
-| `LoadAverageCircuitBreaker` | OS load average | Host-wide | `threshold` (float) |
-| `CPUCircuitBreaker` | System CPU % via JMX | Host-wide | `threshold` (0-100) |
-| `MemoryCircuitBreaker` | JVM heap usage | Per-JVM | `threshold` (50-95%) |
+### Layer 1: API Admission Control (primary defense)
 
-**Global configuration** (`solr.in.sh`):
+Limit concurrent heavy requests per API instance. This bounds how many "amplifiers" can run at once.
+
+**Classification** (middleware after Limiter, before Solr dispatch):
+- **Heavy**: `rows >= 10000`, `isDownload === true`, or `call_method === 'stream'`
+- **Interactive**: everything else (small queries, schema, single-doc gets)
+
+**Separate pools**:
+- Heavy: 2-3 concurrent per instance (configurable)
+- Interactive: 20 concurrent per instance (configurable)
+- Returns 429 with `Retry-After` header when pool is full — no queuing
+
+**Why this works**: It doesn't matter how many source IPs the attacker uses. It limits total concurrent heavy work, and the secondary query volume follows. With 2 heavy downloads × 3 instances × current amplification, shard load drops from 150 to ~30 concurrent queries.
+
+**Files**:
+- New: `lib/SolrAdmissionControl.js` — counting semaphore singleton
+- New: `middleware/QueryClassifier.js` — sets `req.queryCategory`
+- Edit: `middleware/APIMethodHandler.js` — acquire/release around querySOLR/streamQuery
+- Edit: `middleware/DistributedQuery.js` — same pattern
+- Edit: `routes/dataType.js` — insert QueryClassifier in middleware chain
+- Edit: `config.js` — add `queryAdmission` defaults
+- Edit: `app.js` — expose stats at `/stats`
+
+### Layer 2: Serializer Concurrency Control (amplification throttle)
+
+Each download that gets through Layer 1 should limit its own shard impact.
+
+**Direct Solr path** (`dna+fasta.js`, `protein+fasta.js`):
+- Lower `maxSockets` on the HTTPS agent from 10 to 4-5 (`dna+fasta.js:142-146`)
+- Optionally reduce `prefetchBatches` from 2 to 1
+- The agent is already a singleton — shared across concurrent downloads on the same instance
+
+**Legacy axios path** (`genbank.js`, `featureSequence.js`, fallback in FASTA serializers):
+- Create a shared connection-limited axios instance with `maxSockets` per host
+- Replace the 5 bare `axios.post()` / `axios()` calls in `genbank.js` and the call in `featureSequence.js`
+- This prevents the legacy path from bypassing the throttle when direct Solr is unavailable
+
+**Combined effect**: `concurrent_downloads × sockets_per_download` gives total shard load. With Layer 1 capping downloads to 2-3 per instance and Layer 2 capping sockets to 4-5, total concurrent shard queries from serializers drops to 24-45 across all 3 main API instances (vs. uncapped ~150+ currently).
+
+**Files**:
+- Edit: `media/dna+fasta.js:142-146` — lower maxSockets
+- Edit: `media/protein+fasta.js` — same change (uses same pattern)
+- Edit: `media/genbank.js` — add shared connection-limited axios instance for all 5 call sites
+- Edit: `util/featureSequence.js` — use connection-limited axios instance
+- Port `genbank.js` to use DirectSolrClient (see detailed plan below)
+
+### Layer 2b: Port GenBank Serializer to Direct Solr
+
+`media/genbank.js` currently makes all data fetches via axios through the full API roundtrip (`distributeURL` → nginx → API → HAProxy → Solr coordinator → shards). This is the worst amplifier: a genome with N contigs generates N+2 roundtrip HTTP requests (1 genome metadata + 1 contig stream + N per-contig feature queries via `streamFeaturesForContig()`).
+
+**Current call pattern per genome download:**
+
+| Function | Collection | Calls | Route |
+|---|---|---|---|
+| `fetchGenome()` | `genome` | 1 | Full API roundtrip |
+| `streamGenbankMultiRecord()` | `genome_sequence` | 1 (streaming) | Full API roundtrip |
+| `streamFeaturesForContig()` | `genome_feature` | **1 per contig** | Full API roundtrip |
+| `fetchContigs()` (merged mode) | `genome_sequence` | 1 | Full API roundtrip |
+| `fetchFeatures()` (merged mode) | `genome_feature` | 1 | Full API roundtrip |
+
+A genome with 100 contigs → 102 HTTP roundtrips through the full stack.
+
+**`DirectSolrClient` already provides everything needed:**
+- `fetchGenomeMetadata(genomeIds)` — genome metadata lookup
+- `query(collection, params)` — general Solr query with fq, fl, sort, rows
+- `fetchByIds(collection, field, values)` — batch ID-based lookup
+
+**Ported call pattern per genome download:**
+
+| Replacement | Collection | Calls | Route |
+|---|---|---|---|
+| `directClient.fetchGenomeMetadata([genomeId])` | `genome` | 1 | Direct to shard |
+| `directClient.query('genome_sequence', {fq, sort, rows})` | `genome_sequence` | 1 | Direct to shard |
+| `directClient.query('genome_feature', {fq, fl, sort, rows})` | `genome_feature` | **1** | Direct to shard |
+
+A genome with 100 contigs → **3 direct Solr queries** regardless of contig count.
+
+**Implementation approach — fetch all features upfront, group by accession:**
+
+1. Add `initializeDirectSolr()` to genbank.js (same singleton pattern as `dna+fasta.js:98-166`)
+2. Replace `fetchGenome()` → `directClient.fetchGenomeMetadata([genomeId])`
+3. Replace `fetchContigs()` → `directClient.query('genome_sequence', {fq: 'genome_id:X', rows: 10000, sort: 'accession asc'})`
+4. Replace `fetchFeatures()` → `directClient.query('genome_feature', {fq: 'genome_id:X', rows: 100000, fl: fields, sort: 'start asc'})`
+5. Replace `streamGenbankMultiRecord()`:
+   - Fetch ALL features for the genome in one `directClient.query()` call upfront
+   - Group features by accession in a `Map`
+   - Fetch all contigs in one query
+   - Iterate contigs sequentially: write header, look up features from the map, write origin
+   - Eliminates `streamFeaturesForContig()` entirely — no more per-contig queries
+6. Keep legacy axios as fallback if `initializeDirectSolr()` returns null (same pattern as FASTA serializers)
+7. The direct client shares the connection-limited HTTPS agent (maxSockets: 4-5) with the FASTA serializers
+
+**Result**: GenBank downloads go from N+2 API roundtrip calls to 3 direct shard queries, all through the throttled agent. The per-contig amplification is eliminated entirely.
+
+**Files**:
+- Edit: `media/genbank.js` — add `initializeDirectSolr()`, replace 5 axios call sites, restructure streaming mode
+- Reuse: `lib/distributed/DirectSolrClient.js` — no changes needed, existing `query()` and `fetchGenomeMetadata()` methods suffice
+- Reuse: `lib/distributed/SolrClusterClient.js` — singleton instance shared with FASTA serializers
+
+### Layer 3: Solr Self-Protection (safety net)
+
+Optional defense-in-depth for anything the API-side controls don't catch.
+
+**Circuit breakers** (per Solr node, in `solr.in.sh`):
 ```bash
-SOLR_CIRCUITBREAKER_QUERY_LOADAVG=<threshold>
+SOLR_CIRCUITBREAKER_QUERY_LOADAVG=50    # ~0.6x core count on 80-core hosts
 SOLR_CIRCUITBREAKER_QUERY_CPU=90
-SOLR_CIRCUITBREAKER_UPDATE_LOADAVG=<threshold>
 ```
 
-**Per-collection configuration** (`solrconfig.xml`):
-```xml
-<circuitBreaker class="solr.LoadAverageCircuitBreaker">
-  <double name="threshold">50.0</double>
-  <arr name="requestTypes"><str>QUERY</str></arr>
-</circuitBreaker>
-```
-
-**Considerations:**
-
-- **Load average threshold depends on host core count.** Load average measures runqueue depth; a "healthy" load average is roughly 1.0-2.0x the core count. Need to know core counts per host to set thresholds.
-- **Host-wide scope for load/CPU breakers.** Each host runs multiple Solr JVMs on different ports. All JVMs on the same host see the same OS load average and would trip simultaneously. With 2-3 replicas per shard on different hosts, queries should fail over — but only if the caller handles 429 and tries a different replica.
-- **Memory breaker is per-JVM.** Useful for preventing GC storms, independent of the load problem.
-- **Query vs update separation.** Can set different thresholds for queries and updates, so indexing continues even when queries are throttled.
-
-| Pros | Cons |
-|------|------|
-| Directly addresses the symptom (load > 500) | Must configure on every Solr node |
-| Self-protection — works regardless of client | All JVMs on same host trip together |
-| No API code changes to enable | Blunt — doesn't distinguish heavy vs light queries |
-| Separate query/update thresholds | Callers must handle 429 (API, HAProxy, etc.) |
-| Per-collection tuning possible | Load average threshold is host-dependent |
-
----
-
-### Layer 3: Solr Rate Limiter (per Solr node)
-
-Concurrent request slot-based limiter, configured via cluster API:
-
+**Rate limiter** (per Solr node, via cluster API):
 ```json
-{
-  "set-ratelimiter": {
-    "enabled": true,
-    "allowedRequests": 20,
-    "slotAcquisitionTimeoutInMS": -1,
-    "slotBorrowingEnabled": false
-  }
-}
+{"set-ratelimiter": {"enabled": true, "allowedRequests": 20, "slotAcquisitionTimeoutInMS": -1}}
 ```
 
-| Parameter | Purpose | Default |
-|-----------|---------|---------|
-| `enabled` | Activate | `false` |
-| `allowedRequests` | Max concurrent requests | cores × 3 |
-| `slotAcquisitionTimeoutInMS` | Wait time for slot (-1 = reject immediately) | -1 |
-| `slotBorrowingEnabled` | Allow borrowing slots across request types | `false` |
-| `guaranteedSlots` | Reserved slots when borrowing enabled | allowedRequests ÷ 2 |
-
-Returns 429 when all slots are occupied.
-
-| Pros | Cons |
-|------|------|
-| Concurrency-based (directly addresses the problem) | Instance-level, not per-collection |
-| Slot-based — limits parallel queries on each node | Same 429 propagation issue |
-| Configured via API call, no restart needed | Doesn't distinguish query cost |
-| Works proactively (before load spikes) | `allowedRequests` needs tuning per host |
+Both return 429, requiring all callers to handle it (see 429 requirements below).
 
 ---
 
-### Layer 4: API — HTTP Agent `maxSockets` (minimal code change)
+## 429 System-Wide Requirements
 
-Node.js `http.Agent({ maxSockets: N })` limits concurrent sockets **per host:port**. The distributed query system creates agents with `maxSockets: 50` (`DistributedQueryManager.js:67`). Lowering this limits concurrent queries to each Solr server.
+All three layers return 429 when they activate. Every consumer must handle it.
 
-| Pros | Cons |
-|------|------|
-| One config value change | No heavy/light classification |
-| Per-host limiting built into Node.js | Queues silently — no 429, no observability |
-| No new code | Only affects distributed query path, not proxy |
-| Node.js handles queuing internally | Per-process — divide by instance count |
-
----
-
-### Layer 5: API — Custom Admission Control (most code)
-
-Custom middleware with request classification, per-server tracking, load-aware replica selection, and stats endpoint. Returns 429 when limits exceeded.
-
-**Request classification** (after Limiter middleware, before Solr dispatch):
-- **Heavy**: `rows >= 10000`, `isDownload`, or `call_method === 'stream'`
-- **Interactive**: everything else
-
-**Two levels:**
-- Per-server concurrency for distributed queries (know the target host)
-- Global heavy/interactive budgets for proxy queries
-
-**Load-aware replica selection:** When choosing which replica to query for a shard, prefer replicas on servers with fewer active queries (currently random).
-
-| Pros | Cons |
-|------|------|
-| Heavy/interactive budgets | Most complex, most code |
-| Per-server tracking with observability | Per-process state — multi-instance needs coordination or division |
-| Load-aware replica selection | Duplicates some of what Solr rate limiter does |
-| Stats at `/stats` endpoint | Needs maintenance |
-| 429 with Retry-After | |
-| Works for both proxy and distributed paths | |
+| Component | Current handling | Required |
+|---|---|---|
+| p3-api APIMethodHandler | Treats non-success as generic error | Propagate 429 with Retry-After to client |
+| p3-api ShardCursorStream | Retries same replica 3x | On 429: try different replica |
+| p3-api serializers (axios) | UnhandledRejection on 502 | Catch, retry with backoff, or propagate |
+| CLI tools | No 429 handling | Retry with exponential backoff |
+| Website (BV-BRC web app) | No 429 handling | Show "server busy" message, auto-retry |
+| HAProxy (Solr-facing) | Passes through | Optionally: `retry-on 429` with `redispatch` |
 
 ---
 
-## 429 System-Wide Implications
+## Implementation Sequence
 
-Introducing 429 at **any** layer requires all downstream consumers to handle it. Currently none do.
+### Phase 1: Immediate, zero client impact
 
-### Affected components
+- Lower `maxSockets` on serializer agents (dna+fasta.js, protein+fasta.js)
+- Add connection-limited axios instance for genbank.js and featureSequence.js
+- Downloads run slower during spikes but nothing breaks, no 429s issued
 
-| Component | Current 429 handling | What's needed |
-|-----------|---------------------|---------------|
-| **p3_api (APIMethodHandler.js)** | Treats any non-success Solr response as generic error | Propagate 429 to client with Retry-After header |
-| **p3_api (ShardCursorStream.js)** | `_requestWithRetry()` retries same replica 3x | On 429: try a different replica, not the same one |
-| **p3_api (DistributedQuery.js)** | Passes through errors | Propagate 429 to client |
-| **CLI tools** | No 429 handling | Retry with exponential backoff on 429 |
-| **Website (BV-BRC web app)** | No 429 handling | Show "server busy" message, retry automatically |
-| **libwww-perl / external scripts** | No 429 handling (bad actor continued hitting after 403) | N/A — these get throttled, which is the point |
-| **HAProxy** | Passes 429 through | Optionally: `retry-on 429` with `redispatch` to try another backend |
+### Phase 2: API admission control
 
-### Retry strategy for clients
+- Build QueryClassifier middleware and SolrAdmissionControl
+- Wire into APIMethodHandler and DistributedQuery
+- Returns 429 — requires concurrent client updates
+- Update CLI tools and website to handle 429
 
-Clients receiving 429 should:
-1. Read `Retry-After` header (seconds to wait)
-2. Wait that duration (or exponential backoff if no header)
-3. Retry the same request
-4. After N retries, surface error to user
+### Phase 3: Solr safety net
 
-### Risk of 429 without client support
-
-If 429 is enabled at the Solr layer but clients don't handle it:
-- CLI tools would report cryptic errors instead of retrying
-- Website would show broken pages instead of "please wait"
-- Scripts would fail and users would file bug reports
-
-This suggests a **phased rollout**: implement 429 handling in clients first (or concurrently), then enable the server-side protections.
+- Enable circuit breakers on all Solr nodes
+- Enable rate limiter via cluster API
+- Ensure API handles 429 from Solr (propagate or try alternate replica)
 
 ---
 
-## Layered Strategy Options
+## Observed Attack Patterns
 
-### Option A: Solr-first (least code, most Solr config)
+### Attack 1: Single-IP scrape (58.250.174.76)
 
-1. Enable Solr circuit breakers (load average + CPU) on all nodes
-2. Enable Solr rate limiter with tuned `allowedRequests`
-3. Configure HAProxy `retry-on 429` with `redispatch`
-4. Update API to propagate 429 from Solr to clients
-5. Update CLI tools and website to handle 429
+- **Time**: 09:37-10:57 (80 minutes)
+- **Target**: `POST /genome_sequence` (~2.8MB per response)
+- **Pattern**: Sequential requests, 1-2/min, `libwww-perl/6.61`
+- **Impact**: ~470MB extracted, drove load averages over 500
+- **Stopped by**: Auth expiry (started getting 403)
 
-API changes: small (429 propagation only). Solr config: per-node. Client changes: all consumers.
+### Attack 2: Coordinated distributed scrape (9 Azure IPs)
 
-### Option B: API-first (most code, no Solr config)
+- **Time**: 12:01-14:15 (2h 13min), same day
+- **Source IPs**: 9 Azure VMs (20.x, 52.x, 172.x, 74.x, 68.x, 13.x, 48.x ranges)
+- **User agent**: `libwww-perl/6.68` (all identical)
+- **Pattern**: Each IP does ~800 taxonomy lookups then ~25-33 genome downloads (~50MB each, 6-15s response time)
+- **Concurrency**: Up to 5 concurrent genome queries per API instance, 13/minute across all IPs
+- **Query amplification**: 245 genome downloads → ~90,000 feature_sequence queries (370x amplification via FASTA serializers)
+- **Impact**: 10.4 GB genome data, 136.6 GB total bandwidth, 43 x 502 errors, load 200 on balsam, load 80 on arborvitae
+- **Load distribution**: arborvitae (21 JVMs, 80 cores) and balsam (19 JVMs) hit hardest due to hosting the most shard replicas
+- **Self-limiting**: Load returned to baseline after scrape completed
+- **Key insight**: Per-IP rate limiting would NOT stop this — each IP individually looks moderate. Global concurrency control is required.
 
-1. Build API admission control with request classification
-2. Lower `maxSockets` on distributed query HTTP agent
-3. Update CLI tools and website to handle 429
+### Anatomy of the 502 errors
 
-API changes: significant. Solr config: none. Client changes: all consumers.
-
-### Option C: Layered (defense in depth)
-
-1. HAProxy stick-table rate limiting (edge protection, per-IP)
-2. API admission control with classification (smart throttling)
-3. Solr circuit breakers (safety net, self-protection)
-4. All clients handle 429
-
-Most robust but most work across all components.
-
-### Option D: Incremental
-
-1. **Immediate** — Lower `maxSockets` on distributed query agent (1 line, no 429, queues internally)
-2. **Short-term** — API admission control with 429 + update clients
-3. **Later** — Solr circuit breakers as safety net once 429 is handled everywhere
-
-Starts with zero client impact, adds 429 support when clients are ready.
+- 41 of 43 502s were taxonomy queries, not genome downloads
+- Taxonomy has single shard with leader on arborvitae — same host saturated by feature_sequence shard queries
+- Both Solr-facing HAProxy proxies showed zero 5xx, max 18 connections — Solr coordinators were fine
+- 502s originated between nginx and the API processes: API was overwhelmed streaming 50MB responses
+- API logs show `UnhandledRejection: AxiosError: Request failed with status code 502` — secondary axios calls from serializers failing when coordinators slowed under feature_sequence load
 
 ---
 
 ## Open Questions
 
-- **Host core counts?** Needed to set load average circuit breaker thresholds
-- **How many API instances?** Affects per-process limit division
-- **HAProxy config access?** Can we modify the Solr backend config?
-- **Client update scope?** Which CLI tools and website components need 429 support? How large is that effort?
-- **Rollout order?** Can we enable protection server-side before clients support 429, accepting that some clients will see errors temporarily?
+- **How many API instances to run?** Fewer instances makes per-process admission control simpler to reason about. Node.js handles I/O-bound work well in a single process. 2 instances provides redundancy without coordination complexity.
+- **HAProxy config access?** Can we modify the Solr backend config to add `retry-on 429`?
+- **Client update scope?** Which CLI tools and website components need 429 support?
+- **Rollout order?** Phase 1 (serializer throttling) can deploy immediately with no client changes. Phase 2 (admission control with 429) needs coordinated client updates.
