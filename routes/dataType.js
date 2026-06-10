@@ -19,6 +19,9 @@ var debug = require('debug')('p3api-server:route/dataType')
 var querystring = require('querystring')
 const ShardsPreference = require('../middleware/ShardsPreference')
 const SolrQuerySanitizer = require('../middleware/SolrQuerySanitizer')
+const DistributedQuery = require('../middleware/DistributedQuery')
+const JoinFieldInjector = require('../middleware/JoinFieldInjector')
+const JoinEnrichment = require('../middleware/JoinEnrichment')
 
 router.use(httpParams)
 
@@ -218,6 +221,8 @@ router.use([
   SolrQuerySanitizer,
   DecorateQuery,
   Limiter,
+  JoinFieldInjector,  // Inject join key fields into fl= before query execution
+  DistributedQuery,  // Distributed query integration (after permission filters applied)
   ShardsPreference,
   function (req, res, next) {
     if (!req.call_method || !req.call_collection) {
@@ -236,6 +241,7 @@ router.use([
   reqCounter,
   ExtractCustomFields,
   ContentRange,
+  JoinEnrichment,  // Enrichment joins for paginated queries (after ContentRange, before media)
   media
 ])
 

@@ -1,4 +1,4 @@
-const EventStream = require('event-stream')
+const { streamWithBackpressure } = require('../util/streamWithBackpressure')
 
 function serializeRow (doc) {
   const row = []
@@ -11,7 +11,7 @@ function serializeRow (doc) {
 
   if (doc.feature_type === 'region') {
     row.push(`##sequence-region\taccn|${doc.accession}\t${doc.start}\t${doc.end}\n`)
-    return
+    return row.join('')
   }
 
   row.push(`accn|${doc.accession}\t${doc.annotation}\t${doc.feature_type}\t${doc.start}\t${doc.end}\t.\t${doc.strand}\t0\t`)
@@ -55,34 +55,25 @@ module.exports = {
     }
 
     if (req.call_method === 'stream') {
-      Promise.all([res.results]).then((vals) => {
+      Promise.all([res.results]).then(async (vals) => {
         const results = vals[0]
-        let docCount = 0
-        let head
 
         if (!results.stream) {
           throw Error('Expected ReadStream in Serializer')
         }
 
-        results.stream.pipe(EventStream.mapSync((data) => {
-          if (!head) {
-            head = data
-          } else {
-            // debug(JSON.stringify(data));
-            if (docCount < 1) {
-              res.write('##gff-version 3\n')
-              res.write(`#Genome: ${data.genome_id}\t${data.genome_name}`)
-              if (data.product) {
-                res.write(` ${data.product}`)
-              }
+        await streamWithBackpressure(results.stream, res, {
+          onHeader: (firstDoc) => {
+            let header = '##gff-version 3\n'
+            header += `#Genome: ${firstDoc.genome_id}\t${firstDoc.genome_name}`
+            if (firstDoc.product) {
+              header += ` ${firstDoc.product}`
             }
-            res.write(serializeRow(data))
-            docCount++
-          }
-        })).on('end', () => {
-          res.end()
+            return header + '\n'
+          },
+          transform: (data) => serializeRow(data)
         })
-      }, (error) => {
+      }).catch((error) => {
         next(new Error(`Unable to receive stream: ${error}`))
       })
     } else {

@@ -1,58 +1,55 @@
-const EventStream = require('event-stream')
+const { streamWithBackpressure } = require('../util/streamWithBackpressure')
 
 function encapsulateStringArray (listOfVals) {
   return `"${listOfVals.map((val) => (val && typeof val === 'string') ? val.replace(/"/g, "'") : val).join(';')}"`
 }
+
+function formatField (data, field) {
+  if (data[field] instanceof Array) {
+    return encapsulateStringArray(data[field])
+  } else if (data[field]) {
+    if (typeof data[field] === 'string') {
+      return `"${data[field].replace(/"/g, "'")}"`
+    } else {
+      return data[field]
+    }
+  } else {
+    return ''
+  }
+}
+
 module.exports = {
   contentType: 'text/tsv',
   serialize: function (req, res, next) {
-    var fields = req.fieldSelection
-    var header = req.fieldHeader
+    let fields = req.fieldSelection
+    const header = req.fieldHeader
 
     if (req.isDownload) {
       res.attachment(`BVBRC_${req.call_collection}.txt`)
     }
 
     if (req.call_method === 'stream') {
-      Promise.all([res.results]).then((vals) => {
+      Promise.all([res.results]).then(async (vals) => {
         const results = vals[0]
-        let docCount = 0
-        let head
+        let localFields = fields
 
-        results.stream.pipe(EventStream.mapSync((data) => {
-          if (!head) {
-            head = data
-          } else {
-            if (!fields && docCount < 1) {
-              fields = Object.keys(data)
+        await streamWithBackpressure(results.stream, res, {
+          onHeader: (firstDoc) => {
+            if (!localFields) {
+              localFields = Object.keys(firstDoc)
             }
-            if (docCount < 1) {
-              if (header) {
-                res.write(header.join('\t') + '\n')
-              } else {
-                res.write(fields.join('\t') + '\n')
-              }
+            if (header) {
+              return header.join('\t') + '\n'
+            } else {
+              return localFields.join('\t') + '\n'
             }
-            var row = fields.map(function (field) {
-              if (data[field] instanceof Array) {
-                return encapsulateStringArray(data[field])
-              } else if (data[field]) {
-                if (typeof data[field] === 'string') {
-                  return `"${data[field].replace(/"/g, "'")}"`
-                } else {
-                  return data[field]
-                }
-              } else {
-                return ''
-              }
-            })
-            res.write(row.join('\t') + '\n')
-            docCount++
+          },
+          transform: (data) => {
+            const row = localFields.map((field) => formatField(data, field))
+            return row.join('\t') + '\n'
           }
-        })).on('end', function () {
-          res.end()
         })
-      }, (error) => {
+      }).catch((error) => {
         next(new Error(`Unable to receive stream: ${error}`))
       })
     } else if (req.call_method === 'query') {
@@ -65,27 +62,14 @@ module.exports = {
         } else {
           res.write(fields.join('\t') + '\n')
         }
-        res.results.response.docs.forEach(function (o) {
-          var row = fields.map(function (field) {
-            if (o[field] instanceof Array) {
-              return encapsulateStringArray(o[field])
-            } else if (o[field]) {
-              if (typeof o[field] === 'string') {
-                return `"${o[field].replace(/"/g, "'")}"`
-              } else {
-                return o[field]
-              }
-            } else {
-              return ''
-            }
-          })
-
+        res.results.response.docs.forEach((data) => {
+          const row = fields.map((field) => formatField(data, field))
           res.write(row.join('\t') + '\n')
         })
         res.end()
       }
     } else {
-      next(new Error('Unable to serialize request to csv'))
+      next(new Error('Unable to serialize request to tsv'))
     }
   }
 }

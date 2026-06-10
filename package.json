@@ -1,16 +1,18 @@
 {
   "name": "p3api",
-  "version": "1.9.2",
+  "version": "1.9.3",
   "private": true,
   "scripts": {
     "start": "node --unhandled-rejections=strict --stack-size=65536 app.js",
     "test-api": "mocha -R spec tests/test-api/test.*.spec.js",
+    "test-distributed": "mocha -R spec tests/test-distributed/test.*.spec.js",
     "test-rpc": "mocha -R spec tests/test-rpc/test.*.spec.js",
     "test-media": "mocha -R spec tests/test-media/test.*.spec.js",
     "test-jbrowse": "mocha spec tests/test-jbrowse/test.spec.js",
     "test-hpi": "mocha spec tests/test-hpi/test.spec.js",
     "test-content": "mocha spec tests/test-content/test.spec.js",
     "test-download": "mocha spec tests/test-download/test.spec.js",
+    "test-util": "mocha -R spec tests/test-util/test.*.spec.js",
     "test-permissions": "mocha -R spec  \"tests/test-permissions/**/*.spec.js\"",
     "build-css": "npx postcss public/css/docs.css -o public/css/compiled.css",
     "build-image": "./buildImage.sh"

@@ -7,5 +7,45 @@
 	"distributeURL": "http://localhost:3001/",
 	"queueDirectory": "/queue",
 	"publicGenomeDir": "/genomes",
-  "treeDirectory": "/trees"
+	"treeDirectory": "/trees",
+
+	"distributedQuery": {
+		"enabled": true,
+		"minLimitThreshold": 10000,
+		"maxParallelism": 8,
+		"cursorBatchSize": 2000,
+		"excludeNodes": [],
+		"rejectUnauthorized": true
+	},
+
+	"sequenceJoin": {
+		"batchSize": 200,
+		"prefetchBatches": 2
+	},
+
+	"genomeMetadataCache": {
+		"maxSize": 100,
+		"batchSize": 50
+	},
+
+	"joinEnrichment": {
+		"enabled": true,
+		"cacheSize": 200,
+		"collections": {
+			"genome_feature": {
+				"joinableFields": {
+					"genome_name": { "from": "genome", "via": "genome_id", "field": "genome_name" },
+					"taxon_id": { "from": "genome", "via": "genome_id", "field": "taxon_id" },
+					"genome_status": { "from": "genome", "via": "genome_id", "field": "genome_status" },
+					"strain": { "from": "genome", "via": "genome_id", "field": "strain" }
+				}
+			},
+			"pathway": {
+				"joinableFields": {
+					"genome_name": { "from": "genome", "via": "genome_id", "field": "genome_name" },
+					"taxon_id": { "from": "genome", "via": "genome_id", "field": "taxon_id" }
+				}
+			}
+		}
+	}
 }

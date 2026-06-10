@@ -44,26 +44,48 @@ module.exports = function (req, res, next) {
     debug('req.url', req.url, parsed)
 
     if (parsed) {
+      // Store http_fasta_* params separately before processing
+      // These are used by FASTA serializers and should not go to Solr
+      req.fastaParams = {}
+
+      // Store http_genbank_* params separately before processing
+      // These are used by Genbank serializer and should not go to Solr
+      req.genbankParams = {}
+
       Object.keys(parsed).forEach((key) => {
+        if (key.match(/^http_fasta_/)) {
+          // Store FASTA params for serializer access
+          req.fastaParams[key] = decodeURIComponent(parsed[key])
+          delete parsed[key]
+          return
+        }
+
+        if (key.match(/^http_genbank_/)) {
+          // Store Genbank params for serializer access
+          req.genbankParams[key] = decodeURIComponent(parsed[key])
+          delete parsed[key]
+          return
+        }
+
         if (key.match(/^http_/)) {
           const header = key.split('_')[1]
-          
-          // Only allow whitelisted headers
+
+          // Only process headers that are in the whitelist
           if (!ALLOWED_HEADERS.includes(header.toLowerCase())) {
             debug(`Blocked attempt to set unauthorized header: ${header}`)
             delete parsed[key]
             return
           }
-          
+
           // Sanitize the header value to prevent XSS
           const rawValue = decodeURIComponent(parsed[key])
           const sanitizedValue = sanitizeHeaderValue(rawValue)
-          
+
           // Log if sanitization changed the value (potential attack)
           if (rawValue !== sanitizedValue) {
             console.warn(`[SECURITY] Sanitized potentially malicious header value for ${header}: ${rawValue}`)
           }
-          
+
           req.headers[header] = sanitizedValue
           delete parsed[key]
         }

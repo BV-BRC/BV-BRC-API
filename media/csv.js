@@ -1,7 +1,21 @@
-const EventStream = require('event-stream')
+const { streamWithBackpressure } = require('../util/streamWithBackpressure')
 
 function encapsulateStringArray (listOfVals) {
   return `"${listOfVals.map((val) => (val && typeof val === 'string') ? val.replace(/"/g, "'") : val).join(';')}"`
+}
+
+function formatField (data, field) {
+  if (data[field] instanceof Array) {
+    return encapsulateStringArray(data[field])
+  } else if (data[field]) {
+    if (typeof data[field] === 'string') {
+      return `"${data[field].replace(/"/g, "'")}"`
+    } else {
+      return data[field]
+    }
+  } else {
+    return ''
+  }
 }
 
 module.exports = {
@@ -13,48 +27,29 @@ module.exports = {
     if (req.isDownload) {
       res.attachment('BVBRC_' + req.call_collection + '.csv')
     }
-    // console.log(`media type csv, call_method: ${req.call_method}`)
 
     if (req.call_method === 'stream') {
-      Promise.all([res.results]).then((vals) => {
+      Promise.all([res.results]).then(async (vals) => {
         const results = vals[0]
-        let docCount = 0
-        let head
-        results.stream.pipe(EventStream.mapSync((data) => {
-          if (!head) {
-            head = data
-          } else {
-            if (!fields && docCount < 1) {
-              fields = Object.keys(data)
-            }
-            if (docCount < 1) {
-              if (header) {
-                res.write(header.join(',') + '\n')
-              } else {
-                res.write(fields.join(',') + '\n')
-              }
-            }
+        let localFields = fields
 
-            const row = fields.map((field) => {
-              if (data[field] instanceof Array) {
-                return encapsulateStringArray(data[field])
-              } else if (data[field]) {
-                if (typeof data[field] === 'string') {
-                  return `"${data[field].replace(/"/g, "'")}"`
-                } else {
-                  return data[field]
-                }
-              } else {
-                return ''
-              }
-            })
-            res.write(row.join(',') + '\n')
-            docCount++
+        await streamWithBackpressure(results.stream, res, {
+          onHeader: (firstDoc) => {
+            if (!localFields) {
+              localFields = Object.keys(firstDoc)
+            }
+            if (header) {
+              return header.join(',') + '\n'
+            } else {
+              return localFields.join(',') + '\n'
+            }
+          },
+          transform: (data) => {
+            const row = localFields.map((field) => formatField(data, field))
+            return row.join(',') + '\n'
           }
-        })).on('end', () => {
-          res.end()
         })
-      }, (error) => {
+      }).catch((error) => {
         next(new Error(`Unable to receive stream: ${error}`))
       })
     } else if (req.call_method === 'query') {
@@ -68,20 +63,7 @@ module.exports = {
           res.write(fields.join(',') + '\n')
         }
         res.results.response.docs.forEach((data) => {
-          const row = fields.map((field) => {
-            if (data[field] instanceof Array) {
-              return encapsulateStringArray(data[field])
-            } else if (data[field]) {
-              if (typeof data[field] === 'string') {
-                return `"${data[field].replace(/"/g, "'")}"`
-              } else {
-                return data[field]
-              }
-            } else {
-              return ''
-            }
-          })
-
+          const row = fields.map((field) => formatField(data, field))
           res.write(row.join(',') + '\n')
         })
         res.end()
