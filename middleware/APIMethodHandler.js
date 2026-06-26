@@ -1,4 +1,4 @@
-const Solrjs = require('solrjs')
+const Solrjs = require('../lib/solrjs')
 const Config = require('../config')
 const SOLR_URL = Config.get('solr').url
 const debug = require('debug')('p3api-server:middleware/APIMethodHandler')

@@ -27,7 +27,7 @@ const bodyParser = require('body-parser')
 const debug = require('debug')('p3api-server:genomePermissions')
 const conf = require('../config')
 
-const Solrjs = require('solrjs')
+const Solrjs = require('../lib/solrjs')
 const SOLR_URL = conf.get('solr').url
 const request = require('request-promise')
 const Web = require('../web');

@@ -1,5 +1,5 @@
 const debug = require('debug')('p3api-server:patchmiddleware')
-const Solrjs = require('solrjs')
+const Solrjs = require('../lib/solrjs')
 const jsonpatch = require('json-patch')
 const Url = require('url')
 const Http = require('http')

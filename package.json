@@ -48,7 +48,6 @@
     "redis": "^2.8.0",
     "request-promise": "4.2.2",
     "rql": "^0.3.3",
-    "solrjs": "github:BV-BRC-dependencies/solrjs#1.0.0",
     "temp": "^0.8.3",
     "touch": "^1.0.0",
     "uuid": "^2.0.1"
