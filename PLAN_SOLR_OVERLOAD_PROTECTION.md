@@ -486,9 +486,188 @@ backend solr_servers
 
 ---
 
+## Replica Load Balancing
+
+### Problem
+
+The `shards.preference` configuration controls which replicas receive query traffic. The original configuration (`replica.type:NRT,replica.type:PULL,replica.type:TLOG`) directed 99% of traffic to NRT leader replicas, leaving TLOG followers idle. This concentrated all query load on a subset of hosts.
+
+### Solution
+
+Changed to `replica.base:random` which distributes traffic randomly across all active replicas regardless of type. Verified with the `check-replica-traffic.js` monitoring script — per-replica traffic is now evenly distributed (~0.7-1.2 req/s per replica across all hosts).
+
+### Consistency During Indexing
+
+With `replica.base:random`, queries may hit followers that haven't finished replicating the latest data from the leader. During the hourly indexing window (a few minutes), different replicas may return different results for recently-indexed documents.
+
+**Future enhancement — indexing-aware preference switching:**
+
+During indexing, switch to `replica.leader:true` to ensure consistent results. After replication catches up, switch back to `replica.base:random` for even load distribution.
+
+Implementation options:
+1. **Redis signal**: Indexer sets a per-collection key (`indexing:genome_feature`) with TTL when indexing starts. `ShardsPreference` middleware checks the key — if set, uses `replica.leader:true`; otherwise uses `replica.base:random`. API already has Redis for apicache.
+2. **Time-based heuristic**: If indexing always runs at the top of the hour, automatically use leader preference for the first N minutes. Simple but fragile.
+3. **API endpoint**: Indexer calls a control endpoint on the API to toggle the preference. Requires the indexer to know about the API.
+
+Option 1 (Redis signal) is preferred — minimal coordination, per-collection granularity, and TTL provides automatic fallback if the indexer fails to clear the flag.
+
+### Collections to configure
+
+All collections with multiple replica types should use `replica.base:random`:
+
+```json
+{
+  "shards": {
+    "genome_feature": { "preference": "replica.base:random" },
+    "feature_sequence": { "preference": "replica.base:random" },
+    "genome_sequence": { "preference": "replica.base:random" },
+    "pathway": { "preference": "replica.base:random" },
+    "subsystem": { "preference": "replica.base:random" },
+    "sp_gene": { "preference": "replica.base:random" },
+    "genome_amr": { "preference": "replica.base:random" }
+  }
+}
+```
+
+### Monitoring
+
+Use `scripts/check-replica-traffic.js` to verify distribution:
+
+```bash
+# Snapshot of cumulative traffic
+node scripts/check-replica-traffic.js -c genome_feature
+
+# Monitor traffic delta over 2 minutes
+node scripts/check-replica-traffic.js -c genome_feature -d 120
+
+# Check a specific shard
+node scripts/check-replica-traffic.js -c feature_sequence -s shard11
+```
+
+The script reads `QUERY./select[shard].requests` (coordinator fan-out sub-queries) from each replica's MBeans endpoint and reports per-shard distribution and per-host aggregates. Flags shards where one replica handles >1.5x the average as imbalanced.
+
+---
+
+## Eliminating Cross-Collection Joins (OOM Crash Prevention)
+
+### Problem
+
+On 2026-06-25, three Solr data nodes crashed simultaneously with JVM heap OOM. Root cause: cross-collection join queries on broad taxon IDs (`taxon_lineage_ids:2` = all Bacteria) generating 57-93M match DocSets per shard, with multiple concurrent sessions multiplying heap pressure. Queries held DocSets alive for up to 330 seconds. See `crash-analysis-2026-06-25.md` for full analysis.
+
+The cross-collection join (`{!join method=crossCollection fromIndex=genome from=genome_id to=genome_id}...`) is generated entirely by the API — it is not part of incoming client queries. Every join uses `fromIndex=genome` — the genome collection is always the source.
+
+### Join volume by target collection (from coordinator log analysis, 24,599 joins)
+
+| Target collection | Joins | Notes |
+|---|---|---|
+| genome_amr | 12,008 | Dominated by taxon:562 (E. coli) — 8,956 of 12,008 |
+| genome_v02 (genome) | 8,936 | Self-join; includes explicit genome_id list pattern (safe) |
+| genome_feature | 2,445 | The collection that crashed, but not the highest volume |
+| genome_sequence | 668 | |
+| sp_gene, protein_feature, pathway, ppi, subsystem, strain, surveillance | ~540 combined | |
+
+### Two join patterns — only one is dangerous
+
+1. **Taxon filter** — `taxon_lineage_ids:N` — materializes all genomes in a taxon into the DocSet. Breadth is unbounded (taxon:2 = all Bacteria).
+2. **Explicit genome_id list** — `genome_id:(id1 OR id2 OR ...)` — DocSet size equals list length. Bounded, safe.
+
+Extra filters beyond the join and `public:true` are minimal. Only one additional `fq` appears: `feature_type:(CDS OR mat_peptide)` on 1,001 genome_feature queries. No other narrowing happens on the target side.
+
+### genome_v02 self-joins can be eliminated trivially
+
+When genome joins to itself (8,936 queries), taxon joins are redundant — `genome_v02` already has `taxon_lineage_ids`. These can be rewritten to `fq=taxon_lineage_ids:N` directly on genome_v02, eliminating the join with no cache needed.
+
+### Where the join is generated
+
+Only two code locations:
+
+1. **`solrjs.fixed/rql.js:75-91`** — RQL parser `normalized.genome` handler. Constructs the join clause from arbitrary genome collection filters (taxon, genome_status, host_name, etc. — not just taxonomy).
+2. **`routes/dataRouter.js:59`** — Hardcoded summary endpoint for taxon category feature counts.
+
+No joins are generated for incoming Solr-format queries. The `SolrQuerySanitizer` does not currently block `{!join}` in client-submitted Solr queries (should be added as defense-in-depth).
+
+### Solution: Local join resolution via SQLite cache
+
+Instead of generating a Solr cross-collection join, resolve the join locally in the API process using a cached `taxon_id → genome_id` mapping, then rewrite the query as a Solr `{!terms}` filter.
+
+**Data flow:**
+
+1. On API startup and after each hourly indexing cycle, query Solr for all genomes: `fl=genome_id,taxon_lineage_ids&rows=*`
+2. Build SQLite table:
+   ```sql
+   CREATE TABLE genome_taxon (taxon_id INTEGER, genome_id TEXT);
+   CREATE INDEX idx_taxon ON genome_taxon(taxon_id);
+   ```
+   Each genome contributes ~5-10 rows (one per lineage ID). ~1M genomes × ~7 avg lineage depth = ~7M rows, ~50MB on disk.
+3. When `rql.js` encounters a `genome()` clause with taxon filter:
+   - Query SQLite: `SELECT genome_id FROM genome_taxon WHERE taxon_id = ?`
+   - If count ≤ 10,000 genome_ids: emit `&fq={!terms f=genome_id}id1,id2,...,idN` instead of the join
+   - If count > 10,000: reject with 400 ("taxonomy filter too broad — please select a more specific taxon")
+4. Same logic for `dataRouter.js:59`
+
+**Why `{!terms}` instead of OR clauses:** Solr's terms query parser builds an efficient hash set internally. 10,000 IDs × 15 bytes = 150KB query string, fast to parse, low memory. OR clauses build a boolean query tree that's expensive to parse and consumes heap.
+
+**Why 10,000 as the threshold:** A terms query with 10,000 IDs is practical for Solr. Above that, the query string itself becomes large and parsing adds latency. More importantly, taxa with >10,000 genomes (Bacteria: ~500K, Proteobacteria: ~200K) are exactly the queries that crash Solr — blocking them is the right behavior.
+
+**Why SQLite (`better-sqlite3`):**
+- Synchronous API — no async complexity in the RQL parser
+- Memory-mapped I/O — hot data stays in OS page cache, no GC pressure from large JS objects
+- Sub-millisecond lookups with index on taxon_id
+- Rebuild is a single transaction (truncate + bulk insert + commit)
+- ~50MB on disk vs ~200MB for equivalent JS Map/Set
+- Zero external dependencies (process-local, no Redis roundtrip)
+
+### Additional mitigations
+
+**`timeAllowed`**: Inject `&timeAllowed=60000` (60 seconds) into all queries that contain cross-collection joins, regardless of target collection. The join is dangerous across all collections (genome_amr has the highest join volume at 12,008). Inject in `Limiter.js` which already runs for every query — detect `crossCollection` in `req.call_params[0]` and append `&timeAllowed=60000`. This caps how long any query can hold a DocSet in heap. Even if a broad query somehow reaches Solr, it can't hold a DocSet alive for 330 seconds.
+
+**Block `{!join}` in client Solr queries**: Add `join` to the blocked parameter list in `SolrQuerySanitizer.js` to prevent clients from submitting their own cross-collection joins directly.
+
+**Concurrent join query limit**: If any join queries remain (e.g., for non-taxon genome filters that can't be resolved locally), the admission control (Layer 1) should limit concurrent join queries to 1-2 per API instance.
+
+### Code changes
+
+**New: `lib/GenomeTaxonCache.js`**
+- SQLite-backed cache using `better-sqlite3`
+- `rebuild()` — fetches all genomes from Solr, rebuilds the taxon_id → genome_id table
+- `getGenomeIds(taxonId)` — returns array of genome_ids for a taxon
+- `getGenomeCount(taxonId)` — returns count without fetching all IDs (for threshold check)
+- Singleton, initialized on startup, rebuilt after each indexing cycle
+
+**Edit: `solrjs.fixed/rql.js:75-91`**
+- Replace the `{!join}` generation with local resolution:
+  ```javascript
+  if (normalized.genome && normalized.genome.length > 0) {
+    // Extract taxon filter from genome args
+    // Look up genome_ids from GenomeTaxonCache
+    // If count <= threshold: emit {!terms f=genome_id}id1,id2,...
+    // If count > threshold: throw error (too broad)
+  }
+  ```
+
+**Edit: `routes/dataRouter.js:59`**
+- Same rewrite — resolve taxon to genome_ids locally, use `{!terms}` filter
+
+**Edit: `middleware/SolrQuerySanitizer.js`**
+- Add `join` to blocked Solr parameters/syntax for client-submitted queries
+
+**Edit: `middleware/Limiter.js`**
+- Add `&timeAllowed=60000` to genome_feature queries (or all queries)
+
+**New dependency: `better-sqlite3`**
+- Add to `package.json`
+
+### Long-term: schema denormalization
+
+Add `taxon_lineage_ids` field to the `genome_feature` Solr schema. This eliminates the need for any join — `fq=taxon_lineage_ids:X` works directly on genome_feature. Requires schema migration and full reindex. The SQLite cache approach above is the bridge solution until this is done.
+
+---
+
 ## Open Questions
 
 - **How many API instances to run?** Fewer instances makes per-process admission control simpler to reason about. Node.js handles I/O-bound work well in a single process. 2 instances provides redundancy without coordination complexity.
 - **HAProxy config access?** Can we modify the Solr backend config to add `retry-on 429`?
 - **Client update scope?** Which CLI tools and website components need 429 support?
 - **Rollout order?** Phase 1 (serializer throttling) can deploy immediately with no client changes. Phase 2 (admission control with 429) needs coordinated client updates.
+- **Indexing-aware preference switching?** Implement Redis-based signaling between indexer and API for consistent reads during indexing window.
+- **Schema denormalization**: When to add `taxon_lineage_ids` to genome_feature schema? This eliminates the join entirely but requires a full reindex.

@@ -351,3 +351,36 @@ const directClient = new DirectSolrClient(clusterClient, { agent })
 ```
 Error: self-signed certificate
 ```
+
+## Solr Client Library (lib/solrjs)
+
+The `lib/solrjs/` directory contains the inlined Solr client library (formerly the external `solrjs` npm package). It was inlined to simplify maintenance and enable direct modification.
+
+- **`lib/solrjs/rql.js`** — extends the `rql` package's Query prototype with `.toSolr()` to convert RQL AST to Solr query strings. Contains all Solr-specific query handlers (eq, in, genome, facet, etc.) and the cross-collection join logic.
+- **`lib/solrjs/index.js`** — Solrjs HTTP client for making requests to Solr (`.query()`, `.stream()`, `.get()`, `.getSchema()`).
+- **`rql` npm package** — generic RQL parser (still an external dependency). Parses RQL strings into Query AST nodes.
+
+All `require('solrjs')` calls now use `require('../lib/solrjs')`. Do NOT add solrjs back to package.json.
+
+## Cross-Collection Joins and Query Safety
+
+### How joins are generated
+
+The API generates Solr cross-collection joins in two places — never from client input:
+
+1. `lib/solrjs/rql.js:75-94` — RQL `genome()` clause. When the target collection is `genome`, the filter is inlined directly as `&fq=` (no join needed — genome self-join elimination). For other collections, generates `{!join method=crossCollection fromIndex=genome from=genome_id to=genome_id}`.
+2. `routes/dataRouter.js:59` — hardcoded summary endpoint for taxon category feature counts.
+
+Both join from the `genome` collection to other collections via `genome_id`. The join filter can include any genome field (taxon_lineage_ids, genome_status, host_name, etc.), not just taxonomy.
+
+### Known crash risk
+
+Broad taxon joins (e.g., `taxon_lineage_ids:2` = all Bacteria) generate 57-93M match DocSets per shard and have caused JVM OOM crashes on data nodes. See `crash-analysis-2026-06-25.md` and `PLAN_SOLR_OVERLOAD_PROTECTION.md` for full analysis and mitigation plan.
+
+### Planned fix: local join resolution
+
+Replace the Solr cross-collection join with API-side resolution using a local SQLite cache (`better-sqlite3`) of `taxon_id → genome_id` mappings, rewriting joins as `{!terms f=genome_id}` filters. See the "Eliminating Cross-Collection Joins" section in `PLAN_SOLR_OVERLOAD_PROTECTION.md`.
+
+### Future: Solr query cancellation
+
+Solr 9.6.1 supports task cancellation via `canCancel=true&queryUUID=<uuid>` on queries and `GET /solr/admin/tasks/cancel?queryUUID=<uuid>` to cancel. This could be used to cancel in-flight Solr queries when the browser disconnects (`req.on('close')`). See `solr-query-cancellation.md` for design details. **Not yet implemented** — the local join resolution and `timeAllowed` mitigations take priority. Cancellation is a general resource hygiene improvement for later.

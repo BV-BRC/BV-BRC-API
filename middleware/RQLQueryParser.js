@@ -1,4 +1,4 @@
-const Rql = require('solrjs/rql')
+const Rql = require('../lib/solrjs/rql')
 const debug = require('debug')('RQLQueryParser')
 const Expander = require('../ExpandingQuery')
 const Config = require('../config')
@@ -104,7 +104,7 @@ module.exports = function (req, res, next) {
           if (q === '()') { q = '' }
           const rq = Rql(q)
           const max = (req.isDownload) ? 999999999 : 25000
-          req.call_params[0] = rq.toSolr({ maxRequestLimit: max, defaultLimit: 25 })
+          req.call_params[0] = rq.toSolr({ maxRequestLimit: max, defaultLimit: 25, collection: req.call_collection })
           debug(`Converted Solr Query: ${req.call_params[0]}`)
 
           // If cursor mode is active, modify the Solr query
