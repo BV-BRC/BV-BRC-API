@@ -95,9 +95,16 @@ function getSOLR (req, res, next) {
         }
       } else if (sresults && sresults.response && sresults.response.docs) {
         // handle for multiple ids in get request
-        const results = sresults.response.docs[0]
+        // Check permissions on EVERY document, not just the first
+        const isPublicFree = req.publicFree.indexOf(req.call_collection) >= 0
 
-        if (results.public || (req.publicFree.indexOf(req.call_collection) >= 0) || (results.owner === (req.user)) || (results.user_read && results.user_read.indexOf(req.user) >= 0)) {
+        const authorizedDocs = sresults.response.docs.filter((doc) => {
+          return doc.public || isPublicFree || (doc.owner === req.user) || (doc.user_read && doc.user_read.indexOf(req.user) >= 0)
+        })
+
+        if (authorizedDocs.length > 0) {
+          sresults.response.docs = authorizedDocs
+          sresults.response.numFound = authorizedDocs.length
           res.results = sresults.response
           next()
         } else {
