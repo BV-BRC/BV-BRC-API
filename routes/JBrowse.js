@@ -22,12 +22,12 @@ function sanitizeSolrValue (val) {
 }
 
 // Validate that a value looks like a number (integer or float).
-// Returns the value as a string if valid, or '0' if not.
+// Returns null if missing or invalid so callers can reject the request.
 function sanitizeNumeric (val) {
-  if (val === undefined || val === null) return '0'
+  if (val === undefined || val === null) return null
   var s = String(val)
   if (/^-?\d+(\.\d+)?$/.test(s)) return s
-  return '0'
+  return null
 }
 
 function generateTrackList (req, res, next) {
@@ -2823,6 +2823,9 @@ router.get('/genome/:id/stats/region/:sequence_id', [
   function (req, res, next) {
     var start = sanitizeNumeric(req.query.start || req.params.start)
     var end = sanitizeNumeric(req.query.end || req.params.end)
+    if (start === null || end === null) {
+      return res.status(400).json({ error: 'Invalid numeric value for start or end parameter' })
+    }
     var annotation = sanitizeSolrValue(req.query.annotation || req.params.annotation || 'PATRIC')
     var sequenceId = sanitizeSolrValue(req.params.sequence_id)
     req.call_collection = 'genome_feature'
@@ -2864,8 +2867,11 @@ router.get('/genome/:id/stats/regionFeatureDensities/:sequence_id', [
   function (req, res, next) {
     var start = sanitizeNumeric(req.query.start || req.params.start)
     var end = sanitizeNumeric(req.query.end || req.params.end)
-    var annotation = sanitizeSolrValue(req.query.annotation || req.params.annotation || 'PATRIC')
     var basesPerBin = sanitizeNumeric(req.query.basesPerBin || req.params.basesPerBin)
+    if (start === null || end === null || basesPerBin === null) {
+      return res.status(400).json({ error: 'Invalid numeric value for start, end, or basesPerBin parameter' })
+    }
+    var annotation = sanitizeSolrValue(req.query.annotation || req.params.annotation || 'PATRIC')
     var sequenceId = sanitizeSolrValue(req.params.sequence_id)
     req.call_collection = 'genome_feature'
     req.call_method = 'query'
@@ -2914,6 +2920,9 @@ router.get('/genome/:id/features/:seq_accession', [
 
     var start = sanitizeNumeric(req.query.start || req.params.start)
     var end = sanitizeNumeric(req.query.end || req.params.end)
+    if (start === null || end === null) {
+      return res.status(400).json({ error: 'Invalid numeric value for start or end parameter' })
+    }
     var annotation = sanitizeSolrValue(req.query.annotation || req.params.annotation || 'PATRIC')
     var genomeId = sanitizeSolrValue(req.params.id)
     var seqAccession = sanitizeSolrValue(req.params.seq_accession)
