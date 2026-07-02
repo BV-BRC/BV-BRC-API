@@ -105,27 +105,61 @@ describe('SolrQuerySanitizer Unit Tests', function () {
   })
 
   describe('sanitizeQueryString', function () {
-    it('should remove shards parameter from query string', function () {
+    it('should reject query containing shards parameter', function () {
       const result = sanitizeQueryString('q=*:*&rows=10&shards=http://internal:8983/solr/admin')
-      assert.equal(result.sanitized, 'q=*:*&rows=10')
+      assert.equal(result.sanitized, '')
       assert.include(result.blockedParams, 'shards')
     })
 
-    it('should remove multiple dangerous parameters', function () {
+    it('should reject query containing multiple dangerous parameters', function () {
       const result = sanitizeQueryString('q=*:*&shards=evil&stream.url=http://evil&debug=true')
-      assert.equal(result.sanitized, 'q=*:*')
-      assert.equal(result.blockedParams.length, 3)
+      assert.equal(result.sanitized, '')
+      assert.isAbove(result.blockedParams.length, 0)
     })
 
-    it('should handle URL-encoded parameter names', function () {
+    it('should catch URL-encoded parameter names', function () {
       const result = sanitizeQueryString('q=*:*&%73hards=evil') // %73 = 's'
       assert.include(result.blockedParams, 'shards')
-      assert.equal(result.sanitized, 'q=*:*')
+      assert.equal(result.sanitized, '')
+    })
+
+    it('should catch double-encoded shards parameter', function () {
+      // %2526 -> %26 after one decode -> & after second decode
+      const result = sanitizeQueryString('q=*:*%2526shards=evil.com')
+      assert.include(result.blockedParams, 'shards')
+      assert.equal(result.sanitized, '')
+    })
+
+    it('should catch triple-encoded shards parameter', function () {
+      // %252526 -> %2526 -> %26 -> &
+      const result = sanitizeQueryString('q=*:*%252526shards=evil.com')
+      assert.include(result.blockedParams, 'shards')
+      assert.equal(result.sanitized, '')
+    })
+
+    it('should catch shards smuggled in value via encoded ampersand', function () {
+      // After full decode: q=*:*&shards=evil
+      const result = sanitizeQueryString('q=*:*%26shards=evil')
+      assert.include(result.blockedParams, 'shards')
+      assert.equal(result.sanitized, '')
+    })
+
+    it('should catch stream.url smuggled via encoding', function () {
+      const result = sanitizeQueryString('q=*:*%26stream.url=http://169.254.169.254/')
+      assert.include(result.blockedParams, 'stream.url')
+      assert.equal(result.sanitized, '')
     })
 
     it('should return original if no dangerous params', function () {
       const result = sanitizeQueryString('q=*:*&rows=10&fq=public:true')
       assert.equal(result.sanitized, 'q=*:*&rows=10&fq=public:true')
+      assert.equal(result.blockedParams.length, 0)
+    })
+
+    it('should not false-positive on values containing dangerous words', function () {
+      // "debug" is in the value, not as a parameter name
+      const result = sanitizeQueryString('q=gene_name:debug_protein&rows=10')
+      assert.equal(result.sanitized, 'q=gene_name:debug_protein&rows=10')
       assert.equal(result.blockedParams.length, 0)
     })
 
@@ -184,7 +218,7 @@ describe('SSRF Integration Tests', function () {
   }
 
   // TIKI-W094-6: Arbitrary Solr Queries lead to Full read SSRF
-  it('should block shards parameter in POST with solrquery content-type', async function () {
+  it('should reject shards parameter in POST with solrquery content-type', async function () {
     const response = await httpRequest({
       ...baseOptions,
       method: 'POST',
@@ -194,11 +228,11 @@ describe('SSRF Integration Tests', function () {
       }
     }, 'q=*:*&rows=1&shards=http://internal:8983/solr/admin')
 
-    // The request should not cause a 500 error (shards should be stripped)
-    assert.notEqual(response.status, 500)
+    assert.equal(response.status, 400)
+    assert.include(response.body, 'prohibited query parameters')
   })
 
-  it('should block shards parameter in GET request', async function () {
+  it('should reject shards parameter in GET request', async function () {
     const response = await httpRequest({
       ...baseOptions,
       method: 'GET',
@@ -208,11 +242,39 @@ describe('SSRF Integration Tests', function () {
       }
     })
 
-    assert.notEqual(response.status, 500)
+    assert.equal(response.status, 400)
+  })
+
+  it('should reject double-encoded shards via solr= POST param', async function () {
+    // This is the exact Synack attack vector: %2526 -> %26 after decodeURIComponent -> & after fullyDecode
+    const response = await httpRequest({
+      ...baseOptions,
+      method: 'POST',
+      path: '/genome/',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }, 'solr=q%3D*:*%2526shards%3Dhttp://evil.com:8983/solr/')
+
+    assert.equal(response.status, 400)
+    assert.include(response.body, 'prohibited query parameters')
+  })
+
+  it('should reject triple-encoded shards parameter', async function () {
+    const response = await httpRequest({
+      ...baseOptions,
+      method: 'POST',
+      path: '/genome/',
+      headers: {
+        'Content-Type': 'application/solrquery+x-www-form-urlencoded'
+      }
+    }, 'q=*:*%252526shards=http://evil.com')
+
+    assert.equal(response.status, 400)
   })
 
   // TIKI-W094-8: SSRF via stream.url
-  it('should block stream.url parameter', async function () {
+  it('should reject stream.url parameter', async function () {
     const response = await httpRequest({
       ...baseOptions,
       method: 'POST',
@@ -222,10 +284,10 @@ describe('SSRF Integration Tests', function () {
       }
     }, 'q=*:*&stream.url=http://169.254.169.254/latest/meta-data/')
 
-    assert.notEqual(response.status, 500)
+    assert.equal(response.status, 400)
   })
 
-  it('should block stream.file parameter', async function () {
+  it('should reject stream.file parameter', async function () {
     const response = await httpRequest({
       ...baseOptions,
       method: 'POST',
@@ -235,11 +297,11 @@ describe('SSRF Integration Tests', function () {
       }
     }, 'q=*:*&stream.file=/etc/passwd')
 
-    assert.notEqual(response.status, 500)
+    assert.equal(response.status, 400)
   })
 
   // TIKI-W094-9: qt parameter for handler override
-  it('should block qt parameter for handler override', async function () {
+  it('should reject qt parameter for handler override', async function () {
     const response = await httpRequest({
       ...baseOptions,
       method: 'POST',
@@ -249,10 +311,10 @@ describe('SSRF Integration Tests', function () {
       }
     }, 'q=*:*&qt=/admin/cores')
 
-    assert.notEqual(response.status, 500)
+    assert.equal(response.status, 400)
   })
 
-  it('should block debug parameters', async function () {
+  it('should reject debug parameters', async function () {
     const response = await httpRequest({
       ...baseOptions,
       method: 'POST',
@@ -262,7 +324,7 @@ describe('SSRF Integration Tests', function () {
       }
     }, 'q=*:*&debug=all&debugQuery=true&echoParams=all')
 
-    assert.notEqual(response.status, 500)
+    assert.equal(response.status, 400)
   })
 
   it('should allow legitimate queries', async function () {
@@ -272,8 +334,8 @@ describe('SSRF Integration Tests', function () {
       path: '/genome/?q=*:*&rows=1&sort=genome_id+asc'
     })
 
-    // Should work normally (may require auth, but shouldn't be a 500)
-    assert.include([200, 400, 401], response.status)
+    // Should work normally (may require auth, but shouldn't be a 400 or 500)
+    assert.include([200, 401], response.status)
   })
 })
 
@@ -419,9 +481,10 @@ describe('Security Headers in Error Responses', function () {
       }
     }, 'q=*:*&shards=http://169.254.169.254/latest/meta-data/')
 
+    assert.equal(response.status, 400)
     // The response should not contain the malicious URL
-    if (response.body) {
-      assert.notInclude(response.body, '169.254.169.254')
-    }
+    assert.notInclude(response.body, '169.254.169.254')
+    // Should contain generic error message
+    assert.include(response.body, 'prohibited query parameters')
   })
 })
