@@ -14,6 +14,22 @@ var Limiter = require('../middleware/Limiter')
 var apiRoot = config.get('jbrowseAPIRoot')
 var distRoot = config.get('distributeURL')
 
+// Sanitize a Solr field value to prevent query parameter injection.
+// Strips characters that could break out of the value context (&, =, ?, #, etc.)
+function sanitizeSolrValue (val) {
+  if (val === undefined || val === null) return ''
+  return String(val).replace(/[&=?#;\\{}[\]"'`]/g, '')
+}
+
+// Validate that a value looks like a number (integer or float).
+// Returns null if missing or invalid so callers can reject the request.
+function sanitizeNumeric (val) {
+  if (val === undefined || val === null) return null
+  var s = String(val)
+  if (/^-?\d+(\.\d+)?$/.test(s)) return s
+  return null
+}
+
 function generateTrackList (req, res, next) {
   return JSON.stringify({
     'tracks': [
@@ -2780,7 +2796,7 @@ router.get('/genome/:id/stats/global', [
     req.call_collection = 'genome'
     req.call_method = 'query'
     req.queryType = 'rql'
-    req.call_params = ['eq(genome_id,' + req.params.id + ')']
+    req.call_params = ['eq(genome_id,' + sanitizeSolrValue(req.params.id) + ')']
     debug('CALL_PARAMS: ', req.call_params)
     next()
   },
@@ -2805,14 +2821,18 @@ router.get('/genome/:id/stats/global', [
 
 router.get('/genome/:id/stats/region/:sequence_id', [
   function (req, res, next) {
-    var start = req.query.start || req.params.start
-    var end = req.query.end || req.params.end
-    var annotation = req.query.annotation || req.params.annotation || 'PATRIC'
+    var start = sanitizeNumeric(req.query.start || req.params.start)
+    var end = sanitizeNumeric(req.query.end || req.params.end)
+    if (start === null || end === null) {
+      return res.status(400).json({ error: 'Invalid numeric value for start or end parameter' })
+    }
+    var annotation = sanitizeSolrValue(req.query.annotation || req.params.annotation || 'PATRIC')
+    var sequenceId = sanitizeSolrValue(req.params.sequence_id)
     req.call_collection = 'genome_feature'
     req.call_method = 'query'
     req.call_params = [[
       [// the query part has to come first.
-        'accession:' + req.params.sequence_id,
+        'accession:' + sequenceId,
         'annotation:' + annotation,
         '!(feature_type:source)',
         '(start:[' + start + '+TO+' + end + ']+OR+end:[' + start + '+TO+' + end + '])'
@@ -2845,14 +2865,18 @@ router.get('/genome/:id/stats/region/:sequence_id', [
 // only called when HTMLFeature track
 router.get('/genome/:id/stats/regionFeatureDensities/:sequence_id', [
   function (req, res, next) {
-    var start = req.query.start || req.params.start
-    var end = req.query.end || req.params.end
-    var annotation = req.query.annotation || req.params.annotation || 'PATRIC'
-    var basesPerBin = req.query.basesPerBin || req.params.basesPerBin
+    var start = sanitizeNumeric(req.query.start || req.params.start)
+    var end = sanitizeNumeric(req.query.end || req.params.end)
+    var basesPerBin = sanitizeNumeric(req.query.basesPerBin || req.params.basesPerBin)
+    if (start === null || end === null || basesPerBin === null) {
+      return res.status(400).json({ error: 'Invalid numeric value for start, end, or basesPerBin parameter' })
+    }
+    var annotation = sanitizeSolrValue(req.query.annotation || req.params.annotation || 'PATRIC')
+    var sequenceId = sanitizeSolrValue(req.params.sequence_id)
     req.call_collection = 'genome_feature'
     req.call_method = 'query'
     req.call_params = [[
-      'accession:' + req.params.sequence_id, // for subsequent processing in the Decorator the query part of this query has to come first
+      'accession:' + sequenceId, // for subsequent processing in the Decorator the query part of this query has to come first
       'facet.range=start',
       'f.start.facet.range.end=' + end,
       'f.start.facet.range.start=' + start,
@@ -2894,9 +2918,14 @@ router.get('/genome/:id/features/:seq_accession', [
   function (req, res, next) {
     // debug("req.params: ", req.params, "req.query: ", req.query);
 
-    var start = req.query.start || req.params.start
-    var end = req.query.end || req.params.end
-    var annotation = req.query.annotation || req.params.annotation || 'PATRIC'
+    var start = sanitizeNumeric(req.query.start || req.params.start)
+    var end = sanitizeNumeric(req.query.end || req.params.end)
+    if (start === null || end === null) {
+      return res.status(400).json({ error: 'Invalid numeric value for start or end parameter' })
+    }
+    var annotation = sanitizeSolrValue(req.query.annotation || req.params.annotation || 'PATRIC')
+    var genomeId = sanitizeSolrValue(req.params.id)
+    var seqAccession = sanitizeSolrValue(req.params.seq_accession)
     req.call_collection = 'genome_feature'
     req.call_method = 'query'
 
@@ -2907,10 +2936,10 @@ router.get('/genome/:id/features/:seq_accession', [
     if (req.query && req.query['reference_sequences_only']) {
       req.call_collection = 'genome_sequence'
 
-      req.call_params = ['and(eq(genome_id,' + req.params.id + '),eq(accession,' + req.params.seq_accession + '))']
+      req.call_params = ['and(eq(genome_id,' + genomeId + '),eq(accession,' + seqAccession + '))']
       req.call_params[0] += '&limit(10000)'
     } else {
-      req.call_params = ['and(eq(genome_id,' + req.params.id + '),eq(accession,' + req.params.seq_accession + '),eq(annotation,' + annotation + '),or(' + st + ',' + en + ',' + over + '),ne(feature_type,source))']
+      req.call_params = ['and(eq(genome_id,' + genomeId + '),eq(accession,' + seqAccession + '),eq(annotation,' + annotation + '),or(' + st + ',' + en + ',' + over + '),ne(feature_type,source))']
       req.call_params[0] += '&select(patric_id,refseq_locus_tag,gene,product,annotation,feature_type,protein_id,gene_id,genome_name,accession,strand,na_length,aa_length,genome_id,start,end,feature_id,segments,classifier_score,classifier_round)'
       req.call_params[0] += '&limit(10000)&sort(+start)'
     }
@@ -3001,7 +3030,7 @@ router.get('/genome/:id/refseqs', [
   function (req, res, next) {
     req.call_collection = 'genome_sequence'
     req.call_method = 'query'
-    req.call_params = ['&eq(genome_id,' + req.params.id + ')&select(accession,length,sequence_id)&sort(+accession)&limit(1000)']
+    req.call_params = ['&eq(genome_id,' + sanitizeSolrValue(req.params.id) + ')&select(accession,length,sequence_id)&sort(+accession)&limit(1000)']
     req.queryType = 'rql'
     next()
   },
