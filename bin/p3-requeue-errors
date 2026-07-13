@@ -29,15 +29,26 @@ const Path = require('path')
 const fs = require('fs-extra')
 const Queue = require('file-queue').Queue
 
-const queueDir = Config.get('queueDirectory')
-const historyDir = Path.join(queueDir, 'history')
-const fileDataDir = Path.join(queueDir, 'file_data')
+// Queue location. Defaults to config, but --queue-dir overrides it so the script
+// can be run against a queue dir directly (e.g. from within it) without needing
+// p3api.conf on the cwd -- otherwise require('../config') falls back to the
+// built-in default './index-queue-dir' relative to wherever you invoked it.
+let queueDir = Config.get('queueDirectory')
+let historyDir = Path.join(queueDir, 'history')
+let fileDataDir = Path.join(queueDir, 'file_data')
 
 if (require.main === module) {
   opts.option('-n, --dry-run', 'List what would be requeued without changing anything')
     .option('-c, --confirm', 'Perform the requeue')
     .option('-s, --state <values>', 'Comma-separated history states to requeue (default: error)', 'error')
+    .option('-q, --queue-dir <dir>', 'Queue directory (overrides config queueDirectory)')
     .parse(process.argv)
+
+  if (opts.queueDir) {
+    queueDir = opts.queueDir
+    historyDir = Path.join(queueDir, 'history')
+    fileDataDir = Path.join(queueDir, 'file_data')
+  }
 
   if (!opts.dryRun && !opts.confirm) {
     console.error('Specify --dry-run to preview, or --confirm to requeue.')
@@ -46,6 +57,20 @@ if (require.main === module) {
 
   const states = opts.state.split(',').map((s) => s.trim()).filter(Boolean)
   run(states, !!opts.confirm)
+}
+
+// Read the genome_id from a genome payload file (first record). Used to display
+// the genome for error/retrying jobs, whose history record has no genomeId.
+function genomeIdFromPayload (genomePath) {
+  try {
+    const arr = fs.readJsonSync(genomePath)
+    if (Array.isArray(arr) && arr[0] && arr[0].genome_id) {
+      return arr[0].genome_id
+    }
+  } catch (e) {
+    // fall through
+  }
+  return undefined
 }
 
 function run (states, confirm) {
@@ -89,6 +114,13 @@ function run (states, confirm) {
       skip.noGenomeFile++
       console.error(`  ${id}: genome payload missing, cannot requeue (state=${data.state})`)
       return
+    }
+
+    // History only records genomeId once a job reaches 'submitted'; error/retrying
+    // records lack it. Recover it from the payload (same file the worker reads) so
+    // the output is vettable.
+    if (!data.genomeId) {
+      data.genomeId = genomeIdFromPayload(genomePath)
     }
 
     candidates.push({ id, data })
@@ -150,6 +182,8 @@ function requeueAll (queue, candidates, skip) {
         delete hdata.lastError
         delete hdata.lastAttemptTime
         hdata.requeueTime = new Date()
+        // Backfill genomeId recovered from the payload if history lacked it.
+        if (!hdata.genomeId && data.genomeId) { hdata.genomeId = data.genomeId }
         fs.writeJsonSync(hpath, hdata)
       } catch (e) {
         console.error(`Enqueued ${id} but failed to reset history: ${e.message}`)
