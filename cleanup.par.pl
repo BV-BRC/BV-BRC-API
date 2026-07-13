@@ -128,8 +128,11 @@ sub process_id {
 # Main execution
 my @ids;
 
-if (@ARGV || ! -t STDIN) {
-    # Read from file arguments or stdin (backward compatible)
+if (@ARGV || -p STDIN || -f STDIN) {
+    # Read from file arguments, a pipe, or a redirected file (backward compatible).
+    # Note: test for -p/-f rather than "! -t STDIN" — under cron stdin is /dev/null
+    # (a non-tty char device), and "! -t STDIN" would wrongly treat that as an
+    # empty id list and process nothing. -p/-f only match an actual pipe or file.
     @ids = <>;
     chomp @ids;
 } else {
