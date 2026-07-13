@@ -59,6 +59,20 @@ if (require.main === module) {
   run(states, !!opts.confirm)
 }
 
+// Read the genome_id from a genome payload file (first record). Used to display
+// the genome for error/retrying jobs, whose history record has no genomeId.
+function genomeIdFromPayload (genomePath) {
+  try {
+    const arr = fs.readJsonSync(genomePath)
+    if (Array.isArray(arr) && arr[0] && arr[0].genome_id) {
+      return arr[0].genome_id
+    }
+  } catch (e) {
+    // fall through
+  }
+  return undefined
+}
+
 function run (states, confirm) {
   let ids
   try {
@@ -100,6 +114,13 @@ function run (states, confirm) {
       skip.noGenomeFile++
       console.error(`  ${id}: genome payload missing, cannot requeue (state=${data.state})`)
       return
+    }
+
+    // History only records genomeId once a job reaches 'submitted'; error/retrying
+    // records lack it. Recover it from the payload (same file the worker reads) so
+    // the output is vettable.
+    if (!data.genomeId) {
+      data.genomeId = genomeIdFromPayload(genomePath)
     }
 
     candidates.push({ id, data })
@@ -161,6 +182,8 @@ function requeueAll (queue, candidates, skip) {
         delete hdata.lastError
         delete hdata.lastAttemptTime
         hdata.requeueTime = new Date()
+        // Backfill genomeId recovered from the payload if history lacked it.
+        if (!hdata.genomeId && data.genomeId) { hdata.genomeId = data.genomeId }
         fs.writeJsonSync(hpath, hdata)
       } catch (e) {
         console.error(`Enqueued ${id} but failed to reset history: ${e.message}`)
