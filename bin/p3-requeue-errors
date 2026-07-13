@@ -1,0 +1,133 @@
+#!/usr/bin/env node
+
+// Recover index jobs stranded in 'error' state from before the retry fix.
+//
+// Background: popping a queue message renames its file new/ -> cur/. The old
+// worker never called commit()/rollback(), so errored (and even successful)
+// messages were left in cur/ forever and never reprocessed. This script finds
+// history entries in 'error' state, locates their queue message still sitting in
+// cur/, and renames it back to new/ so the next worker run picks it up. It also
+// resets the history entry (state 'queued', attempts 0, clears error fields).
+//
+// Usage:
+//   bin/p3-requeue-errors --dry-run     # list what would be requeued
+//   bin/p3-requeue-errors --confirm     # actually requeue
+//   bin/p3-requeue-errors --confirm --state error,retrying   # also retryings
+
+const Config = require('../config')
+const opts = require('commander')
+const Path = require('path')
+const fs = require('fs-extra')
+
+const queueDir = Config.get('queueDirectory')
+const historyDir = Path.join(queueDir, 'history')
+const newDir = Path.join(queueDir, 'new')
+const curDir = Path.join(queueDir, 'cur')
+
+if (require.main === module) {
+  opts.option('-n, --dry-run', 'List what would be requeued without changing anything')
+    .option('-c, --confirm', 'Perform the requeue')
+    .option('-s, --state <values>', 'Comma-separated history states to requeue (default: error)', 'error')
+    .parse(process.argv)
+
+  if (!opts.dryRun && !opts.confirm) {
+    console.error('Specify --dry-run to preview, or --confirm to requeue.')
+    opts.help()
+  }
+
+  const states = opts.state.split(',').map((s) => s.trim()).filter(Boolean)
+  requeue(states, !!opts.confirm)
+}
+
+function requeue (states, confirm) {
+  // 1. Collect target ids from history.
+  const targetIds = new Map() // id -> history data
+  fs.readdirSync(historyDir).forEach((name) => {
+    let data
+    try {
+      data = fs.readJsonSync(Path.join(historyDir, name))
+    } catch (e) {
+      return // corrupt / unreadable history file — skip
+    }
+    if (data && states.includes(data.state)) {
+      targetIds.set(data.id || name, data)
+    }
+  })
+
+  if (targetIds.size === 0) {
+    console.log(`No history entries in state(s): ${states.join(', ')}`)
+    return
+  }
+  console.log(`Found ${targetIds.size} history ent(y|ies) in state(s): ${states.join(', ')}`)
+
+  // 2. Map queue message files in cur/ to their job id (the file content is the
+  //    JSON message pushed by the indexer route, whose .id is the qid).
+  const curFiles = fs.existsSync(curDir) ? fs.readdirSync(curDir) : []
+  const idToCurFile = new Map()
+  curFiles.forEach((fname) => {
+    try {
+      const msg = fs.readJsonSync(Path.join(curDir, fname))
+      if (msg && msg.id) { idToCurFile.set(msg.id, fname) }
+    } catch (e) {
+      // not JSON / partial — ignore
+    }
+  })
+
+  let moved = 0
+  const orphans = []
+
+  targetIds.forEach((data, id) => {
+    const fname = idToCurFile.get(id)
+    if (!fname) {
+      orphans.push(id)
+      return
+    }
+
+    const from = Path.join(curDir, fname)
+    const to = Path.join(newDir, fname)
+
+    if (!confirm) {
+      console.log(`[dry-run] would requeue ${id} (genome=${data.genomeId || '?'}) : cur/${fname} -> new/${fname}`)
+      moved++
+      return
+    }
+
+    // cur/ and new/ are in the same maildir (same filesystem), so a rename is
+    // atomic and correct — this is exactly how file-queue's rollback moves them.
+    if (fs.existsSync(to)) {
+      console.error(`Target new/${fname} already exists; skipping ${id}`)
+      return
+    }
+    try {
+      fs.renameSync(from, to)
+    } catch (e) {
+      console.error(`Failed to move cur/${fname} -> new/: ${e.message}`)
+      return
+    }
+
+    // Reset history so the next run treats it as fresh.
+    try {
+      const hpath = Path.join(historyDir, id)
+      const hdata = fs.readJsonSync(hpath)
+      hdata.state = 'queued'
+      hdata.attempts = 0
+      delete hdata.error
+      delete hdata.lastError
+      delete hdata.lastAttemptTime
+      hdata.requeueTime = new Date()
+      fs.writeJsonSync(hpath, hdata)
+    } catch (e) {
+      console.error(`Requeued cur/${fname} but failed to reset history ${id}: ${e.message}`)
+    }
+
+    console.log(`Requeued ${id} (genome=${data.genomeId || '?'})`)
+    moved++
+  })
+
+  console.log('')
+  console.log(`${confirm ? 'Requeued' : 'Would requeue'}: ${moved}`)
+  if (orphans.length) {
+    console.log(`No queue message found in cur/ for ${orphans.length} error job(s) — their queue file was lost and they must be re-submitted manually:`)
+    orphans.forEach((id) => console.log(`  ${id}`))
+  }
+}
