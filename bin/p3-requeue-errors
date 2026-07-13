@@ -29,15 +29,26 @@ const Path = require('path')
 const fs = require('fs-extra')
 const Queue = require('file-queue').Queue
 
-const queueDir = Config.get('queueDirectory')
-const historyDir = Path.join(queueDir, 'history')
-const fileDataDir = Path.join(queueDir, 'file_data')
+// Queue location. Defaults to config, but --queue-dir overrides it so the script
+// can be run against a queue dir directly (e.g. from within it) without needing
+// p3api.conf on the cwd -- otherwise require('../config') falls back to the
+// built-in default './index-queue-dir' relative to wherever you invoked it.
+let queueDir = Config.get('queueDirectory')
+let historyDir = Path.join(queueDir, 'history')
+let fileDataDir = Path.join(queueDir, 'file_data')
 
 if (require.main === module) {
   opts.option('-n, --dry-run', 'List what would be requeued without changing anything')
     .option('-c, --confirm', 'Perform the requeue')
     .option('-s, --state <values>', 'Comma-separated history states to requeue (default: error)', 'error')
+    .option('-q, --queue-dir <dir>', 'Queue directory (overrides config queueDirectory)')
     .parse(process.argv)
+
+  if (opts.queueDir) {
+    queueDir = opts.queueDir
+    historyDir = Path.join(queueDir, 'history')
+    fileDataDir = Path.join(queueDir, 'file_data')
+  }
 
   if (!opts.dryRun && !opts.confirm) {
     console.error('Specify --dry-run to preview, or --confirm to requeue.')
