@@ -1,28 +1,37 @@
 #!/usr/bin/env node
 
-// Recover index jobs stranded in 'error' state from before the retry fix.
+// Recover index jobs that failed and are sitting in a non-terminal-success state
+// (error / retrying) by re-enqueueing them for the worker.
 //
-// Background: popping a queue message renames its file new/ -> cur/. The old
-// worker never called commit()/rollback(), so errored (and even successful)
-// messages were left in cur/ forever and never reprocessed. This script finds
-// history entries in 'error' state, locates their queue message still sitting in
-// cur/, and renames it back to new/ so the next worker run picks it up. It also
-// resets the history entry (state 'queued', attempts 0, clears error fields).
+// Scans file_data/ rather than history/. A job is requeuable only if its payload
+// dir file_data/<id> still exists -- completion removes it, so file_data/ is
+// exactly the set of jobs that CAN be re-posted to Solr, and it is far smaller
+// than history/, which holds one (never-deleted) record per genome ever
+// submitted. For each file_data/<id> whose history state matches, the queue
+// message is reconstructed from the history record (which is literally the object
+// the indexer route pushed: {id, type, user, options, files}) and pushed fresh
+// onto the queue. History is then reset to state 'queued'.
+//
+// Re-pushing (rather than moving the old cur/ message back to new/) means we
+// don't depend on the pre-fix leaked cur/ files, and we also recover jobs that
+// hit the retry cap -- those were committed out of cur/ but still have file_data.
+// A leftover cur/ message for the same id is inert (tpop only reads new/), and a
+// re-post is harmless (overwrite=true).
 //
 // Usage:
-//   bin/p3-requeue-errors --dry-run     # list what would be requeued
-//   bin/p3-requeue-errors --confirm     # actually requeue
-//   bin/p3-requeue-errors --confirm --state error,retrying   # also retryings
+//   bin/p3-requeue-errors --dry-run                      # list what would requeue
+//   bin/p3-requeue-errors --confirm                      # actually requeue
+//   bin/p3-requeue-errors --confirm --state error,retrying
 
 const Config = require('../config')
 const opts = require('commander')
 const Path = require('path')
 const fs = require('fs-extra')
+const Queue = require('file-queue').Queue
 
 const queueDir = Config.get('queueDirectory')
 const historyDir = Path.join(queueDir, 'history')
-const newDir = Path.join(queueDir, 'new')
-const curDir = Path.join(queueDir, 'cur')
+const fileDataDir = Path.join(queueDir, 'file_data')
 
 if (require.main === module) {
   opts.option('-n, --dry-run', 'List what would be requeued without changing anything')
@@ -36,98 +45,132 @@ if (require.main === module) {
   }
 
   const states = opts.state.split(',').map((s) => s.trim()).filter(Boolean)
-  requeue(states, !!opts.confirm)
+  run(states, !!opts.confirm)
 }
 
-function requeue (states, confirm) {
-  // 1. Collect target ids from history.
-  const targetIds = new Map() // id -> history data
-  fs.readdirSync(historyDir).forEach((name) => {
+function run (states, confirm) {
+  let ids
+  try {
+    ids = fs.readdirSync(fileDataDir).filter((name) => {
+      try { return fs.statSync(Path.join(fileDataDir, name)).isDirectory() } catch (e) { return false }
+    })
+  } catch (e) {
+    console.error(`Cannot read file_data dir ${fileDataDir}: ${e.message}`)
+    process.exit(1)
+  }
+
+  console.log(`Scanning ${ids.length} file_data job(s) for state(s): ${states.join(', ')}`)
+
+  // Collect the requeuable candidates first (cheap, read-only), so a dry-run
+  // needs no queue and a real run opens the queue only if there's work.
+  const candidates = []
+  const skip = { noHistory: 0, wrongState: 0, noGenomeFile: 0 }
+
+  ids.forEach((id) => {
     let data
     try {
-      data = fs.readJsonSync(Path.join(historyDir, name))
+      data = fs.readJsonSync(Path.join(historyDir, id))
     } catch (e) {
-      return // corrupt / unreadable history file — skip
+      // No/unreadable history -> can't reconstruct the message reliably.
+      // Recover the history with bin/p3-rebuild-history, then re-run.
+      skip.noHistory++
+      return
     }
-    if (data && states.includes(data.state)) {
-      targetIds.set(data.id || name, data)
+
+    if (!data || !states.includes(data.state)) {
+      skip.wrongState++
+      return
     }
+
+    // The worker reads message.files.genome.path first (readJsonSync); if that
+    // file is gone the job can't run. Guard so we don't requeue a dead job.
+    const genomePath = data.files && data.files.genome && data.files.genome.path
+    if (!genomePath || !fs.existsSync(genomePath)) {
+      skip.noGenomeFile++
+      console.error(`  ${id}: genome payload missing, cannot requeue (state=${data.state})`)
+      return
+    }
+
+    candidates.push({ id, data })
   })
 
-  if (targetIds.size === 0) {
-    console.log(`No history entries in state(s): ${states.join(', ')}`)
+  console.log(`Requeuable: ${candidates.length}`)
+
+  if (candidates.length === 0 || !confirm) {
+    candidates.forEach(({ id, data }) => {
+      console.log(`[dry-run] would requeue ${id} (genome=${data.genomeId || '?'}, state=${data.state})`)
+    })
+    report(confirm, 0, candidates.length, skip)
     return
   }
-  console.log(`Found ${targetIds.size} history ent(y|ies) in state(s): ${states.join(', ')}`)
 
-  // 2. Map queue message files in cur/ to their job id (the file content is the
-  //    JSON message pushed by the indexer route, whose .id is the qid).
-  const curFiles = fs.existsSync(curDir) ? fs.readdirSync(curDir) : []
-  const idToCurFile = new Map()
-  curFiles.forEach((fname) => {
-    try {
-      const msg = fs.readJsonSync(Path.join(curDir, fname))
-      if (msg && msg.id) { idToCurFile.set(msg.id, fname) }
-    } catch (e) {
-      // not JSON / partial — ignore
+  // Open the queue (non-persistent: we push and exit, no watcher).
+  const queue = new Queue({ path: queueDir, persistent: false }, (err) => {
+    if (err) {
+      console.error(`Unable to open queue: ${err}`)
+      process.exit(1)
     }
+    requeueAll(queue, candidates, skip)
   })
+}
 
-  let moved = 0
-  const orphans = []
+function requeueAll (queue, candidates, skip) {
+  let requeued = 0
+  let i = 0
 
-  targetIds.forEach((data, id) => {
-    const fname = idToCurFile.get(id)
-    if (!fname) {
-      orphans.push(id)
-      return
+  const next = () => {
+    if (i >= candidates.length) {
+      report(true, requeued, candidates.length, skip)
+      process.exit(0)
+    }
+    const { id, data } = candidates[i++]
+
+    // Reconstruct exactly what the indexer route pushes.
+    const message = {
+      id: data.id || id,
+      type: data.type || 'genome',
+      user: data.user,
+      options: data.options || {},
+      files: data.files
     }
 
-    const from = Path.join(curDir, fname)
-    const to = Path.join(newDir, fname)
+    queue.push(message, (err) => {
+      if (err) {
+        console.error(`Failed to enqueue ${id}: ${err}`)
+        next()
+        return
+      }
+      // Reset history so the next worker run treats it as fresh.
+      try {
+        const hpath = Path.join(historyDir, id)
+        const hdata = fs.readJsonSync(hpath)
+        hdata.state = 'queued'
+        hdata.attempts = 0
+        delete hdata.error
+        delete hdata.lastError
+        delete hdata.lastAttemptTime
+        hdata.requeueTime = new Date()
+        fs.writeJsonSync(hpath, hdata)
+      } catch (e) {
+        console.error(`Enqueued ${id} but failed to reset history: ${e.message}`)
+      }
+      console.log(`Requeued ${id} (genome=${data.genomeId || '?'})`)
+      requeued++
+      next()
+    })
+  }
 
-    if (!confirm) {
-      console.log(`[dry-run] would requeue ${id} (genome=${data.genomeId || '?'}) : cur/${fname} -> new/${fname}`)
-      moved++
-      return
-    }
+  next()
+}
 
-    // cur/ and new/ are in the same maildir (same filesystem), so a rename is
-    // atomic and correct — this is exactly how file-queue's rollback moves them.
-    if (fs.existsSync(to)) {
-      console.error(`Target new/${fname} already exists; skipping ${id}`)
-      return
-    }
-    try {
-      fs.renameSync(from, to)
-    } catch (e) {
-      console.error(`Failed to move cur/${fname} -> new/: ${e.message}`)
-      return
-    }
-
-    // Reset history so the next run treats it as fresh.
-    try {
-      const hpath = Path.join(historyDir, id)
-      const hdata = fs.readJsonSync(hpath)
-      hdata.state = 'queued'
-      hdata.attempts = 0
-      delete hdata.error
-      delete hdata.lastError
-      delete hdata.lastAttemptTime
-      hdata.requeueTime = new Date()
-      fs.writeJsonSync(hpath, hdata)
-    } catch (e) {
-      console.error(`Requeued cur/${fname} but failed to reset history ${id}: ${e.message}`)
-    }
-
-    console.log(`Requeued ${id} (genome=${data.genomeId || '?'})`)
-    moved++
-  })
-
+function report (confirm, requeued, total, skip) {
   console.log('')
-  console.log(`${confirm ? 'Requeued' : 'Would requeue'}: ${moved}`)
-  if (orphans.length) {
-    console.log(`No queue message found in cur/ for ${orphans.length} error job(s) — their queue file was lost and they must be re-submitted manually:`)
-    orphans.forEach((id) => console.log(`  ${id}`))
+  console.log(`${confirm ? 'Requeued' : 'Would requeue'}: ${confirm ? requeued : total}`)
+  const skipped = skip.noHistory + skip.wrongState + skip.noGenomeFile
+  if (skipped) {
+    console.log(`Skipped: ${skipped}`)
+    console.log(`  state not in target set : ${skip.wrongState}`)
+    console.log(`  no/unreadable history   : ${skip.noHistory}  (run p3-rebuild-history)`)
+    console.log(`  genome payload missing  : ${skip.noGenomeFile}`)
   }
 }
