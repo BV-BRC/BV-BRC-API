@@ -39,7 +39,9 @@ function streamQuery (req, res, next) {
           const joinStream = new JoinEnrichmentStream(joiner, {
             joinSpecs: req._joinSpecs,
             batchSize: 50,
-            skipHeader: true // Solrjs stream emits metadata header first
+            skipHeader: true, // Solrjs stream emits metadata header first
+            user: req.user,
+            publicFree: req.publicFree
           })
 
           results.stream = results.stream.pipe(joinStream)

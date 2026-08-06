@@ -115,10 +115,16 @@ Some collections support private data with owner-based permissions managed via `
 
 ## Testing Requirements
 
-- Local Solr instance with patric_solr schema
+- Local Solr instance — **see `Docs/LOCAL_SOLR_SETUP.md`** (Solr 9.6.1, cloud mode, configsets from [bv-brc/bv-brc-solr](https://github.com/bv-brc/bv-brc-solr)). `tests/README.md`'s pointer to `PATRIC3/patric_solr` is stale: that repo is archived and Solr 5.3-era.
 - Redis server running
-- Test data loaded via `tests/load-test-solr.js`
+- Test data loaded via `tests/load-test-solr.js` (fetches from `https://www.bv-brc.org/api`, override with `DATA_API_URL`). Note it sets `owner`/`public` but **never `user_read`** — set that field directly in Solr for permission-sharing fixtures.
 - Health check: `GET /health` returns "OK (version)"
+
+### Two gotchas that produce silent, misleading failures
+
+**Streaming downloads require an explicit `sort()`.** `solrjs.stream()` paginates with `cursorMark`, which Solr rejects (400, "Cursor functionality requires a sort containing a uniqueKey field tie breaker") unless the query sorts on the collection's uniqueKey. `_streamQuery`'s error path emits `end` (`lib/solrjs/index.js:171-172`), so the client receives **HTTP 200 with zero bytes** rather than an error. Affects any `http_download=true` request without `sort()`, join or no join. Same empty-200-on-failure class as the shard-failure defect found in query-replay testing.
+
+**Token validation can fail silently behind Cloudflare.** `p3-user/validateToken` fetches the signing key from `user.patricbrc.org/public_key` using the `request` library, which sends **no `User-Agent`**; Cloudflare answers UA-less clients with a 403 challenge page. The key fetch then yields HTML, `getSigner` rejects, and *every* token is refused — requests fall through to anonymous and simply return less data, with no error. Symptom: authenticated queries return only public rows. Check with `node -e "require('https').get('https://user.patricbrc.org/public_key', r => console.log(r.statusCode))"` — 403 means blocked (plain `curl` passes, so curl-based checks will mislead).
 
 ## Distributed Query System
 
@@ -449,6 +455,30 @@ The API supports augmenting query results with fields from related collections. 
 ### Configuration
 
 Joinable fields are configured per collection in `middleware/JoinEnrichment.js` (defaults) or `joinEnrichment` in `p3api.conf`. See `Docs/JOIN_ENRICHMENT_API.md` for the full developer reference.
+
+### Permission scoping (fixed 2026-08-06 — was a live cross-user read)
+
+Enrichment's secondary fetches are permission-scoped. **Any new enrichment fetch must carry a permission context** — the fetch bypasses the middleware chain, so `DecorateQuery` does not protect it.
+
+`lib/permissionFilter.js` is the single source of truth:
+
+```js
+const { permissionContext } = require('../lib/permissionFilter')
+const { permissionFq, scopeKey } = permissionContext({ collection, user: req.user, publicFree: req.publicFree })
+```
+
+- `buildPermissionFq()` → the `fq` (`null` for `publicFree` collections, `public:true` anonymous, the `owner`/`user_read` triple otherwise). `DecorateQuery` calls this too, so primary and secondary queries cannot drift apart.
+- `permissionScopeKey()` → the cache partition (`public` or `user:<id>`).
+- **Both caches are scope-keyed**: `BatchJoiner`'s per-collection LRU (prefix `${scopeKey} ${value}`) and `GenomeMetadataJoinStream`'s own cache. `BatchJoiner` is a process-wide singleton, so an unscoped key serves one user's private row to the next — a fetch-only fix still leaks from a warm cache.
+- Callers thread `ctx = { user, publicFree }`: `enrichDocs(docs, spec, ctx)`, and `{ user, publicFree }` in the `JoinEnrichmentStream` / `GenomeMetadataJoinStream` / `SequenceJoinStream` constructors.
+
+**What the bug actually was.** Not latent: `genome` — the target of every configured join — is **not** in `publicFree` (only `feature_sequence` is), so private genome rows were being fetched unfiltered and cached user-blind. Verified against live Solr: with the fix reverted, an *anonymous* request enriching a public feature that references a private genome reads back that genome's name. Requires a public row pointing at a private one, which is exactly what a cross-collection download does. (An earlier draft of the plan claimed all targets were `publicFree` and that users could not enrich their own private data — both wrong; Solr enforces no ACLs here, so an unfiltered fetch returns *more*, never less.)
+
+Tests: `tests/test-permissions/test.permissionfilter.spec.js`, `tests/test-permissions/test.enrichment-permissions.spec.js`. The cross-user cache test is the merge gate — it must fail against a fetch-only fix. Live-Solr procedure: `Docs/LOCAL_SOLR_SETUP.md`; full record in `PLAN_ENRICHMENT_PERMISSIONS.md`.
+
+### Planned — server-side cross-collection sequence downloads (not started)
+
+**`PLAN_CROSS_COLLECTION_DOWNLOAD.md`** — eliminate the web client's two-round-trip prefetch for cross-collection FASTA downloads (e.g. Specialty Genes `sp_gene` → sequences from `genome_feature`). Two deliverables: (1) a **reusable multi-hop "linked join"** generalizing `BatchJoiner` to a config-declared `path` of hops (`enrichDocsChained`), exposed for JSON/tabular too; (2) a **source-scoped download endpoint** (`http_source_collection`/`http_source_link_field`) that resolves the source query to link values in bounded batches server-side. API-side streaming resolution, NOT a Solr `{!join}` (see the join-elimination direction). Its prerequisite — the enrichment-permissions fix above — is **done**, and `enrichDocsChained` should take the same `ctx = { user, publicFree }` parameter. Fixes BUG2 (silent empty-file downloads). Two implementation gotchas noted in the plan: `collectionUniqueKeys` must be populated for source-collection cursor pagination (currently empty), and the source query may itself be a `genome(...)` join that Solr rejects as a sole top-level clause (`Cannot parse '()'`) — must be decomposed, not forwarded raw.
 
 ### Future: Solr query cancellation
 

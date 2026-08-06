@@ -353,7 +353,9 @@ module.exports = async function distributedQueryMiddleware (req, res, next) {
         const joinStream = new JoinEnrichmentStream(joiner, {
           joinSpecs: req._joinSpecs,
           batchSize: 50,
-          skipHeader: false // wrapForMediaHandler already handles header
+          skipHeader: false, // wrapForMediaHandler already handles header
+          user: req.user,
+          publicFree: req.publicFree
         })
 
         res.results.stream = res.results.stream.pipe(joinStream)

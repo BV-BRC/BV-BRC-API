@@ -244,9 +244,14 @@ async function joinEnrichmentMiddleware (req, res, next) {
     // Perform enrichment for each join spec
     const startTime = Date.now()
 
+    // Scope the secondary fetches to what this user may see. Without this the
+    // enrichment fetch reads rows the primary (permission-filtered) query could
+    // not. See PLAN_ENRICHMENT_PERMISSIONS.md.
+    const joinCtx = { user: req.user, publicFree: req.publicFree }
+
     for (const joinSpec of joinSpecs) {
       debug(`Enriching with ${joinSpec.fields.join(',')} from ${joinSpec.targetCollection} via ${joinSpec.localField}`)
-      await joiner.enrichDocs(res.results.response.docs, joinSpec)
+      await joiner.enrichDocs(res.results.response.docs, joinSpec, joinCtx)
     }
 
     const elapsed = Date.now() - startTime
