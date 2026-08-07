@@ -139,6 +139,89 @@ Regardless of option, the error message should identify the offending character
 and mention encoding — `"Illegal character in query string encountered  "` with a
 bare space is close to useless.
 
+## Best practice: how to quote and encode RQL values
+
+This bug is one symptom of a broader problem — the correct spelling of a
+multi-word filter value is **not discoverable**, and three of the four plausible
+spellings fail *silently*. Measured against `sp_gene` where
+`property:"Antibiotic Resistance"` matches 100 rows and `property:Transporter`
+matches 316:
+
+| RQL written by caller | generated Solr `q` | rows | verdict |
+|---|---|---|---|
+| `eq(property,%22Antibiotic%20Resistance%22)` | `property:"Antibiotic%20Resistance"` | **100** | correct |
+| `eq(property,Antibiotic%20Resistance)` | `property:Antibiotic AND property:Resistance` | 0 | silently wrong |
+| `eq(property,%22Antibiotic+Resistance%22)` | `property:"Antibiotic%2BResistance"` | 0 | silently wrong |
+| `eq(property,Antibiotic+Resistance)` | `property:Antibiotic%2BResistance` | 0 | silently wrong |
+| `eq(property,Transporter)` | `property:Transporter` | 316 | correct (single token) |
+
+Every failing row returns **HTTP 200 with an empty result set**. There is no
+error to notice — a download just produces an empty file, and a grid just looks
+like it has no matches.
+
+### The rule
+
+> **Percent-encode the value, and wrap it in percent-encoded double quotes:
+> `eq(field,%22Multi%20Word%20Value%22)`. Use `%20` for spaces, never `+`.**
+
+Single-token values need neither quotes nor encoding, but quoting them anyway is
+harmless (`property:"Transporter"` matches identically) — so **always quote** is a
+safe blanket rule and avoids having to reason about whether a value might contain
+a space.
+
+### Why each failure happens
+
+- **Unquoted with `%20`.** The RQL parser decodes `%20` to a space and, without
+  quotes, treats the result as two terms. `toSolr` renders that as
+  `property:Antibiotic AND property:Resistance` — a conjunction of two terms that
+  never co-occur in a `string` field. Note this is the *most intuitive* spelling
+  and it produces a plausible-looking query that matches nothing.
+- **`+` instead of `%20`.** `+` means space only in `application/x-www-form-urlencoded`,
+  not in a generic percent-encoded string. The RQL parser treats it as a literal
+  `+` and escapes it to `%2B` for Solr, so you search for a value containing a
+  literal plus sign.
+- **Literal space (no encoding).** Rejected outright by `rql/parser.js:119` with
+  the opaque 400 this ticket is about. Ironically the *only* failure mode that
+  tells you something is wrong.
+
+### Why the encoding must survive all the way down
+
+The value stays percent-encoded through `toSolr` — the generated query really is
+`property:"Antibiotic%20Resistance"`, and querying Solr with that literal string
+matches 0. It works because `Solrjs` POSTs the entire query string as an
+`application/x-www-form-urlencoded` body (`lib/solrjs/index.js:96-102`), so
+**Solr's own form parsing performs the final decode**, turning `%20` into a space
+at exactly the right moment.
+
+So the encoding is load-bearing end to end, not a transport detail to be
+normalized away early. This is worth stating explicitly because it makes the
+`rql=` form-field bug above look like a harmless extra decode when it is not:
+anything that decodes too early destroys the distinction between "space inside a
+quoted value" and "term separator".
+
+### Guidance for client authors
+
+1. Build values with `encodeURIComponent(value)`, then wrap in `%22...%22`.
+   Do **not** hand-roll `+` for spaces.
+2. Prefer `Content-Type: application/rqlquery+x-www-form-urlencoded` with the
+   query as the raw body. That path has exactly one decode and no double-encoding
+   contract — it is the shape this API handles most predictably.
+3. If you must use the `rql=` form field, encode the whole query **again** on top
+   (`encodeURIComponent(rqlString)`), as the website does. Until the ticket above
+   is resolved, that is the required contract.
+4. **Sanity-check counts.** Because the failure mode is an empty 200, a client
+   that never compares "rows the grid showed" against "rows the download
+   produced" cannot detect any of this.
+
+### Suggested API-side improvements
+
+- **Reject rather than mis-parse.** An unquoted multi-token `eq()` value almost
+  certainly indicates a caller encoding mistake; generating
+  `field:A AND field:B` from it is a guess that is wrong far more often than
+  right. A 400 naming the field would be strictly better than 0 rows.
+- Document the rule in `API_REFERENCE.md` with the table above. It currently
+  states neither the quoting requirement nor the `%20`-not-`+` rule.
+
 ## Test to add
 
 `tests/test-api/` — POST the same query through all three entry paths (`rql=`
