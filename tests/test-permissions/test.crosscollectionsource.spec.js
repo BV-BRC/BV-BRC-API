@@ -211,6 +211,47 @@ describe('CrossCollectionSource', function () {
       assert.equal(req._crossSource.rawQuery, raw)
     })
 
+    it('prefers _originalRql over _rawBody', async function () {
+      // _rawBody only exists for application/x-www-form-urlencoded POSTs, so
+      // relying on it dropped the filter for rqlquery+... requests and the
+      // download silently resolved the ENTIRE source collection.
+      const req = {
+        call_collection: 'genome_feature',
+        sourceParams,
+        _originalRql: 'eq(property,Correct)',
+        _rawBody: 'eq(property,Stale)',
+        publicFree
+      }
+      await run(req)
+      assert.include(req._crossSource.sourceQ, 'Correct')
+      assert.notInclude(req._crossSource.sourceQ, 'Stale')
+    })
+
+    it('falls back to _rawBody when _originalRql is absent', async function () {
+      const req = {
+        call_collection: 'genome_feature',
+        sourceParams,
+        _rawBody: 'eq(property,FromRawBody)',
+        publicFree
+      }
+      await run(req)
+      assert.include(req._crossSource.sourceQ, 'FromRawBody')
+    })
+
+    it('picks up a filter sent via rqlquery content-type (no _rawBody)', async function () {
+      // The exact shape that silently lost its filter before _originalRql.
+      const req = {
+        call_collection: 'genome_feature',
+        sourceParams,
+        _originalRql: 'eq(property,%22Antibiotic%20Resistance%22)&limit(2500000)',
+        publicFree
+      }
+      await run(req)
+      assert.include(req._crossSource.sourceQ, 'property:')
+      assert.notEqual(req._crossSource.sourceQ, '*:*',
+        'a filtered download must not degrade to match-all')
+    })
+
     it('tolerates a missing body', async function () {
       const req = { call_collection: 'genome_feature', sourceParams, publicFree }
       const { nexted } = await run(req)

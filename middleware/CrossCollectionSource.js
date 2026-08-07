@@ -190,8 +190,21 @@ async function crossCollectionSourceMiddleware (req, res, next) {
   // The RQL body is the SOURCE query. The normal chain has already parsed it
   // against the TARGET collection (RQLQueryParser), which is wrong for our
   // purposes — field names and any collection-scoped rewriting belong to the
-  // source. Keep the raw body so Phase 3 can re-parse it against the source.
-  const rawSourceQuery = typeof req._rawBody === 'string' ? req._rawBody : ''
+  // source. Re-parse the original below.
+  //
+  // Prefer req._originalRql (captured in routes/dataType.js immediately before
+  // RQLQueryParser, for every request shape). Fall back to req._rawBody, which
+  // only exists for application/x-www-form-urlencoded POSTs. Taking _rawBody
+  // alone silently dropped the filter for
+  // application/rqlquery+x-www-form-urlencoded requests — the download then
+  // resolved the client's ENTIRE source collection instead of its grid filter.
+  const rawSourceQuery =
+    (typeof req._originalRql === 'string' && req._originalRql) ||
+    (typeof req._rawBody === 'string' ? req._rawBody : '')
+
+  if (!rawSourceQuery) {
+    debug('No source query found; the cursor will match all rows in ' + sourceCollection)
+  }
 
   // Permission-scope the SOURCE. DecorateQuery scoped the target; nothing in the
   // chain knows about this second collection. Without this the source cursor

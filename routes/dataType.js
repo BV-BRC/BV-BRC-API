@@ -238,6 +238,20 @@ router.use([
     }
     next()
   },
+  // Snapshot the RQL as the client sent it, before RQLQueryParser rewrites
+  // call_params[0] into Solr syntax against the TARGET collection. A
+  // cross-collection download needs the original to re-parse against the SOURCE.
+  //
+  // req._rawBody only exists for application/x-www-form-urlencoded (the auth
+  // extractor's content-type guard), so it misses
+  // application/rqlquery+x-www-form-urlencoded and every GET. Capturing here
+  // covers all of them uniformly.
+  function (req, res, next) {
+    if (req.queryType === 'rql' && req.call_params && typeof req.call_params[0] === 'string') {
+      req._originalRql = req.call_params[0]
+    }
+    next()
+  },
   RQLQueryParser,
   // SOLRQueryParser, // this parses the solr query for errors, but doesn't make any chagnes to the stream.  Debugging only.
   SolrQuerySanitizer,
