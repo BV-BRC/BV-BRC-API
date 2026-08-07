@@ -262,6 +262,36 @@ describe('CrossCollectionSourceStream', function () {
       assert.equal(runs[0], 'f0,f1,f2,f3')
     })
 
+    it('handles a ONE-TO-MANY link without truncating', async function () {
+      // Regression: DirectSolrClient.fetchByIds defaults its row cap to
+      // values.length, which assumes one target doc per link value. That holds
+      // for sp_gene.feature_id -> genome_feature but NOT for
+      // genome.genome_id -> genome_sequence, where one genome has many contigs.
+      // Observed as a 105-contig download returning 2 records — one per genome.
+      const source = [
+        { id: 'g1', genome_id: 'gA', public: true },
+        { id: 'g2', genome_id: 'gB', public: true }
+      ]
+      const target = []
+      for (let i = 0; i < 60; i++) target.push({ genome_id: 'gA', sequence_id: `gA.${i}`, public: true })
+      for (let i = 0; i < 45; i++) target.push({ genome_id: 'gB', sequence_id: `gB.${i}`, public: true })
+
+      const solr = new MockSolr(source, target)
+      const docs = await collect(makeStream(solr, {
+        sourceCollection: 'genome',
+        targetCollection: 'genome_sequence',
+        linkField: 'genome_id',
+        ctx: { publicFree }
+      }))
+
+      assert.equal(docs.length, 105, 'every contig, not one per genome')
+      assert.equal(docs.filter((d) => d.genome_id === 'gA').length, 60)
+      assert.equal(docs.filter((d) => d.genome_id === 'gB').length, 45)
+
+      // The row cap sent must exceed the link count, or Solr truncates.
+      assert.isAbove(solr.fetchCalls[0].options.rows, 2)
+    })
+
     it('emits a Solr-style metadata header document by default', async function () {
       // Regression: the media serializers skip the first document
       // (streamWithBackpressure skipFirstDoc defaults to true) because a Solrjs

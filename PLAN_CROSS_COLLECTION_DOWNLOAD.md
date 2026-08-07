@@ -437,6 +437,31 @@ that moves into Phase 2 below. See the Prerequisite carve-out.
 ## Decisions (resolved 2026-08-03)
 
 1. **Empty result** — `200` + `X-Result-Count: 0` header + server log. No non-200 for empties.
+
+   **AMENDED 2026-08-07, after implementation.** The header half of this decision only
+   works for the empty case, and cannot be made to work in general. Counts are not known
+   until resolution finishes, but a streaming download commits its headers on the first
+   `res.write` — long before that. So `X-Source-Rows` / `X-Resolved` / `X-Result-Count`
+   land only on responses that produced **no body at all**.
+
+   That is not an implementation shortcut. Making the counts both accurate and present in
+   the headers of a streamed response would require resolving the entire source set before
+   writing a byte — the unbounded-memory behavior this whole feature exists to avoid. The
+   two goals are mutually exclusive.
+
+   What this means in practice:
+   - **Empty downloads** (the BUG2 case) *do* get the headers, so the most important case
+     is covered by the decision as originally written.
+   - **Non-empty downloads** get no readable count. `X-Result-Count` is therefore **not** a
+     mechanism the client can rely on for partial/shortfall reporting.
+   - The counts are always available server-side via `res.locals.crossSourceStats`, and an
+     empty result is logged.
+
+   **`PLAN_DOWNLOAD_SSE_NOTIFICATIONS.md` is consequently a hard dependency, not a
+   companion** — it is the only user-visible path for the count. This was already true for
+   a second, independent reason (a hidden-form POST cannot read response headers under any
+   circumstances), so the SSE work is doubly load-bearing. Any parity checklist item that
+   says "client reads `X-Result-Count`" should read "client receives the count over SSE".
 2. **Expose linked join for JSON/tabular too** — yes. `select(<chained field>)` on a paginated read
    returns the joined field inline via the same `path` spec. Not downloads-only.
 3. **Batch size** — 2000 default (from `distributedQuery.cursorBatchSize`); configurable via
