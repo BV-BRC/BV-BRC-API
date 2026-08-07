@@ -255,6 +255,42 @@ The downloader fetches all of `genome`, `genome_feature`, `genome_sequence`,
 `pathway`, `sp_gene`, `genome_amr`, `subsystem` per genome, so either create all
 seven collections or use `-c` to select a subset.
 
+### `feature_sequence` must be fetched separately
+
+`feature_sequence` is keyed by md5, not by genome, so the per-genome downloader
+does not fetch it — but **FASTA downloads need it**: `genome_feature` carries only
+`aa_sequence_md5` / `na_sequence_md5`, and the residues live in
+`feature_sequence`. Without it, FASTA downloads succeed with correct headers and
+empty sequence bodies, which is easy to mistake for working.
+
+Collect the md5s referenced by your feature fixtures and fetch them in batches:
+
+```bash
+node -e "
+const https=require('https'), fs=require('fs')
+const feats=require('./tests/test-files-public/83332.12/genome_feature.json')
+const md5s=[...new Set(feats.flatMap(f=>[f.aa_sequence_md5,f.na_sequence_md5]).filter(Boolean))]
+const post=(b)=>new Promise((res,rej)=>{
+  const body='in(md5,('+b.join(',')+'))&select(md5,sequence,sequence_type)&limit('+b.length+')'
+  const r=https.request({hostname:'www.bv-brc.org',path:'/api/feature_sequence/',method:'POST',
+    headers:{'Content-Type':'application/rqlquery+x-www-form-urlencoded','Accept':'application/json',
+             'User-Agent':'p3-api-test/1.0 axios/1.6.0'}},
+    s=>{let d='';s.on('data',c=>d+=c);s.on('end',()=>{try{res(JSON.parse(d))}catch(e){rej(new Error(d.slice(0,120)))}})})
+  r.on('error',rej); r.end(body)})
+;(async()=>{ const all=[]
+  for(let i=0;i<md5s.length;i+=500) all.push(...await post(md5s.slice(i,i+500)))
+  fs.mkdirSync('/tmp/fseq/g',{recursive:true})
+  fs.writeFileSync('/tmp/fseq/g/feature_sequence.json',JSON.stringify(all))
+  console.log('wrote',all.length,'sequences')})()
+"
+node tests/index-local-data-files.js -e http://localhost:8983/solr -i /tmp/fseq -c feature_sequence
+```
+
+Note the `User-Agent` — the public API is behind Cloudflare, which 403s clients
+that send none (see the token-validation note above).
+
+For the M. tuberculosis reference genome (83332.12) this is ~14k sequences.
+
 ---
 
 ## Point the API at it
