@@ -171,7 +171,7 @@ collections the permission tests need.
 git clone https://github.com/bv-brc/bv-brc-solr.git ~/bv-brc-solr
 cd ~/bv-brc-solr
 
-for core in genome genome_feature feature_sequence; do
+for core in genome genome_feature feature_sequence sp_gene; do
   # Upload the configset. `zip -r` follows the solrconfig.xml symlink and
   # stores the real shared file, which is what we want.
   (cd "$core" && zip -r - *) | \
@@ -220,28 +220,40 @@ cd tests
 ./load-test-solr.js -e http://localhost:8983/solr \
   -g ./5-test-genome-ids.json -f ./test-files-public
 
-# Private set owned by a test user
+# Private to alice, readable by bob — exercises all three branches of the
+# permission fq (public / owner / user_read) in one fixture
 ./load-test-solr.js -e http://localhost:8983/solr \
   -g ./50-test-genome-ids-2.json -f ./test-files-private \
-  -o alice@patricbrc.org -p
+  -o alice@patricbrc.org -p -r bob@patricbrc.org
+
+# Only load the cores you actually created collections for
+./load-test-solr.js -e http://localhost:8983/solr \
+  -g ./5-test-genome-ids.json -f ./test-files-public \
+  -c genome,genome_feature,sp_gene
 ```
 
-`-o` sets `owner`, `-p` sets `public: false` (`index-local-data-files.js:78,81`).
+| flag | effect |
+|---|---|
+| `-o <user>` | sets `owner` on every doc |
+| `-p` | sets `public: false` |
+| `-r <u1,u2>` | sets `user_read` (multiValued array, not a comma string) |
+| `-c <cores>` | only load these cores; others are skipped and reported |
 
-### `user_read` must be set manually
+The loader prints a per-run summary of which cores loaded, were skipped, and
+failed, and **exits non-zero if any core failed**. A core whose collection does
+not exist is called out by name:
 
-The loader never populates `user_read` — it only transforms `owner` and `public`.
-The sharing case is the only one that exercises the third clause of the permission
-`fq`, so set it directly after indexing:
-
-```bash
-curl -s "http://localhost:8983/solr/genome/update?commit=true" \
-  -H 'Content-Type: application/json' \
-  -d '[{"genome_id":"<PRIVATE_ID>","user_read":{"set":["bob@patricbrc.org"]}}]'
+```
+  MISSING COLLECTION 'pathway' at http://localhost:8983/solr — skipping
 ```
 
-The `{"set": [...]}` atomic-update shape matches how the API itself writes these
-(`routes/genomePermissionRouter.js:199`).
+That case is common when you have created only some collections — Solr answers an
+unknown collection with a 404 whose body is an HTML "Searching for Solr?" page,
+which previously scrolled past as an unremarkable error line among hundreds.
+
+The downloader fetches all of `genome`, `genome_feature`, `genome_sequence`,
+`pathway`, `sp_gene`, `genome_amr`, `subsystem` per genome, so either create all
+seven collections or use `-c` to select a subset.
 
 ---
 

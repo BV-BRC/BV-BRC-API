@@ -14,6 +14,23 @@
  *             -o user@patricbrc.org  (set owner of objects, useful for API testing)
  *             -f ./test-files
  *
+ *  Permission fixtures (see Docs/LOCAL_SOLR_SETUP.md):
+ *
+ *    # public set
+ *    ./load-test-solr.js -e http://localhost:8983/solr \
+ *        -g ./5-test-genome-ids.json -f ./test-files-public
+ *
+ *    # private to alice, readable by bob — exercises all three branches of the
+ *    # permission fq (public / owner / user_read)
+ *    ./load-test-solr.js -e http://localhost:8983/solr \
+ *        -g ./50-test-genome-ids-2.json -f ./test-files-private \
+ *        -o alice@patricbrc.org -p -r bob@patricbrc.org
+ *
+ *    # only the cores you have collections for
+ *    ./load-test-solr.js ... -c genome,genome_feature,sp_gene
+ *
+ *  Fetching (phase 1) needs internet but no Solr and no VPN; indexing (phase 2)
+ *  needs the collections to already exist in the target Solr.
  */
 
 const opts = require('commander')
@@ -28,6 +45,10 @@ if (require.main === module) {
       `Where to store and load files from`)
     .option('-o, --owner [value]', 'Change owner of objects to this owner')
     .option('-p, --set-private', 'Set genomes as "public: false"')
+    .option('-r, --user-read [value]',
+      'Comma-separated users to put in user_read (permission-sharing fixtures)')
+    .option('-c, --cores [value]',
+      'Comma-separated cores to load; defaults to every core in the fixture dir')
     .parse(process.argv)
 
   if (!opts.genomeIds) {
