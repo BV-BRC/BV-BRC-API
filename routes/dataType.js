@@ -22,6 +22,7 @@ const SolrQuerySanitizer = require('../middleware/SolrQuerySanitizer')
 const DistributedQuery = require('../middleware/DistributedQuery')
 const JoinFieldInjector = require('../middleware/JoinFieldInjector')
 const JoinEnrichment = require('../middleware/JoinEnrichment')
+const CrossCollectionSource = require('../middleware/CrossCollectionSource')
 
 router.use(httpParams)
 
@@ -241,6 +242,7 @@ router.use([
   SolrQuerySanitizer,
   DecorateQuery,
   Limiter,
+  CrossCollectionSource,  // Validate + permission-scope http_source_* (no-op when absent)
   JoinFieldInjector,  // Inject join key fields into fl= before query execution
   DistributedQuery,  // Distributed query integration (after permission filters applied)
   ShardsPreference,

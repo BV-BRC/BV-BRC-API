@@ -141,8 +141,12 @@ duplication risk flagged in the download plan's Phase 1.)
 `fetchByIdsAsDict` and the convenience wrappers `fetchGenomeMetadata` / `fetchSequencesByMd5` pass it
 through.
 
-**`BatchJoiner.enrichDocs(docs, joinSpec, ctx)`** and **`enrichDocsChained(docs, chainedSpec, ctx)`**
-(the chained variant from the download plan) — accept a `ctx = { user, publicFree }`. For each hop:
+**`BatchJoiner.enrichDocs(docs, joinSpec, ctx)`** — accepts a `ctx = { user, publicFree }`.
+(**`enrichDocsChained(docs, chainedSpec, ctx)`**, the chained variant, belongs to
+`PLAN_CROSS_COLLECTION_DOWNLOAD.md` and was **NOT** built by this work — only single-hop `enrichDocs`
+shipped. That plan's Prerequisite section briefly claimed otherwise; corrected 2026-08-06. When it is
+built, it must apply the scoping below **per hop**, since each hop targets a different collection.)
+For each hop:
 - compute `permissionFq = buildPermissionFq({ collection: hop.targetCollection, user, publicFree })`
 - pass `permissionFq` into `_fetchAndCache` → `fetchByIds`.
 

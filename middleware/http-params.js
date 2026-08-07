@@ -52,6 +52,12 @@ module.exports = function (req, res, next) {
       // These are used by Genbank serializer and should not go to Solr
       req.genbankParams = {}
 
+      // Store http_source_* params separately before processing.
+      // These describe a cross-collection *source* scope and are consumed by
+      // CrossCollectionSource; they must not reach Solr. Values are validated
+      // against a server allowlist there — capturing them here is not trust.
+      req.sourceParams = {}
+
       Object.keys(parsed).forEach((key) => {
         if (key.match(/^http_fasta_/)) {
           // Store FASTA params for serializer access
@@ -63,6 +69,13 @@ module.exports = function (req, res, next) {
         if (key.match(/^http_genbank_/)) {
           // Store Genbank params for serializer access
           req.genbankParams[key] = decodeURIComponent(parsed[key])
+          delete parsed[key]
+          return
+        }
+
+        if (key.match(/^http_source_/)) {
+          // Store cross-collection source params for CrossCollectionSource
+          req.sourceParams[key] = decodeURIComponent(parsed[key])
           delete parsed[key]
           return
         }

@@ -9,90 +9,8 @@
  */
 
 const debug = require('debug')('p3api-server:middleware/JoinFieldInjector')
-const Config = require('../config')
 const { getRequestedJoinFields } = require('../lib/parseFieldList')
-
-/**
- * Get join configuration from config.
- * (Duplicated from JoinEnrichment.js to avoid circular dependencies)
- *
- * @returns {Object} Join enrichment configuration
- */
-function getJoinConfig () {
-  const defaults = {
-    enabled: true,
-    cacheSize: 200,
-    collections: {
-      genome_feature: {
-        joinableFields: {
-          genome_name: { from: 'genome', via: 'genome_id', field: 'genome_name' },
-          taxon_id: { from: 'genome', via: 'genome_id', field: 'taxon_id' },
-          genome_status: { from: 'genome', via: 'genome_id', field: 'genome_status' },
-          strain: { from: 'genome', via: 'genome_id', field: 'strain' }
-        }
-      },
-      pathway: {
-        joinableFields: {
-          genome_name: { from: 'genome', via: 'genome_id', field: 'genome_name' },
-          taxon_id: { from: 'genome', via: 'genome_id', field: 'taxon_id' }
-        }
-      },
-      subsystem: {
-        joinableFields: {
-          genome_name: { from: 'genome', via: 'genome_id', field: 'genome_name' },
-          taxon_id: { from: 'genome', via: 'genome_id', field: 'taxon_id' }
-        }
-      },
-      sp_gene: {
-        joinableFields: {
-          genome_name: { from: 'genome', via: 'genome_id', field: 'genome_name' },
-          taxon_id: { from: 'genome', via: 'genome_id', field: 'taxon_id' }
-        }
-      },
-      genome_amr: {
-        joinableFields: {
-          genome_name: { from: 'genome', via: 'genome_id', field: 'genome_name' },
-          taxon_id: { from: 'genome', via: 'genome_id', field: 'taxon_id' }
-        }
-      }
-    }
-  }
-
-  // Merge with config file settings
-  const configuredJoin = Config.get('joinEnrichment')
-  if (configuredJoin) {
-    return {
-      ...defaults,
-      ...configuredJoin,
-      collections: {
-        ...defaults.collections,
-        ...(configuredJoin.collections || {})
-      }
-    }
-  }
-
-  return defaults
-}
-
-/**
- * Get the set of join key fields needed for the requested join fields.
- *
- * @param {Array<string>} requestedJoinFields - Requested join field names
- * @param {Object} joinableFields - Collection's joinable field configuration
- * @returns {Set<string>} Set of join key field names (e.g., 'genome_id')
- */
-function getRequiredJoinKeys (requestedJoinFields, joinableFields) {
-  const keys = new Set()
-
-  for (const fieldName of requestedJoinFields) {
-    const fieldConfig = joinableFields[fieldName]
-    if (fieldConfig && fieldConfig.via) {
-      keys.add(fieldConfig.via)
-    }
-  }
-
-  return keys
-}
+const { getJoinConfig, buildJoinSpecs, getRequiredJoinKeys } = require('../lib/joinConfig')
 
 /**
  * Inject join key fields into the Solr query's field list.
@@ -150,38 +68,6 @@ function injectFieldsIntoQuery (query, keysToInject) {
 
   // Replace the old fl= with the new one
   return query.replace(/([&?]fl=)[^&]*/, newFlParam)
-}
-
-/**
- * Build join specifications from requested fields and collection config.
- * Groups fields by their target collection to minimize lookups.
- *
- * @param {Array<string>} requestedJoinFields - Field names that were requested
- * @param {Object} joinableFields - Collection's joinable field configuration
- * @returns {Array<Object>} Array of join specifications
- */
-function buildJoinSpecs (requestedJoinFields, joinableFields) {
-  const groups = new Map()
-
-  for (const fieldName of requestedJoinFields) {
-    const fieldConfig = joinableFields[fieldName]
-    if (!fieldConfig) continue
-
-    const groupKey = `${fieldConfig.from}:${fieldConfig.via}`
-
-    if (!groups.has(groupKey)) {
-      groups.set(groupKey, {
-        targetCollection: fieldConfig.from,
-        localField: fieldConfig.via,
-        foreignField: fieldConfig.via,
-        fields: []
-      })
-    }
-
-    groups.get(groupKey).fields.push(fieldConfig.field)
-  }
-
-  return Array.from(groups.values())
 }
 
 /**
