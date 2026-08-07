@@ -27,6 +27,8 @@
 const debug = require('debug')('p3api-server:middleware/CrossCollectionSource')
 const Config = require('../config')
 const { buildPermissionFq } = require('../lib/permissionFilter')
+const Rql = require('../lib/solrjs/rql')
+const Expander = require('../ExpandingQuery')
 
 /**
  * Default allowlist of (sourceCollection, linkField, targetCollection) triples.
@@ -92,11 +94,60 @@ function reject (res, message) {
 }
 
 /**
+ * Convert the raw source RQL into the Solr `q`/`fq` pieces the source cursor
+ * needs, parsed against the SOURCE collection.
+ *
+ * This cannot reuse `req.call_params[0]`: RQLQueryParser has already converted
+ * the body against the TARGET collection. For a `genome(...)` clause that
+ * difference is not cosmetic — the generated join's `to=` field and whether the
+ * self-join elimination fires both depend on which collection is being queried.
+ *
+ * `select()` and `limit()` in the body are the client's target-side intent and
+ * are dropped here: the source cursor selects only the link field, and its page
+ * size is the batch size. Ordering is likewise the cursor's concern.
+ *
+ * @param {string} rawRql - The RQL body as sent
+ * @param {string} sourceCollection - Collection to parse against
+ * @returns {Promise<{q: string, fq: Array<string>}>}
+ */
+async function parseSourceQuery (rawRql, sourceCollection) {
+  const cleaned = String(rawRql || '')
+    .replace(/&?\bselect\([^)]*\)/g, '')
+    .replace(/&?\blimit\([^)]*\)/g, '')
+    .replace(/&?\bsort\([^)]*\)/g, '')
+    .replace(/^&+/, '')
+    .replace(/&&+/g, '&')
+    .replace(/&+$/, '')
+
+  if (!cleaned) {
+    return { q: '*:*', fq: [] }
+  }
+
+  const resolved = await Expander.ResolveQuery(cleaned, { req: {}, res: {} })
+  const solr = Rql(resolved === '()' ? '' : resolved)
+    .toSolr({ maxRequestLimit: 999999999, defaultLimit: 25, collection: sourceCollection })
+
+  // Split the generated string into q and any fq parts. Everything else
+  // (rows/fl/sort) is the cursor's business, not the caller's.
+  const qMatch = solr.match(/[&?]q=([^&]*)/)
+  const q = qMatch ? decodeURIComponent(qMatch[1]) : '*:*'
+
+  const fq = []
+  const fqRe = /[&?]fq=([^&]*)/g
+  let m
+  while ((m = fqRe.exec(solr)) !== null) {
+    fq.push(decodeURIComponent(m[1]))
+  }
+
+  return { q, fq }
+}
+
+/**
  * CrossCollectionSource Middleware
  *
  * Place after Limiter, before JoinFieldInjector / checkIfStreaming.
  */
-function crossCollectionSourceMiddleware (req, res, next) {
+async function crossCollectionSourceMiddleware (req, res, next) {
   const params = req.sourceParams
   if (!params) {
     return next()
@@ -151,11 +202,25 @@ function crossCollectionSourceMiddleware (req, res, next) {
     publicFree: req.publicFree
   })
 
+  // Parse the source RQL against the SOURCE collection. A malformed source
+  // filter must fail here with a 400, not halfway through streaming a download
+  // when the response has already started.
+  let parsed
+  try {
+    parsed = await parseSourceQuery(rawSourceQuery, sourceCollection)
+  } catch (err) {
+    debug(`Source query parse failed: ${err.message}`)
+    return reject(res, `Could not parse the source query for ${sourceCollection}: ${err.message}`)
+  }
+
   req._crossSource = {
     collection: sourceCollection,
     linkField,
     target: targetCollection,
     rawQuery: rawSourceQuery,
+    // Solr pieces for the source cursor, parsed against the source collection.
+    sourceQ: parsed.q,
+    sourceFq: parsed.fq,
     permissionFq,
     batchSize: config.batchSize,
     // Same ctx shape enrichDocs/enrichDocsChained take, so the target and
@@ -164,7 +229,8 @@ function crossCollectionSourceMiddleware (req, res, next) {
   }
 
   debug(`Cross-collection source: ${sourceCollection}.${linkField} -> ${targetCollection} ` +
-        `(user=${req.user || 'anonymous'}, permissionFq=${permissionFq || 'none'})`)
+        `(user=${req.user || 'anonymous'}, q=${parsed.q}, fq=${JSON.stringify(parsed.fq)}, ` +
+        `permissionFq=${permissionFq || 'none'})`)
 
   next()
 }

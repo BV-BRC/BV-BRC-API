@@ -23,6 +23,7 @@ const DistributedQuery = require('../middleware/DistributedQuery')
 const JoinFieldInjector = require('../middleware/JoinFieldInjector')
 const JoinEnrichment = require('../middleware/JoinEnrichment')
 const CrossCollectionSource = require('../middleware/CrossCollectionSource')
+const CrossCollectionStream = require('../middleware/CrossCollectionStream')
 
 router.use(httpParams)
 
@@ -259,6 +260,7 @@ router.use([
     next()
   },
   streamingHandler.checkIfStreaming,
+  CrossCollectionStream,  // Resolve source->target into a stream (no-op unless _crossSource)
   APIMethodHandler,
   reqCounter,
   ExtractCustomFields,
