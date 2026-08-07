@@ -114,6 +114,9 @@ function makeStream (solr, overrides = {}) {
     targetCollection: 'genome_feature',
     linkField: 'feature_id',
     batchSize: 10,
+    // Tests assert on raw target docs; the Solr-style metadata header is
+    // covered by its own test below.
+    emitHeader: false,
     ...overrides
   })
 }
@@ -259,6 +262,27 @@ describe('CrossCollectionSourceStream', function () {
       assert.equal(runs[0], 'f0,f1,f2,f3')
     })
 
+    it('emits a Solr-style metadata header document by default', async function () {
+      // Regression: the media serializers skip the first document
+      // (streamWithBackpressure skipFirstDoc defaults to true) because a Solrjs
+      // stream leads with a metadata doc. A stream that omits it silently loses
+      // its first real record — observed as a 965-row resolution producing a
+      // 964-row CSV.
+      const solr = new MockSolr(SOURCE, TARGET)
+      const docs = await collect(new CrossCollectionSourceStream({
+        solrClient: solr,
+        sourceCollection: 'sp_gene',
+        targetCollection: 'genome_feature',
+        linkField: 'feature_id',
+        ctx: { user: 'alice', publicFree }
+      }))
+
+      assert.isObject(docs[0].response, 'first doc is the metadata header')
+      assert.isUndefined(docs[0].feature_id, 'header is not a target doc')
+      // Both real docs survive behind the header.
+      assert.deepEqual(docs.slice(1).map((d) => d.feature_id).sort(), ['f.alice', 'f.pub'])
+    })
+
     it('reports stats', async function () {
       const solr = new MockSolr(SOURCE, TARGET)
       const s = makeStream(solr, { ctx: { user: 'alice', publicFree } })
@@ -301,6 +325,7 @@ describe('CrossCollectionSourceStream', function () {
         sourceCollection: 'sp_gene',
         targetCollection: 'feature_sequence',
         linkField: 'md5',
+        emitHeader: false,
         ctx: { user: 'alice', publicFree }
       }))
 
