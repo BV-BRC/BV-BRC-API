@@ -430,7 +430,30 @@ that moves into Phase 2 below. See the Prerequisite carve-out.
    phase** (it is a cross-collection redirect but not a FASTA format; see the allowlist table).
 4. **Signals.** `X-Result-Count` / `X-Source-Rows` / `X-Resolved`, empty-result log,
    `DEBUG=p3api-server:media:fasta:xsource` timing.
-5. **Generalize.** Additional allowlist/join-path entries as config for other cross-collection grids.
+5. ~~**Generalize.** Additional allowlist/join-path entries as config for other
+   cross-collection grids.~~ **CLOSED 2026-08-07 — no work outstanding.**
+
+   Audited every `dataEndpoint` in the client's `DownloadFormats.js` (that field is what
+   marks a format as cross-collection). There are eight occurrences, collapsing to **four
+   distinct (source, linkField, target) triples** — and the shipped allowlist already
+   covers all four:
+
+   | source | linkField | target | client formats | allowlisted |
+   |---|---|---|---|---|
+   | `sp_gene` | `feature_id` | `genome_feature` | `protein+fasta`, `dna+fasta` (L264-265) | yes |
+   | `genome` | `genome_id` | `genome_feature` | `protein_feature+fasta`, `dna_feature+fasta`, `gff` (L221-224) | yes |
+   | `genome` | `genome_id` | `genome_sequence` | `contig_dna+fasta` (L220) | yes |
+   | `genome` | `genome_id` | `genome_feature` | `feature_bvbrc_id`, `feature_genbank_accession` (L144, L155) | yes — same triple |
+
+   The last row is the only thing this audit turned up that was not already known: two
+   accession-list formats declared outside `formatOverrides` (they are top-level format
+   definitions with `serverSide: true`). They resolve over a triple that is already
+   allowlisted, so they need no config — but they emit **TSV**, a format combination the
+   verification never exercised. Worth a smoke test; not a blocker.
+
+   Phase 5 was written as "extend by config as new grids need it", which remains the right
+   posture. The honest status is that there is nothing to extend today. Re-run this audit
+   (grep `dataEndpoint` in `DownloadFormats.js`) when a new cross-collection grid appears.
 
 ---
 
