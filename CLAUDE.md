@@ -454,7 +454,11 @@ The API supports augmenting query results with fields from related collections. 
 
 ### Configuration
 
-Joinable fields are configured per collection in `middleware/JoinEnrichment.js` (defaults) or `joinEnrichment` in `p3api.conf`. See `Docs/JOIN_ENRICHMENT_API.md` for the full developer reference.
+Joinable fields are configured per collection in **`lib/joinConfig.js`** (defaults) or `joinEnrichment` in `p3api.conf`. See `Docs/JOIN_ENRICHMENT_API.md` for the full developer reference.
+
+`lib/joinConfig.js` is shared by `JoinFieldInjector` and `JoinEnrichment` — the config loader and spec builder used to be duplicated verbatim in both (the old comment blamed circular dependencies; there is no cycle). Keep it shared: the injector decides which key to put in `fl=` and the enricher walks the hops, so two copies of the grammar drift and the symptom is a silently unenriched field.
+
+**Multi-hop joins.** A joinable field may declare an ordered `path` of hops instead of a single `{from, via, field}`; each hop names a `carry` field feeding the next, and the last names the `field` to attach. `BatchJoiner.enrichDocsChained(docs, spec, ctx)` walks it. Single-hop specs are unchanged. Each hop resolves its **own** permission context from its own target collection — hops span collections with different `publicFree` status, so one shared `fq` is wrong in both directions, and scoping only the first hop rebuilds the permission-blind bug one layer down.
 
 ### Permission scoping (fixed 2026-08-06 — was a live cross-user read)
 
@@ -476,9 +480,50 @@ const { permissionFq, scopeKey } = permissionContext({ collection, user: req.use
 
 Tests: `tests/test-permissions/test.permissionfilter.spec.js`, `tests/test-permissions/test.enrichment-permissions.spec.js`. The cross-user cache test is the merge gate — it must fail against a fetch-only fix. Live-Solr procedure: `Docs/LOCAL_SOLR_SETUP.md`; full record in `PLAN_ENRICHMENT_PERMISSIONS.md`.
 
-### Planned — server-side cross-collection sequence downloads (not started)
+## Cross-Collection Downloads (implemented 2026-08-07)
 
-**`PLAN_CROSS_COLLECTION_DOWNLOAD.md`** — eliminate the web client's two-round-trip prefetch for cross-collection FASTA downloads (e.g. Specialty Genes `sp_gene` → sequences from `genome_feature`). Two deliverables: (1) a **reusable multi-hop "linked join"** generalizing `BatchJoiner` to a config-declared `path` of hops (`enrichDocsChained`), exposed for JSON/tabular too; (2) a **source-scoped download endpoint** (`http_source_collection`/`http_source_link_field`) that resolves the source query to link values in bounded batches server-side. API-side streaming resolution, NOT a Solr `{!join}` (see the join-elimination direction). Its permission prerequisite is **done**, but note `enrichDocsChained` itself was **not** built by that work — it is net-new here, and must apply permission scoping **per hop** (each hop targets a different collection with different `publicFree` status). Fixes BUG2 (silent empty-file downloads) — but only in combination with `PLAN_DOWNLOAD_SSE_NOTIFICATIONS.md`: downloads are hidden-form POSTs, so the client cannot read the `X-Result-Count` response header, and moving resolution server-side *removes* the client's existing empty-result check. Other gotchas in the plan: the source query may itself be a `genome(...)` join that Solr rejects as a sole top-level clause (`Cannot parse '()'`, reproduced 2026-08-06) — must be decomposed, not forwarded raw; and `gff` is a cross-collection redirect that is not a FASTA format, so it doesn't fall out of the FASTA serializer wiring. (`collectionUniqueKeys` is **populated** at `config.js:102` — an earlier note claiming it was empty was wrong; source cursors can paginate.)
+Download from one collection using a filter that belongs to another — e.g. a Specialty Genes grid (`sp_gene`) downloading protein FASTA from `genome_feature`. The API resolves the link server-side; the client sends only its grid filter. Plan and full verification record: `PLAN_CROSS_COLLECTION_DOWNLOAD.md`.
+
+```
+POST /genome_feature/?http_download=true&http_accept=application/protein+fasta
+     &http_source_collection=sp_gene&http_source_link_field=feature_id
+body: <the sp_gene grid filter, verbatim>
+```
+
+Replaces the web client's two-round-trip prefetch (fetch all IDs into the browser, POST them back as a multi-MB `in(...)` clause).
+
+### Pipeline
+
+`CrossCollectionSource` (after `Limiter`) → `CrossCollectionStream` (after `checkIfStreaming`) → media serializer.
+
+1. **`middleware/CrossCollectionSource.js`** — the security boundary. Validates the (source, linkField, target) triple against a server allowlist (400 on miss), permission-scopes the **source** query with `buildPermissionFq`, and re-parses the source RQL against the *source* collection. Inert when `http_source_*` is absent.
+2. **`middleware/CrossCollectionStream.js`** — builds the resolution stream, sets `res.results = { stream }` + `skipAPIMethodHandler` (same contract as `DistributedQuery`), destroys the stream on client disconnect.
+3. **`lib/CrossCollectionSourceStream.js`** — cursor-pages the source for link values, fetches target docs via `{!terms}`, prefetches the next page while the current one drains.
+
+Because the stream emits **ordinary target documents** — the same shape `res.results.stream` always has — every serializer works unchanged. `gff` (a cross-collection redirect that is not FASTA) needs no special wiring.
+
+### Non-obvious invariants — break these and downloads fail silently
+
+Every bug found in this feature produced a plausible-looking file with HTTP 200. Assert on **counts**, never on "we got bytes."
+
+- **Emit the leading metadata document.** Solrjs streams do, and serializers skip the first doc (`streamWithBackpressure` `skipFirstDoc` defaults true). A stream without it loses its first record in every serializer.
+- **Dedup link values across batches, not just within one.** The source is sorted by its uniqueKey, not the link field, so rows sharing a link value scatter across cursor pages. Per-batch dedup alone emitted 1708 records where 965 were distinct.
+- **Pass an explicit `rows` to `fetchByIds` for one-to-many links.** It defaults to `values.length`, assuming one target doc per key — true for md5→sequence, false for `genome_id`→contigs. A 105-contig download returned 2 records.
+- **Union serializer join keys into the target `fl`.** The FASTA serializers join to `feature_sequence` on `aa_sequence_md5`/`na_sequence_md5`, which no client `select()` would name. `JoinFieldInjector` protects the ordinary path; this path bypasses it. Missing it yields correct headers with empty sequences (`SERIALIZER_REQUIRED_FIELDS` in `CrossCollectionStream.js`).
+- **Read the source RQL from `req._originalRql`**, captured before `RQLQueryParser` rewrites `call_params[0]` against the target. `req._rawBody` only exists for `application/x-www-form-urlencoded`; relying on it dropped the filter for `rqlquery+...` requests, so the download silently resolved the *entire* source collection.
+- **Permission-scope every collection independently** — source, target, and each `enrichDocsChained` hop. They differ in `publicFree` status.
+
+### Result counts are not readable from headers
+
+`X-Source-Rows` / `X-Resolved` / `X-Result-Count` are set when resolution finishes, but a streaming download commits headers on the first `res.write`. **They therefore land only on empty downloads.** That is inherent: making them accurate *and* header-visible would require resolving the whole source set before writing a byte, i.e. the unbounded memory this feature avoids. Counts are always in `res.locals.crossSourceStats`, and empty results are logged. The user-visible path is `PLAN_DOWNLOAD_SSE_NOTIFICATIONS.md` — a **hard dependency**, also because a hidden-form POST cannot read response headers at all.
+
+### Allowlist
+
+`sp_gene.feature_id → genome_feature`, `genome.genome_id → genome_feature`, `genome.genome_id → genome_sequence`. Verified against the website's `DownloadFormats.js` `formatOverrides`. Extend via `crossCollectionDownload.allowedSources` in `p3api.conf`, not code.
+
+### Tests
+
+`tests/test-download/test.cross-collection.spec.js` (HTTP integration; derives expectations from Solr at runtime, skips cleanly without API/collections/tokens), `tests/test-join/test.crosssourcestream.spec.js`, `tests/test-permissions/test.crosscollectionsource.spec.js`, `tests/test-join/test.chainedjoin.spec.js`.
 
 ### Future: Solr query cancellation
 
