@@ -121,6 +121,45 @@ function makeStream (solr, overrides = {}) {
   })
 }
 
+describe('targetFieldList — serializer join-key injection', function () {
+  const { targetFieldList } = require('../../middleware/CrossCollectionStream')
+
+  const fl = (list, accept) => targetFieldList({
+    call_params: ['&q=*:*' + (list ? '&fl=' + list : '')],
+    headers: { accept }
+  })
+
+  it('injects aa_sequence_md5 for protein FASTA', function () {
+    // Without this, select(patric_id) yields a download of correct headers with
+    // empty sequence bodies — the serializer joins to feature_sequence itself
+    // and never receives the md5 to join on. JoinFieldInjector protects the
+    // ordinary request path; cross-collection resolution bypasses it.
+    assert.include(fl('patric_id', 'application/protein+fasta').split(','), 'aa_sequence_md5')
+  })
+
+  it('injects na_sequence_md5 for DNA FASTA', function () {
+    assert.include(fl('patric_id', 'application/dna+fasta').split(','), 'na_sequence_md5')
+  })
+
+  it('preserves the client-requested fields', function () {
+    assert.include(fl('patric_id,product', 'application/protein+fasta').split(','), 'patric_id')
+    assert.include(fl('patric_id,product', 'application/protein+fasta').split(','), 'product')
+  })
+
+  it('does not duplicate a field the client already selected', function () {
+    const out = fl('patric_id,aa_sequence_md5', 'application/protein+fasta').split(',')
+    assert.equal(out.filter((f) => f === 'aa_sequence_md5').length, 1)
+  })
+
+  it('injects nothing for formats that need no join key', function () {
+    assert.equal(fl('patric_id', 'text/csv'), 'patric_id')
+  })
+
+  it('returns null (all fields) when the client selected nothing', function () {
+    assert.isNull(fl(null, 'application/protein+fasta'))
+  })
+})
+
 describe('buildCursorSort', function () {
   it('defaults to the uniqueKey ascending', function () {
     assert.equal(buildCursorSort(null, 'id'), 'id asc')

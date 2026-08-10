@@ -71,8 +71,34 @@ function getDirectClient () {
 }
 
 /**
+ * Fields a serializer needs on the target document in order to perform its OWN
+ * downstream join, keyed by the Accept type it is selected for.
+ *
+ * The FASTA serializers join genome_feature -> feature_sequence themselves via an
+ * md5. If the client's select() does not happen to include that md5 it never
+ * reaches the serializer, and the download comes back as correct headers with
+ * empty sequence bodies — a plausible-looking, silently broken file.
+ *
+ * The ordinary request path is protected from this by JoinFieldInjector, which
+ * injects join keys into fl= before the query runs. Cross-collection resolution
+ * bypasses that (the target fetch is issued by CrossCollectionSourceStream, not
+ * by APIMethodHandler), so the same guarantee has to be made here.
+ */
+const SERIALIZER_REQUIRED_FIELDS = {
+  'application/protein+fasta': ['aa_sequence_md5'],
+  'application/dna+fasta': ['na_sequence_md5'],
+  'application/sralign+dna+fasta': ['na_sequence_md5'],
+  // GFF builds each row from these; a narrow select() would blank them out.
+  'application/gff': ['accession', 'annotation', 'feature_type', 'start', 'end',
+    'strand', 'patric_id', 'refseq_locus_tag', 'product', 'genome_id', 'genome_name'],
+  'text/gff3': ['accession', 'annotation', 'feature_type', 'start', 'end',
+    'strand', 'patric_id', 'refseq_locus_tag', 'product', 'genome_id', 'genome_name']
+}
+
+/**
  * Extract the requested field list from the already-parsed target query, so the
- * target fetch returns the same fields a direct query would.
+ * target fetch returns the same fields a direct query would — plus whatever the
+ * selected serializer needs to complete its own join.
  *
  * @param {Object} req
  * @returns {string|null} Comma-separated fl, or null for "all fields"
@@ -81,8 +107,22 @@ function targetFieldList (req) {
   const q = (req.call_params && req.call_params[0]) || ''
   const m = q.match(/[&?]fl=([^&]*)/)
   if (!m) return null
+
   const fl = decodeURIComponent(m[1].replace(/\+/g, ' ')).trim()
-  return (!fl || fl === '*') ? null : fl
+  if (!fl || fl === '*') return null
+
+  const fields = new Set(fl.split(',').map((f) => f.trim()).filter(Boolean))
+
+  const accept = (req.headers && req.headers.accept) || ''
+  const required = SERIALIZER_REQUIRED_FIELDS[accept] || []
+  for (const f of required) {
+    if (!fields.has(f)) {
+      fields.add(f)
+      debug(`Injecting '${f}' into target fl for ${accept}`)
+    }
+  }
+
+  return Array.from(fields).join(',')
 }
 
 function crossCollectionStreamMiddleware (req, res, next) {
