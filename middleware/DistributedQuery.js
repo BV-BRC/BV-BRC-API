@@ -161,6 +161,17 @@ function shouldUseDistributedQuery (req, config) {
     return { useDistributed: false, reason: 'disabled globally' }
   }
 
+  // Facet and grouped queries cannot be served by the distributed streaming path:
+  // it concatenates raw docs from independent shards and has no way to compute
+  // facet_counts or a grouped response. These must use the standard Solr query
+  // path regardless of limit. RQLQueryParser emits &facet=true / &group=true, and
+  // a direct Solr query may contain them too. Checked before the header/param
+  // overrides so an explicit distributed=true cannot silently drop facets.
+  const contentQuery = req.call_params[0] || ''
+  if (/(?:^|&)facet=true(?:&|$)/.test(contentQuery) || /(?:^|&)group=true(?:&|$)/.test(contentQuery)) {
+    return { useDistributed: false, reason: 'facet/group query requires standard query path' }
+  }
+
   // Check for explicit header override
   const headerOverride = req.headers['x-distributed-query']
   if (headerOverride !== undefined) {
@@ -246,6 +257,16 @@ function wrapForMediaHandler (queryResult, callMethod) {
     })
 
     queryResult.stream.pipe(wrappedStream)
+
+    // pipe() does NOT forward 'error' from source to destination. Without this,
+    // a coordinator/shard error (or a mid-stream cancel) becomes an unhandled
+    // 'error' event -> uncaughtException, while the wrapped stream stalls and the
+    // response truncates to a silent, empty "[". Forward the error so the media
+    // handler's error path runs (and log it so the real trigger is visible).
+    queryResult.stream.on('error', (err) => {
+      console.error(`Distributed query stream error: ${err && err.message}`)
+      wrappedStream.destroy(err)
+    })
 
     return {
       stream: wrappedStream
@@ -358,7 +379,15 @@ module.exports = async function distributedQueryMiddleware (req, res, next) {
           publicFree: req.publicFree
         })
 
-        res.results.stream = res.results.stream.pipe(joinStream)
+        const upstream = res.results.stream
+        // Forward errors across the pipe boundary (pipe() does not), so a failure
+        // in the wrapped/coordinator stream surfaces on the join stream instead of
+        // becoming an unhandled 'error' event.
+        upstream.on('error', (err) => {
+          console.error(`Distributed join-enrichment upstream error: ${err && err.message}`)
+          joinStream.destroy(err)
+        })
+        res.results.stream = upstream.pipe(joinStream)
         debug(`Piped distributed query through JoinEnrichmentStream: ${req._joinSpecs.map(s => s.fields.join(',')).join('; ')}`)
       } catch (err) {
         // Don't fail the request — just skip enrichment
@@ -375,9 +404,11 @@ module.exports = async function distributedQueryMiddleware (req, res, next) {
     })
 
     res.on('close', () => {
-      // Cancel query if client disconnects
-      if (queryResult.cancel) {
-        debug('Client disconnected, cancelling distributed query')
+      // 'close' also fires on normal completion. Only cancel on a genuine client
+      // disconnect (response not fully written). Cancelling an already-finished
+      // query destroys the coordinator stream with an error -> uncaughtException.
+      if (!res.writableEnded && queryResult.cancel) {
+        debug('Client disconnected before completion, cancelling distributed query')
         queryResult.cancel()
       }
     })

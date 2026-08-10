@@ -182,6 +182,43 @@ curl -X POST http://localhost:3001/test/distributed-query \
 
 The distributed query system requires direct network access to all Solr shard replicas. If some hosts are inaccessible, use `excludeNodes` to filter them out. Each shard must have at least one accessible replica.
 
+## Trace Replay & Shakedown Testing
+
+`scripts/replay-queries.js` replays captured real-user API traces against a dev server and deep-diffs each response against the recorded original. It was moved into this module (it originated in the web module) because the queries it exercises are the API's responsibility. It was the primary tool used to shake down the `feature/distributed-query` branch — full findings in `Docs/DISTRIBUTED_QUERY_SHAKEDOWN.md`.
+
+### Trace logs and tokens
+
+- Trace logs: `/disks1/p3/query_log/<user>@...jsonl` (JSONL, one request/response per line; filename embeds the capture timestamp `...YYYY-MM-DDTHH-MM-SS-mmmZ.jsonl`).
+- Per-user auth tokens: `token.<user>` in the repo root (git-ignored; treat as secrets).
+
+### Two validation modes
+
+- **Recorded replay** (default) — replay each query against the dev API and diff the live response against the recorded one. Data drift between capture and replay is the dominant noise source.
+- **Live A/B** (`--compare <url>`) — send each query to *both* the dev server and a reference endpoint (e.g. production `https://www.bv-brc.org/api`) at the same instant against the same live Solr, and compare the two live responses to each other (recorded response ignored). This isolates *code* differences from time drift; since production has no distributed subsystem, it directly checks that the distributed path matches the standard path. This is the strongest test.
+
+### Key flags
+
+- `--compare <url>` — live A/B against a second endpoint.
+- `--inserted-before <ISO|auto>` — appends a `date_inserted` upper bound to each query (`auto` uses the per-entry `ts`, falling back to the timestamp parsed from the log filename) to eliminate post-capture ingestion drift. Applied only to collections that carry `date_inserted` (hardcoded allowlist; override with `--inserted-before-collections`) and only to plain collection queries. RQL colons in the datetime are `%3A`-encoded (`:` is RQL's type-converter separator).
+- `--ignore-order` — treat arrays order-insensitively; required for unsorted queries (`in(...)` without `sort(...)`), which Solr returns in a different order over time.
+- `--token <tok>`, `--summary`, `--output <file>`.
+
+The comparator ignores volatile `_version_` (Solr's optimistic-concurrency stamp) and the query echo (`responseHeader.params.q`/`.fq`, which differ cosmetically across RQL→Solr formatting). `response.*` is compared first, so ignoring these never hides a real data difference.
+
+### Example
+
+```bash
+node scripts/replay-queries.js /disks1/p3/query_log/<user>@...jsonl http://localhost:23001 \
+  --token "$(cat token.<user>)" --ignore-order --inserted-before auto --summary
+# live A/B against production:
+node scripts/replay-queries.js /disks1/p3/query_log/<user>@...jsonl http://localhost:23001 \
+  --compare https://www.bv-brc.org/api --token "$(cat token.<user>)" --ignore-order --summary
+```
+
+### Shakedown result (for context)
+
+Five defects were found and fixed (alias resolution, dropped `q=` constraint, backpressure EOF truncation, JSON-stream header crash, facet/group misrouting) and the branch was validated as **result-identical to production** across four user workloads — all remaining diffs are SolrCloud replica drift, not code. Note that not every trace exercises the distributed streaming path: a query only engages it when it targets an enabled collection (`genome_feature`, `genome`, `pathway`, `subsystem`), is a plain `query`/`stream` (no `facet=true`/`group=true`), and has `rows >= minLimitThreshold`. Recent traces whose large queries were facet requests or hit non-enabled collections took the standard path and did not test distributed streaming. Check the `X-Distributed-Query` response header (requires `exposeMetadataHeaders`) to confirm whether a query actually engaged the distributed path.
+
 ## Security Notes
 
 ### SolrQuerySanitizer (`middleware/SolrQuerySanitizer.js`)

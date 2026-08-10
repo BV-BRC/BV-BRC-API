@@ -81,7 +81,13 @@ describe('DistributedQueryConfig', function () {
         'excludeNodes',
         'adminUsers',
         'rejectUnauthorized',
-        'ca'
+        'ca',
+        // Sequence join settings
+        'sequenceJoinBatchSize',
+        'sequenceJoinPrefetchBatches',
+        // Genome metadata cache settings
+        'genomeMetadataCacheSize',
+        'genomeMetadataBatchSize'
       ])
     })
 

@@ -150,6 +150,53 @@ describe('DistributedQuery Middleware', function () {
       assert.equal(result.reason, 'disabled globally')
     })
 
+    it('should reject facet queries (cannot stream facet_counts)', function () {
+      const config = baseConfig
+      const req = createMockReq({
+        call_params: ['q=*:*&rows=50000&facet=true&facet.field=host_name']
+      })
+
+      const result = shouldUseDistributedQuery(req, config)
+
+      assert.isFalse(result.useDistributed)
+      assert.include(result.reason, 'facet/group')
+    })
+
+    it('should reject grouped queries (cannot stream grouped response)', function () {
+      const config = baseConfig
+      const req = createMockReq({
+        call_params: ['q=*:*&rows=50000&group=true&group.field=genome_id']
+      })
+
+      const result = shouldUseDistributedQuery(req, config)
+
+      assert.isFalse(result.useDistributed)
+      assert.include(result.reason, 'facet/group')
+    })
+
+    it('should reject facet queries even with distributed=true override', function () {
+      const config = baseConfig
+      const req = createMockReq({
+        call_params: ['q=*:*&rows=50000&facet=true&distributed=true']
+      })
+
+      const result = shouldUseDistributedQuery(req, config)
+
+      assert.isFalse(result.useDistributed)
+      assert.include(result.reason, 'facet/group')
+    })
+
+    it('should not misfire on fields that merely contain "facet"', function () {
+      const config = baseConfig
+      const req = createMockReq({
+        call_params: ['q=*:*&rows=50000&fl=facet_note,genome_id']
+      })
+
+      const result = shouldUseDistributedQuery(req, config)
+
+      assert.isTrue(result.useDistributed)
+    })
+
     it('should respect X-Distributed-Query header override (enabled)', function () {
       // Note: header override takes precedence over enabled flag
       const config = { ...baseConfig, enabled: true }

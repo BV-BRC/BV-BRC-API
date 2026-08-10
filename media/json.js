@@ -8,6 +8,12 @@ module.exports = {
         const results = vals[0]
         let isFirst = true
 
+        // Set the nginx no-buffering header BEFORE the first write flushes the
+        // response headers. streamWithBackpressure also tries to set it, but by
+        // the time it runs we've already written '[' and headers are sent.
+        if (res.set) {
+          res.set('X-Accel-Buffering', 'no')
+        }
         res.write('[')
         await streamWithBackpressure(results.stream, res, {
           transform: (data) => {
