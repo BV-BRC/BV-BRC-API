@@ -43,6 +43,7 @@ let directSolrClientInstance = null
 // Legacy imports for fallback mode
 const { getSequenceDictByHash } = require('../util/featureSequence')
 const { buildPermissionFq } = require('../lib/permissionFilter')
+const { userAgent } = require('../lib/userAgent')
 const SEQUENCE_BATCH = 200
 
 // For genome metadata lookups via HTTP
@@ -75,6 +76,7 @@ async function getGenomeMetadataDict (genomeIds, req) {
     const response = await axios.post(url, q, {
       headers: {
         accept: 'application/json',
+        'User-Agent': userAgent(),
         authorization: (req && req.headers.authorization) ? req.headers.authorization : ''
       }
     })
