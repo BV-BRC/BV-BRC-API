@@ -162,8 +162,30 @@ The distributed query system requires direct network access to all Solr shard re
 ## Dependency Security Maintenance
 
 Baseline refresh done 2026-08-17 (branch `deps/security-refresh`). `npm audit` went
-**106 → 57** advisories (critical 15→11, high 59→24). Test results are byte-identical to
+**106 → 53** advisories (critical 15→11, high 59→22). Test results are byte-identical to
 pristine alpha, so the refresh introduced no regressions.
+
+### Never declare `npm` as a dependency
+
+`package.json` used to list `"npm"` and `"install"` — neither imported anywhere
+(`require('npm')` / `require('install')` → 0 hits), nothing invoking
+`node_modules/.bin/npm`. They arrived incidentally in `84e20f6f`, a commit about solrjs that
+never mentions them; almost certainly a stray `npm install npm install`.
+
+Declaring `npm` vendors the **entire npm CLI** into the tree: 143 of 1339 lockfile entries
+lived under `node_modules/npm/`. Its subpackages (`@npmcli/*`, `@sigstore/*`, `libnpm*`,
+`pacote`, `cacache`) declare `node: ^20.17.0 || >=22.9.0`, so on prod's Node 22.4.1 every
+install printed **80+ `EBADENGINE` warnings** — npm complaining that a vendored copy of
+*itself*, which nothing would ever execute, didn't match the running Node. Production runs
+from a persistent checkout on the **system** npm, so the vendored copy was pure dead weight.
+
+Removing both dropped 145 packages. `apicache` was bumped `^1.6.2 → ^1.6.3` at the same time
+(1.6.2 declares `node: >=8 <=15`, the one remaining warning; 1.6.3 relaxes it to `>=8`).
+`npm install` is now silent on EBADENGINE.
+
+If EBADENGINE noise reappears, check for a package that vendors a toolchain before assuming
+the running Node is wrong. Note the repo pins **no** Node version (no `engines`, no
+`.nvmrc`), so nothing catches this class of drift automatically.
 
 ### What changed
 
@@ -191,7 +213,7 @@ advisories on its own).
   `axios` (already a direct dep at 1.19.0) — worth doing, but as its own change.
 - **`mocha` 7 → 11** — dev-only; would need a test-suite pass.
 
-### Where the remaining 57 live
+### Where the remaining 53 live
 
 Almost none are in first-party request-path code:
 
