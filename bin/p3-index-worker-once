@@ -17,8 +17,16 @@ const streamRequest = (parsedSolrUrl.protocol == "https:") ? httpsStreamRequest 
 console.log(streamRequest);
 
 const Web = require('../web');
+const indexRetry = require('../lib/indexRetry')
 
 var solrAgent = Web.getSolrAgent();
+
+// Accumulates transient failures across this run for the end-of-run summary email.
+const transientFailures = []
+// Rollbacks (cur/ -> new/) deferred until the queue drains, so retried messages
+// reappear on the NEXT run rather than being re-popped in a tight loop this run.
+const deferredRollbacks = []
+const MAX_ATTEMPTS = indexRetry.maxAttempts()
 
 // console.log(`Queue Directory: ${queueDirectory}`)
 
@@ -62,14 +70,23 @@ function postDocs (filePath, type) {
     path: `/solr/${type}/update?wt=json&overwrite=true&commit=false`
   }, readStream).then((msg_str) => {
     // console.log(`Posted ${type}`)
-    const msg = JSON.parse(msg_str)
+    // Any failure reaching Solr is transient (network reset, non-2xx, an HTML
+    // error page from HAProxy/Solr instead of JSON, or a Solr-reported error) —
+    // tag it so the worker retries rather than permanently failing the job.
+    let msg
+    try {
+      msg = JSON.parse(msg_str)
+    } catch (parseErr) {
+      // e.g. "<html><body>...502 Bad Gateway...</body></html>"
+      throw indexRetry.markTransient(new Error(`Non-JSON response from Solr [${type}]: ${parseErr.message}`))
+    }
     if (msg && msg.responseHeader && msg.responseHeader.status === 0) {
       // success
     } else {
-      throw new Error(msg.error.msg)
+      throw indexRetry.markTransient(new Error((msg && msg.error && msg.error.msg) || `Solr error posting to ${type}`))
     }
   }).catch((err) => {
-    throw err
+    throw indexRetry.markTransient(err)
   })
 }
 
@@ -81,7 +98,19 @@ function processQueue (queue) {
     }
 
     if (length < 1) {
-	process.exit(0);
+      // End of run: return retried messages to the queue for the next run, then
+      // send one summary email if any transient failures occurred, then exit.
+      // Send in the callback so the process doesn't exit before the mail is
+      // flushed. Exit 0 regardless (cron logs hard failures separately).
+      indexRetry.runDeferredRollbacks(deferredRollbacks, (m) => console.error(m)).then(() => {
+        return indexRetry.sendRunSummary(transientFailures)
+      }).then((info) => {
+        if (info) { console.log(`Sent transient-failure summary email (${transientFailures.length} failure(s))`) }
+        process.exit(0)
+      }, (mailErr) => {
+        console.error(`${(new Date()).toISOString()}: Failed to send summary email: ${mailErr}`)
+        process.exit(0)
+      })
     } else {
       completedHardCommit = false
       console.log(`Start processing queued items: ${length}`)
@@ -100,13 +129,32 @@ function processQueue (queue) {
           return
         }
 
+        let genomeId
+        // Resolve the queue transaction (commit/rollback) exactly once, update
+        // history, then resume. `outcome` is { ok:true } or { ok:false, err }.
+        let finished = false
+        const finish = (outcome) => {
+          if (finished) { return }
+          finished = true
+          indexRetry.finishMessage({
+            queueDirectory, id: message.id, genomeId, commit, rollback,
+            outcome, maxAttempts: MAX_ATTEMPTS, transientFailures, deferredRollbacks,
+            log: (m) => console.error(m)
+          }).then(() => {
+            processQueue(queue)
+          }, (histErr) => {
+            console.error(`${(new Date()).toISOString()}: Error in updating history: ${histErr} while processing ${message.id}`)
+            processQueue(queue)
+          })
+        }
+
         try {
           console.log(`\nStart indexing ${message.id} User: ${message.user}`)
 
           const fileDefs = []
           const beforeProcess = (new Date()).getTime()
 
-          const genomeId = fs.readJsonSync(message.files.genome.path)[0]['genome_id']
+          genomeId = fs.readJsonSync(message.files.genome.path)[0]['genome_id']
 
           Object.keys(message.files).forEach(core => {
             let files = message.files[core]
@@ -143,42 +191,14 @@ function processQueue (queue) {
           Promise.all(fileDefs).then(() => {
             const afterProcess = (new Date()).getTime()
             console.log(`  ${(afterProcess - beforeProcess)}ms elapsed for genome (${genomeId})`)
-
-            updateHistory(message.id, 'submitted', genomeId).then(() => {
-              // commit()
-		  //console.log("Ending now 3");
-		  //process.exit(0);
-              processQueue(queue)
-            }, (err) => {
-              console.error(`${(new Date()).toISOString()}: Error in updating history: ${err} while processing ${message.id}`)
-            })
+            finish({ ok: true })
           }, (err) => {
             console.error(`${(new Date()).toISOString()}: Error in fullfilling fileDefs: ${err} while processing ${message.id}`)
-
-            // trigger rollback
-            // this operation is very costly. Delete by ID is preferred.
-            // IndexingCores.forEach(core => {
-            //   deleteDocs(core, genomeId)
-            // })
-
-            updateHistory(message.id, 'error', err.message).then(() => {
-              // commit()
-		  //console.log("Ending now 2");
-		  //process.exit(0);
-              processQueue(queue) // Resume
-            }, (err) => {
-              console.error(`${(new Date()).toISOString()}: Error in updating history: ${err} while processing ${message.id}`)
-            })
+            finish({ ok: false, err })
           })
         } catch (err) {
-          updateHistory(message.id, 'error', err.message).then(() => {
-            // commit()
-		  //console.log("Ending now");
-		  //process.exit(0);
-            processQueue(queue) // Resume
-          }, (err) => {
-            console.error(`${(new Date()).toISOString()}: Error in updating history: ${err} while processing ${message.id}`)
-          })
+          // Synchronous failure (e.g. malformed genome input file) — permanent.
+          finish({ ok: false, err })
         }
       })
     }
@@ -247,43 +267,5 @@ function updateJSONStreamWithAccessControl (fileName, filePath, core, owner) {
     }
   })
 }
-
-function updateHistory (id, state, msg) {
-  return new Promise((resolve, reject) => {
-    const historyPath = Path.join(queueDirectory, 'history', id)
-
-    console.log(`Updating History ${historyPath}`)
-
-    fs.readJson(historyPath, (err, data) => {
-      if (err) {
-        reject(err)
-        return
-      }
-
-      switch (state) {
-        case 'submitted':
-          data.state = state
-          data.genomeId = msg
-          data.submissionTime = new Date()
-          break
-        case 'error':
-          data.state = state
-          data.error = msg
-          break
-        default:
-          data.state = state
-          break
-      }
-
-      fs.writeJson(historyPath, data, (err) => {
-        if (err) {
-          console.log(`Error writing to history: ${id}`)
-          reject(err)
-          return
-        }
-
-        resolve(true)
-      })
-    })
-  })
-}
+// History updates and queue commit/rollback are now handled by
+// lib/indexRetry.finishMessage (see processQueue above).

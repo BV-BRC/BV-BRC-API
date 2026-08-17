@@ -1,0 +1,139 @@
+#!/usr/bin/env node
+
+// Purge old, completed history records from the indexing queue.
+//
+// History files (queueDir/history/<id>) are created at submission and rewritten
+// through their lifecycle (queued -> submitted -> indexed, or error/retrying)
+// but are NEVER deleted by any other code -- so history/ grows without bound,
+// one file per genome ever submitted. This script reaps the terminal, safe ones.
+//
+// Safety rules (a record is purged only if ALL hold):
+//   * state === 'indexed'      -- terminal success. error/retrying/submitted/
+//                                 queued are kept (recoverable or diagnostic).
+//   * completed >= --age days ago, measured from indexCompletionTime (falls back
+//                                 to the history file's ctime if that's absent).
+//   * no file_data/<id> dir    -- if the payload still exists the job isn't truly
+//                                 done being cleaned; skip so we never orphan
+//                                 p3-requeue-errors inputs or half-cleaned jobs.
+//
+// Usage:
+//   bin/p3-purge-history --dry-run              # list what would be purged (default age 90)
+//   bin/p3-purge-history --age 30 --dry-run     # older than 30 days
+//   bin/p3-purge-history --age 90 --confirm     # actually delete
+
+const Config = require('../config')
+const opts = require('commander')
+const Path = require('path')
+const fs = require('fs-extra')
+
+const queueDir = Config.get('queueDirectory')
+const historyDir = Path.join(queueDir, 'history')
+const fileDataDir = Path.join(queueDir, 'file_data')
+
+if (require.main === module) {
+  opts.option('-n, --dry-run', 'List what would be purged without deleting anything')
+    .option('-c, --confirm', 'Perform the deletion')
+    .option('-a, --age <days>', 'Only purge records completed at least <days> ago (default: 90)', '90')
+    .parse(process.argv)
+
+  if (!opts.dryRun && !opts.confirm) {
+    console.error('Specify --dry-run to preview, or --confirm to delete.')
+    opts.help()
+  }
+
+  const ageDays = parseFloat(opts.age)
+  if (!(ageDays >= 0)) {
+    console.error(`Invalid --age: ${opts.age}`)
+    process.exit(1)
+  }
+
+  purge(ageDays, !!opts.confirm)
+}
+
+function purge (ageDays, confirm) {
+  const now = Date.now()
+  const cutoffMs = ageDays * 86400 * 1000
+
+  let scanned = 0
+  let purged = 0
+  const skip = { notIndexed: 0, tooNew: 0, hasFileData: 0, unreadable: 0 }
+
+  let dir
+  try {
+    dir = fs.opendirSync(historyDir)
+  } catch (e) {
+    console.error(`Cannot open history dir ${historyDir}: ${e.message}`)
+    process.exit(1)
+  }
+
+  let dirent
+  while ((dirent = dir.readSync()) !== null) {
+    if (!dirent.isFile()) { continue }
+    const id = dirent.name
+    const historyPath = Path.join(historyDir, id)
+    scanned++
+
+    let data
+    try {
+      data = fs.readJsonSync(historyPath)
+    } catch (e) {
+      // Corrupt/unreadable history file — leave it alone rather than guess.
+      skip.unreadable++
+      continue
+    }
+
+    if (!data || data.state !== 'indexed') {
+      skip.notIndexed++
+      continue
+    }
+
+    // Age: prefer the recorded completion time; fall back to file ctime.
+    let completedMs
+    if (data.indexCompletionTime) {
+      completedMs = Date.parse(data.indexCompletionTime)
+    }
+    if (!completedMs || isNaN(completedMs)) {
+      try {
+        completedMs = fs.statSync(historyPath).ctimeMs
+      } catch (e) {
+        skip.unreadable++
+        continue
+      }
+    }
+    if ((now - completedMs) < cutoffMs) {
+      skip.tooNew++
+      continue
+    }
+
+    // Never purge a record whose payload dir still exists — that job isn't fully
+    // cleaned, and other tooling (p3-requeue-errors) may still need those files.
+    if (fs.existsSync(Path.join(fileDataDir, id))) {
+      skip.hasFileData++
+      continue
+    }
+
+    const ageInDays = ((now - completedMs) / 86400 / 1000).toFixed(1)
+    if (!confirm) {
+      console.log(`[dry-run] would purge ${id} (indexed, ${ageInDays}d old)`)
+      purged++
+      continue
+    }
+
+    try {
+      fs.removeSync(historyPath)
+      purged++
+    } catch (e) {
+      console.error(`Failed to delete ${historyPath}: ${e.message}`)
+    }
+  }
+  dir.closeSync()
+
+  console.log('')
+  console.log(`Scanned:  ${scanned}`)
+  console.log(`${confirm ? 'Purged' : 'Would purge'}: ${purged}`)
+  console.log(`Kept:     ${scanned - purged}`)
+  console.log(`  not 'indexed' state : ${skip.notIndexed}`)
+  console.log(`  completed too recently : ${skip.tooNew}`)
+  console.log(`  file_data still present : ${skip.hasFileData}`)
+  console.log(`  unreadable history file : ${skip.unreadable}`)
+}

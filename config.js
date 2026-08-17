@@ -86,6 +86,19 @@ const defaults = {
     pass: ''
   },
 
+  // Outbound email (nodemailer). Production SMTP host/username/password live in
+  // p3api.conf; these are safe local defaults. localSendmail:true uses the local
+  // MTA instead of an SMTP relay. indexAlertTo/indexMaxAttempts drive the index
+  // worker's transient-error retry alerting (see bin/p3-index-worker-once).
+  email: {
+    localSendmail: false,
+    defaultFrom: 'BV-BRC <do-not-reply@bv-brc.org>',
+    host: 'localhost',
+    port: 25,
+    indexAlertTo: 'bvbrc-admin@lists.cels.anl.gov',
+    indexMaxAttempts: 30
+  },
+
   collectionUniqueKeys: {
     antibiotics: 'pubchem_cid',
     bioset: 'bioset_id',
