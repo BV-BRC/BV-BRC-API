@@ -159,6 +159,81 @@ curl -X POST http://localhost:3001/test/distributed-query \
 
 The distributed query system requires direct network access to all Solr shard replicas. If some hosts are inaccessible, use `excludeNodes` to filter them out. Each shard must have at least one accessible replica.
 
+## Dependency Security Maintenance
+
+Baseline refresh done 2026-08-17 (branch `deps/security-refresh`). `npm audit` went
+**106 → 57** advisories (critical 15→11, high 59→24). Test results are byte-identical to
+pristine alpha, so the refresh introduced no regressions.
+
+### What changed
+
+Only three manifest entries moved; everything else was a lockfile-only in-range update
+(`npm audit fix --package-lock-only`, which needed no `package.json` edits and cleared 49
+advisories on its own).
+
+| dep | from | to | why it was safe |
+|---|---|---|---|
+| `ejs` | `^2.7.4` | `^3.1.10` | major, but the 2→3 break is the removal of old-style `<% include x %>`. **The 5 templates in `views/` contain zero includes** and all compile clean under 3.1.10. |
+| `nodemailer` | `^6.10.1` | `^9.0.5` | major, but `lib/mailer.js` uses only `createTransport` (sendmail + SMTP + auth + tls) and callback-style `sendMail`. All verified working on 9.0.5. |
+| `nconf` | `^0.10.0` | `^0.13.0` | major, but `config.js:234` is the sole consumer — one chained `argv().env().file().defaults()`. Verified identical resolution on 0.13. |
+
+### Do not bump these without a real migration
+
+`npm audit fix --force` will offer them. Each is a genuine breaking change, not a version bump:
+
+- **`redis` 2.x → 4+** — v4 removed the callback API. `rpc/proteinFamily.js` and
+  `routes/dataRouter.js` both use `client.get(key, cb)` / `client.set(k, v, 'EX', ttl)`.
+  Needs a promise/`node-redis` v4 rewrite plus an `apicache` compatibility check.
+- **`forever` / `pm2`** — process supervisors, not imported by any app code
+  (`grep require('forever')` → 0 hits). Their CVEs are ops-surface, not request-path.
+- **`request-promise` / `request`** — deprecated upstream, no fix exists. Still used by
+  `routes/genomePermissionRouter.js` and several tests. Retiring it means porting to
+  `axios` (already a direct dep at 1.19.0) — worth doing, but as its own change.
+- **`mocha` 7 → 11** — dev-only; would need a test-suite pass.
+
+### Where the remaining 57 live
+
+Almost none are in first-party request-path code:
+
+- **`p3-user` tree (6 criticals: bson, ejs 2.5.9, nconf 0.6.9, nodemailer 1.11.0, forever)** —
+  nested copies inside the `p3-user` git dependency, unreachable from our upgrades since it
+  pins its own. **Being fixed upstream in `p3_user` as of 2026-08-17.** Re-run the audit
+  after that lands and re-pin the git SHA in `package.json`.
+- **`pm2` / `forever` trees (11)** — ops tooling, see above.
+- **`npm` bundled (3)** — vendored inside the `npm` dependency's own `node_modules`.
+- **`axios`** — the *direct* dep is already at latest (1.19.0) and clean; the remaining
+  alert is `@pm2/js-api`'s pinned 0.21.4.
+
+### Re-running this analysis
+
+```bash
+npm audit --json > /tmp/audit.json
+# group remaining high/critical by the root package that would fix them:
+node -e "const a=require('/tmp/audit.json');Object.values(a.vulnerabilities).filter(v=>['critical','high'].includes(v.severity)).forEach(v=>{const f=v.fixAvailable;console.log((v.isDirect?'DIRECT ':'       ')+v.name.padEnd(22),v.severity.padEnd(9),f===true?'in-range':f&&f.name?f.name+'@'+f.version+(f.isSemVerMajor?' MAJOR':''):'NONE')})"
+```
+
+`isDirect` is the field that matters — a transitive alert usually means bumping some *other*
+package, and `fixAvailable.isSemVerMajor` marks the ones that need the review above.
+
+**The 9 open dependabot PRs (#117, #118, #123, #124, #125, #126, #128, #129, #133) are all
+obsolete.** They date from 2022–2023, all target `master`, all conflict, and every package
+they name is either already patched here or superseded by this refresh. Close them rather
+than merging.
+
+### Baseline test expectations
+
+Two failures are **pre-existing on pristine alpha** — do not treat them as regressions:
+
+- `tests/test-util/test.fastaHeaderFormatter.spec.js` — "should handle missing values
+  gracefully" (expects `>feat1 Test`, gets `>feat1| Test`)
+- `tests/test-distributed/test.config.spec.js` — "should return current configuration"
+  (config key drift: `genomeMetadata*` / `sequenceJoin*` keys)
+
+Offline suites (`test-util`, `test-join`, `test-distributed`) run without Solr or Redis:
+**247 passing / 2 failing**. `test-security` and `test-api` need a live API and will
+`ECONNREFUSED` without one. `npx eslint` reports 56 pre-existing errors on the files touched
+here; that count is unchanged by the refresh.
+
 ## Security Notes
 
 Recent XSS fixes documented in `SECURITY_FIX.md`:
