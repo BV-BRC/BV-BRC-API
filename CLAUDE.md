@@ -235,10 +235,42 @@ fixable from this repo**:
 uuid 11 is `"type": "module"`, its `exports` map has a `node.require` condition so plain CJS
 `require('uuid')` still resolves. Verified.
 
-**`eslint` 7 → 8 does not work.** `eslint-config-standard@12` and `eslint-plugin-import@2.22`
-both pin peer `eslint@"^2 || … || ^7.2.0"`, so npm fails with `ERESOLVE`. Upgrading eslint
-means upgrading the whole standard/plugin stack together and re-running lint (56 pre-existing
-errors would shift). Not worth bundling into a dependency refresh — do it on its own.
+**`eslint` cannot be bumped in isolation.** 7 → 8 fails `ERESOLVE`
+(`eslint-config-standard@12` and `eslint-plugin-import@2.22` pin peer
+`eslint@"^2 || … || ^7.2.0"`). See "Future work: eslint stack migration" below — dependabot
+tried this in #196 and produced a PR that does not install.
+
+### Future work: mocha 11 (clears the `js-yaml` advisories)
+
+The four open `js-yaml` alerts (all **development** scope) come from **mocha**, not eslint.
+`mocha@^7.2.0 → ^11.8.0` alone takes `mocha/node_modules/js-yaml` from 3.13.1 to 4.3.1 and
+drops one high advisory (high 14 → 13). Tested: offline suites still pass at the same
+247/2 counts.
+
+**Caveat that will bite:** mocha 11 no longer accepts a bare directory argument.
+`mocha tests/test-util/` returns *"No test files found"* rather than erroring usefully, so any
+invocation passing a directory needs an explicit glob (`tests/test-util/*.spec.js`) or
+`--recursive`. The `package.json` scripts already use `test.*.spec.js` patterns and are fine;
+ad-hoc commands and CI invocations are what to check.
+
+The top-level `js-yaml@3.15.1` is pulled by **eslint 7** itself, so it only clears with the
+migration below.
+
+### Future work: eslint stack migration
+
+Not a version bump — a migration, and dependabot's #196 is the cautionary example. It bumped
+`eslint` to `^10.8.1` while leaving `eslint-config-standard@12` and `eslint-plugin-node@7`
+behind, producing a PR where **`npm install` and `npm ci` both fail** on
+`eslint-plugin-import@2.32.0`'s `eslint <= 9` peer. Forced through with `--legacy-peer-deps`
+it installs but still can't run: eslint 9+ requires flat config and this repo has
+`.eslintrc.json`.
+
+A coherent target exists — `eslint-config-standard@17` peers `eslint ^8.0.1`,
+`eslint-plugin-import ^2.25.2`, `eslint-plugin-promise ^6.0.0`, and **`eslint-plugin-n`**,
+which is a *different package* from the currently-declared `eslint-plugin-node`. So the work
+is: swap that plugin, move all five eslint packages together, convert `.eslintrc.json` (and
+`.eslintignore`, also removed in eslint 9) to `eslint.config.js`, then re-run lint against the
+56 pre-existing errors and decide which are now real.
 
 ### Where the remaining 53 live
 
