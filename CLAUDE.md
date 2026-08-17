@@ -6,11 +6,36 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 BV-BRC API (p3api) is a Node.js/Express REST API providing access to BV-BRC bioinformatics data. It acts as a gateway to Solr backends, supporting RQL (Resource Query Language) and Solr query syntax.
 
-## Branch: feature/distributed-query — merge-review notes
+## Branch: feature/distributed-query — merge status
 
-When assessing what this branch changes vs. upstream, **diff against `upstream/alpha`, not the git merge-base.** The merge-base (`223a99d3`) is stale and predates PRs already merged into alpha (PR #176 IDOR fix, SSRF sanitizer, JBrowse sanitization, numeric validation) — diffing the base over-counts the delta by showing already-shipped fixes as new. Those files (`SolrQuerySanitizer.js`, `JBrowse.js`, the `APIMethodHandler` IDOR filter) are identical to alpha.
+**`upstream/alpha` has been merged into this branch** (2026-08-14), so the branch is a clean
+fast-forward onto alpha. **PR #189** (`BV-BRC/BV-BRC-API`) is open for the merge back into
+alpha. Reports: `Docs/ALPHA_MERGE_REPORT.md` (full), `Docs/ALPHA_PR_BODY.md` (PR text),
+`Docs/ALPHA_MERGE_REPORT_SLACK.txt` (paste form).
 
-The one change in this branch that alters **preexisting shared-path behavior** (vs. new/leaf code) is the **streaming join-enrichment hook** in `APIMethodHandler.streamQuery` and `DistributedQuery` — it pipes streaming results through `JoinEnrichmentStream` whenever `req._joinSpecs` is set (any streaming download requesting a joinable field). Its setup is `try/catch`-guarded, but mid-stream errors are not; `JoinEnrichmentStream` is new to the shared path and untested there. Everything else in the branch is additive, guard-gated, a leaf serializer (`genbank.js`), or already in alpha. Against `upstream/master` the whole distributed-query + join subsystem is net-new. Full breakdown: `Docs/BRANCH_RISK_ANALYSIS.md`.
+If the branch diverges from alpha again, **diff against `upstream/alpha`, not the git
+merge-base.** The merge-base (`223a99d3`) is stale and predates PRs already merged into alpha
+(#176 IDOR, SSRF sanitizer, JBrowse sanitization, numeric validation) — diffing the base
+over-counts the delta by showing already-shipped fixes as new. Note those four fixes exist on
+*both* lines under different hashes with byte-identical content, which is why the merge was
+conflict-free.
+
+Files that alter **preexisting shared-path behavior** (vs. new/leaf code) — where review
+effort belongs:
+
+| file | change |
+|---|---|
+| `middleware/DistributedQuery.js` | join-enrichment hook; pipe-boundary error forwarding |
+| `lib/solrjs/rql.js` | `terms()`; empty-group guard; unknown-operator rejection |
+| `middleware/APIMethodHandler.js` | join-enrichment hook on `streamQuery` |
+| `middleware/DecorateQuery.js` | delegates to `lib/permissionFilter` |
+
+The join-enrichment hooks pipe streaming results through `JoinEnrichmentStream` whenever
+`req._joinSpecs` is set. Setup is `try/catch`-guarded; mid-stream errors are handled for the
+distributed path (error forwarding across the pipe boundary) but that pattern is newer than
+the rest. Everything else is additive, guard-gated, or already in alpha. Against
+`upstream/master` the whole distributed-query + join subsystem is net-new. Older breakdown:
+`Docs/BRANCH_RISK_ANALYSIS.md`.
 
 ## Common Commands
 
@@ -124,7 +149,15 @@ Some collections support private data with owner-based permissions managed via `
 
 **Streaming downloads require an explicit `sort()`.** `solrjs.stream()` paginates with `cursorMark`, which Solr rejects (400, "Cursor functionality requires a sort containing a uniqueKey field tie breaker") unless the query sorts on the collection's uniqueKey. `_streamQuery`'s error path emits `end` (`lib/solrjs/index.js:171-172`), so the client receives **HTTP 200 with zero bytes** rather than an error. Affects any `http_download=true` request without `sort()`, join or no join. Same empty-200-on-failure class as the shard-failure defect found in query-replay testing.
 
-**Token validation can fail silently behind Cloudflare.** `p3-user/validateToken` fetches the signing key from `user.patricbrc.org/public_key` using the `request` library, which sends **no `User-Agent`**; Cloudflare answers UA-less clients with a 403 challenge page. The key fetch then yields HTML, `getSigner` rejects, and *every* token is refused — requests fall through to anonymous and simply return less data, with no error. Symptom: authenticated queries return only public rows. Check with `node -e "require('https').get('https://user.patricbrc.org/public_key', r => console.log(r.statusCode))"` — 403 means blocked (plain `curl` passes, so curl-based checks will mislead).
+**Token validation can fail silently behind Cloudflare.** `p3-user/validateToken` fetches the signing key from `user.patricbrc.org/public_key`. Cloudflare answers clients whose `User-Agent` it does not recognize with a 403 challenge page; the key fetch then yields HTML, `getSigner` rejects, and *every* token is refused — requests fall through to anonymous and simply return less data, with no error. Symptom: authenticated queries return only public rows.
+
+Diagnose with a **Node** request, not curl — curl's default UA passes, so curl-based checks mislead:
+
+```bash
+node -e "require('https').get('https://user.patricbrc.org/public_key', r => console.log(r.statusCode))"   # 403 => blocked
+```
+
+The app side is fixed (see "Outbound User-Agent" below). **But `p3-user` is an npm dependency and its fix is a local patch in `node_modules/p3-user/validateToken.js` that does not survive `npm install`.** If authenticated requests suddenly return only public rows, check that patch first — it also adds a guard rejecting non-JSON signer responses, without which the failure surfaces as a generic "invalid token". Upstream PR to `PATRIC3/p3_user` still outstanding.
 
 ## Distributed Query System
 
@@ -377,6 +410,25 @@ node scripts/check-shard-consistency.js -c genome_feature \
 The tool can automatically detect and fix these issues. See `REPLICATION_LAG.md` for root cause analysis and manual remediation steps.
 
 ## Development Notes
+
+### Outbound User-Agent
+
+**Every outbound HTTP request must send a `User-Agent`.** Cloudflare fronts BV-BRC hosts and treats UA-less clients as bots — that is what silently broke token validation (see the Cloudflare note under Testing Requirements). Use the shared helper:
+
+```js
+const { userAgent, withUserAgent } = require('../lib/userAgent')
+
+// header literal
+headers: { Accept: 'application/json', 'User-Agent': userAgent(), ...opts.headers }
+
+// or merge into an existing headers object (won't clobber a caller-supplied UA)
+options = { ...options, headers: withUserAgent(options && options.headers) }
+```
+
+- Produces `bvbrc-api/<version>`, e.g. `bvbrc-api/1.9.2-254-gdf4dd12e`.
+- **The `bvbrc-<component>/<version>` shape is allowlisted in the BV-BRC Cloudflare rules.** Keep the prefix — an arbitrary UA may be challenged. (Measured: `curl`, `axios`, `wget`, `python-requests` pass; bare `Mozilla/5.0` and a plain `p3-api/1.9.3` are blocked.)
+- Version resolves once at load: `BVBRC_API_VERSION` env var → `git describe --tags --always --dirty` → `package.json`. The service runs from a git checkout, so the middle path is the live one; the env var exists for deploys that are not.
+- Already wired into `util/http.js` (all exported helpers), `lib/solrjs` (covers all Solr traffic incl. GenBank), `DirectSolrClient`, `SolrClusterClient`, and the axios calls in the FASTA serializers and `util/featureSequence.js`. New clients must opt in themselves — there is no single chokepoint, since the codebase uses four different HTTP libraries.
 
 ### SSL/TLS Agent Configuration
 
