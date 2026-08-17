@@ -206,11 +206,13 @@ advisories on its own).
 - **`redis` 2.x → 4+** — v4 removed the callback API. `rpc/proteinFamily.js` and
   `routes/dataRouter.js` both use `client.get(key, cb)` / `client.set(k, v, 'EX', ttl)`.
   Needs a promise/`node-redis` v4 rewrite plus an `apicache` compatibility check.
-- **`forever` / `pm2`** — process supervisors, not imported by any app code
-  (`grep require('forever')` → 0 hits). Their CVEs are ops-surface, not request-path.
-- **`request-promise` / `request`** — deprecated upstream, no fix exists. Still used by
-  `routes/genomePermissionRouter.js` and several tests. Retiring it means porting to
-  `axios` (already a direct dep at 1.19.0) — worth doing, but as its own change.
+- **`pm2`** — process supervisor, not imported by any app code. Its CVEs are ops-surface, not
+  request-path. It is a **devDependency**; the container installs pm2 globally
+  (`singularity.def:51`) and prod runs `app.js` under pm2 via `default_pm2_config.js`.
+  (`forever` used to sit here too — **removed 2026-08-17**, see below.)
+- **`request-promise` / `request`** — deprecated upstream, no fix exists. Now the source of
+  **both** remaining criticals. Tracked as future work with a full scope breakdown below
+  ("Future work: retire `request-promise`") — not to be bundled into a dependency refresh.
 - **`mocha` 7 → 11** — dev-only; would need a test-suite pass.
 
 ### Deprecation warnings on `npm install`
@@ -243,7 +245,7 @@ errors would shift). Not worth bundling into a dependency refresh — do it on i
 Almost none are in first-party request-path code:
 
 - ~~**`p3-user` tree (6 criticals)**~~ — **resolved 2026-08-17.** See below.
-- **`pm2` / `forever` trees (11)** — ops tooling, see above.
+- **`pm2` tree** — ops tooling, see above.
 - **`npm` bundled (3)** — vendored inside the `npm` dependency's own `node_modules`.
 - **`axios`** — the *direct* dep is already at latest (1.19.0) and clean; the remaining
   alert is `@pm2/js-api`'s pinned 0.21.4.
@@ -266,9 +268,9 @@ challenge-page response into a clear error instead of a generic "invalid token".
 against live Cloudflare — p3-user sends `bvbrc-user/2.0.1` and
 `https://user.patricbrc.org/public_key` answers **200** with real JSON.
 
-**The `SigningSubject` bug was worse than it looked — fixed upstream in the pinned commit.**
-An earlier draft of this note called it a harmless `ReferenceError` on an unreachable path.
-Wrong on both counts:
+**The `SigningSubject` bug was worse than it looked — fixed upstream, pin bumped to
+`105a60b7`.** An earlier draft of this note called it a harmless `ReferenceError` on an
+unreachable path. That was wrong on both counts, and the correction is worth keeping:
 
 ```js
 if (parsedToken.SigningSubject !== signingSubject) {
@@ -276,22 +278,77 @@ if (parsedToken.SigningSubject !== signingSubject) {
 }
 ```
 
-- It *was* reachable — a mismatched subject produced
-  `500 {"message":"signingSubjectURL is not defined"}`, reproducible against production. The
-  service was fail-closed **only by accident**: the `ReferenceError` aborted the request.
-- **Fixing only the variable name would have opened an authentication bypass.** With nothing
-  thrown, execution falls through to `getSigner(parsedToken.SigningSubject)` — fetching the
-  verification key from a URL *the token itself supplies*. A forged token naming any identity,
-  with `SigningSubject` pointed at an attacker's server, would verify.
+- It *was* reachable. A mismatched subject produced
+  `500 {"message":"signingSubjectURL is not defined"}` — reproducible against production.
+  The service was fail-closed **only by accident**: the `ReferenceError` aborted the request.
+- **Fixing only the variable name would have opened an authentication bypass.** With the
+  `ReferenceError` gone and nothing thrown, execution falls through to
+  `getSigner(parsedToken.SigningSubject)` — fetching the verification key from a URL *the token
+  itself supplies*. An attacker publishes a keypair, signs a token claiming any identity
+  (including admin), points `SigningSubject` at their own server, and this service fetches that
+  key and verifies against it. Confirmed end to end against the pre-fix logic.
 
-The fixed branch resolves `false` and logs, refusing a mismatched subject **before any fetch**.
-Verified here: `SigningSubject=https://evil.example.com/key` is rejected with no outbound
-request. The same commit replaced `request` with native `http`/`https` in `getSigner`
-(protocol allowlist, 64 KiB cap, 15s timeout) and fixed token parsing to split on the first
-`=`.
+The fixed branch resolves `false` and logs, so a mismatched subject is refused **before any
+fetch**. Verified here after the repin: a token with `SigningSubject=https://evil.example.com/key`
+is rejected with no outbound request.
 
-**Moral:** a dead-code guard is not automatically low-severity. Check what happens if it
-starts working.
+The same upstream commit replaced `request` with node's native `http`/`https` in `getSigner`,
+adding a non-http(s) protocol rejection, a 64 KiB response cap, a 15s timeout, and distinct
+handling for non-200 vs non-JSON. It also fixed token parsing to split on the *first* `=`, so a
+`SigningSubject` carrying a query string is no longer truncated.
+
+**Moral for this codebase:** a dead-code guard is not automatically low-severity. Check what
+happens if it starts working.
+
+### `forever` removed (2026-08-17)
+
+**The services run under pm2, not forever.** `forever` was a declared *runtime* dependency
+that nothing used: `require('forever')` → 0 hits, and it appears nowhere in the deploy path
+(`singularity.def` installs pm2 globally and runs `pm2-runtime`; `default_pm2_config.js` points
+at `./app.js`). BV-BRC-UserManagement dropped it at the same time.
+
+Removing it took **206 packages** out of the tree and cleared the whole
+`forever → forever-monitor → broadway → flatiron → utile → optimist` chain, along with the
+`minimist@0.0.10`, `chokidar@2`, `micromatch@3`, `braces@2` copies those pulled in.
+
+Order matters: dropping `forever` from `package.json` alone changes **nothing**, because the
+old `p3-user` pin depended on it too. It only takes effect stacked on the p3-user repin — the
+new `p3-user` has no `forever` dependency. If you try this against an old checkout and see the
+audit numbers not move, that's why.
+
+### Future work: retire `request-promise` (the last 2 criticals)
+
+**Deferred deliberately — not an oversight.** After the p3-user repin and the `forever`
+removal, `npm audit` sits at **35 advisories, 2 critical**, and *both* criticals
+(`form-data`, `request`) come from the single `request-promise` dependency. It is deprecated
+upstream with **no fix available**, so the only remedy is retiring it.
+
+As of pin `105a60b7`, **`request-promise` is the only reason `request` is still in the tree
+from our side** — p3-user dropped its own `request` dependency in favour of native
+`http`/`https`. The remaining declarer is `dactic@0.8.12`, which lists `request` but never
+actually calls it (a phantom dependency, and 0.8.12 is the newest release), so retiring
+`request-promise` here is what removes the last real use.
+
+Scope is small and well-bounded — 5 files, one of them production:
+
+| file | |
+|---|---|
+| `routes/genomePermissionRouter.js:32,208` | **the only production use** — one `request(url, {...})` POST to Solr in `updateSOLR()` |
+| `tests/generate-local-data-files.js:22` | test tooling |
+| `tests/index-local-data-files.js:21` | test tooling |
+| `tests/test-permissions/update-genome-perms.js:3` | test tooling |
+| `tests/test-permissions/test.spec.js:17` | test tooling |
+
+`axios` is already a direct dependency at 1.19.0 and is the natural replacement. The
+production call passes `json: true`, an explicit `content-type`/`accept`, a custom `agent`
+(`solrAgent`), and `body:` — under axios that becomes `data:`, `httpAgent`/`httpsAgent`, and
+automatic JSON handling. **Note the response-shape change**: `request-promise` resolves to the
+parsed body, axios resolves to a response object (`res.data`). The call site currently ignores
+the body on success, so that difference is invisible there — but it will matter in the test
+files, which do consume responses.
+
+Also worth handling in the same pass: `request-promise` sends no `User-Agent`, so per the
+"Outbound User-Agent" section the replacement must use `withUserAgent()`.
 
 ### Re-running this analysis
 
