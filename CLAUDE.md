@@ -213,6 +213,31 @@ advisories on its own).
   `axios` (already a direct dep at 1.19.0) — worth doing, but as its own change.
 - **`mocha` 7 → 11** — dev-only; would need a test-suite pass.
 
+### Deprecation warnings on `npm install`
+
+Distinct from vulnerabilities — `npm audit` never reports these, so they need their own pass.
+After the refresh, the ones that remain on a cold install are **almost all transitive and not
+fixable from this repo**:
+
+| warning | comes from | ours? |
+|---|---|---|
+| `nodemailer@1.11.0`, `mailcomposer@2.1.0`, `buildmail@2.0.0` | `p3-user`'s pinned nodemailer 1.x (mailcomposer/buildmail are *its* deps) | no — fix upstream |
+| `bson@0.2.22` | `p3-user` → `^0.2.17` | no — fix upstream |
+| `request-promise@4.2.2` | **root** (`routes/genomePermissionRouter.js` + tests) | yes, but needs porting to `axios` |
+| `rimraf@3.0.2` | `@mapbox/node-pre-gyp`, `flat-cache`, `temp`, `utile` | no |
+| `@humanwhocodes/*` | `eslint@7` | no — see below |
+| `eslint@7.32.0` | direct devDep | blocked, see below |
+
+`uuid` was the one clean win: root dep at `^2.0.1`, used only as `Uuid.v4()` in
+`routes/indexer.js:204`. Bumped to `^11.1.1` — that named export is unchanged, and although
+uuid 11 is `"type": "module"`, its `exports` map has a `node.require` condition so plain CJS
+`require('uuid')` still resolves. Verified.
+
+**`eslint` 7 → 8 does not work.** `eslint-config-standard@12` and `eslint-plugin-import@2.22`
+both pin peer `eslint@"^2 || … || ^7.2.0"`, so npm fails with `ERESOLVE`. Upgrading eslint
+means upgrading the whole standard/plugin stack together and re-running lint (56 pre-existing
+errors would shift). Not worth bundling into a dependency refresh — do it on its own.
+
 ### Where the remaining 53 live
 
 Almost none are in first-party request-path code:
