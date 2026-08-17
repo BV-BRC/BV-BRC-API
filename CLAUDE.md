@@ -8,10 +8,19 @@ BV-BRC API (p3api) is a Node.js/Express REST API providing access to BV-BRC bioi
 
 ## Branch: feature/distributed-query — merge status
 
-**`upstream/alpha` has been merged into this branch** (2026-08-14), so the branch is a clean
-fast-forward onto alpha. **PR #189** (`BV-BRC/BV-BRC-API`) is open for the merge back into
-alpha. Reports: `Docs/ALPHA_MERGE_REPORT.md` (full), `Docs/ALPHA_PR_BODY.md` (PR text),
-`Docs/ALPHA_MERGE_REPORT_SLACK.txt` (paste form).
+**`upstream/alpha` has been merged into this branch** (most recently 2026-08-17), so the branch
+is a clean fast-forward onto alpha — `git merge-base --is-ancestor upstream/alpha HEAD` holds.
+**PR #189** (`BV-BRC/BV-BRC-API`) is open for the merge back into alpha. Reports:
+`Docs/ALPHA_MERGE_REPORT.md` (full), `Docs/ALPHA_PR_BODY.md` (PR text),
+`Docs/ALPHA_MERGE_REPORT_SLACK.txt` (paste form) — all three predate the 2026-08-17 dependency
+work and describe the branch's code delta only.
+
+The 2026-08-17 merge brought in alpha's dependency security work (`npm audit` 106 → 35,
+criticals 15 → 2, EBADENGINE 80+ → 0), so those files are **not** part of what #189 proposes.
+Its delta is 69 files of distributed-query / enrichment / cross-collection-download code.
+Offline-suite baseline for this branch is **327 passing / 1 failing** (the known
+`fastaHeaderFormatter` case) — note that differs from alpha's 247/2, because this branch adds
+suites and does not hit alpha's `test.config.spec.js` failure.
 
 If the branch diverges from alpha again, **diff against `upstream/alpha`, not the git
 merge-base.** The merge-base (`223a99d3`) is stale and predates PRs already merged into alpha
@@ -157,7 +166,7 @@ Diagnose with a **Node** request, not curl — curl's default UA passes, so curl
 node -e "require('https').get('https://user.patricbrc.org/public_key', r => console.log(r.statusCode))"   # 403 => blocked
 ```
 
-The app side is fixed (see "Outbound User-Agent" below). **But `p3-user` is an npm dependency and its fix is a local patch in `node_modules/p3-user/validateToken.js` that does not survive `npm install`.** If authenticated requests suddenly return only public rows, check that patch first — it also adds a guard rejecting non-JSON signer responses, without which the failure surfaces as a generic "invalid token". Upstream PR to `PATRIC3/p3_user` still outstanding.
+**Fixed on both sides as of 2026-08-17 — no local patch required any more.** The app side is covered by "Outbound User-Agent" below. The `p3-user` side used to be a hand-edit to `node_modules/p3-user/validateToken.js` that did **not** survive `npm install`; that is obsolete. The dependency is now pinned to `BV-BRC/BV-BRC-UserManagement` (not `PATRIC3/p3_user`), whose `validateToken.js` sends `withUserAgent()` and carries the non-JSON signer guard upstream. **Do not re-apply the old patch.** If authenticated requests start returning only public rows again, check the pinned SHA and re-run the Node probe above rather than reaching for `node_modules`.
 
 ## Distributed Query System
 
