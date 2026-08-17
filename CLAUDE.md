@@ -252,6 +252,227 @@ node scripts/replay-queries.js /disks1/p3/query_log/<user>@...jsonl http://local
 
 Five defects were found and fixed (alias resolution, dropped `q=` constraint, backpressure EOF truncation, JSON-stream header crash, facet/group misrouting) and the branch was validated as **result-identical to production** across four user workloads — all remaining diffs are SolrCloud replica drift, not code. Note that not every trace exercises the distributed streaming path: a query only engages it when it targets an enabled collection (`genome_feature`, `genome`, `pathway`, `subsystem`), is a plain `query`/`stream` (no `facet=true`/`group=true`), and has `rows >= minLimitThreshold`. Recent traces whose large queries were facet requests or hit non-enabled collections took the standard path and did not test distributed streaming. Check the `X-Distributed-Query` response header (requires `exposeMetadataHeaders`) to confirm whether a query actually engaged the distributed path.
 
+## Dependency Security Maintenance
+
+Baseline refresh done 2026-08-17 (branch `deps/security-refresh`). `npm audit` went
+**106 → 53** advisories (critical 15→11, high 59→22). Test results are byte-identical to
+pristine alpha, so the refresh introduced no regressions.
+
+### Never declare `npm` as a dependency
+
+`package.json` used to list `"npm"` and `"install"` — neither imported anywhere
+(`require('npm')` / `require('install')` → 0 hits), nothing invoking
+`node_modules/.bin/npm`. They arrived incidentally in `84e20f6f`, a commit about solrjs that
+never mentions them; almost certainly a stray `npm install npm install`.
+
+Declaring `npm` vendors the **entire npm CLI** into the tree: 143 of 1339 lockfile entries
+lived under `node_modules/npm/`. Its subpackages (`@npmcli/*`, `@sigstore/*`, `libnpm*`,
+`pacote`, `cacache`) declare `node: ^20.17.0 || >=22.9.0`, so on prod's Node 22.4.1 every
+install printed **80+ `EBADENGINE` warnings** — npm complaining that a vendored copy of
+*itself*, which nothing would ever execute, didn't match the running Node. Production runs
+from a persistent checkout on the **system** npm, so the vendored copy was pure dead weight.
+
+Removing both dropped 145 packages. `apicache` was bumped `^1.6.2 → ^1.6.3` at the same time
+(1.6.2 declares `node: >=8 <=15`, the one remaining warning; 1.6.3 relaxes it to `>=8`).
+`npm install` is now silent on EBADENGINE.
+
+If EBADENGINE noise reappears, check for a package that vendors a toolchain before assuming
+the running Node is wrong. Note the repo pins **no** Node version (no `engines`, no
+`.nvmrc`), so nothing catches this class of drift automatically.
+
+### What changed
+
+Only three manifest entries moved; everything else was a lockfile-only in-range update
+(`npm audit fix --package-lock-only`, which needed no `package.json` edits and cleared 49
+advisories on its own).
+
+| dep | from | to | why it was safe |
+|---|---|---|---|
+| `ejs` | `^2.7.4` | `^3.1.10` | major, but the 2→3 break is the removal of old-style `<% include x %>`. **The 5 templates in `views/` contain zero includes** and all compile clean under 3.1.10. |
+| `nodemailer` | `^6.10.1` | `^9.0.5` | major, but `lib/mailer.js` uses only `createTransport` (sendmail + SMTP + auth + tls) and callback-style `sendMail`. All verified working on 9.0.5. |
+| `nconf` | `^0.10.0` | `^0.13.0` | major, but `config.js:234` is the sole consumer — one chained `argv().env().file().defaults()`. Verified identical resolution on 0.13. |
+
+### Do not bump these without a real migration
+
+`npm audit fix --force` will offer them. Each is a genuine breaking change, not a version bump:
+
+- **`redis` 2.x → 4+** — v4 removed the callback API. `rpc/proteinFamily.js` and
+  `routes/dataRouter.js` both use `client.get(key, cb)` / `client.set(k, v, 'EX', ttl)`.
+  Needs a promise/`node-redis` v4 rewrite plus an `apicache` compatibility check.
+- **`pm2`** — process supervisor, not imported by any app code. Its CVEs are ops-surface, not
+  request-path. It is a **devDependency**; the container installs pm2 globally
+  (`singularity.def:51`) and prod runs `app.js` under pm2 via `default_pm2_config.js`.
+  (`forever` used to sit here too — **removed 2026-08-17**, see below.)
+- **`request-promise` / `request`** — deprecated upstream, no fix exists. Now the source of
+  **both** remaining criticals. Tracked as future work with a full scope breakdown below
+  ("Future work: retire `request-promise`") — not to be bundled into a dependency refresh.
+- **`mocha` 7 → 11** — dev-only; would need a test-suite pass.
+
+### Deprecation warnings on `npm install`
+
+Distinct from vulnerabilities — `npm audit` never reports these, so they need their own pass.
+After the refresh, the ones that remain on a cold install are **almost all transitive and not
+fixable from this repo**:
+
+| warning | comes from | ours? |
+|---|---|---|
+| ~~`nodemailer@1.11.0`, `mailcomposer@2.1.0`, `buildmail@2.0.0`~~ | ~~`p3-user`'s pinned nodemailer 1.x~~ | **cleared** by the p3-user repin |
+| ~~`bson@0.2.22`~~ | ~~`p3-user` → `^0.2.17`~~ | **cleared** — p3-user dropped mongodb/bson |
+| `request-promise@4.2.2` | **root** (`routes/genomePermissionRouter.js` + tests) | yes, but needs porting to `axios` |
+| `rimraf@3.0.2` | `@mapbox/node-pre-gyp`, `flat-cache`, `temp`, `utile` | no |
+| `@humanwhocodes/*` | `eslint@7` | no — see below |
+| `eslint@7.32.0` | direct devDep | blocked, see below |
+
+`uuid` was the one clean win: root dep at `^2.0.1`, used only as `Uuid.v4()` in
+`routes/indexer.js:204`. Bumped to `^11.1.1` — that named export is unchanged, and although
+uuid 11 is `"type": "module"`, its `exports` map has a `node.require` condition so plain CJS
+`require('uuid')` still resolves. Verified.
+
+**`eslint` 7 → 8 does not work.** `eslint-config-standard@12` and `eslint-plugin-import@2.22`
+both pin peer `eslint@"^2 || … || ^7.2.0"`, so npm fails with `ERESOLVE`. Upgrading eslint
+means upgrading the whole standard/plugin stack together and re-running lint (56 pre-existing
+errors would shift). Not worth bundling into a dependency refresh — do it on its own.
+
+### Where the remaining 53 live
+
+Almost none are in first-party request-path code:
+
+- ~~**`p3-user` tree (6 criticals)**~~ — **resolved 2026-08-17.** See below.
+- **`pm2` tree** — ops tooling, see above.
+- **`npm` bundled (3)** — vendored inside the `npm` dependency's own `node_modules`.
+- **`axios`** — the *direct* dep is already at latest (1.19.0) and clean; the remaining
+  alert is `@pm2/js-api`'s pinned 0.21.4.
+
+### p3-user moved repos (2026-08-17)
+
+The dependency pin now points at **`BV-BRC/BV-BRC-UserManagement`**, not the old
+`PATRIC3/p3_user`. That repo received its own dependency refresh (`p3-user` 2.0.1), which
+cleared the largest remaining cluster here: `npm audit` **53 → 47**, criticals **11 → 6**.
+
+Gone from the tree entirely: `bson@0.2.22`, `mailcomposer@2.1.0`, `buildmail@2.0.0`, and the
+nested `nodemailer@1.11.0` / `ejs@2.5.9` / `nconf@0.6.9` copies. p3-user dropped its
+`mongodb` dependency, which is what took `bson` with it. Total package count 1191 → 1106.
+
+**The local `validateToken.js` patch is obsolete — do not re-apply it.** The old note here
+said the Cloudflare User-Agent fix lived in `node_modules/p3-user/validateToken.js` and had to
+be re-applied after every `npm install`. Both halves of that patch are now upstream:
+`validateToken.js` sends `withUserAgent()` and carries the non-JSON guard that turns a
+challenge-page response into a clear error instead of a generic "invalid token". Verified
+against live Cloudflare — p3-user sends `bvbrc-user/2.0.1` and
+`https://user.patricbrc.org/public_key` answers **200** with real JSON.
+
+**The `SigningSubject` bug was worse than it looked — fixed upstream, pin bumped to
+`105a60b7`.** An earlier draft of this note called it a harmless `ReferenceError` on an
+unreachable path. That was wrong on both counts, and the correction is worth keeping:
+
+```js
+if (parsedToken.SigningSubject !== signingSubject) {
+  new Error('Invalid Signing Subject: ' + signingSubjectURL)   // never thrown; wrong variable
+}
+```
+
+- It *was* reachable. A mismatched subject produced
+  `500 {"message":"signingSubjectURL is not defined"}` — reproducible against production.
+  The service was fail-closed **only by accident**: the `ReferenceError` aborted the request.
+- **Fixing only the variable name would have opened an authentication bypass.** With the
+  `ReferenceError` gone and nothing thrown, execution falls through to
+  `getSigner(parsedToken.SigningSubject)` — fetching the verification key from a URL *the token
+  itself supplies*. An attacker publishes a keypair, signs a token claiming any identity
+  (including admin), points `SigningSubject` at their own server, and this service fetches that
+  key and verifies against it. Confirmed end to end against the pre-fix logic.
+
+The fixed branch resolves `false` and logs, so a mismatched subject is refused **before any
+fetch**. Verified here after the repin: a token with `SigningSubject=https://evil.example.com/key`
+is rejected with no outbound request.
+
+The same upstream commit replaced `request` with node's native `http`/`https` in `getSigner`,
+adding a non-http(s) protocol rejection, a 64 KiB response cap, a 15s timeout, and distinct
+handling for non-200 vs non-JSON. It also fixed token parsing to split on the *first* `=`, so a
+`SigningSubject` carrying a query string is no longer truncated.
+
+**Moral for this codebase:** a dead-code guard is not automatically low-severity. Check what
+happens if it starts working.
+
+### `forever` removed (2026-08-17)
+
+**The services run under pm2, not forever.** `forever` was a declared *runtime* dependency
+that nothing used: `require('forever')` → 0 hits, and it appears nowhere in the deploy path
+(`singularity.def` installs pm2 globally and runs `pm2-runtime`; `default_pm2_config.js` points
+at `./app.js`). BV-BRC-UserManagement dropped it at the same time.
+
+Removing it took **206 packages** out of the tree and cleared the whole
+`forever → forever-monitor → broadway → flatiron → utile → optimist` chain, along with the
+`minimist@0.0.10`, `chokidar@2`, `micromatch@3`, `braces@2` copies those pulled in.
+
+Order matters: dropping `forever` from `package.json` alone changes **nothing**, because the
+old `p3-user` pin depended on it too. It only takes effect stacked on the p3-user repin — the
+new `p3-user` has no `forever` dependency. If you try this against an old checkout and see the
+audit numbers not move, that's why.
+
+### Future work: retire `request-promise` (the last 2 criticals)
+
+**Deferred deliberately — not an oversight.** After the p3-user repin and the `forever`
+removal, `npm audit` sits at **35 advisories, 2 critical**, and *both* criticals
+(`form-data`, `request`) come from the single `request-promise` dependency. It is deprecated
+upstream with **no fix available**, so the only remedy is retiring it.
+
+As of pin `105a60b7`, **`request-promise` is the only reason `request` is still in the tree
+from our side** — p3-user dropped its own `request` dependency in favour of native
+`http`/`https`. The remaining declarer is `dactic@0.8.12`, which lists `request` but never
+actually calls it (a phantom dependency, and 0.8.12 is the newest release), so retiring
+`request-promise` here is what removes the last real use.
+
+Scope is small and well-bounded — 5 files, one of them production:
+
+| file | |
+|---|---|
+| `routes/genomePermissionRouter.js:32,208` | **the only production use** — one `request(url, {...})` POST to Solr in `updateSOLR()` |
+| `tests/generate-local-data-files.js:22` | test tooling |
+| `tests/index-local-data-files.js:21` | test tooling |
+| `tests/test-permissions/update-genome-perms.js:3` | test tooling |
+| `tests/test-permissions/test.spec.js:17` | test tooling |
+
+`axios` is already a direct dependency at 1.19.0 and is the natural replacement. The
+production call passes `json: true`, an explicit `content-type`/`accept`, a custom `agent`
+(`solrAgent`), and `body:` — under axios that becomes `data:`, `httpAgent`/`httpsAgent`, and
+automatic JSON handling. **Note the response-shape change**: `request-promise` resolves to the
+parsed body, axios resolves to a response object (`res.data`). The call site currently ignores
+the body on success, so that difference is invisible there — but it will matter in the test
+files, which do consume responses.
+
+Also worth handling in the same pass: `request-promise` sends no `User-Agent`, so per the
+"Outbound User-Agent" section the replacement must use `withUserAgent()`.
+
+### Re-running this analysis
+
+```bash
+npm audit --json > /tmp/audit.json
+# group remaining high/critical by the root package that would fix them:
+node -e "const a=require('/tmp/audit.json');Object.values(a.vulnerabilities).filter(v=>['critical','high'].includes(v.severity)).forEach(v=>{const f=v.fixAvailable;console.log((v.isDirect?'DIRECT ':'       ')+v.name.padEnd(22),v.severity.padEnd(9),f===true?'in-range':f&&f.name?f.name+'@'+f.version+(f.isSemVerMajor?' MAJOR':''):'NONE')})"
+```
+
+`isDirect` is the field that matters — a transitive alert usually means bumping some *other*
+package, and `fixAvailable.isSemVerMajor` marks the ones that need the review above.
+
+**The 9 open dependabot PRs (#117, #118, #123, #124, #125, #126, #128, #129, #133) are all
+obsolete.** They date from 2022–2023, all target `master`, all conflict, and every package
+they name is either already patched here or superseded by this refresh. Close them rather
+than merging.
+
+### Baseline test expectations
+
+Two failures are **pre-existing on pristine alpha** — do not treat them as regressions:
+
+- `tests/test-util/test.fastaHeaderFormatter.spec.js` — "should handle missing values
+  gracefully" (expects `>feat1 Test`, gets `>feat1| Test`)
+- `tests/test-distributed/test.config.spec.js` — "should return current configuration"
+  (config key drift: `genomeMetadata*` / `sequenceJoin*` keys)
+
+Offline suites (`test-util`, `test-join`, `test-distributed`) run without Solr or Redis:
+**247 passing / 2 failing**. `test-security` and `test-api` need a live API and will
+`ECONNREFUSED` without one. `npx eslint` reports 56 pre-existing errors on the files touched
+here; that count is unchanged by the refresh.
+
 ## Security Notes
 
 ### SolrQuerySanitizer (`middleware/SolrQuerySanitizer.js`)
