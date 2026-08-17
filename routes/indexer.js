@@ -71,7 +71,7 @@ Router.get('/:id', function (req, res, next) {
       respondWithData(res, data)
     } else {
       if (data.genomeId) {
-        checkSolr(data.genomeId)
+        checkSolr(data.genomeId, data)
           .then((isAllIndexed) => {
             if (isAllIndexed) {
               updateHistory(req.params.id, data).then((data) => {
@@ -104,8 +104,40 @@ function respondWithData (res, data) {
   res.end()
 }
 
-function checkSolr (genome_id) {
+// Does the submission for a core actually contain any documents? An empty core
+// (e.g. a genome with no called features) is submitted as an empty JSON array,
+// which the index worker skips rather than posting. Such a core will have 0 rows
+// in Solr forever, so it must count as "satisfied" rather than blocking
+// completion. Read only a bounded prefix and look for the first object opener —
+// an empty array ([] / [ ] / [\n]) has no '{'; any array with >=1 document does,
+// within the first few bytes. This avoids parsing large feature files.
+function submissionHasRows (fileEntry) {
+  let entries = fileEntry
+  if (!entries) { return false }
+  if (!(entries instanceof Array)) { entries = [entries] }
+  return entries.some((f) => {
+    if (!f || !f.path) { return false }
+    try {
+      const fd = Fs.openSync(f.path, 'r')
+      try {
+        const buf = Buffer.alloc(8192)
+        const n = Fs.readSync(fd, buf, 0, buf.length, 0)
+        return buf.toString('utf8', 0, n).indexOf('{') !== -1
+      } finally {
+        Fs.closeSync(fd)
+      }
+    } catch (e) {
+      // Can't read the file (already cleaned up, etc.) — assume no rows so a
+      // missing empty core doesn't wedge the job in 'submitted' forever.
+      debug(`submissionHasRows: cannot read ${f.path}: ${e.message}`)
+      return false
+    }
+  })
+}
+
+function checkSolr (genome_id, data) {
   return new Promise((resolve, reject) => {
+    const files = (data && data.files) || {}
     const cores = ['genome_sequence', 'genome_feature', 'genome']
     const check_cores = cores.map((core) => {
       // this should be a direct call to bypass the auth check
@@ -116,9 +148,16 @@ function checkSolr (genome_id) {
         agent: solrAgent,
         path: `/solr/${core}/select?q=genome_id:${genome_id}&rows=0&wt=json`
       }).then((body) => {
-        const data = JSON.parse(body)
-        debug(`checking index status for ${genome_id}: [${core}] ${data.response.numFound} row(s) found`)
-        return (data['response']['numFound'] > 0)
+        const parsed = JSON.parse(body)
+        const numFound = parsed['response']['numFound']
+        if (numFound > 0) {
+          debug(`checking index status for ${genome_id}: [${core}] ${numFound} row(s) found`)
+          return true
+        }
+        // 0 rows in Solr: satisfied only if the submission had no rows to index.
+        const hadRows = submissionHasRows(files[core])
+        debug(`checking index status for ${genome_id}: [${core}] 0 rows in Solr, submission ${hadRows ? 'HAD rows (pending)' : 'was empty (satisfied)'}`)
+        return !hadRows
       })
     })
     Promise.all(check_cores).then((results) => {
