@@ -221,8 +221,8 @@ fixable from this repo**:
 
 | warning | comes from | ours? |
 |---|---|---|
-| `nodemailer@1.11.0`, `mailcomposer@2.1.0`, `buildmail@2.0.0` | `p3-user`'s pinned nodemailer 1.x (mailcomposer/buildmail are *its* deps) | no — fix upstream |
-| `bson@0.2.22` | `p3-user` → `^0.2.17` | no — fix upstream |
+| ~~`nodemailer@1.11.0`, `mailcomposer@2.1.0`, `buildmail@2.0.0`~~ | ~~`p3-user`'s pinned nodemailer 1.x~~ | **cleared** by the p3-user repin |
+| ~~`bson@0.2.22`~~ | ~~`p3-user` → `^0.2.17`~~ | **cleared** — p3-user dropped mongodb/bson |
 | `request-promise@4.2.2` | **root** (`routes/genomePermissionRouter.js` + tests) | yes, but needs porting to `axios` |
 | `rimraf@3.0.2` | `@mapbox/node-pre-gyp`, `flat-cache`, `temp`, `utile` | no |
 | `@humanwhocodes/*` | `eslint@7` | no — see below |
@@ -242,14 +242,56 @@ errors would shift). Not worth bundling into a dependency refresh — do it on i
 
 Almost none are in first-party request-path code:
 
-- **`p3-user` tree (6 criticals: bson, ejs 2.5.9, nconf 0.6.9, nodemailer 1.11.0, forever)** —
-  nested copies inside the `p3-user` git dependency, unreachable from our upgrades since it
-  pins its own. **Being fixed upstream in `p3_user` as of 2026-08-17.** Re-run the audit
-  after that lands and re-pin the git SHA in `package.json`.
+- ~~**`p3-user` tree (6 criticals)**~~ — **resolved 2026-08-17.** See below.
 - **`pm2` / `forever` trees (11)** — ops tooling, see above.
 - **`npm` bundled (3)** — vendored inside the `npm` dependency's own `node_modules`.
 - **`axios`** — the *direct* dep is already at latest (1.19.0) and clean; the remaining
   alert is `@pm2/js-api`'s pinned 0.21.4.
+
+### p3-user moved repos (2026-08-17)
+
+The dependency pin now points at **`BV-BRC/BV-BRC-UserManagement`**, not the old
+`PATRIC3/p3_user`. That repo received its own dependency refresh (`p3-user` 2.0.1), which
+cleared the largest remaining cluster here: `npm audit` **53 → 47**, criticals **11 → 6**.
+
+Gone from the tree entirely: `bson@0.2.22`, `mailcomposer@2.1.0`, `buildmail@2.0.0`, and the
+nested `nodemailer@1.11.0` / `ejs@2.5.9` / `nconf@0.6.9` copies. p3-user dropped its
+`mongodb` dependency, which is what took `bson` with it. Total package count 1191 → 1106.
+
+**The local `validateToken.js` patch is obsolete — do not re-apply it.** The old note here
+said the Cloudflare User-Agent fix lived in `node_modules/p3-user/validateToken.js` and had to
+be re-applied after every `npm install`. Both halves of that patch are now upstream:
+`validateToken.js` sends `withUserAgent()` and carries the non-JSON guard that turns a
+challenge-page response into a clear error instead of a generic "invalid token". Verified
+against live Cloudflare — p3-user sends `bvbrc-user/2.0.1` and
+`https://user.patricbrc.org/public_key` answers **200** with real JSON.
+
+**The `SigningSubject` bug was worse than it looked — fixed upstream in the pinned commit.**
+An earlier draft of this note called it a harmless `ReferenceError` on an unreachable path.
+Wrong on both counts:
+
+```js
+if (parsedToken.SigningSubject !== signingSubject) {
+  new Error('Invalid Signing Subject: ' + signingSubjectURL)   // never thrown; wrong variable
+}
+```
+
+- It *was* reachable — a mismatched subject produced
+  `500 {"message":"signingSubjectURL is not defined"}`, reproducible against production. The
+  service was fail-closed **only by accident**: the `ReferenceError` aborted the request.
+- **Fixing only the variable name would have opened an authentication bypass.** With nothing
+  thrown, execution falls through to `getSigner(parsedToken.SigningSubject)` — fetching the
+  verification key from a URL *the token itself supplies*. A forged token naming any identity,
+  with `SigningSubject` pointed at an attacker's server, would verify.
+
+The fixed branch resolves `false` and logs, refusing a mismatched subject **before any fetch**.
+Verified here: `SigningSubject=https://evil.example.com/key` is rejected with no outbound
+request. The same commit replaced `request` with native `http`/`https` in `getSigner`
+(protocol allowlist, 64 KiB cap, 15s timeout) and fixed token parsing to split on the first
+`=`.
+
+**Moral:** a dead-code guard is not automatically low-severity. Check what happens if it
+starts working.
 
 ### Re-running this analysis
 
