@@ -39,7 +39,7 @@
     "nconf": "^0.13.0",
     "node-xlsx": "^0.24.0",
     "nodemailer": "^9.0.5",
-    "p3-user": "git+https://github.com/PATRIC3/p3_user.git#c0fee2a0ac833fa78401266d705f8c5a6b80e4f3",
+    "p3-user": "git+https://github.com/BV-BRC/BV-BRC-UserManagement.git#105a60b7",
     "pino": "^6.2.1",
     "postcss-cli": "^9.0.1",
     "redis": "^2.8.0",
