@@ -1,0 +1,103 @@
+*Merge review: `feature/distributed-query` → `alpha`*
+
+*TL;DR — safe to merge.* Clean auto-merge, no conflicts. 418 tests pass, 2 fail (both
+pre-existing and unrelated — one long-standing assertion, one needs a live API on :3001).
+
+Branch head `0081e498` (pushed) · target `upstream/alpha` (`c1315c2b`) · 53 commits ahead,
+12 behind · +8704/−771 across 61 files.
+
+*Why it merges cleanly despite 12 alpha commits*
+Alpha's four security fixes (IDOR #176, JBrowse SSRF #175/#177, numeric validation #179,
+double-encode SSRF #180) are *already on this branch* under different hashes — applied to
+both lines independently, byte-identical content. `SolrQuerySanitizer.js` and `JBrowse.js`
+are byte-identical to alpha. Only `APIMethodHandler.js` differs, by the branch's
+join-enrichment hook; alpha's IDOR check is present and untouched. Verified in a scratch
+worktree that both survive.
+
+⚠️ Diff against `upstream/alpha`, *not* the merge base — the base (`223a99d3`) predates
+alpha's security PRs and over-counts the delta.
+
+---
+
+*What's in it — four themes*
+
+*1. Distributed query subsystem*
+Parallel shard querying, cursor pagination, streaming. Shaken down by replaying captured
+real-user traces: 5 defects found and fixed, then validated as *result-identical to
+production* across 4 user workloads. Ships `scripts/replay-queries.js` with a live A/B mode
+that hits dev and prod simultaneously to separate code differences from data drift.
+
+*2. Permission-scoped join enrichment — this one is a real security fix*
+Enrichment's secondary Solr fetches carried no permission filter. Not latent: `genome` (the
+target of every configured join) is not in `publicFree`, so private genome rows were being
+fetched unfiltered and cached user-blind in a process-wide singleton.
+
+Verified against live Solr — with the fix reverted, *an anonymous request reads back a
+private genome's name*. Needs a public row referencing a private one, which is exactly what
+a cross-collection download produces. Both caches are now scope-keyed; a fetch-only fix
+still leaks from a warm cache.
+
+*3. Cross-collection downloads — new capability*
+Download from one collection using another's filter (Specialty Genes grid → protein FASTA
+from `genome_feature`) in one request, no IDs on the wire. Replaces the client prefetch that
+shipped ~178KB of RQL for 3,584 IDs and scaled toward the 30MB body cap. Inert unless
+`http_source_*` params are present.
+
+*4. GenBank download performance*
+Production stalls root-caused to HAProxy `global maxconn` shedding keepalive sockets, which
+the API then hung on for ~166s with no timeout. Fixed API-side: backpressure, disconnect
+handling, pipelined fetches, Solr timeout + retry.
+
+---
+
+*Where to focus review*
+
+Most of the branch is new files or guard-gated. Four files change *pre-existing shared-path*
+behavior:
+
+• `middleware/DistributedQuery.js` (+62/−8) — join hook + pipe-boundary error forwarding
+• `lib/solrjs/rql.js` (+41/−2) — `terms()`, empty-group guard, unknown-op rejection
+• `middleware/APIMethodHandler.js` (+23/−1) — join hook on `streamQuery`
+• `middleware/DecorateQuery.js` (+11/−8) — delegates to the new `permissionFilter`
+
+Two worth calling out:
+• `DecorateQuery` refactor produces *identical* output for every real user id (checked
+  across 60 combinations). Only difference: Solr metacharacters in a user id are now
+  escaped, and real ids don't contain any.
+• The `rql.js` empty-group guard *fixes* queries that used to 400 (`genome(...)&select(...)`
+  produced a literal `q=()`). It can't break a query that already worked.
+
+---
+
+*New API surface — additive only, nothing existing changes*
+
+```
+POST /{target}/?http_download=true&http_accept={format}
+     &http_source_collection={source}&http_source_link_field={field}
+body: <the source collection's filter, verbatim>
+```
+Allowlisted: `sp_gene.feature_id→genome_feature`, `genome.genome_id→genome_feature`,
+`genome.genome_id→genome_sequence`. Unallowlisted triple → 400 naming the triple, not a
+silent empty file. Works with every serializer.
+
+Also: RQL `terms(field,(v1,v2,...))` → Solr's hash-set `{!terms}` filter, much faster than
+`in()` for large lists; `text/gff3` accepted as a GFF alias; GenBank downloads must target
+`/genome/` (400 elsewhere, with a pointer).
+
+---
+
+*Known limitations riding along* (none block the merge)
+
+• `X-Result-Count` only lands on *empty* downloads — a streaming response commits headers
+  before the count is known. Inherent, not a defect. The user-visible path is the SSE
+  notifications plan, which is a hard dependency for the download UX.
+• Failed streaming downloads return 200 + empty body (pre-existing, API-wide) —
+  ticketed, `Docs/BUG-stream-failure-returns-empty-200.md`
+• `rql=` form field requires double-encoding (pre-existing) — ticketed. Website is
+  unaffected because it already double-encodes; that coupling means both must be fixed
+  together.
+• `p3-user` UA patch still lives in `node_modules/` and dies on `npm install`. Cloudflare
+  403s the token-validation key fetch for UA-less clients, silently degrading every
+  authenticated request to anonymous. CF ticket filed; upstream PR still needed.
+
+Full write-up: `Docs/ALPHA_MERGE_REPORT.md`

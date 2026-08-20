@@ -3,11 +3,20 @@
 
 #### Running P3 API Locally with Local Solr
 
-1.  Install Solr. Follow steps in the patric_solr repo [here](https://github.com/PATRIC3/patric_solr#installation).
+1.  Install Solr and load the schema. **See [`../Docs/LOCAL_SOLR_SETUP.md`](../Docs/LOCAL_SOLR_SETUP.md)**
+    for current instructions (Solr 9.6.1, cloud mode, configsets from
+    [bv-brc/bv-brc-solr](https://github.com/bv-brc/bv-brc-solr)).
 
-2.  Start Solr. _Note:_ It will probably be necessary for testing to allocate at least a couple GB to the JVM as follows.
+    > The steps below were for Solr 5.3 with the now-archived
+    > [PATRIC3/patric_solr](https://github.com/PATRIC3/patric_solr) repo, and are
+    > kept only for historical reference. Do not follow them for a new setup —
+    > the API's distributed/enrichment code paths require SolrCloud mode
+    > (`bin/solr start -c`), which the standalone invocation below does not provide.
+
+2.  ~~Start Solr.~~ (superseded — see above)
 
 ```
+# HISTORICAL — Solr 5.3, standalone mode. Does not work with Solr 9.
 ./bin/solr restart -m 2048m -Dsolr.solr.home=<full_path_to_patric_solr> -Dlucene.version=5.3
 ```
 

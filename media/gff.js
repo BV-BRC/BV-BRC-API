@@ -49,6 +49,7 @@ function serializeRow (doc) {
 
 module.exports = {
   contentType: 'application/gff',
+  contentTypeAliases: ['text/gff3', 'text/x-gff3'],
   serialize: function (req, res, next) {
     if (req.isDownload) {
       res.attachment(`BVBRC_${req.call_collection}.gff`)

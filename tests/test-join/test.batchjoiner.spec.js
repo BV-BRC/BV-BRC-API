@@ -570,42 +570,76 @@ describe('BatchJoiner', function () {
   })
 
   describe('Error Handling', function () {
-    it('should cache null for failed lookups to avoid retries', async function () {
-      let callCount = 0
+    const spec = {
+      targetCollection: 'genome',
+      localField: 'genome_id',
+      foreignField: 'genome_id',
+      fields: ['genome_name']
+    }
+
+    it('should not throw when the fetch fails', async function () {
       const errorClient = {
         async fetchByIdsAsDict () {
-          callCount++
           throw new Error('Solr connection failed')
         }
       }
 
       const joiner = new BatchJoiner(errorClient)
+      const docs = [{ genome_id: 'genome1' }]
 
-      // First call - should fail but not throw
-      await joiner.enrichDocs(
-        [{ genome_id: 'genome1' }],
-        {
-          targetCollection: 'genome',
-          localField: 'genome_id',
-          foreignField: 'genome_id',
-          fields: ['genome_name']
+      await joiner.enrichDocs(docs, spec)
+
+      // Graceful degradation: the doc comes back unenriched, not an exception.
+      assert.isUndefined(docs[0].genome_name)
+      assert.equal(joiner.getStats().fetchErrors, 1)
+    })
+
+    it('should NOT poison the cache on fetch error — a later request retries', async function () {
+      // Regression guard for PLAN_ENRICHMENT_PERMISSIONS.md Part 2c.
+      // The old behavior cached null for every key on error, permanently
+      // disabling enrichment for those ids until process restart.
+      let callCount = 0
+      const flakyClient = {
+        async fetchByIdsAsDict (collection, keyField, values) {
+          callCount++
+          if (callCount === 1) {
+            throw new Error('Solr connection failed')
+          }
+          return { genome1: { genome_id: 'genome1', genome_name: 'Recovered Genome' } }
         }
-      )
+      }
 
+      const joiner = new BatchJoiner(flakyClient)
+
+      const first = [{ genome_id: 'genome1' }]
+      await joiner.enrichDocs(first, spec)
       assert.equal(callCount, 1)
+      assert.isUndefined(first[0].genome_name, 'first call degrades gracefully')
 
-      // Second call - should NOT retry because null is cached
-      await joiner.enrichDocs(
-        [{ genome_id: 'genome1' }],
-        {
-          targetCollection: 'genome',
-          localField: 'genome_id',
-          foreignField: 'genome_id',
-          fields: ['genome_name']
+      // Second call MUST retry rather than serve a poisoned null.
+      const second = [{ genome_id: 'genome1' }]
+      await joiner.enrichDocs(second, spec)
+      assert.equal(callCount, 2, 'must retry after a transient failure')
+      assert.equal(second[0].genome_name, 'Recovered Genome')
+    })
+
+    it('should still cache genuinely-absent keys to avoid repeat lookups', async function () {
+      // A successful fetch that simply has no row for the key is a real answer
+      // and stays cached — only the *error* path was poisoning.
+      let callCount = 0
+      const emptyClient = {
+        async fetchByIdsAsDict () {
+          callCount++
+          return {}
         }
-      )
+      }
 
-      assert.equal(callCount, 1) // No retry
+      const joiner = new BatchJoiner(emptyClient)
+
+      await joiner.enrichDocs([{ genome_id: 'missing1' }], spec)
+      await joiner.enrichDocs([{ genome_id: 'missing1' }], spec)
+
+      assert.equal(callCount, 1, 'absent-key result is cached')
     })
   })
 })

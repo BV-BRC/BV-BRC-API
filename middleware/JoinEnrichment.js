@@ -15,6 +15,7 @@ const debug = require('debug')('p3api-server:middleware/JoinEnrichment')
 const Config = require('../config')
 const BatchJoiner = require('../lib/BatchJoiner')
 const { getRequestedJoinFields } = require('../lib/parseFieldList')
+const { getJoinConfig, buildJoinSpecs } = require('../lib/joinConfig')
 
 // Singleton BatchJoiner instance (lazy initialized)
 let batchJoiner = null
@@ -94,102 +95,6 @@ async function getJoiner () {
 }
 
 /**
- * Get join configuration from config.
- *
- * @returns {Object} Join enrichment configuration
- */
-function getJoinConfig () {
-  const defaults = {
-    enabled: true,
-    cacheSize: 200,
-    collections: {
-      genome_feature: {
-        joinableFields: {
-          genome_name: { from: 'genome', via: 'genome_id', field: 'genome_name' },
-          taxon_id: { from: 'genome', via: 'genome_id', field: 'taxon_id' },
-          genome_status: { from: 'genome', via: 'genome_id', field: 'genome_status' },
-          strain: { from: 'genome', via: 'genome_id', field: 'strain' }
-        }
-      },
-      pathway: {
-        joinableFields: {
-          genome_name: { from: 'genome', via: 'genome_id', field: 'genome_name' },
-          taxon_id: { from: 'genome', via: 'genome_id', field: 'taxon_id' }
-        }
-      },
-      subsystem: {
-        joinableFields: {
-          genome_name: { from: 'genome', via: 'genome_id', field: 'genome_name' },
-          taxon_id: { from: 'genome', via: 'genome_id', field: 'taxon_id' }
-        }
-      },
-      sp_gene: {
-        joinableFields: {
-          genome_name: { from: 'genome', via: 'genome_id', field: 'genome_name' },
-          taxon_id: { from: 'genome', via: 'genome_id', field: 'taxon_id' }
-        }
-      },
-      genome_amr: {
-        joinableFields: {
-          genome_name: { from: 'genome', via: 'genome_id', field: 'genome_name' },
-          taxon_id: { from: 'genome', via: 'genome_id', field: 'taxon_id' }
-        }
-      }
-    }
-  }
-
-  // Merge with config file settings
-  const configuredJoin = Config.get('joinEnrichment')
-  if (configuredJoin) {
-    return {
-      ...defaults,
-      ...configuredJoin,
-      collections: {
-        ...defaults.collections,
-        ...(configuredJoin.collections || {})
-      }
-    }
-  }
-
-  return defaults
-}
-
-/**
- * Build join specifications from requested fields and collection config.
- *
- * Groups fields by their target collection to minimize lookups.
- *
- * @param {Array<string>} requestedJoinFields - Field names that were requested
- * @param {Object} joinableFields - Collection's joinable field configuration
- * @returns {Array<Object>} Array of join specifications, grouped by target collection
- */
-function buildJoinSpecs (requestedJoinFields, joinableFields) {
-  // Group by target collection and local field
-  const groups = new Map()
-
-  for (const fieldName of requestedJoinFields) {
-    const fieldConfig = joinableFields[fieldName]
-    if (!fieldConfig) continue
-
-    // Create a key for grouping: targetCollection + localField
-    const groupKey = `${fieldConfig.from}:${fieldConfig.via}`
-
-    if (!groups.has(groupKey)) {
-      groups.set(groupKey, {
-        targetCollection: fieldConfig.from,
-        localField: fieldConfig.via,
-        foreignField: fieldConfig.via, // Typically same field name on both sides
-        fields: []
-      })
-    }
-
-    groups.get(groupKey).fields.push(fieldConfig.field)
-  }
-
-  return Array.from(groups.values())
-}
-
-/**
  * JoinEnrichment Middleware
  *
  * Enriches query results with joined fields when explicitly requested.
@@ -244,9 +149,14 @@ async function joinEnrichmentMiddleware (req, res, next) {
     // Perform enrichment for each join spec
     const startTime = Date.now()
 
+    // Scope the secondary fetches to what this user may see. Without this the
+    // enrichment fetch reads rows the primary (permission-filtered) query could
+    // not. See PLAN_ENRICHMENT_PERMISSIONS.md.
+    const joinCtx = { user: req.user, publicFree: req.publicFree }
+
     for (const joinSpec of joinSpecs) {
       debug(`Enriching with ${joinSpec.fields.join(',')} from ${joinSpec.targetCollection} via ${joinSpec.localField}`)
-      await joiner.enrichDocs(res.results.response.docs, joinSpec)
+      await joiner.enrichDocs(res.results.response.docs, joinSpec, joinCtx)
     }
 
     const elapsed = Date.now() - startTime

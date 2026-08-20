@@ -1,8 +1,10 @@
 const http = require('http')
 const https = require('https')
+const { withUserAgent } = require('../lib/userAgent')
 
 module.exports = {
   'httpGet': async (options) => {
+    options = { ...options, headers: withUserAgent(options && options.headers) }
     return new Promise((resolve, reject) => {
       http.get(options, (res) => {
         res.setEncoding('utf8')
@@ -23,6 +25,7 @@ module.exports = {
     })
   },
   'httpsGet': async (options) => {
+    options = { ...options, headers: withUserAgent(options && options.headers) }
     return new Promise((resolve, reject) => {
       https.get(options, (res) => {
         res.setEncoding('utf8')
@@ -48,6 +51,7 @@ module.exports = {
     },
 	
   'httpRequest': async (options, body) => {
+    options = { ...options, headers: withUserAgent(options && options.headers) }
     return new Promise((resolve, reject) => {
       const req = http.request(options, (res) => {
         res.setEncoding('utf8')
@@ -70,6 +74,7 @@ module.exports = {
     })
   },
   'httpsRequest': async (options, body) => {
+    options = { ...options, headers: withUserAgent(options && options.headers) }
     return new Promise((resolve, reject) => {
       const req = https.request(options, (res) => {
         res.setEncoding('utf8')
@@ -92,6 +97,7 @@ module.exports = {
     })
   },
   'httpStreamRequest': async (options, streamableBody) => {
+    options = { ...options, headers: withUserAgent(options && options.headers) }
     return new Promise((resolve, reject) => {
       const req = http.request(options, (res) => {
         res.setEncoding('utf8')
@@ -118,6 +124,7 @@ module.exports = {
     })
   },
   'httpsStreamRequest': async (options, streamableBody) => {
+    options = { ...options, headers: withUserAgent(options && options.headers) }
     return new Promise((resolve, reject) => {
       const req = https.request(options, (res) => {
         res.setEncoding('utf8')
@@ -144,6 +151,7 @@ module.exports = {
     })
   },
   'httpsGetUrl': async (url, options) => {
+    options = { ...options, headers: withUserAgent(options && options.headers) }
     return new Promise((resolve, reject) => {
       https.get(url, options, (res) => {
         res.setEncoding('utf8')
@@ -164,6 +172,7 @@ module.exports = {
     })
   },
   'httpsRequestUrl': async (url, options, body) => {
+    options = { ...options, headers: withUserAgent(options && options.headers) }
     return new Promise((resolve, reject) => {
       const req = https.request(url, options, (res) => {
         res.setEncoding('utf8')
@@ -183,6 +192,7 @@ module.exports = {
     })
   },
   'httpRequestUrl': async (url, options, body) => {
+    options = { ...options, headers: withUserAgent(options && options.headers) }
     return new Promise((resolve, reject) => {
       const req = http.request(url, options, (res) => {
         res.setEncoding('utf8')

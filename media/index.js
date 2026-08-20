@@ -8,6 +8,12 @@ FS.readdirSync(__dirname).filter((filename) => {
   const name = filename.replace('.js', '')
   const model = require('./' + name)
   models[model.contentType] = model.serialize
+  // Register any additional MIME types the serializer answers to
+  if (Array.isArray(model.contentTypeAliases)) {
+    model.contentTypeAliases.forEach((alias) => {
+      models[alias] = model.serialize
+    })
+  }
   if (name === 'json') {
     models['*/*'] = model.serialize
     models['default'] = model.serialize

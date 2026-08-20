@@ -36,8 +36,12 @@ function streamWithBackpressure (sourceStream, res, options = {}) {
   } = options
 
   // Disable nginx proxy buffering to enable end-to-end backpressure
-  // This header tells nginx to pass data through without buffering
-  if (res.set) {
+  // This header tells nginx to pass data through without buffering.
+  // Guard on headersSent: some callers (e.g. json.js) write a prefix such as
+  // '[' before invoking this helper, which flushes the response headers. Setting
+  // a header after that throws ERR_HTTP_HEADERS_SENT, which would reject the
+  // whole stream. Those callers set X-Accel-Buffering themselves before writing.
+  if (res.set && !res.headersSent) {
     res.set('X-Accel-Buffering', 'no')
   }
 

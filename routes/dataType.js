@@ -22,6 +22,8 @@ const SolrQuerySanitizer = require('../middleware/SolrQuerySanitizer')
 const DistributedQuery = require('../middleware/DistributedQuery')
 const JoinFieldInjector = require('../middleware/JoinFieldInjector')
 const JoinEnrichment = require('../middleware/JoinEnrichment')
+const CrossCollectionSource = require('../middleware/CrossCollectionSource')
+const CrossCollectionStream = require('../middleware/CrossCollectionStream')
 
 router.use(httpParams)
 
@@ -216,11 +218,46 @@ router.post('*', [
 ])
 
 router.use([
+  // GenBank downloads must be issued against the `genome` collection. Issuing
+  // them against a feature-level collection (e.g. genome_feature) forces the
+  // pipeline to stream millions of feature docs just to recover the genome_id
+  // list the serializer needs, adding a large pre-output stall. Reject early
+  // with a clear message rather than silently doing the expensive thing.
+  function genbankCollectionGuard (req, res, next) {
+    if (
+      req.isDownload &&
+      req.headers && req.headers.accept === 'application/genbank' &&
+      req.call_collection && req.call_collection !== 'genome'
+    ) {
+      return res.status(400).send({
+        status: 400,
+        message: 'GenBank downloads must be requested from the genome collection. ' +
+          'Use /genome/ with a genome_id filter (e.g. /genome/?in(genome_id,(...))) ' +
+          'instead of /' + req.call_collection + '/.'
+      })
+    }
+    next()
+  },
+  // Snapshot the RQL as the client sent it, before RQLQueryParser rewrites
+  // call_params[0] into Solr syntax against the TARGET collection. A
+  // cross-collection download needs the original to re-parse against the SOURCE.
+  //
+  // req._rawBody only exists for application/x-www-form-urlencoded (the auth
+  // extractor's content-type guard), so it misses
+  // application/rqlquery+x-www-form-urlencoded and every GET. Capturing here
+  // covers all of them uniformly.
+  function (req, res, next) {
+    if (req.queryType === 'rql' && req.call_params && typeof req.call_params[0] === 'string') {
+      req._originalRql = req.call_params[0]
+    }
+    next()
+  },
   RQLQueryParser,
   // SOLRQueryParser, // this parses the solr query for errors, but doesn't make any chagnes to the stream.  Debugging only.
   SolrQuerySanitizer,
   DecorateQuery,
   Limiter,
+  CrossCollectionSource,  // Validate + permission-scope http_source_* (no-op when absent)
   JoinFieldInjector,  // Inject join key fields into fl= before query execution
   DistributedQuery,  // Distributed query integration (after permission filters applied)
   ShardsPreference,
@@ -237,6 +274,7 @@ router.use([
     next()
   },
   streamingHandler.checkIfStreaming,
+  CrossCollectionStream,  // Resolve source->target into a stream (no-op unless _crossSource)
   APIMethodHandler,
   reqCounter,
   ExtractCustomFields,

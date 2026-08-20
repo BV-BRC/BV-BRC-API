@@ -5,6 +5,7 @@ const solrAgentConfig = Config.get('solr').shortLiveAgent
 const solrAgent = new Http.Agent(solrAgentConfig)
 const distributeURL = Config.get('distributeURL')
 const axios = require("axios")
+const { userAgent } = require('../lib/userAgent')
 
 async function getSequenceByHash (md5) {
   return httpGet({
@@ -67,6 +68,7 @@ async function getSequenceDictByHash (md5Array,req) {
   return axios.post(url, q, {
       headers: {
         'accept': 'application/json',
+        'User-Agent': userAgent(),
         'authorization': (req && req.headers['authorization']) ? req.headers['authorization'] : ''
       }
     }).then((response)=>{

@@ -28,7 +28,29 @@ function streamQuery (req, res, next) {
   debug('streamSOLR() query: ', query)
 
   solrClient.stream(query)
-    .then((results) => {
+    .then(async (results) => {
+      // Pipe through join enrichment stream if join specs were prepared
+      if (req._joinSpecs && req._joinSpecs.length > 0 && results.stream) {
+        try {
+          const JoinEnrichmentStream = require('../lib/distributed/JoinEnrichmentStream')
+          const { getJoiner } = require('./JoinEnrichment')
+          const joiner = await getJoiner()
+
+          const joinStream = new JoinEnrichmentStream(joiner, {
+            joinSpecs: req._joinSpecs,
+            batchSize: 50,
+            skipHeader: true, // Solrjs stream emits metadata header first
+            user: req.user,
+            publicFree: req.publicFree
+          })
+
+          results.stream = results.stream.pipe(joinStream)
+          debug('Piped stream through JoinEnrichmentStream')
+        } catch (err) {
+          debug(`Failed to set up stream join enrichment: ${err.message}`)
+        }
+      }
+
       res.results = results
       next()
     }, (err) => {

@@ -21,7 +21,11 @@ const process = require('process')
 const opts = require('commander')
 const rp = require('request-promise')
 
-const DATA_API_URL = 'https://p3.theseed.org/services/data_api'
+// Public Data API to fetch test fixtures from. Override with DATA_API_URL if
+// pointing at a staging or alternate deployment.
+// (was https://p3.theseed.org/services/data_api — still live, but www.bv-brc.org/api
+// is the current default endpoint.)
+const DATA_API_URL = process.env.DATA_API_URL || 'https://www.bv-brc.org/api'
 
 // max number of docs that can be fetched.  Script will end if exceeded.
 const DOC_LIMIT = 500000

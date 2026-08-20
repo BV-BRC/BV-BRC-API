@@ -42,6 +42,8 @@ let directSolrClientInstance = null
 
 // Legacy imports for fallback mode
 const { getSequenceDictByHash } = require('../util/featureSequence')
+const { buildPermissionFq } = require('../lib/permissionFilter')
+const { userAgent } = require('../lib/userAgent')
 const SEQUENCE_BATCH = 200
 
 // For genome metadata lookups via HTTP
@@ -74,6 +76,7 @@ async function getGenomeMetadataDict (genomeIds, req) {
     const response = await axios.post(url, q, {
       headers: {
         accept: 'application/json',
+        'User-Agent': userAgent(),
         authorization: (req && req.headers.authorization) ? req.headers.authorization : ''
       }
     })
@@ -214,7 +217,9 @@ async function serializeFeatureStreamDirect (stream, res, req, directSolrClient)
     const genomeJoinStream = new GenomeMetadataJoinStream(directSolrClient, {
       batchSize: 50,
       cacheSize: 100,
-      skipHeader: true
+      skipHeader: true,
+      user: req.user,
+      publicFree: req.publicFree
     })
     pipelineStream = stream.pipe(genomeJoinStream)
   }
@@ -224,7 +229,9 @@ async function serializeFeatureStreamDirect (stream, res, req, directSolrClient)
     sequenceField: 'aa_sequence_md5', // Protein sequences
     batchSize,
     prefetchBatches,
-    skipHeader: !includeGenomeMetadata // Only skip header if genome join didn't already
+    skipHeader: !includeGenomeMetadata, // Only skip header if genome join didn't already
+    user: req.user,
+    publicFree: req.publicFree
   })
 
   pipelineStream = pipelineStream.pipe(sequenceJoinStream)
@@ -352,7 +359,14 @@ async function serializeQueryResults (docs, res, req) {
 
       if (hashes.length > 0) {
         try {
-          const seqDict = await directClient.fetchSequencesByMd5(hashes)
+          // feature_sequence is publicFree so this resolves to no filter;
+          // threaded for uniformity. See PLAN_ENRICHMENT_PERMISSIONS.md.
+          const seqDict = await directClient.fetchSequencesByMd5(hashes, {
+            permissionFq: buildPermissionFq({
+              collection: 'feature_sequence', user: req.user, publicFree: req.publicFree
+            }),
+            user: req.user
+          })
           for (const doc of batch) {
             if (doc.aa_sequence_md5 && seqDict[doc.aa_sequence_md5]) {
               doc.sequence = seqDict[doc.aa_sequence_md5]

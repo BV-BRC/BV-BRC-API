@@ -44,6 +44,8 @@ let directSolrClientInstance = null
 
 // Legacy imports for fallback mode
 const { getSequenceDictByHash } = require('../util/featureSequence')
+const { buildPermissionFq } = require('../lib/permissionFilter')
+const { userAgent } = require('../lib/userAgent')
 const SEQUENCE_BATCH = 200
 
 // For genome metadata lookups via HTTP
@@ -76,6 +78,7 @@ async function getGenomeMetadataDict (genomeIds, req) {
     const response = await axios.post(url, q, {
       headers: {
         accept: 'application/json',
+        'User-Agent': userAgent(),
         authorization: (req && req.headers.authorization) ? req.headers.authorization : ''
       }
     })
@@ -252,7 +255,9 @@ async function serializeFeatureStreamDirect (stream, res, req, directSolrClient)
     const genomeJoinStream = new GenomeMetadataJoinStream(directSolrClient, {
       batchSize: 50,
       cacheSize: 100,
-      skipHeader: true
+      skipHeader: true,
+      user: req.user,
+      publicFree: req.publicFree
     })
     pipelineStream = stream.pipe(genomeJoinStream)
   }
@@ -262,7 +267,9 @@ async function serializeFeatureStreamDirect (stream, res, req, directSolrClient)
     sequenceField: 'na_sequence_md5',
     batchSize,
     prefetchBatches,
-    skipHeader: !includeGenomeMetadata // Only skip header if genome join didn't already
+    skipHeader: !includeGenomeMetadata, // Only skip header if genome join didn't already
+    user: req.user,
+    publicFree: req.publicFree
   })
 
   pipelineStream = pipelineStream.pipe(sequenceJoinStream)
@@ -366,9 +373,15 @@ async function serializeFeatureStreamLegacy (stream, res, req) {
 /**
  * Serialize genome_sequence stream (no join needed, sequences are inline).
  */
-async function serializeGenomeSequenceStream (stream, res) {
+async function serializeGenomeSequenceStream (stream, res, req) {
+  const headerFormatter = createFastaHeaderFormatterFromRequest(req)
+
   await streamWithBackpressure(stream, res, {
-    transform: (doc) => formatGenomeSequenceRecord(doc)
+    transform: (doc) => {
+      const header = headerFormatter(doc)
+      const sequence = doc.sequence ? LineWrap(doc.sequence, 60) : ''
+      return header + sequence + '\n'
+    }
   })
 }
 
@@ -407,7 +420,14 @@ async function serializeQueryResults (docs, res, req) {
 
         if (hashes.length > 0) {
           try {
-            const seqDict = await directClient.fetchSequencesByMd5(hashes)
+            // feature_sequence is publicFree so this resolves to no filter;
+            // threaded for uniformity. See PLAN_ENRICHMENT_PERMISSIONS.md.
+            const seqDict = await directClient.fetchSequencesByMd5(hashes, {
+              permissionFq: buildPermissionFq({
+                collection: 'feature_sequence', user: req.user, publicFree: req.publicFree
+              }),
+              user: req.user
+            })
             for (const doc of batch) {
               if (doc.na_sequence_md5 && seqDict[doc.na_sequence_md5]) {
                 doc.sequence = seqDict[doc.na_sequence_md5]
@@ -454,8 +474,11 @@ async function serializeQueryResults (docs, res, req) {
       }
     }
   } else if (collection === 'genome_sequence') {
+    const headerFormatter = createFastaHeaderFormatterFromRequest(req)
     for (const doc of docs) {
-      res.write(formatGenomeSequenceRecord(doc))
+      const header = headerFormatter(doc)
+      const sequence = doc.sequence ? LineWrap(doc.sequence, 60) : ''
+      res.write(header + sequence + '\n')
     }
   }
 }
@@ -490,7 +513,7 @@ module.exports = {
             await serializeFeatureStreamLegacy(results.stream, res, req)
           }
         } else if (collection === 'genome_sequence') {
-          await serializeGenomeSequenceStream(results.stream, res)
+          await serializeGenomeSequenceStream(results.stream, res, req)
         } else {
           // Unknown collection, just end
           res.end()

@@ -9,90 +9,8 @@
  */
 
 const debug = require('debug')('p3api-server:middleware/JoinFieldInjector')
-const Config = require('../config')
 const { getRequestedJoinFields } = require('../lib/parseFieldList')
-
-/**
- * Get join configuration from config.
- * (Duplicated from JoinEnrichment.js to avoid circular dependencies)
- *
- * @returns {Object} Join enrichment configuration
- */
-function getJoinConfig () {
-  const defaults = {
-    enabled: true,
-    cacheSize: 200,
-    collections: {
-      genome_feature: {
-        joinableFields: {
-          genome_name: { from: 'genome', via: 'genome_id', field: 'genome_name' },
-          taxon_id: { from: 'genome', via: 'genome_id', field: 'taxon_id' },
-          genome_status: { from: 'genome', via: 'genome_id', field: 'genome_status' },
-          strain: { from: 'genome', via: 'genome_id', field: 'strain' }
-        }
-      },
-      pathway: {
-        joinableFields: {
-          genome_name: { from: 'genome', via: 'genome_id', field: 'genome_name' },
-          taxon_id: { from: 'genome', via: 'genome_id', field: 'taxon_id' }
-        }
-      },
-      subsystem: {
-        joinableFields: {
-          genome_name: { from: 'genome', via: 'genome_id', field: 'genome_name' },
-          taxon_id: { from: 'genome', via: 'genome_id', field: 'taxon_id' }
-        }
-      },
-      sp_gene: {
-        joinableFields: {
-          genome_name: { from: 'genome', via: 'genome_id', field: 'genome_name' },
-          taxon_id: { from: 'genome', via: 'genome_id', field: 'taxon_id' }
-        }
-      },
-      genome_amr: {
-        joinableFields: {
-          genome_name: { from: 'genome', via: 'genome_id', field: 'genome_name' },
-          taxon_id: { from: 'genome', via: 'genome_id', field: 'taxon_id' }
-        }
-      }
-    }
-  }
-
-  // Merge with config file settings
-  const configuredJoin = Config.get('joinEnrichment')
-  if (configuredJoin) {
-    return {
-      ...defaults,
-      ...configuredJoin,
-      collections: {
-        ...defaults.collections,
-        ...(configuredJoin.collections || {})
-      }
-    }
-  }
-
-  return defaults
-}
-
-/**
- * Get the set of join key fields needed for the requested join fields.
- *
- * @param {Array<string>} requestedJoinFields - Requested join field names
- * @param {Object} joinableFields - Collection's joinable field configuration
- * @returns {Set<string>} Set of join key field names (e.g., 'genome_id')
- */
-function getRequiredJoinKeys (requestedJoinFields, joinableFields) {
-  const keys = new Set()
-
-  for (const fieldName of requestedJoinFields) {
-    const fieldConfig = joinableFields[fieldName]
-    if (fieldConfig && fieldConfig.via) {
-      keys.add(fieldConfig.via)
-    }
-  }
-
-  return keys
-}
+const { getJoinConfig, buildJoinSpecs, getRequiredJoinKeys } = require('../lib/joinConfig')
 
 /**
  * Inject join key fields into the Solr query's field list.
@@ -156,9 +74,11 @@ function injectFieldsIntoQuery (query, keysToInject) {
  * JoinFieldInjector Middleware
  *
  * Modifies the query to include join key fields when joinable fields are requested.
+ * Also stores join specifications on the request object for downstream middleware
+ * (JoinEnrichment for paginated queries, JoinEnrichmentStream for streaming).
  */
 function joinFieldInjectorMiddleware (req, res, next) {
-  // Only process query method
+  // Only process query methods (both paginated and streaming)
   if (req.call_method !== 'query') {
     return next()
   }
@@ -183,6 +103,13 @@ function joinFieldInjectorMiddleware (req, res, next) {
 
   if (requestedJoinFields.length === 0) {
     return next()
+  }
+
+  // Build join specs and store on request for downstream middleware
+  const joinSpecs = buildJoinSpecs(requestedJoinFields, collectionConfig.joinableFields)
+  if (joinSpecs.length > 0) {
+    req._joinSpecs = joinSpecs
+    debug(`Join specs prepared for ${req.call_collection}: ${joinSpecs.map(s => s.fields.join(',')).join('; ')}`)
   }
 
   // Get the join key fields we need to inject
