@@ -34,6 +34,14 @@ const Web = require('../web');
 
 var solrAgent = Web.getSolrShortLiveAgent();
 
+// Cores whose owner/user_read/user_write are rewritten when a genome is shared.
+//
+// `private_genome_metadata` is DELIBERATELY ABSENT and must stay that way. Its
+// permissions are managed out of band, so genome sharing must not touch them —
+// adding it here would silently widen access to private metadata every time the
+// underlying genome is shared. It is exposed through the normal /:dataType/ path
+// and permission-scoped by DecorateQuery like any other private collection; only
+// this propagation step is opted out of.
 const genomeCoresUUIDs = {
   genome: 'genome_id',
   genome_sequence: 'sequence_id',

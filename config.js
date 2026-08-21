@@ -32,6 +32,11 @@ const defaults = {
     'pathway_ref',
     'ppi',
     'pig',
+    // Private per-genome metadata. Uses the standard owner/user_read/user_write/public
+    // triple, so DecorateQuery + lib/permissionFilter scope it with no special handling.
+    // Deliberately NOT in publicFree (middleware/PublicDataTypes.js) and deliberately NOT
+    // in genomeCoresUUIDs (routes/genomePermissionRouter.js) — see the note there.
+    'private_genome_metadata',
     'protein_family_ref',
     'sequence_feature',
     'sequence_feature_vt',
@@ -120,6 +125,9 @@ const defaults = {
     pathway: 'id',
     pathway_ref: 'id',
     ppi: 'id',
+    // uniqueKey is a UUID, not genome_id — one genome may carry several metadata
+    // records (verified against the live schema).
+    private_genome_metadata: 'id',
     protein_family_ref: 'family_id',
     protein_feature: 'id',
     protein_structure: 'pdb_id',
