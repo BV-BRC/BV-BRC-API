@@ -529,6 +529,27 @@ All JBrowse endpoints sanitize user inputs before interpolating into Solr querie
 - `sanitizeSolrValue()` strips `& = ? # ; \ { } [ ] " ' \`` from string inputs
 - `sanitizeNumeric()` validates against `/^-?\d+(\.\d+)?$/`, returns null on failure → early 400 response
 
+### Open finding — ACL fields are readable and facetable (`Docs/SECURITY-acl-field-disclosure.md`)
+
+**Permission enforcement here is row-level only.** `DecorateQuery` appends an `fq` deciding
+*which documents* you see; nothing decides *which fields* of a visible document you may read,
+facet, or sort on. `owner`/`user_read`/`user_write` are ordinary indexed fields, so on any
+record shared with you, you can read its full ACL — including third parties.
+
+Faceting amplifies this into bulk enumeration, because facet counts are computed over the whole
+permission-filtered DocSet: one `facet((field,user_read))` over `genome` returns a ranked list
+of every principal with access to anything you can see (measured: 12 accounts over a 14,756-row
+DocSet, service accounts included). `eq(user_read,<user>)` also works as an account-existence
+oracle. Anonymous requests disclose nothing.
+
+Unfixed, and **pre-dates `private_genome_metadata`** — that collection surfaced it. Cheapest
+mitigation is blocking the ACL fields as `facet.field`/`sort` targets, extending the
+`SolrQuerySanitizer` parameter-policing precedent. Full write-up, evidence, and fix options in
+the doc.
+
+Keep this in mind when designing anything that aggregates over private collections — see the
+same row-level-vs-DocSet property in `PLAN_PRIVATE_METADATA_OVERLAY.md`.
+
 ### Other security fixes
 
 - XSS fixes documented in `SECURITY_FIX.md`: parameter name validation in `http-params.js`, error message sanitization in `RQLQueryParser.js`, security headers (CSP, X-Frame-Options, etc.) in `app.js`
