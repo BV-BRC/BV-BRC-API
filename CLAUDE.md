@@ -6,28 +6,55 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 BV-BRC API (p3api) is a Node.js/Express REST API providing access to BV-BRC bioinformatics data. It acts as a gateway to Solr backends, supporting RQL (Resource Query Language) and Solr query syntax.
 
-## Branch: feature/distributed-query — merge status
+## Branch state (2026-08-20)
 
-**`upstream/alpha` has been merged into this branch** (most recently 2026-08-17), so the branch
-is a clean fast-forward onto alpha — `git merge-base --is-ancestor upstream/alpha HEAD` holds.
-**PR #189** (`BV-BRC/BV-BRC-API`) is open for the merge back into alpha. Reports:
-`Docs/ALPHA_MERGE_REPORT.md` (full), `Docs/ALPHA_PR_BODY.md` (PR text),
-`Docs/ALPHA_MERGE_REPORT_SLACK.txt` (paste form) — all three predate the 2026-08-17 dependency
-work and describe the branch's code delta only.
+**`feature/distributed-query` is MERGED into `upstream/alpha`** — PR #189, merge commit
+`be1b75aa`. The distributed-query, join-enrichment, and cross-collection-download subsystems
+are now alpha baseline, not branch-local. Historical reports (`Docs/ALPHA_MERGE_REPORT.md`,
+`Docs/ALPHA_PR_BODY.md`, `Docs/ALPHA_MERGE_REPORT_SLACK.txt`, `Docs/BRANCH_RISK_ANALYSIS.md`)
+describe that pre-merge delta and are kept for provenance only.
 
-The 2026-08-17 merge brought in alpha's dependency security work (`npm audit` 106 → 35,
-criticals 15 → 2, EBADENGINE 80+ → 0), so those files are **not** part of what #189 proposes.
-Its delta is 69 files of distributed-query / enrichment / cross-collection-download code.
-Offline-suite baseline for this branch is **327 passing / 1 failing** (the known
-`fastaHeaderFormatter` case) — note that differs from alpha's 247/2, because this branch adds
-suites and does not hit alpha's `test.config.spec.js` failure.
+**`upstream/master` is ~175 commits behind alpha** and does not have any of it. Master *does*
+carry the same dependency-security work under different hashes (verified: `p3-user`, `forever`,
+`npm`, `install`, `uuid`, `ejs`, `nconf`, `nodemailer`, `apicache` are identical on both lines),
+so an alpha→master merge should be conflict-free on those files. Master has no `CLAUDE.md`, so
+this file arrives there as a new file rather than a conflict.
 
-If the branch diverges from alpha again, **diff against `upstream/alpha`, not the git
-merge-base.** The merge-base (`223a99d3`) is stale and predates PRs already merged into alpha
-(#176 IDOR, SSRF sanitizer, JBrowse sanitization, numeric validation) — diffing the base
-over-counts the delta by showing already-shipped fixes as new. Note those four fixes exist on
-*both* lines under different hashes with byte-identical content, which is why the merge was
-conflict-free.
+Offline-suite baseline on alpha is now **327 passing / 1 failing** — the known
+`fastaHeaderFormatter` case. (It was 247/2 before the merge; the extra suites came with #189,
+and alpha no longer hits the old `test.config.spec.js` failure because the config keys that
+test expects are the ones #189 added.)
+
+When branching from alpha, **diff against `upstream/alpha`, not a git merge-base** — merge-bases
+in this repo are reliably stale and over-count the delta by re-showing already-shipped fixes.
+
+## Planning docs (not yet implemented)
+
+Repo-root `PLAN_*.md` files are proposals, in varying states of vetting:
+
+| doc | subject |
+|---|---|
+| `PLAN_PRIVATE_METADATA_OVERLAY.md` | Private per-user metadata collection overlaying `genome` — display, filter, facet. See below. |
+| `PLAN_GENOME_POSTFILTER.md` | JS-side post-filtering for negation-only `genome()` conditions |
+| `PLAN_DOWNLOAD_SSE_NOTIFICATIONS.md` | SSE start/complete events for downloads (hidden-form POSTs can't read headers) |
+| `PLAN_SOLR_OVERLOAD_PROTECTION.md` | Multi-layer throttling; broad-taxon join OOM mitigation |
+
+### Facet counts cannot be corrected inside Solr
+
+Worth knowing before designing anything that merges a second collection into `genome` results
+— this is the finding that shapes `PLAN_PRIVATE_METADATA_OVERLAY.md`:
+
+- **`JoinEnrichment` is post-query and page-scoped** (`middleware/JoinEnrichment.js:109`). It
+  decorates the ~25 returned rows; Solr computed the facet counts over the entire matched
+  DocSet long before that middleware ran.
+- **`{!join fromIndex=…}` filters but does not project.** It restricts *which* docs match; it
+  cannot change the field *values* Solr counts.
+- **Facets bypass the distributed path entirely** (`middleware/DistributedQuery.js:171` returns
+  `useDistributed: false` for `facet=true`/`group=true`), so there is no streaming hook either.
+
+So any overlay that changes field values must correct facet counts **arithmetically, API-side,
+after the query** — which is only practical when the overlay set is small enough to hold whole
+(hundreds, not millions).
 
 Files that alter **preexisting shared-path behavior** (vs. new/leaf code) — where review
 effort belongs:
