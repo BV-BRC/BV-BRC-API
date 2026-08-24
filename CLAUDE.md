@@ -510,6 +510,19 @@ Some collections support private data with owner-based permissions managed via `
 - `genome_amr` - Antimicrobial resistance data
 - `genome_typing` - Genome typing data (fields: genome_id, scheme_name, id, allele_profile)
 
+**`private_genome_metadata`** (added 2026-08-21) is private but **not** in that sharing set —
+see below. Registering it needed only two `config.js` entries (`collections`, and
+`collectionUniqueKeys: 'id'`) because its permission fields match the contract
+`lib/permissionFilter.js` already implements; `DecorateQuery` scopes it with no special code.
+Its `uniqueKey` is a **UUID, not `genome_id`**, so one genome may carry several metadata
+records from different owners.
+
+**Its permissions are managed out of band, so it is deliberately absent from
+`genomeCoresUUIDs` (`routes/genomePermissionRouter.js`).** That map lists the cores whose ACLs
+are rewritten when a genome is shared; adding this collection would silently widen access to
+private metadata every time the underlying genome is shared. The omission looks like an
+oversight and carries a comment saying it is not — **don't "fix" it.**
+
 ## Testing Requirements
 
 - Local Solr instance — **see `Docs/LOCAL_SOLR_SETUP.md`** (Solr 9.6.1, cloud mode, configsets from [bv-brc/bv-brc-solr](https://github.com/bv-brc/bv-brc-solr)). `tests/README.md`'s pointer to `PATRIC3/patric_solr` is stale: that repo is archived and Solr 5.3-era.
