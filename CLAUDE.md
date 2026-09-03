@@ -6,18 +6,37 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 BV-BRC API (p3api) is a Node.js/Express REST API providing access to BV-BRC bioinformatics data. It acts as a gateway to Solr backends, supporting RQL (Resource Query Language) and Solr query syntax.
 
-## Branch state (2026-08-25)
+## Branch state (2026-09-03)
 
-**alpha and master are converged; master is now ahead.** The long-standing
-"master is ~175 commits behind alpha" situation is **resolved** — do not act on older notes
-saying otherwise.
+**`origin/alpha` is 25 commits AHEAD of `origin/master`, 0 behind.** Master can be
+fast-forwarded; there is nothing to merge the other way. **This is the reverse of the note
+that stood here through 2026-08-25**, which said master was 14 ahead with nothing to merge
+back — that was true then and is not now. This section goes stale fast; check with
+`git rev-list --left-right --count origin/master...origin/alpha` rather than trusting any
+sentence in it.
 
+- `origin/master` = **`6397c6cf`**, `origin/alpha` = **`5008579c`**.
 - **PR #202** (`bf9c9207`) merged alpha → master, bringing the distributed-query,
   join-enrichment, and cross-collection-download subsystems (originally #189, `be1b75aa`)
-  onto master.
-- **PR #203** (`6397c6cf`) added a Solr request timeout on the main data path.
-- **`upstream/master` is now 14 commits AHEAD of `upstream/alpha`, 0 behind.** Alpha can be
-  fast-forwarded to match; there is nothing to merge back.
+  onto master. **PR #203** (`6397c6cf`) added a Solr request timeout on the main data path.
+  Those two are what made master briefly the ahead branch.
+- **PR #206** (`4f64b1d4`, merged 2026-09-03) put 21 commits on alpha: the whole self-call
+  elimination, the `ShardCursorStream` POST fix, and the `MinHeap` UTF-8 comparator fix.
+- **PR #207** (`5008579c`, merged 2026-09-03) added the `terms()` `cache=false` emission and
+  the matching `Limiter` detection.
+
+**Master does not have the two worker-crash fixes.** `31a1d5ad` (`dataRouter`) and
+`6b1335e4` (`ExpandingQuery`) are on alpha only — `git branch -r --contains 31a1d5ad` lists
+`origin/alpha` and nothing else. Both close paths where an ordinary unauthenticated client
+mistake aborts a worker (see "`JSON.parse` on a self-call body is how a worker dies" below).
+Whether that warrants a merge to master ahead of the normal cadence is a maintainer call, but
+it should be a deliberate one.
+
+Open PRs as of 2026-09-03: **#205** (master ← dependabot, fast-uri 3.1.5→3.1.7) and **#151**
+(alpha ← `bugfix/private-structure`, `protein_structure` access control, open since
+2026-03-05). Note the 9 dependabot PRs listed as open under "Dependency Security
+Maintenance" below (#117, #118, #123–#126, #128, #129, #133) are **closed** — that paragraph
+is stale in the other direction.
 
 Merge-resolution notes worth keeping: the only conflicts were `package.json` and
 `package-lock.json`, and `package.json` was resolved **in alpha's favour on all four
@@ -40,12 +59,12 @@ direction gives every worker `Cannot find module …`. Verify before restarting:
 node -e "require('dojo-declare/declare'); require('./lib/solrjs'); console.log('deps OK')"
 ```
 
-**Offline-suite baseline is 351 passing / 1 failing** (measured 2026-09-03,
+**Offline-suite baseline on `origin/alpha` is 370 passing / 1 failing** (measured 2026-09-03,
 `npx mocha tests/test-util/ tests/test-join/ tests/test-distributed/`) — the known
-`fastaHeaderFormatter` case — on `feature/eliminate-self-call`. Earlier notes here said 350/1
-and then 327/1; both were stale. Every spec the branch adds needs a live API and a populated
-Solr, so none of them land in `test-util`/`test-join`/`test-distributed`. Measure the branch's
-own additions with the command in `PLAN_ELIMINATE_SELF_CALL.md`, against `:23001`.
+`fastaHeaderFormatter` case. It was 351/1 before PR #207 added 19 offline specs. Earlier
+notes here said 350/1 and then 327/1; both were stale. The self-call work's own specs all
+need a live API and a populated Solr, so none of them land in these three suites — run those
+against `:23001` with the command in `PLAN_ELIMINATE_SELF_CALL.md`.
 
 **`distributedQuery` defaults to `enabled: true` with an empty `excludeNodes`,** and the path
 needs direct network access to every Solr replica, which the production deployment does not
@@ -58,31 +77,35 @@ Repo-root `PLAN_*.md` files are proposals, in varying states of vetting:
 
 | doc | subject |
 |---|---|
-| `PLAN_ELIMINATE_SELF_CALL.md` | **CODE COMPLETE, UNMERGED** — removing HTTP self-calls. All 8 steps shipped on `feature/eliminate-self-call`, local only; see below. |
+| `PLAN_ELIMINATE_SELF_CALL.md` | **DONE — merged to alpha as PR #206** (`4f64b1d4`, 2026-09-03). All 8 steps. Not on master; see below for what remains deferred. |
 | `PLAN_PRIVATE_METADATA_OVERLAY.md` | Private per-user metadata collection overlaying `genome` — display, filter, facet. See below. |
 | `PLAN_GENOME_POSTFILTER.md` | JS-side post-filtering for negation-only `genome()` conditions |
 | `PLAN_DOWNLOAD_SSE_NOTIFICATIONS.md` | SSE start/complete events for downloads (hidden-form POSTs can't read headers) |
 | `PLAN_SOLR_OVERLOAD_PROTECTION.md` | Multi-layer throttling; broad-taxon join OOM mitigation |
 
-### HTTP self-calls (code complete on `feature/eliminate-self-call`, not merged)
+### HTTP self-calls (merged to alpha as PR #206; not on master)
 
-**The API calls its own listening port instead of invoking handlers in-process**, at 17
+**The API called its own listening port instead of invoking handlers in-process**, at 17
 sites. Over a 36-hour production window `::ffff:127.0.0.1` was the top client by a factor of
 three: **33,101 requests (33% of all traffic), 615,681s cumulative**. Beyond the wasted round
 trip it is a resource-loop hazard — an outer request holds a slot in the same worker pool its
 children need, so parents can occupy every slot while children queue behind them.
 
-Find them with `grep -rn "get('http_port')" --include=*.js` (excluding `app.js`'s own
-`listen`). They were **identical on master and alpha** — no released branch has fixed any of
-them, and none of the work below has been pushed to either remote yet.
+Find the survivors with `grep -rn "get('http_port')" --include=*.js` (excluding `app.js`'s own
+`listen`). The sites were **identical on master and alpha**; the fixes below are now on
+**alpha only**, so every one of them is still live on master.
 
 **There is no remote named `upstream`.** Earlier notes here and in the plan said "pushed to
 upstream"; that was wrong. The remotes are `origin`
 (`https://github.com/BV-BRC/BV-BRC-API`, canonical) and `bob`
-(`git@github.com:olsonanl/p3_api`, a personal fork), and everything after `797adf86` is
-local only.
+(`https://github.com/olsonanl/p3_api`, a personal fork). `bob` was an SSH URL until
+2026-09-03 and no key is loaded on this host, so pushes failed with
+`Permission denied (publickey)`; it is HTTPS now. Also note **`gh pr edit` does not work
+against this repo** — it fails with `GraphQL: Projects (classic) is being deprecated
+(repository.pullRequest.projectCards)`. `gh pr create` is fine; to change a body afterwards
+use `gh api -X PATCH repos/BV-BRC/BV-BRC-API/pulls/<n> -F body=@file`.
 
-Shipped on the branch, which is based on `6397c6cf` (master):
+Shipped, based on `6397c6cf` (master) and merged into alpha by `4f64b1d4`:
 
 - **`febb9cf8`** — `multiQuery` no longer stores sub-query failures as results.
   `util/http.js`'s `httpRequest` discards `res.statusCode` and resolves the body regardless,
@@ -362,9 +385,10 @@ effort belongs:
 The join-enrichment hooks pipe streaming results through `JoinEnrichmentStream` whenever
 `req._joinSpecs` is set. Setup is `try/catch`-guarded; mid-stream errors are handled for the
 distributed path (error forwarding across the pipe boundary) but that pattern is newer than
-the rest. Everything else is additive, guard-gated, or already in alpha. Against
-`upstream/master` the whole distributed-query + join subsystem is net-new. Older breakdown:
-`Docs/BRANCH_RISK_ANALYSIS.md`.
+the rest. Everything else is additive or guard-gated. The table is **provenance for the #189
+/ #202 review** — it was written when the whole distributed-query + join subsystem was
+net-new against master; PR #202 landed it there, so it is no longer a branch delta. Older
+breakdown: `Docs/BRANCH_RISK_ANALYSIS.md`.
 
 ## Common Commands
 
@@ -1271,6 +1295,23 @@ today: the web grid pages with `in()`, and `terms()` must be written explicitly.
 `rpc/transcriptomicsGene.js:233,253` and `lib/distributed/DirectSolrClient.js:280` all pair
 their filter with `q=*:*`, so there is no scored query for the filter to lose a race against
 and the degradation mechanism does not apply.
+
+**A client-supplied Solr-format `{!terms}` does not get `cache=false`, and that gap is real.**
+`RQLQueryParser` returns early for `queryType === 'solr'` (`:68`), and neither
+`SolrQuerySanitizer` nor `SolrQueryParser` touches `fq` at all (zero `terms` references in
+either). So a request sent as `application/solrquery+x-www-form-urlencoded` carrying its own
+`fq={!terms f=…}` keeps Solr's default *cached* filter, and if it also carries a scored `q=`
+it lands on the slow shape above. Left alone on purpose: rewriting an explicit client local
+param is a different call from choosing what our own emitter produces, and a client paging
+with a repeated identical filter genuinely wants the cache. Nothing in-tree is affected —
+the four emitters above bypass this chain and all pair with `q=*:*`.
+
+**Routing is *not* part of that gap.** `detectFixedIdCount`'s pattern is
+`\{!terms\b([^}]*)\}` — the cache directive is deliberately not required, pinned by
+"recognizes the filter without the cache directive" in
+`tests/test-util/test.limiter-terms.spec.js`. A bare Solr-format
+`fq={!terms f=feature_id}a,b,c,d,e` with `rows=25000` still comes out of `Limiter` at
+`rows=15`, hence still below `minLimitThreshold`, hence still on the standard path.
 
 #### The reported small-list slowdown was the distributed path, not `terms()`
 
