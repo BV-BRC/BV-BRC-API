@@ -60,6 +60,24 @@ const defaults = {
   distributeURL: 'http://localhost:3001/',
   publicURL: 'http://localhost:3001/',
 
+  /*
+   * Origins permitted to make *credentialed* cross-origin requests. Anonymous
+   * cross-origin reads remain open to everyone -- this is a public data API.
+   * See util/corsOptions.js.
+   *
+   * Exact-match serialized origins, enumerated explicitly: BV-BRC uses
+   * alpha./beta./dev-N. while the sibling properties use dev./test., so no
+   * interpolation over a property name is correct for all of them. This is
+   * the same list the OAuth2 redirect_uri registration needs; keep them in
+   * sync (PLAN-oauth2-migration.md, "Multi-Domain Rollout and CORS").
+   *
+   * Empty by default: the deployment places site-facing endpoints under the
+   * site's own registrable domain, so production traffic is same-origin and
+   * needs no entry here. Set it in p3api.conf only for a property that must
+   * genuinely make credentialed cross-origin calls.
+   */
+  cors_origins: [],
+
   jbrowseAPIRoot: 'http://localhost:3001/jbrowse',
 
   treeDirectory: './trees',

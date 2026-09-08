@@ -24,6 +24,7 @@ var sleep = require("sleep-promise");
 
 
 var cors = require('cors')
+var corsOptions = require('./util/corsOptions')
 var crypto = require('crypto')
 
 // Generate request ID for all requests (used for log correlation)
@@ -126,14 +127,10 @@ app.use(function (req, res, next) {
   next()
 })
 
-app.use(cors({
-  origin: true,
-  methods: ['GET,POST,PUT,DELETE'],
-  allowHeaders: ['if-none-match', 'range', 'accept', 'x-range', 'content-type', 'authorization'],
-  exposedHeaders: ['facet_counts', 'x-facet-count', 'Content-Range', 'X-Content-Range', 'X-Cursor-Mark', 'ETag'],
-  credential: true,
-  maxAge: 86400
-}))
+// See util/corsOptions.js. The previous inline configuration misspelled two
+// keys (credential/allowHeaders), so credentials never worked and the header
+// list was silently replaced by reflection of whatever the browser asked for.
+app.use(cors(corsOptions(config)))
 
 var collections = config.get('collections')
 
