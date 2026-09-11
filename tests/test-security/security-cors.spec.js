@@ -159,6 +159,22 @@ describe('CORS policy', function () {
         .forEach((h) => assert.include(allowed, h))
     })
 
+    it('allows x-requested-with, which dojo sends by default', async function () {
+      // dojo/request/xhr.js:278 sets X-Requested-With: XMLHttpRequest unless a
+      // call site passes the key with a falsy value. Many p3 sites do null it
+      // out, which makes it easy to conclude it is never sent -- an earlier
+      // version of this suite asserted exactly that, and the omission broke
+      // production login on p3_user.
+      //
+      // Most p3_api traffic is same-origin via the relative dataServiceURL and
+      // never preflights, but PriorityPathogen.js:418 fetches the absolute
+      // https://www.bv-brc.org/api/... with only an `accept` header, so it
+      // sends the default cross-origin from every non-production property.
+      const res = await request(port, 'OPTIONS', ALLOWED, 'x-requested-with,accept')
+      const allowed = res.headers['access-control-allow-headers'].toLowerCase()
+      assert.include(allowed, 'x-requested-with')
+    })
+
     it('emits no CORS origin header for a same-origin request', async function () {
       const res = await request(port, 'GET', null)
       assert.isUndefined(res.headers['access-control-allow-origin'])

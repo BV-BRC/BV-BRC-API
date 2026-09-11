@@ -56,12 +56,36 @@
  */
 
 /*
- * Unchanged from the previous configuration. p3_api also reads x-request-id
- * and x-forwarded-for, but both are set by the upstream proxy rather than by
- * a browser, and proxy-set headers are not subject to preflight -- adding them
- * would widen the policy for no caller. Verified that no p3 client sends
- * either. X-Requested-With appears throughout the Dojo client but is always
- * assigned null/false, which dojo/request strips before sending.
+ * The first six are unchanged from the previous configuration. p3_api also
+ * reads x-request-id and x-forwarded-for, but both are set by the upstream
+ * proxy rather than by a browser, and proxy-set headers are not subject to
+ * preflight -- adding them would widen the policy for no caller.
+ *
+ * x-requested-with is NOT optional, even though no server code reads it.
+ * dojo/request/xhr.js:278 sends it by DEFAULT:
+ *
+ *     if(!headers || !('X-Requested-With' in headers)){
+ *       _xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+ *     }
+ *
+ * It is suppressed only where a call site explicitly passes the key with a
+ * falsy value. Many p3 sites do exactly that -- which is what makes the header
+ * easy to dismiss -- but any site that omits the key entirely still sends it.
+ * Most p3_api traffic is same-origin via the relative dataServiceURL and so
+ * never preflights, but not all of it: PriorityPathogen.js:418 fetches the
+ * absolute https://www.bv-brc.org/api/... and passes only an `accept` header,
+ * so it sends X-Requested-With cross-origin from every non-production
+ * property.
+ *
+ * Under the old `allowHeaders` typo cors reflected Access-Control-Request-
+ * Headers, so this was allowed by accident. Omitting it from the fixed list
+ * fails preflight with "Request header field X-Requested-With is not allowed
+ * by Access-Control-Allow-Headers" -- which is exactly how this was found, on
+ * p3_user, in production.
+ *
+ * Do not remove it on the grounds that nothing reads it server-side. The
+ * question for this list is what the CLIENT SENDS, not what the server
+ * consumes -- a header omitted here fails preflight before any handler runs.
  */
 var ALLOWED_HEADERS = [
   'if-none-match',
@@ -69,7 +93,8 @@ var ALLOWED_HEADERS = [
   'accept',
   'x-range',
   'content-type',
-  'authorization'
+  'authorization',
+  'x-requested-with'
 ]
 
 var EXPOSED_HEADERS = [
