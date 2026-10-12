@@ -169,22 +169,137 @@ Specifically, of the two historical incidents:
 
 ---
 
+## Admission queue design (added 2026-10-12)
+
+The plan specifies Layer 1 as *"Returns 429 with `Retry-After` when pool is full — **no
+queuing**."* That phrasing should change, for an empirical reason.
+
+### "No queuing" is not one of the options
+
+With `maxSockets: 8`, request 9 does not fail — Node's agent holds it until a socket frees.
+That is a queue. Measured directly against a black-hole server:
+
+```
+maxSockets              : 8
+active sockets          : 8
+QUEUED (agent.requests) : 192        <- 200 requests fired at a pool of 8
+queue cap options       : NONE
+```
+
+Node's `http.Agent` exposes **no** `maxQueue` / `maxPending` / `maxRequests` option. The
+queue is unbounded by construction, and it has three properties you would not choose:
+
+1. **Unbounded depth.** Nothing caps the pile-up behind the pool.
+2. **Invisible.** `/stats` reports only `active_requests`. Queue depth and wait time are not
+   observable anywhere.
+3. **Not time-bounded on the Solr path.** `armTimeout()` in `lib/solrjs/index.js:50` is
+   `req.setTimeout`, whose timer starts when the agent *assigns a socket*. Measured: with
+   `maxSockets: 1`, a queued request with a 1000 ms `setTimeout` was **still pending after
+   4001 ms** and the callback never fired. Worst case on this path is therefore *(unbounded
+   queue wait) + `SOLR_REQUEST_TIMEOUT_MS`*. Only `util/http.js` has the creation-time
+   deadline (`3fc64ead`, `armDeadline`); the Solr path never got it.
+
+So the choice is not *whether* to queue. It is **where the queue lives, and whether it is
+bounded**. Leaving it in the agent is the worst available answer.
+
+### What an explicit queue buys
+
+**It turns the common case from a rejection into a slightly slower success.** Heavy requests
+here run for seconds — a 25K-row CSV is ~1.7 s; a multi-genome GenBank export far longer.
+Against a pool of 2–3, five arrivals inside a second is not an attack, it is a few users and
+a script. Rejecting them discards work the client must redo, and clients that retry on 429
+reproduce the retry amplification already blamed for the 2026-06-05 coordinator crash.
+
+**It makes saturation observable.** Queue depth and oldest-wait are the two numbers that say
+whether you are near capacity. Neither exists today — the same blind spot that made the
+September coordinator wedge hard to characterise.
+
+### Shape
+
+```
+heavy        : 2–3 concurrent                    (unchanged from the plan)
+heavy queue  : depth ~= 2x pool, wait deadline ~5–10 s
+               -> 429 + Retry-After on queue-full OR deadline exceeded
+interactive  : 20 concurrent, queue depth ~20, wait deadline ~1 s
+```
+
+The numbers are starting points and need a real workload; the properties matter more:
+
+1. **Bounded depth *and* a wait deadline.** A queue with neither is a slower OOM. Exceed
+   either → 429. That is the whole difference between "defer briefly" and "accept unbounded
+   work."
+2. **Measure the wait from request arrival, not from dequeue.** This is exactly the
+   `req.setTimeout` mistake above, one layer up, and it would be easy to repeat.
+3. **Drop queued entries whose client has disconnected.** Most abandoned bulk downloads are
+   a closed tab. `media/genbank.js:405,923` already checks `res.writableEnded ||
+   res.destroyed`; nothing else does. Checking at dequeue is free and avoids doing work for
+   nobody.
+4. **Expose `{depth, oldest_wait_ms, rejected_total}` per pool at `/stats`.** Without it the
+   pool sizes above cannot be tuned.
+
+### Should the socket-level queues shrink too?
+
+**No — and they cannot be bounded anyway.** `maxSockets` caps *concurrency*, not queue depth,
+and as measured above there is no option to cap the agent's queue. Lowering `maxSockets`
+would make the unbounded agent queue **deeper**, not shallower, since the same arrivals wait
+on fewer sockets. It moves load into the least observable place in the system.
+
+The correct relationship is the opposite of shrinking:
+
+> **Admission pool size must be ≤ socket pool size, so the socket queue stays empty.**
+
+If heavy admission is 2–3 concurrent and the main Solr agent allows 8 sockets, admitted work
+never queues at the agent — it gets a socket immediately. The agent queue stops being a
+load-bearing structure and becomes slack. **That is the goal: not a smaller socket queue, an
+unused one.**
+
+Two sizing notes that follow:
+
+- **`maxSockets: 8` on the main path is probably about right** once admission exists, because
+  one admitted heavy request can itself issue several concurrent Solr calls. Leave it until
+  `/stats` shows the agent queue is actually non-empty under admission.
+- **The distributed agent's `maxSockets: 50`** (`DistributedQueryManager.js:68,74`) is the
+  one worth revisiting, but *after* admission lands, not before — today it is the only thing
+  bounding distributed fan-out at all (`maxParallelism` is per-query, so N concurrent
+  distributed queries can each want 8 shards). Shrinking it now would deepen the agent queue
+  with nothing above it; shrinking it once admission caps concurrent heavy work is a safe
+  second step.
+
+### Sequencing caveats
+
+- **Per-worker, not cluster-wide.** These pools are worker-local, so cluster-facing
+  concurrency is pool size × worker count. The plan acknowledges this ("2 heavy downloads ×
+  3 instances"), but it means queue sizing cannot be reasoned about one worker at a time.
+  Note also the pm2 log-path collision recorded in the hang investigation makes per-worker
+  stats harder to read than they appear.
+- **TODO-11 must land first.** If Layer 1 starts emitting 429 while
+  `ShardCursorStream._requestWithRetry` still treats an inbound 429 as a generic retriable
+  error, the system amplifies its own back-pressure signal internally.
+
+---
+
 ## Recommended order
 
 1. **429 handling on inbound Solr responses — before anything else.** Small, and it is a
    prerequisite for Layer 4 being safe to enable. Make `_requestWithRetry` status-aware:
    treat 429 as "back off and honour `Retry-After`", not as a generic retriable error. Same
    for `DirectSolrClient`. Without this, turning on Solr's own protection amplifies overload.
-2. **Layer 1 admission control.** The primary defense, and the thing that would most directly
-   have blunted the June 2 incident. Returns 429, so it needs coordinated client updates —
-   that is the main cost, not the semaphore.
+2. **Layer 1 admission control, with the bounded queue described above.** The primary
+   defense, and the thing that would most directly have blunted the June 2 incident. Returns
+   429, so it needs coordinated client updates — that is the main cost, not the semaphore.
+   Ship `/stats` instrumentation in the same change; without it the pool and queue sizes
+   cannot be tuned.
 3. **TODO-1 join rejection** (see the amendment). Addresses the June 25 crash class.
    Independent of admission control; can proceed in parallel.
-4. **Layer 3 per-host admission.** Only meaningful once distributed query runs somewhere that
+4. **Revisit the distributed agent's `maxSockets: 50`** — only *after* step 2, when admission
+   caps concurrent heavy work. Doing it earlier deepens an unbounded, unobservable agent
+   queue. Leave the main path's `maxSockets: 8` alone unless `/stats` shows the agent queue
+   is non-empty under admission.
+5. **Layer 3 per-host admission.** Only meaningful once distributed query runs somewhere that
    matters — it is off in production today.
-5. **Layer 4 cluster config.** Safe only after step 1.
+6. **Layer 4 cluster config.** Safe only after step 1.
 
-Note steps 2 and 5 both emit 429 to clients, so the "429 System-Wide Requirements" section of
+Note steps 2 and 6 both emit 429 to clients, so the "429 System-Wide Requirements" section of
 the plan applies to both and should be done once.
 
 ---
