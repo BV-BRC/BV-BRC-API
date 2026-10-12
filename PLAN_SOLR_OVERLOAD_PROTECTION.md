@@ -71,7 +71,16 @@ Limit concurrent heavy requests per API instance. This bounds how many "amplifie
 **Separate pools**:
 - Heavy: 2-3 concurrent per instance (configurable)
 - Interactive: 20 concurrent per instance (configurable)
-- Returns 429 with `Retry-After` header when pool is full — no queuing
+- ~~Returns 429 with `Retry-After` header when pool is full — no queuing~~
+
+> **REVISED 2026-10-12 — see "Admission queue design" in
+> `Docs/ADMISSION_CONTROL_STATUS-2026-10.md`.** "No queuing" is not actually available as a
+> choice: `maxSockets: 8` already queues, in Node's agent, with **no depth cap and no
+> time bound** (measured — 192 requests queued behind a pool of 8, and `req.setTimeout` does
+> not fire while a request waits for a socket). The revision keeps these pool sizes but adds
+> a **short, bounded, instrumented** queue in front, so the waiting happens somewhere it can
+> be capped, timed, and observed. 429 is returned on queue-full or wait-deadline rather than
+> on pool-full.
 
 **Why this works**: It doesn't matter how many source IPs the attacker uses. It limits total concurrent heavy work, and the secondary query volume follows. With 2 heavy downloads × 3 instances × current amplification, shard load drops from 150 to ~30 concurrent queries.
 
