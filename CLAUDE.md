@@ -81,7 +81,7 @@ Repo-root `PLAN_*.md` files are proposals, in varying states of vetting:
 | `PLAN_PRIVATE_METADATA_OVERLAY.md` | Private per-user metadata collection overlaying `genome` — display, filter, facet. See below. |
 | `PLAN_GENOME_POSTFILTER.md` | JS-side post-filtering for negation-only `genome()` conditions |
 | `PLAN_DOWNLOAD_SSE_NOTIFICATIONS.md` | SSE start/complete events for downloads (hidden-form POSTs can't read headers) |
-| `PLAN_SOLR_OVERLOAD_PROTECTION.md` | Multi-layer throttling; broad-taxon join OOM mitigation. **Amended — read `Docs/OVERLOAD_PROTECTION_AMENDMENT-2026-10.md` first**: the download-amplification half shipped, the join half did not, and the plan's `timeAllowed` mitigation and 10,000-genome threshold are both measurably wrong. |
+| `PLAN_SOLR_OVERLOAD_PROTECTION.md` | Multi-layer throttling; broad-taxon join OOM mitigation. **Amended — read `Docs/OVERLOAD_PROTECTION_AMENDMENT-2026-10.md` first**: the download-amplification half shipped, the join half did not, and the plan's `timeAllowed` mitigation and 10,000-genome threshold are both measurably wrong. **For the order of remaining work see `Docs/COMPLETION_PLAN-2026-10.md`**, which sequences the joins, admission control, and the production deployment into phases. |
 
 ### HTTP self-calls (merged to alpha as PR #206; not on master)
 
