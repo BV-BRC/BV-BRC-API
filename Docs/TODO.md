@@ -33,23 +33,31 @@ wait on. Reproduces 4/4, and 3/3 with the facet removed, so it is the join and n
 
 **This is not a new problem — it is the known #1 stability risk.** Project notes record the
 2026-06-25 OOM crash of three Solr data nodes caused by exactly this: cross-collection joins on
-broad taxa (taxon:2, 93M DocSets per shard). `PLAN_SOLR_OVERLOAD_PROTECTION.md` already
-specifies the countermeasures under "Eliminating Cross-Collection Joins":
+broad taxa (taxon:2, 93M DocSets per shard).
 
-- SQLite cache for `taxon_id → genome_id`, resolving joins locally
-- `{!terms f=genome_id}` rewrite for taxa with ≤10–50 K genomes
-- **reject** queries for taxa above ~200 K genomes (root-level viral/bacterial)
-- `timeAllowed=60000` injection in `Limiter.js` for all queries carrying a join
-- block `{!join}` in `SolrQuerySanitizer` for client-submitted Solr queries
+**SCOPED 2026-10-12 — see `Docs/OVERLOAD_PROTECTION_AMENDMENT-2026-10.md`.** The plan document
+(`PLAN_SOLR_OVERLOAD_PROTECTION.md`) was located; it is on `alpha`, it was simply missing from
+the worktree this entry was written in. Its countermeasures were re-measured against the live
+cluster and **two of them do not hold up**:
 
-**Open question:** that plan document is **not in this worktree** (only
-`PLAN_DOWNLOAD_SSE_NOTIFICATIONS.md` and `PLAN_GENOME_POSTFILTER.md` are). Locate it before
-starting — the design work is likely already done. Verified as *not yet implemented* here:
-`grep timeAllowed middleware/Limiter.js` → nothing; `SolrQuerySanitizer` does not block `{!join}`.
+- **`timeAllowed` does not cap DocSet lifetime.** A 10 s budget ran 64.9 s on taxon 2 and had
+  no effect at all on taxon 10239; even a plain non-join query with a 2 s budget ran 6.4 s. It
+  also returns `partialResults: true` — silently truncated counts that nothing in the API
+  surfaces. It would not have prevented the June OOM.
+- **The 10,000-genome threshold is far too aggressive** against current data. Taxon 1386
+  (14,317 genomes) joins in 2.4 s and rewrites to `{!terms}` in 769 ms.
 
-Note the genome counts above disagree with the notes' figures (562 = 119 K here vs 156 K
-recorded; totals 18.8 M vs ~15.6 M under 10239). Worth reconciling — could be data growth,
-could be that one of the two counts is permission- or `public:true`-scoped.
+What does work, measured: the **`{!terms}` rewrite is 3–6× faster than the join with identical
+`numFound`** (taxon 1386, all 14,317 ids: 769 ms vs 2,447 ms, both 129,545,777), and the id
+list can be fetched straight from `genome` in ~0.5 s — so **the SQLite cache is not required to
+start**. Revised sequence in the amendment: reject over-broad taxa first (that is the actual
+OOM fix), then the `{!terms}` rewrite, then `{!join}` blocking as defense-in-depth, then
+`timeAllowed` demoted to a backstop with `partialResults` handling.
+
+Genome counts, re-measured 2026-10-12 (the discrepancy noted below is data growth, mostly):
+Bacteria **1,382,167** (plan said ~500K), Proteobacteria **542,314** (~200K), Viruses
+**15,625,500**, *E. coli* **119,464** (the 156K figure was high). Re-measure again at
+implementation time rather than carrying these forward.
 
 **Cheap partial mitigation, already scoped:** `genome` carries `cds`/`mat_peptide` fields and
 `json.facet={CDS:"sum(cds)"}` answers in **0.3 s regardless of taxon size** — but the counts

@@ -1,5 +1,24 @@
 # Plan: Solr Query Overload Protection
 
+> **AMENDED 2026-10-12 — read `Docs/OVERLOAD_PROTECTION_AMENDMENT-2026-10.md` first.**
+>
+> This document is the June 2026 original and is kept for its analysis, attack forensics, and
+> Layer 1–4 architecture, all of which still stand. Three things in it are now wrong or stale:
+>
+> 1. **`timeAllowed` does not cap DocSet lifetime** (§"Additional mitigations"). Measured on
+>    the live cluster: a 10 s budget ran 64.9 s on taxon 2 and had *no* effect on taxon 10239.
+>    It also yields `partialResults: true` — i.e. **silently truncated counts**. It would not
+>    have prevented the June 25 OOM and must not be recorded as mitigating crash risk.
+> 2. **The genome counts are out of date.** Bacteria is 1,382,167 today, not ~500K. The
+>    10,000 threshold derived from the old figures is far too aggressive — it would reject
+>    taxa that currently complete in 2.5 s.
+> 3. **The SQLite cache is not required to start.** A direct `genome` id fetch is ~0.5 s and
+>    the `{!terms}` rewrite is 3–6× faster than the join with *identical* result counts.
+>    `better-sqlite3` is an optimization, not a prerequisite.
+>
+> The amendment also records what has shipped since June (the download-amplification work is
+> largely done; the join work is not) and gives a revised implementation sequence.
+
 ## Context
 
 Coordinated scraping attacks have overwhelmed the BV-BRC API and Solr cluster. Two incidents on 2026-06-02:
@@ -243,11 +262,26 @@ All four layers can return 429 when they activate. Every consumer must handle it
 
 ## Implementation Sequence
 
+> **Status 2026-10-12 — Phase 1 is essentially done; the join work is not.**
+> `Docs/OVERLOAD_PROTECTION_AMENDMENT-2026-10.md` has a per-item shipped/not-shipped table
+> and a revised sequence. In brief: serializer concurrency control, the GenBank port, and
+> genome self-join elimination all shipped; `timeAllowed`, the `{!join}` block, the SQLite
+> cache, Layer 1 admission control (no `429` exists anywhere in the codebase), and Layer 3
+> per-host admission have not. The amendment reorders the remaining work to put
+> **reject-over-broad-taxa first**, because that — not `timeAllowed` — is what actually
+> prevents the OOM.
+
 ### Phase 1: Immediate, zero client impact
 
-- Lower `maxSockets` on serializer agents (dna+fasta.js, protein+fasta.js)
-- Add connection-limited axios instance for genbank.js and featureSequence.js
-- Port genbank.js to use DirectSolrClient (eliminates per-contig amplification)
+- Lower `maxSockets` on serializer agents (dna+fasta.js, protein+fasta.js) — **DONE**
+  (`maxSockets: 10` in both)
+- Add connection-limited axios instance for genbank.js and featureSequence.js — **DONE for
+  genbank.js** (see next item); `util/featureSequence.js` still self-calls
+- Port genbank.js to use DirectSolrClient (eliminates per-contig amplification) — **DONE, but
+  deliberately using `Solrjs`, not `DirectSolrClient`.** GenBank's fetches are small
+  single-genome queries that gain nothing from parallel shard fan-out, and `DirectSolrClient`
+  needs direct network access to every replica, which production does not have. See the
+  design note in CLAUDE.md.
 - Downloads run slower during spikes but nothing breaks, no 429s issued
 
 ### Phase 2: API admission control + per-host admission
@@ -609,6 +643,17 @@ Instead of generating a Solr cross-collection join, resolve the join locally in 
 
 **Why 10,000 as the threshold:** A terms query with 10,000 IDs is practical for Solr. Above that, the query string itself becomes large and parsing adds latency. More importantly, taxa with >10,000 genomes (Bacteria: ~500K, Proteobacteria: ~200K) are exactly the queries that crash Solr — blocking them is the right behavior.
 
+> **Recalibrate before implementing — both the counts and the conclusion have moved.**
+> Measured 2026-10-12: Bacteria **1,382,167** (not ~500K), Proteobacteria **542,314** (not
+> ~200K), Viruses **15,625,500**, *E. coli* **119,464** (the old 156K figure was high).
+>
+> A 10,000 cut is now far too aggressive: taxon 1386 has 14,317 genomes and its join
+> completes in **2.4 s**, and a `{!terms}` rewrite over all 14,317 ids ran in **769 ms**
+> carrying a 144 KB body — so neither the latency nor the query-size argument holds at that
+> size. The measured cost curve is smooth and roughly linear in genome count with no natural
+> cliff, so the threshold is a latency policy decision, not a discovered constant.
+> The amendment proposes starting at **150,000** (≈12–15 s) and making it configurable.
+
 **Why SQLite (`better-sqlite3`):**
 - Synchronous API — no async complexity in the RQL parser
 - Memory-mapped I/O — hot data stays in OS page cache, no GC pressure from large JS objects
@@ -619,7 +664,17 @@ Instead of generating a Solr cross-collection join, resolve the join locally in 
 
 ### Additional mitigations
 
-**`timeAllowed`**: Inject `&timeAllowed=60000` (60 seconds) into all queries that contain cross-collection joins, regardless of target collection. The join is dangerous across all collections (genome_amr has the highest join volume at 12,008). Inject in `Limiter.js` which already runs for every query — detect `crossCollection` in `req.call_params[0]` and append `&timeAllowed=60000`. This caps how long any query can hold a DocSet in heap. Even if a broad query somehow reaches Solr, it can't hold a DocSet alive for 330 seconds.
+**`timeAllowed`**: ~~Inject `&timeAllowed=60000` (60 seconds) into all queries that contain cross-collection joins, regardless of target collection. The join is dangerous across all collections (genome_amr has the highest join volume at 12,008). Inject in `Limiter.js` which already runs for every query — detect `crossCollection` in `req.call_params[0]` and append `&timeAllowed=60000`. This caps how long any query can hold a DocSet in heap. Even if a broad query somehow reaches Solr, it can't hold a DocSet alive for 330 seconds.~~
+
+> **SUPERSEDED 2026-10-12 — the claim above is false.** `timeAllowed` is checked between
+> *collection* steps; it cannot interrupt construction of the join's DocSet, which is the
+> phase that consumes the heap. Measured: taxon 2 with `timeAllowed=10000` ran **64.9 s**;
+> taxon 10239 was unaffected and died on the 120 s client deadline; even a plain non-join
+> query with a 2 s budget ran **6.4 s**. Truncated runs return `partialResults: true`, which
+> nothing in the API surfaces — taxon 2 reported `numFound: 3,260,130,049` from a truncated
+> join. Keep `timeAllowed` only as a weak backstop, set well below the 120 s client deadline,
+> and **only** once `partialResults` is detected and raised as an error. See
+> `Docs/OVERLOAD_PROTECTION_AMENDMENT-2026-10.md`, Correction 1.
 
 **Block `{!join}` in client Solr queries**: Add `join` to the blocked parameter list in `SolrQuerySanitizer.js` to prevent clients from submitting their own cross-collection joins directly.
 
@@ -652,10 +707,25 @@ Instead of generating a Solr cross-collection join, resolve the join locally in 
 - Add `join` to blocked Solr parameters/syntax for client-submitted queries
 
 **Edit: `middleware/Limiter.js`**
-- Add `&timeAllowed=60000` to genome_feature queries (or all queries)
+- ~~Add `&timeAllowed=60000` to genome_feature queries (or all queries)~~ — superseded, see
+  the `timeAllowed` note above. If added at all, use 15–30 s and handle `partialResults`.
 
 **New dependency: `better-sqlite3`**
-- Add to `package.json`
+- ~~Add to `package.json`~~ — **deferred.** Measured 2026-10-12: fetching a taxon's full id
+  list straight from `genome` takes ~0.5 s (14,317 ids), and the `{!terms}` rewrite built
+  from it is 3–6× faster than the join with identical `numFound`. The cache is an
+  optimization on a rewrite that already wins without it; build the rewrite first and add
+  SQLite only if profiling shows the lookup is hot.
+
+> **Line references in this section have drifted.** `solrjs.fixed/rql.js:75-91` is now
+> `lib/solrjs/rql.js:99` (the module was inlined under `lib/`), and `routes/dataRouter.js:59`
+> is now `:107`. Both sites still match the descriptions above.
+>
+> One implementation note the section omits: `SolrQuerySanitizer` blocks by **parameter
+> name**, but `{!join}` is a *value* inside `fq`. Use the existing
+> `findDangerousParamsInString` / `fullyDecode` machinery for a value-level check rather than
+> adding an entry to `DANGEROUS_PARAMS`, and make sure it does not reject the API's own
+> generated joins.
 
 ### Long-term: schema denormalization
 

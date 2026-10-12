@@ -81,7 +81,7 @@ Repo-root `PLAN_*.md` files are proposals, in varying states of vetting:
 | `PLAN_PRIVATE_METADATA_OVERLAY.md` | Private per-user metadata collection overlaying `genome` — display, filter, facet. See below. |
 | `PLAN_GENOME_POSTFILTER.md` | JS-side post-filtering for negation-only `genome()` conditions |
 | `PLAN_DOWNLOAD_SSE_NOTIFICATIONS.md` | SSE start/complete events for downloads (hidden-form POSTs can't read headers) |
-| `PLAN_SOLR_OVERLOAD_PROTECTION.md` | Multi-layer throttling; broad-taxon join OOM mitigation |
+| `PLAN_SOLR_OVERLOAD_PROTECTION.md` | Multi-layer throttling; broad-taxon join OOM mitigation. **Amended — read `Docs/OVERLOAD_PROTECTION_AMENDMENT-2026-10.md` first**: the download-amplification half shipped, the join half did not, and the plan's `timeAllowed` mitigation and 10,000-genome threshold are both measurably wrong. |
 
 ### HTTP self-calls (merged to alpha as PR #206; not on master)
 
@@ -1398,7 +1398,19 @@ Broad taxon joins (e.g., `taxon_lineage_ids:2` = all Bacteria) generate 57-93M m
 
 ### Planned fix: local join resolution
 
-Replace the Solr cross-collection join with API-side resolution using a local SQLite cache (`better-sqlite3`) of `taxon_id → genome_id` mappings, rewriting joins as `{!terms f=genome_id}` filters. See the "Eliminating Cross-Collection Joins" section in `PLAN_SOLR_OVERLOAD_PROTECTION.md`.
+Replace the Solr cross-collection join with API-side resolution, rewriting joins as
+`{!terms f=genome_id cache=false}` filters. See the "Eliminating Cross-Collection Joins"
+section in `PLAN_SOLR_OVERLOAD_PROTECTION.md` **and the corrections in
+`Docs/OVERLOAD_PROTECTION_AMENDMENT-2026-10.md`**.
+
+Measured 2026-10-12, taxon 1386 (14,317 genomes), all ids: the `{!terms}` rewrite returns
+**identical `numFound`** (129,545,777) in **769 ms** against the join's **2,447 ms** — 3.2×,
+carrying a 144 KB body. Fetching the id list from `genome` costs ~0.5 s, so **the SQLite
+cache (`better-sqlite3`) is an optimization, not a prerequisite** — build the rewrite first.
+
+`cache=false` is load-bearing here for the same reason it is on `terms()` (see "Vacating `q=`
+is the real cost" above). Note the 144 KB body depends on shard pages being POSTs; reverting
+that would break this rewrite.
 
 ## Join Enrichment System
 
