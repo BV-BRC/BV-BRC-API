@@ -263,6 +263,28 @@ only findable over real HTTP. Worth capturing the plan's unmeasured success crit
 already-converted handlers *before* touching these four, so there is something to compare
 against.
 
+### TODO-11 — A Solr 429 is retried as if it were a transport error
+
+**Opened 2026-10-12.** Full context: `Docs/ADMISSION_CONTROL_STATUS-2026-10.md`.
+
+`ShardCursorStream._request` rejects on **every** non-2xx response
+(`lib/distributed/ShardCursorStream.js:250`), and `_requestWithRetry` (`:171-186`) retries
+*any* rejection with exponential backoff up to `maxRetries` (default 3). Nothing inspects
+the status code. `DirectSolrClient` has the same shape.
+
+So a Solr node answering **429 — "I am overloaded, back off"** receives up to four requests
+instead of one, per shard, from every worker. The response that exists to shed load instead
+amplifies it.
+
+**This blocks Layer 4 of `PLAN_SOLR_OVERLOAD_PROTECTION.md`.** Both Solr-side protections
+(circuit breakers, rate limiter) signal via 429, so **enabling them against the current API
+would make overload worse, not better.** There is no `429` handling anywhere in the tree —
+grep returns nothing in `lib/solrjs/`, `lib/distributed/`, or `middleware/`.
+
+**Fix:** make the retry status-aware — treat 429 as "back off, honour `Retry-After`", not as
+a generic retriable error, and do not count it against the same retry budget as a connection
+failure. Small change, and a prerequisite for the cluster-side work.
+
 ---
 
 ## Deployment posture — context for everything above
