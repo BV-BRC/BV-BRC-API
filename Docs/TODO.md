@@ -8,6 +8,11 @@ are known-open and would otherwise be re-derived from scratch.
 Items are grouped by whether they are *blocking/breaking*, *security*, or *cleanup*. Within
 each group, roughly highest-value first.
 
+> **Sequencing for the download-performance / Solr-overload workstream lives in
+> `Docs/COMPLETION_PLAN-2026-10.md`.** That roadmap phases TODO-1, TODO-8 and TODO-11
+> together with the unstarted admission-control layers and the production deployment. This
+> file remains the inventory; that one is the order of work.
+
 ---
 
 ## Breaking / user-visible
