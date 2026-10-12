@@ -228,6 +228,41 @@ all** (absent, not unset), and it carries all 17 self-call sites including the f
 Note `dataRouter.js` was edited today (TODO-1's error handling); expect a small conflict when
 step 5 converts it.
 
+### TODO-10 — Four streaming serializers still ignore `res.write` backpressure
+
+**Opened 2026-10-12.** `Docs/MEDIA_HANDLER_BACKPRESSURE_PLAN.md` is **implemented** — every
+step shipped, including the optional NDJSON one, plus `dna+fasta.js`, `protein+fasta.js`, and
+`lib/CrossCollectionSourceStream.js`, which the plan never scoped. `genbank.js` solves it
+separately with its own `writeChunk()` awaiting `drain`.
+
+Four streaming serializers were never in that plan's scope and still have the problem it
+describes — they call `res.write()` in a stream callback and discard the return value, so the
+source keeps being pulled while the socket buffer grows:
+
+| serializer | content type | pattern |
+|---|---|---|
+| `media/cufflinks+gff.js` | `application/cufflinks+gff` | **`EventStream.mapSync`** — the exact anti-pattern the plan names as "Current Pattern (BAD)", and the last `mapSync` in the tree outside the utility's own fallback |
+| `media/sralign+dna+fasta.js` | `application/sralign+dna+fasta` | `EventStream.map`, return value ignored |
+| `media/dna+jsonh+fasta.js` | `application/dna+jsonh+fasta` | `transforms.map`, return value ignored |
+| `media/protein+jsonh+fasta.js` | `application/protein+jsonh+fasta` | `transforms.map`, return value ignored |
+
+All four are registered content types with live `results.stream` branches, so they are
+genuinely reachable. Exposure is lower than for the converted handlers — these are niche
+formats and the `jsonh` variants are legacy — but a large download through any of them has
+the original unbounded-memory behavior on a slow client.
+
+**Fix:** mechanical. `util/streamWithBackpressure.js` already exists and the four handlers
+converted under the plan's Step 2 are the template.
+
+**Verification is the real work, not the edit.** The failure mode here is a well-formed,
+successful-looking download with truncated or wrong content — not an error — so this needs a
+live API and assertions on **exact row counts**, never on "we got bytes." That is the same
+trap documented for cross-collection downloads in CLAUDE.md, where four of six bugs were
+only findable over real HTTP. Worth capturing the plan's unmeasured success criteria
+(`test-media` passing, bounded memory, disconnect cleanup) as a baseline on the
+already-converted handlers *before* touching these four, so there is something to compare
+against.
+
 ---
 
 ## Deployment posture — context for everything above
