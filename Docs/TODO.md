@@ -84,11 +84,20 @@ protein_feature's zero is the same false zero.
 reproduced against a live API 2026-08-07). Listed here only so it appears alongside the
 others — see that document, not this entry, for detail.
 
-Two independent instances of the same defect are recorded: `lib/solrjs/index.js:170-173` plus
-five sibling `stream.emit('end')` sites, and the distributed path in
-`middleware/DistributedQuery.js` (~line 248) where `ParallelQueryCoordinator._failAll` emits
-stream `'error'` after 200 + `[` has already gone out. Setup-time CLUSTERSTATUS failure falls
-back cleanly; only mid-stream leaks.
+Two independent instances of the same defect were recorded. **One of them is now fixed —
+corrected 2026-10-12:**
+
+- **`lib/solrjs/index.js:170-173`** plus five sibling `stream.emit('end')` sites — **still
+  open.** This is what `Docs/BUG-stream-failure-returns-empty-200.md` is about.
+- ~~the distributed path in `middleware/DistributedQuery.js`~~ — **fixed.** `:266` now
+  forwards `'error'` from the source stream to the wrapped stream
+  (`wrappedStream.destroy(err)`), with a comment naming this exact failure mode: "a
+  coordinator/shard error (or a mid-stream cancel) becomes an unhandled 'error' event ->
+  uncaughtException, while the wrapped stream stalls and the response truncates to a silent,
+  empty `[`". There is a matching guard on the join-enrichment path at `:386`. Setup-time
+  CLUSTERSTATUS failure already fell back cleanly.
+
+So the remaining work is the solrjs streaming path, not the distributed one.
 
 Worth flagging as a **pattern rather than isolated incidents**: an upstream failure arriving as
 a well-formed-looking success. The `summary_by_taxon` TypeError fixed on alpha was the same
@@ -168,16 +177,41 @@ PathJoin, xhr.get (all preserve `&gt` in Node) — it is browser-DOM-specific an
 reproduce reliably. To pin it: log `JSON.stringify(this.state.search)` at `GenomeList.js:56`
 and reproduce; that distinguishes URL→state corruption from corruption at XHR send.
 
-### TODO-8 — `protein_feature` distributed prewarm regression
+### TODO-8 — Shard prewarm is ungated (was: "`protein_feature` distributed prewarm regression")
 
-`utils.prewarmShards` issues an `await` rows=0 query carrying the **full join `fq`** to every
-shard before the real query runs the join again — the join is evaluated twice cluster-wide,
-with a barrier. Cost scales with collection_size × shard_count, not result count, so it kills
-big cores (protein_feature 29 ms → 15,675 ms; genome_feature 16.8 s; sp_gene 20.5 s) while
-helping small ones. Fix: gate or skip prewarm for count/small-limit queries. Also confirm how
-`limit(3)` count queries reach the distributed path at all (threshold is rows ≥ 10000).
-Explicitly **not** `shards.preference` — the distributed path targets replica URLs directly and
-never sees it.
+**Rescoped 2026-10-12 after measurement. The original framing blamed prewarm for the
+`protein_feature` slowness; that attribution is wrong, though the prewarm issue itself is
+real.**
+
+**What is real.** `utils.prewarmShards` issues an `await`ed `rows=0` query carrying the full
+query — join `fq` included — to **every** shard before the real query runs it again. The join
+is therefore evaluated twice cluster-wide, with a barrier between. It is gated only by a
+global boolean (`DistributedQueryManager.js:157` checks `config.prewarmShards`, default
+true), never by query cost, so every distributed query on an 80-shard collection pays it.
+Cost scales with collection_size × shard_count, not result count. Fix: gate or skip prewarm
+for count/small-limit queries, or make the threshold cost-aware.
+
+**What is not.** The original entry cited `protein_feature` 29 ms → 15,675 ms as evidence.
+Measured against both deployments, `eq(genome_id,83332.12)&limit(25000)`:
+
+| | wall | bytes |
+|---|---|---|
+| alpha (distributed path active) | 40.3 s | 18,268,666 |
+| **prod (distributed `enabled: false`)** | **41.8 s** | 18,268,666 |
+
+Near-identical, byte-identical output. `protein_feature` is simply slow at that size on
+**both** paths, so this is not a distributed regression. A repeat against alpha returned in
+3.6 s — the original 29 ms / 15,675 ms comparison was very likely warm-vs-cold cache rather
+than standard-vs-distributed. Treat `protein_feature` large-limit latency as its own
+question.
+
+**Resolved sub-question.** The entry asked how `limit(3)` count queries reach the distributed
+path at all. They do not: measured on alpha, `keyword(Escherichia)&limit(3)` against
+`protein_feature` returns in 0.39 s with **no** `x-distributed-query` header.
+`minLimitThreshold` (10000) excludes them, as designed.
+
+Still correct, and worth keeping: this is explicitly **not** `shards.preference` — the
+distributed path targets replica URLs directly and never sees it.
 
 ### TODO-9 — Self-call elimination, step 3 onward
 
@@ -193,6 +227,40 @@ all** (absent, not unset), and it carries all 17 self-call sites including the f
 
 Note `dataRouter.js` was edited today (TODO-1's error handling); expect a small conflict when
 step 5 converts it.
+
+---
+
+## Deployment posture — context for everything above
+
+Measured 2026-10-12. Worth knowing before interpreting any latency figure in this file,
+because "which path did that query take" is not guessable from the outside.
+
+**Distributed query is live on alpha, off in production.** Probed directly:
+
+```
+alpha  POST /api/genome_feature/  eq(genome_id,83332.12)&limit(25000)
+       -> x-distributed-query: true, x-stream-type: parallel,
+          x-parallelism: 8, x-shard-count: 80
+prod   same query -> no distributed headers (standard path)
+```
+
+Production sets `distributedQuery.enabled: false` deliberately — the path needs direct
+network access to every Solr replica, which the production deployment does not have. **Keep
+it that way**; the `excludeNodes` list lives only in the untracked `p3api.conf`. Note the
+default is `enabled: true` with `enabledCollections: []`, and an *empty* `enabledCollections`
+means "no allowlist", i.e. all collections — so a fresh deployment that forgets the flag
+turns it on everywhere.
+
+**Correctness of the distributed path is holding.** alpha (distributed) vs prod (standard),
+`eq(genome_id,83332.12)&sort(+feature_id)&limit(25000)` — the case that exercises
+`MergeSortStream` and the UTF-8 comparator — returned **byte-identical** 9,276,047-byte
+responses (1.54 s vs 1.76 s).
+
+**Production is 183 commits behind master**, and master is 34 behind alpha. So production has
+neither the distributed subsystem running nor most of the download-amplification work, and
+its hang behavior predates even the PR #203 Solr request timeout. Any symptom reported from
+production should be checked against its actual SHA before being matched to findings here.
+Rolling it forward needs `npm ci`, not just a checkout.
 
 ---
 
