@@ -17,7 +17,22 @@ each group, roughly highest-value first.
 
 ## Breaking / user-visible
 
-### TODO-1 — Large-taxon crossCollection joins time out (Viruses) or crawl (Bacteria)
+### TODO-1 — Large-taxon crossCollection joins time out (Viruses) or crawl (Bacteria) — **RESOLVED 2026-10-15**
+
+> **Fixed by PR #230.** `lib/joinResolver.js` counts a join's genome set before the query
+> runs: ≤50,000 genomes is rewritten to a local `{!terms f=<field> cache=false}` filter,
+> >150,000 is refused with a 400, and the band between is left alone. Verified against
+> live Solr — taxon 1386's 14,317 genomes returned **identical `numFound` (129,545,777) in
+> 6,047 ms against the join's 37,163 ms**, a 6.15× speedup. Bacteria and Viruses now fail
+> in under a second with an actionable message instead of burning 120 s.
+>
+> Two corrections to the analysis below, both found during implementation: the join filter
+> is an **arbitrary genome query**, not a taxon (so `genome_status:Complete`, 10.3M genomes,
+> was also already timing out and is now covered), and the two generation sites spell the
+> join differently (`rql.js` trailing, `dataRouter.js` using `v=`) — matching only the
+> first would have left `summary_by_taxon` unprotected.
+>
+> Original analysis retained below for the measurements.
 
 **Opened by:** this investigation, 2026-09-11. Full data in
 `Docs/GENOME_FEATURE_HANG-2026-09-10.md`.
@@ -268,7 +283,19 @@ only findable over real HTTP. Worth capturing the plan's unmeasured success crit
 already-converted handlers *before* touching these four, so there is something to compare
 against.
 
-### TODO-11 — A Solr 429 is retried as if it were a transport error
+### TODO-11 — A Solr 429 is retried as if it were a transport error — **RESOLVED 2026-10-15**
+
+> **Fixed by PR #226.** `lib/solrHttpError.js` preserves the status code and parsed
+> `Retry-After`; `ShardCursorStream` paces a 429 on the server's `Retry-After` against a
+> separate `maxOverloadRetries` budget (default 1) so a shedding node cannot also exhaust
+> the connection-failure retries, and no longer retries non-429 4xx at all. **This
+> unblocks Layer 4** — Solr's circuit breakers and rate limiter are now safe to enable.
+>
+> Worth keeping: the first version patched `subQuery()` but not `query()`, which is what
+> the main data path actually uses. All unit tests passed while a real 429 still reached
+> the client as 500. Only an end-to-end run against a 429 stub caught it.
+>
+> Original analysis retained below.
 
 **Opened 2026-10-12.** Full context: `Docs/ADMISSION_CONTROL_STATUS-2026-10.md`.
 
