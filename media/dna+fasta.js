@@ -27,6 +27,7 @@
 const debug = require('debug')('p3api-server:media:dna-fasta')
 const LineWrap = require('../util/linewrap')
 const { streamWithBackpressure } = require('../util/streamWithBackpressure')
+const { registerAgent } = require('../lib/agentStats')
 const {
   createFastaHeaderFormatterFromRequest,
   formatLegacyHeader,
@@ -142,11 +143,14 @@ function initializeDirectSolr () {
       debug('SSL certificate validation disabled')
     }
 
-    const httpsAgent = new https.Agent({
+    // Registered for /stats: these sequence lookups are the amplification path that
+    // Layer 2 of PLAN_SOLR_OVERLOAD_PROTECTION.md caps. The client instance is cached
+    // across requests, so this is a per-worker pool, not per-request.
+    const httpsAgent = registerAgent('serializer.dnaFasta', new https.Agent({
       keepAlive: true,
       maxSockets: 10,
       ...tlsOptions
-    })
+    }))
 
     // Create cluster client (reuse if exists)
     if (!solrClusterClientInstance) {

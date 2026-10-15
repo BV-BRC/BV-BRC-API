@@ -26,6 +26,7 @@ var sleep = require("sleep-promise");
 var cors = require('cors')
 var corsOptions = require('./util/corsOptions')
 var crypto = require('crypto')
+const { getAgentStats, totalQueued } = require('./lib/agentStats')
 
 // Generate request ID for all requests (used for log correlation)
 function generateRequestId () {
@@ -145,12 +146,35 @@ app.use('/health', function (req, res, next) {
   res.end()
 })
 
+// Operational stats.
+//
+// `active_requests` is preserved verbatim at the top level — it is the field existing
+// monitoring reads, and the hang investigation used it to diagnose socket exhaustion.
+// Everything new is additive, under its own keys, so no consumer breaks.
+//
+// `agents` is the part that was missing. maxSockets caps concurrency, not queue depth,
+// and Node's http.Agent has no queue cap at all, so requests waiting for a socket
+// accumulate invisibly. `agents.<name>.queued` is that number. Phase 2 of
+// Docs/COMPLETION_PLAN-2026-10.md sizes admission pools on the rule "admission pool <=
+// socket pool, so the socket queue stays empty" — which is unverifiable without this.
 app.use('/stats', function (req, res, next) {
-  if (stats) {
-    res.write(JSON.stringify(stats))
-  } else {
-    res.write('{}')
+  let payload
+  try {
+    payload = {
+      ...stats,
+      uptime_s: Math.round(process.uptime()),
+      pid: process.pid,
+      agents: getAgentStats(),
+      sockets_queued_total: totalQueued()
+    }
+  } catch (err) {
+    // A stats endpoint that 500s during an incident is worse than one returning a
+    // partial answer, so fall back to the original payload rather than throwing.
+    console.error(`/stats: failed to collect extended stats: ${err && err.message}`)
+    payload = stats || {}
   }
+  res.setHeader('Content-Type', 'application/json')
+  res.write(JSON.stringify(payload))
   res.end()
 })
 
