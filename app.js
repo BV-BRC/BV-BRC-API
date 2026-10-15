@@ -27,6 +27,7 @@ var cors = require('cors')
 var corsOptions = require('./util/corsOptions')
 var crypto = require('crypto')
 const { getAgentStats, totalQueued } = require('./lib/agentStats')
+const { getAdmissionStats } = require('./middleware/QueryClassifier')
 
 // Generate request ID for all requests (used for log correlation)
 function generateRequestId () {
@@ -165,7 +166,11 @@ app.use('/stats', function (req, res, next) {
       uptime_s: Math.round(process.uptime()),
       pid: process.pid,
       agents: getAgentStats(),
-      sockets_queued_total: totalQueued()
+      sockets_queued_total: totalQueued(),
+      // Admission pool state. Reported even while admission is disabled, so a dry run
+      // shows what would have been shed before enforcement is turned on — and so the
+      // pool sizes can be tuned against real numbers rather than guesses.
+      admission: getAdmissionStats()
     }
   } catch (err) {
     // A stats endpoint that 500s during an incident is worse than one returning a
