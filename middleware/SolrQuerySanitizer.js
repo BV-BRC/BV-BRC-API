@@ -192,11 +192,59 @@ function sanitizeParamsObject (params) {
   return { sanitized, blockedParams }
 }
 
+// Matches a Solr join local param in a filter *value*, in any of its spellings.
+//
+// Unlike everything else this module blocks, {!join} is not a parameter name — it is a
+// local-param block inside an fq value, so isDangerousParam() cannot see it and adding
+// 'join' to DANGEROUS_PARAMS would do nothing.
+const JOIN_LOCALPARAM_PATTERN = /\{!\s*join\b/i
+
+/**
+ * Does a client-supplied Solr query contain its own join?
+ *
+ * Defense in depth. No join reaches Solr from client input today — the API generates all
+ * of them (lib/solrjs/rql.js and routes/dataRouter.js) — but a client-submitted
+ * crossCollection join over a broad taxon is exactly the shape that OOM-crashed three
+ * data nodes on 2026-06-25, and nothing structurally prevented one.
+ *
+ * @param {string} queryString
+ * @returns {boolean}
+ */
+function containsJoinLocalParam (queryString) {
+  if (!queryString || typeof queryString !== 'string') {
+    return false
+  }
+  // Check the fully-decoded form so an encoded %7B!join cannot slip past, consistent
+  // with how dangerous parameter names are handled above.
+  return JOIN_LOCALPARAM_PATTERN.test(queryString) ||
+    JOIN_LOCALPARAM_PATTERN.test(fullyDecode(queryString))
+}
+
 /**
  * Express middleware to sanitize Solr queries
  */
 module.exports = function SolrQuerySanitizer (req, res, next) {
   let allBlockedParams = []
+
+  // Block a join the CLIENT wrote, before the API's own joins exist.
+  //
+  // ORDERING IS LOAD-BEARING: this middleware runs after RQLQueryParser, which has
+  // already emitted the API's own {!join ...} for an RQL genome() clause. Testing
+  // call_params here would therefore reject our own legitimate joins. req._originalRql
+  // is the client's RQL as sent (captured in routes/dataType.js), and for a Solr-format
+  // request RQLQueryParser returns early without touching call_params — so the client's
+  // own text is what we examine, never the generated query.
+  //
+  // JoinResolution (which runs later) handles the API-generated joins; this only closes
+  // the client-supplied route.
+  const clientSuppliedQuery = req.queryType === 'solr'
+    ? (req.call_params && req.call_params[0])
+    : req._originalRql
+
+  if (containsJoinLocalParam(clientSuppliedQuery)) {
+    console.log(`[SECURITY] Blocked client-supplied Solr join from ${req.ip || (req.connection && req.connection.remoteAddress)}`)
+    return res.status(400).json({ error: 'Request contains a prohibited join; use the genome() RQL operator instead' })
+  }
 
   // Sanitize call_params (the main query parameters)
   if (req.call_params && req.call_params.length > 0 && typeof req.call_params[0] === 'string') {
@@ -242,3 +290,4 @@ module.exports.isDangerousParam = isDangerousParam
 module.exports.sanitizeQueryString = sanitizeQueryString
 module.exports.sanitizeParamsObject = sanitizeParamsObject
 module.exports.DANGEROUS_PARAMS = DANGEROUS_PARAMS
+module.exports.containsJoinLocalParam = containsJoinLocalParam
