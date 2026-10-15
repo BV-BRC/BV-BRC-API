@@ -164,6 +164,25 @@ const defaults = {
     taxonomy: 'taxon_id'
   },
 
+  // Cross-collection join admission. See lib/joinResolver.js and
+  // Docs/OVERLOAD_PROTECTION_AMENDMENT-2026-10.md.
+  //
+  // Thresholds are genome counts, and they were calibrated against the measured cost
+  // curve on 2026-10-12 — re-measure before changing them, because the corpus grows:
+  // Bacteria was ~500K when the original plan was written and is 1.38M now.
+  //
+  //   <= rewriteMaxGenomes  resolve locally to {!terms} (3-6x faster, identical results)
+  //   <= rejectMaxGenomes   leave the join alone
+  //    > rejectMaxGenomes   refuse with 400 — this is the OOM guard
+  joinResolution: {
+    enabled: true,
+    rewriteMaxGenomes: 50000,
+    rejectMaxGenomes: 150000,
+    countCacheTtlMs: 300000,
+    idCacheTtlMs: 300000,
+    cacheMaxEntries: 200
+  },
+
   shards: {
     genome_feature: {
       preference: 'replica.type:PULL,replica.type:TLOG'

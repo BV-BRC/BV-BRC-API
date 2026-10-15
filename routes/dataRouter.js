@@ -7,6 +7,7 @@ const RQLQueryParser = require('../middleware/RQLQueryParser')
 const APIMethodHandler = require('../middleware/APIMethodHandler')
 const httpParams = require('../middleware/http-params')
 const { internalQuery } = require('../lib/internalQuery')
+const { resolveJoins } = require('../lib/joinResolver')
 const debug = require('debug')('p3api-server:route/summary')
 const apicache = require('apicache')
 const redis = require('redis')
@@ -45,9 +46,32 @@ router.use(httpParams)
  * error becomes a real Error carrying `statusCode`.
  */
 async function subQuery (dataType, query, opts) {
+  // Cross-collection joins go through the resolver first: an over-broad one is refused
+  // with 400 rather than left to time out, and a small one is rewritten to a local
+  // {!terms} filter. summary_by_taxon's genome_feature query is the join that made this
+  // necessary — taxon 10239 (Viruses, 15.6M genomes) times out deterministically, and
+  // taxon 2 (Bacteria) takes 74s. See lib/joinResolver.js.
+  //
+  // Only the join-bearing queries pay anything: resolveJoins returns immediately when the
+  // string carries no 'crossCollection'.
+  let resolvedQuery = query
+  if (typeof query === 'string' && query.indexOf('crossCollection') !== -1) {
+    const resolution = await resolveJoins(query, {
+      queryGenome: ({ query: q }) => internalQuery({
+        collection: 'genome',
+        query: q,
+        queryType: 'solr',
+        user: undefined,
+        requestId: opts && opts.requestId
+      }),
+      collection: dataType
+    })
+    resolvedQuery = resolution.query
+  }
+
   return internalQuery({
     collection: dataType,
-    query,
+    query: resolvedQuery,
     queryType: 'solr',
     user: undefined,
     requestId: opts && opts.requestId
