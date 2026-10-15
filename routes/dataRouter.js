@@ -92,12 +92,20 @@ function failSubQuery (res, label) {
     if (res.headersSent) {
       return
     }
-    // 504 is distinguished from the generic database error because it is the one case a
-    // caller can act on: the query was too expensive to complete, not malformed and not a
-    // server fault. Broad-taxon crossCollection joins hit this — see Docs/TODO.md TODO-1.
+    // Most upstream messages are generic or leak query internals, so they are replaced
+    // with a fixed string per status. Two exceptions carry information the caller can
+    // act on, and flattening them defeats the point of raising them:
+    //
+    //   - a join refused as too broad (JoinTooBroadError) names the genome count and
+    //     tells the user to narrow the filter. Observed live on alpha: without this,
+    //     /data/summary_by_taxon/1239 answered "Unable to query", which reads like a
+    //     server fault rather than "your taxon is too big".
+    //   - 504 says the query was too expensive to complete, not that it was malformed.
     let message = 'Unable to query the database'
     if (status === 400) {
-      message = 'Unable to query'
+      message = err && err.name === 'JoinTooBroadError'
+        ? err.message
+        : 'Unable to query'
     } else if (status === 504) {
       message = 'The database did not respond in time'
     }

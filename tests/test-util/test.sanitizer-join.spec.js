@@ -17,7 +17,7 @@
 
 const assert = require('chai').assert
 const SolrQuerySanitizer = require('../../middleware/SolrQuerySanitizer')
-const { containsJoinLocalParam } = SolrQuerySanitizer
+const { containsForeignJoin } = SolrQuerySanitizer
 
 // Minimal req/res doubles. The middleware only touches these fields.
 function makeReq (overrides = {}) {
@@ -45,55 +45,81 @@ function run (req) {
 }
 
 describe('SolrQuerySanitizer — client-supplied joins', () => {
-  describe('containsJoinLocalParam', () => {
+  describe('containsForeignJoin', () => {
     it('detects a plain join local param', () => {
-      assert.isTrue(containsJoinLocalParam('q=*:*&fq={!join from=a to=b}x:1'))
+      assert.isTrue(containsForeignJoin('q=*:*&fq={!join from=a to=b}x:1'))
     })
 
-    it('detects a crossCollection join', () => {
-      assert.isTrue(containsJoinLocalParam(
+    it('does NOT flag our own crossCollection-to-genome shape', () => {
+      // This is the shape lib/solrjs/rql.js and routes/dataRouter.js generate. It is
+      // indistinguishable from a client's copy of it at this point in the chain, and it
+      // does not need to be distinguished: JoinResolution counts its genome set
+      // downstream and refuses it if it is too broad.
+      assert.isFalse(containsForeignJoin(
         'q=*:*&fq={!join method=crossCollection fromIndex=genome from=genome_id to=genome_id}taxon_lineage_ids:2'))
     })
 
+    it('flags a crossCollection join to a DIFFERENT index', () => {
+      assert.isTrue(containsForeignJoin(
+        'q=*:*&fq={!join method=crossCollection fromIndex=secrets from=a to=b}x:1'))
+    })
+
     it('detects a percent-encoded join, which would otherwise slip past', () => {
-      assert.isTrue(containsJoinLocalParam('q=*:*&fq=%7B!join%20from=a%20to=b%7Dx:1'))
+      assert.isTrue(containsForeignJoin('q=*:*&fq=%7B!join%20from=a%20to=b%7Dx:1'))
     })
 
     it('detects whitespace between the brace and the keyword', () => {
-      assert.isTrue(containsJoinLocalParam('q=*:*&fq={! join from=a}x:1'))
+      assert.isTrue(containsForeignJoin('q=*:*&fq={! join from=a}x:1'))
     })
 
     it('is case-insensitive', () => {
-      assert.isTrue(containsJoinLocalParam('q=*:*&fq={!JOIN from=a}x:1'))
+      assert.isTrue(containsForeignJoin('q=*:*&fq={!JOIN from=a}x:1'))
     })
 
     it('does not fire on ordinary queries', () => {
-      assert.isFalse(containsJoinLocalParam('q=*:*&rows=10'))
-      assert.isFalse(containsJoinLocalParam('keyword(abc)'))
-      assert.isFalse(containsJoinLocalParam('genome(eq(taxon_lineage_ids,2))'))
-      assert.isFalse(containsJoinLocalParam(''))
-      assert.isFalse(containsJoinLocalParam(null))
+      assert.isFalse(containsForeignJoin('q=*:*&rows=10'))
+      assert.isFalse(containsForeignJoin('keyword(abc)'))
+      assert.isFalse(containsForeignJoin('genome(eq(taxon_lineage_ids,2))'))
+      assert.isFalse(containsForeignJoin(''))
+      assert.isFalse(containsForeignJoin(null))
     })
 
     it('does not fire on an unrelated local param', () => {
-      assert.isFalse(containsJoinLocalParam('q=*:*&fq={!terms f=genome_id}1.1,2.2'))
+      assert.isFalse(containsForeignJoin('q=*:*&fq={!terms f=genome_id}1.1,2.2'))
     })
   })
 
   describe('middleware behavior', () => {
-    it('blocks a Solr-format request carrying its own join', () => {
+    it('blocks a foreign join — a different fromIndex', () => {
       const { res, nextCalled } = run(makeReq({
         queryType: 'solr',
-        call_params: ['q=*:*&fq={!join method=crossCollection fromIndex=genome from=genome_id to=genome_id}taxon_lineage_ids:2']
+        call_params: ['q=*:*&fq={!join fromIndex=secrets from=a to=b}x:1']
       }))
       assert.strictEqual(res.statusCode, 400)
       assert.isFalse(nextCalled)
       assert.match(res.body.error, /join/i)
     })
 
+    it('THE LIVE REGRESSION: a genome() query sent as solrquery content-type must pass', () => {
+      // This exact shape 400'd on alpha for the length of one deploy. The earlier version
+      // keyed off `queryType === 'solr'` to decide whether call_params was client-written
+      // — but queryType comes from the request's content-type, and the website sends
+      // RQL-derived queries as application/solrquery+... too. So every genome() query was
+      // rejected as "prohibited join", at any taxon size.
+      //
+      // The old test suite passed throughout, because it only ever set queryType 'rql'
+      // for the generated-join case.
+      const { res, nextCalled } = run(makeReq({
+        queryType: 'solr',
+        call_params: ['&q=*:*&rows=5&fq={!join method=crossCollection fromIndex=genome from=genome_id to=genome_id}taxon_lineage_ids:1929297']
+      }))
+      assert.isTrue(nextCalled, 'a generated genome() join must not be rejected')
+      assert.isNull(res.statusCode)
+    })
+
     it('THE TRAP: does not block the API\'s own generated join', () => {
       // RQLQueryParser has already rewritten call_params into Solr syntax containing
-      // {!join ...}. Checking call_params for an RQL request would reject this.
+      // {!join ...}. Checking call_params naively would reject this.
       const { res, nextCalled } = run(makeReq({
         queryType: 'rql',
         _originalRql: 'genome(eq(taxon_lineage_ids,1386))&limit(25)',
@@ -103,14 +129,18 @@ describe('SolrQuerySanitizer — client-supplied joins', () => {
       assert.isNull(res.statusCode)
     })
 
-    it('blocks a join smuggled through RQL as raw text', () => {
-      const { res, nextCalled } = run(makeReq({
-        queryType: 'rql',
-        _originalRql: 'q=*:*&fq={!join from=a to=b}x:1',
-        call_params: ['&q=*:*&rows=25']
-      }))
-      assert.strictEqual(res.statusCode, 400)
-      assert.isFalse(nextCalled)
+    it('blocks a foreign join however the request was labelled', () => {
+      // The check reads call_params and keys off the join's own shape, so it does not
+      // depend on queryType being accurate — which is what made the earlier version
+      // fragile.
+      for (const queryType of ['rql', 'solr', undefined]) {
+        const { res, nextCalled } = run(makeReq({
+          queryType,
+          call_params: ['&q=*:*&rows=25&fq={!join from=a to=b}x:1']
+        }))
+        assert.strictEqual(res.statusCode, 400, `queryType=${queryType}`)
+        assert.isFalse(nextCalled)
+      }
     })
 
     it('passes an ordinary Solr request through', () => {

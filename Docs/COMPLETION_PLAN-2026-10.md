@@ -24,11 +24,40 @@ verified against the tree or the live cluster on 2026-10-12.
 | Distributed query subsystem | **done**, live on alpha, off in production, result-identical to the standard path |
 | Genome self-join elimination | **done** (~36% of all joins) |
 | Outbound wall-clock deadline (`util/http.js`) | **done**; the Solr path still uses queue-blind `req.setTimeout` |
-| **Broad-taxon join rejection** | **not started** — caused the 2026-06-25 OOM |
-| **Admission control (Layers 1 & 3)** | **not started** — nothing rejects or sheds load |
-| **429 handling** | **not started** — a Solr 429 is retried as a transport error |
-| Solr circuit breakers (Layer 4) | cluster-side, unknown; **unsafe to enable today** |
+| **Broad-taxon join rejection** | **DONE** — PR #230, merged 2026-10-15 |
+| **Admission control (Layer 1)** | **DONE** — PR #231, merged 2026-10-15, **shipped disabled** |
+| **Admission control (Layer 3, per-host)** | **not started** — Phase 3.2; only affects the distributed path |
+| **429 handling** | **DONE** — PR #226, merged 2026-10-15 |
+| Solr circuit breakers (Layer 4) | cluster-side; **now safe to enable** (429 handling landed) |
 | Production deployment | **183 commits behind master**; has almost none of the above |
+
+### Progress as of 2026-10-15
+
+Phases 0, 1 and 2 are merged to `alpha`; Phase 0 is deployed and verified on the live alpha
+site. `master` is now **54 behind alpha, 0 ahead**, so the Phase 4 merge remains clean.
+
+| phase | PR | state |
+|---|---|---|
+| 0.1 — 429 handling | #226 | merged, live |
+| 0.2 — Solr wall-clock deadline | #228 | merged, live |
+| 0.3 — `/stats` instrumentation | #229 | merged, live |
+| 1 — join rejection + `{!terms}` rewrite | #230 | merged |
+| 2 — Layer 1 admission control | #231 | merged, **disabled by default** |
+| 3.1 — Layer 4 circuit breakers | — | unblocked, not started |
+| 3.2 — Layer 3 per-host admission | — | not started |
+| 4 — deployment | — | not started |
+
+Two things to carry forward:
+
+- **Phase 2 is inert until switched on.** `queryAdmission.enabled` defaults to `false`
+  because enforcement returns 429 and that needs coordinated client updates. It still
+  classifies every request and reports pool state at `/stats`, so run it as a dry run and
+  tune the pool sizes against `admission.heavy.{depth,oldest_wait_ms,rejected_*}` before
+  enabling. Verified inert: 50 heavy requests with it disabled all pass through, zero slots
+  taken.
+- **Phase 1's thresholds were calibrated on 2026-10-12 data and the corpus grows.**
+  Re-measure before changing them; Bacteria was ~500K when the original plan was written
+  and is 1.38M now.
 
 The two historical incidents map onto the gaps precisely: **June 2 scraping** is better
 behaved per-request but its concurrency is still unbounded, and **June 25 OOM** is untouched.
