@@ -164,6 +164,27 @@ const defaults = {
     taxonomy: 'taxon_id'
   },
 
+  // Layer 1 admission control. See lib/SolrAdmissionControl.js and
+  // Docs/ADMISSION_CONTROL_STATUS-2026-10.md.
+  //
+  // DISABLED BY DEFAULT, deliberately. Enabling it makes the API return 429, which needs
+  // coordinated client updates first (CLI tools and the website must honour Retry-After
+  // without tight-retrying). Until then the middleware still classifies every request and
+  // reports pool state at /stats, so a dry run shows what *would* have been shed.
+  //
+  // Pool sizes are per worker, so cluster-facing concurrency is size x worker count.
+  // The rule they are chosen against is "admission pool <= socket pool, so the socket
+  // queue stays empty" — heavy at 3 against the main Solr agent's maxSockets 8.
+  queryAdmission: {
+    enabled: false,
+    heavyMaxConcurrent: 3,
+    heavyMaxQueue: 6,
+    heavyMaxWaitMs: 10000,
+    interactiveMaxConcurrent: 20,
+    interactiveMaxQueue: 20,
+    interactiveMaxWaitMs: 1000
+  },
+
   // Cross-collection join admission. See lib/joinResolver.js and
   // Docs/OVERLOAD_PROTECTION_AMENDMENT-2026-10.md.
   //
