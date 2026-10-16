@@ -256,6 +256,14 @@ Both return 429, requiring all callers to handle it (see 429 requirements below)
 
 ## 429 System-Wide Requirements
 
+> **SUPERSEDED for clients 2026-10-16 — see `Docs/CLIENT-429.md`**, which specifies the
+> contract normatively (honour `Retry-After`, add jitter, cap at 3 retries, never tight-loop,
+> never report a shed request as an empty result) with reference implementations and
+> per-client requirements. The table below is retained for the internal-component rows,
+> three of which are now done: `APIMethodHandler` propagates 429 with `Retry-After`,
+> `ShardCursorStream` paces on `Retry-After` against a separate budget rather than retrying
+> blindly, and the serializers no longer unhandled-reject.
+
 All four layers can return 429 when they activate. Every consumer must handle it.
 
 | Component | Current handling | Required |
