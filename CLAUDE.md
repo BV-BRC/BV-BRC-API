@@ -644,6 +644,45 @@ Note this fix does **not** touch missing-value ordering. `fieldComparator` sorts
 universal default; if a sorted distributed query ever disagrees with the standard path on rows
 missing the sort field, that is where to look.
 
+## Verifying the overload protections against a running server
+
+`scripts/verify-protections.js` exercises a deployment and reports which protections are
+present and working. **Run it after every deploy that touches the query path.**
+
+```bash
+node scripts/verify-protections.js https://alpha.bv-brc.org/api
+node scripts/verify-protections.js https://alpha.bv-brc.org/api --load --concurrency 10
+node scripts/verify-protections.js http://localhost:3001 --only=joins,regression
+```
+
+Read-only (every request is a query), no dependencies, exit code = number of failures.
+Groups: `admission`, `joins`, `timeouts`, `security`, `regression`, `load` (opt-in).
+
+**Why it exists: twice, a full green offline suite covered the wrong code path and the bug
+only appeared against a deployed server.** Phase 0.1 patched solrjs's `subQuery()` but not
+`query()` — the method the main data path actually uses — so every unit test passed while a
+real 429 still reached the client as a 500. Phase 1's sanitizer keyed off `req.queryType` to
+tell a client-written join from a generated one; `queryType` comes from the *content-type*,
+so **every `genome()` query 400'd on alpha**, through a suite that contained a test named for
+exactly that trap. Offline tests cannot catch a wrong assumption about the live request
+shape; this can.
+
+Two things it is careful about, both learned the hard way:
+
+- **A 200 is not success.** `regression` asserts byte counts on a streaming download,
+  because this codebase's characteristic failure is HTTP 200 with a truncated or empty body
+  (the `sort()` trap, mid-stream shard failure, the 8 KB shard-fetch ceiling). The `load`
+  group asserts every concurrent download returns an *identical* size.
+- **A Cloudflare 524 is not a protection failure.** The origin was simply slower than the
+  edge's ~100s limit, and it is intermittent — measured on alpha 2026-10-16, 10 concurrent
+  downloads produced nine 524s on one run and ten 200s minutes later. Reported as SKIP with
+  the numbers, so a transient edge timeout cannot make a healthy deployment look broken.
+
+The `load` group samples `/stats` every 250 ms while the load runs, which is the only way to
+see queue depth — it is zero before and after. With `queryAdmission.enabled: false` (the
+shipped default) that is a **dry run**: it reports what *would* have been bounded, which is
+what the pool sizes should be tuned against before enforcement is switched on.
+
 ## Trace Replay & Shakedown Testing
 
 `scripts/replay-queries.js` replays captured real-user API traces against a dev server and deep-diffs each response against the recorded original. It was moved into this module (it originated in the web module) because the queries it exercises are the API's responsibility. It was the primary tool used to shake down the `feature/distributed-query` branch — full findings in `Docs/DISTRIBUTED_QUERY_SHAKEDOWN.md`.
