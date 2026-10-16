@@ -311,6 +311,7 @@ def request_with_backoff(do_request, mode="interactive", max_retries=3,
 | **Bulk/scheduled downloads** | **unattended** | Ceiling backoff; resume from checkpoint rather than restart. |
 | **Direct `curl`/script users** | — | Documented, not enforced. Worth a note in the API docs. |
 | **`scripts/replay-queries.js`** | unattended | Treat 429 as retriable, not as a diff — otherwise a shed request reads as a response mismatch. |
+| **Callers with a 9000-row store cap** | **unattended** | That cap was a workaround for JIRA-4420, which is fixed — see `Docs/TODO.md` TODO-12. Lifting it above 10,000 makes those requests heavy-classified and therefore shed candidates, so retry coverage has to land *with* the lift, not after. |
 
 ---
 
