@@ -148,6 +148,16 @@ still answer coherently (429 + `Retry-After`), instead of accepting everything a
 
 ---
 
+> **Measured 2026-10-16 — see `Docs/ADMISSION_CONTROL_MEASUREMENT-2026-10-16.md`.**
+> Layer 1 shipped as PR #231 and was A/B'd against alpha with Solr JVM/GC sampled
+> throughout. Admission **roughly doubled throughput** (27 vs 12 identical load passes in
+> equal time), held latency flat (9.0 s mean vs 20.3 s and climbing), kept the socket queue
+> at **0 vs a peak of 17**, and cut filterCache evictions per request **2.9×**.
+>
+> It did **not** demonstrate heap protection: zero old-gen collections on all 97 JVMs in
+> both runs, so the cluster was never under heap pressure. That case rests on the June
+> incident analysis and on Phase 1's join rejection, not on these runs.
+
 ## Assessment against the stated goal
 
 > optimize high-performance data download while not overloading Solr into OOM or crashes
