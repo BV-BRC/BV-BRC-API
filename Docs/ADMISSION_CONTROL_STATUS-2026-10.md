@@ -1,10 +1,37 @@
 # Admission control into Solr — status assessment, October 2026
 
-**Date:** 2026-10-12
+**Date:** 2026-10-12 — **substantially superseded 2026-10-16, see below**
 **Assesses:** Layers 1, 3 and 4 of `PLAN_SOLR_OVERLOAD_PROTECTION.md`
 **Companion to:** `Docs/OVERLOAD_PROTECTION_AMENDMENT-2026-10.md` (which covers the join work
 and Layer 2)
 **Verified against:** production and alpha, 2026-10-12
+
+> ## STATUS UPDATE 2026-10-16 — Layer 1 is now implemented
+>
+> **This document was written as a gap analysis when nothing existed. Layer 1 has since
+> shipped, so the "NOT IMPLEMENTED" sections below describe the state on 2026-10-12, not
+> today.** They are kept because the reasoning — especially *why* a bounded queue beats
+> both an unbounded agent queue and a no-queue rejection — is what the implementation was
+> built from.
+>
+> | layer | state today |
+> |---|---|
+> | **Layer 1** — API admission control | **IMPLEMENTED**, PR #231, merged and deployed to alpha. `lib/SolrAdmissionControl.js`, `middleware/QueryClassifier.js`, `queryAdmission` config, pool state at `/stats`. **Ships disabled**; enabling returns 429, which needs client `Retry-After` support first. |
+> | **Layer 3** — per-host admission | still not implemented (Phase 3.2) |
+> | **Layer 4** — Solr circuit breakers | cluster-side; **now safe to enable** — PR #226 fixed the 429-retry inversion that made it dangerous |
+> | 429 handling | **IMPLEMENTED**, PR #226 |
+> | wall-clock deadline on the Solr path | **IMPLEMENTED**, PR #228 |
+> | `/stats` socket-pool visibility | **IMPLEMENTED**, PR #229 |
+>
+> **Measured 2026-10-16:** `Docs/ADMISSION_CONTROL_MEASUREMENT-2026-10-16.md` — a paired
+> A/B against alpha with Solr JVM/GC sampled throughout. Admission roughly **doubled
+> throughput** (27 vs 12 identical load passes in equal time), held latency flat (9.0 s
+> mean vs 20.3 s and climbing), kept the socket queue at **0 vs a peak of 17**, and cut
+> filterCache evictions per request **2.9×**. It did **not** demonstrate heap protection —
+> zero old-gen collections on all 97 JVMs in both runs — so that case still rests on the
+> June incident analysis and Phase 1's join rejection.
+>
+> Sequencing for what remains: `Docs/COMPLETION_PLAN-2026-10.md`.
 
 ---
 
@@ -17,29 +44,41 @@ the amendment and `Docs/MEDIA_HANDLER_BACKPRESSURE_PLAN.md`).
 
 That leaves the admission question: **when too much arrives at once, what says no?**
 
-Short answer: **nothing does.** There is no admission control of any kind in the API today.
-What protects Solr is a set of socket-pool caps that bound *parallelism per worker* but
-never reject or queue a request. The distinction matters, and the rest of this document is
-about why.
+Short answer **as of 2026-10-12**: nothing did. There was no admission control of any kind
+in the API; what protected Solr was a set of socket-pool caps that bound *parallelism per
+worker* but never reject or queue a request. The distinction matters, and the rest of this
+document is about why.
+
+**As of 2026-10-16 that is fixed** — Layer 1 shipped in PR #231. Read the sections below as
+the analysis that motivated it, not as current state.
 
 ---
 
-## Layer 1 — API admission control: NOT IMPLEMENTED
+## Layer 1 — API admission control: ~~NOT IMPLEMENTED~~ **shipped 2026-10-16 (PR #231)**
+
+*The analysis below describes 2026-10-12 and is retained because it is what the
+implementation was built from. Current state is in the right-hand column.*
 
 The plan specifies a counting semaphore with separate heavy/interactive pools, returning
-**429 + `Retry-After`** when full, with no queuing. Every artifact it names is absent:
+**429 + `Retry-After`** when full, with no queuing. Every artifact it names was absent:
 
-| plan artifact | state |
-|---|---|
-| `lib/SolrAdmissionControl.js` (counting semaphore singleton) | **absent** |
-| `middleware/QueryClassifier.js` (sets `req.queryCategory`) | **absent** |
-| `queryAdmission` config block | **absent** from `config.js` |
-| acquire/release in `APIMethodHandler` / `DistributedQuery` | **absent** |
-| `/stats` exposure of pool state | **absent** |
+| plan artifact | state on 2026-10-12 | today |
+|---|---|---|
+| `lib/SolrAdmissionControl.js` (counting semaphore singleton) | absent | **exists** |
+| `middleware/QueryClassifier.js` (sets `req.queryCategory`) | absent | **exists** |
+| `queryAdmission` config block | absent from `config.js` | **present** |
+| acquire/release in `APIMethodHandler` / `DistributedQuery` | absent | **in `QueryClassifier`** — it holds the slot for the whole response, not just the Solr call, because a streaming download keeps amplifying while it writes |
+| `/stats` exposure of pool state | absent | **under `admission`** |
+
+**One deliberate departure from the plan: "no queuing" was not an available choice.**
+`maxSockets: 8` already queues inside Node's `http.Agent`, with no depth cap and — before
+PR #228 — no time bound either. The shipped design keeps the plan's pool sizes and puts a
+short, bounded, instrumented queue in front, so the waiting happens somewhere it can be
+capped, timed and observed. See "Admission queue design" below.
 
 A tree-wide grep for `queryCategory`, `admission`, `Admission`, `semaphore`, `Semaphore`
-returns nothing outside `node_modules`. There is no `429` anywhere in `middleware/`,
-`routes/`, or `app.js`.
+returned nothing outside `node_modules`. There was no `429` anywhere in `middleware/`,
+`routes/`, or `app.js`. (All of those now exist.)
 
 **Confirmed at runtime**, not just by inspection. Six concurrent heavy downloads against
 production (`genome_feature`, `limit(25000)`, `download: 1`, `Accept: text/csv`):
@@ -56,18 +95,26 @@ req6 http=200 wall=1.66s size=2850853
 All six admitted, no 429, no queuing delay, timings indistinguishable from a single request
 (2.18 s). The plan's target was 2–3 concurrent heavy requests per instance.
 
+**Re-run 2026-10-16 with Layer 1 enabled, same workload at higher concurrency:** 40
+simultaneous heavy downloads produced 25 completed and 15 shed with
+`429 + Retry-After: 10`, with concurrency pinned at the configured 3. The behavior the
+paragraph above reports as missing is now present and measured.
+
 ### What `/stats` actually reports
 
-`app.js` tracks exactly one number, `active_requests`, incremented on request and
-decremented on `finish`. Live: prod `{"active_requests":1}`, alpha `{"active_requests":10}`.
+~~`app.js` tracks exactly one number, `active_requests`~~ — true on 2026-10-12. PRs #229
+and #231 added `agents` (per-pool socket `active`/`free`/**`queued`**),
+`sockets_queued_total`, and `admission` (per-pool `active`, `depth`, `oldest_wait_ms` and
+cumulative admitted/queued/rejected counters). `active_requests` is unchanged at the top
+level, because existing monitoring reads it.
 
-It is a counter, not a gate — nothing reads it to make a decision. Useful for the
-socket-exhaustion diagnosis recorded in the hang investigation, but it is not admission
-control and should not be mistaken for it.
+The original point still stands for `active_requests` itself: it is a counter, not a gate —
+nothing reads it to make a decision. It was useful for the socket-exhaustion diagnosis in
+the hang investigation, but it is not admission control and should not be mistaken for it.
 
 ---
 
-## Layer 3 — per-host admission: NOT IMPLEMENTED
+## Layer 3 — per-host admission: NOT IMPLEMENTED (still true as of 2026-10-16)
 
 `lib/HostAdmissionControl.js` is absent, and there is no per-hostname tracking anywhere in
 `lib/distributed/`. Replica selection in `SolrClusterClient` remains random rather than
@@ -88,22 +135,32 @@ Circuit breakers and the Solr rate limiter are cluster configuration
 (`solr.in.sh`, cluster API), so their state is not visible from this repo and is not asserted
 here.
 
-**But there is an API-side blocker worth recording:** both mechanisms signal overload by
-returning **429**, and the API has no 429 handling at all. Worse than merely ignoring it —
-`ShardCursorStream._requestWithRetry` retries on *any* rejection with exponential backoff
-(`lib/distributed/ShardCursorStream.js:171-186`), and `_request` rejects on every non-2xx
-(`:250`). A 429 is therefore indistinguishable from a transport error and gets **retried up
-to `maxRetries` (default 3) times**.
+**There was an API-side blocker — fixed 2026-10-16 by PR #226, so Layer 4 is now safe to
+enable.** The problem was that both mechanisms signal overload by returning **429**, and
+the API had no 429 handling at all. Worse than merely ignoring it:
+`ShardCursorStream._requestWithRetry` retried on *any* rejection with exponential backoff,
+and `_request` rejected on every non-2xx. A 429 was therefore indistinguishable from a
+transport error and got **retried up to `maxRetries` (default 3) times** — so a node saying
+"I am overloaded, back off" received up to four requests instead of one, per shard, from
+every worker.
 
-That inverts the intent: a Solr node saying "I am overloaded, back off" would receive up to
-four requests instead of one, per shard, from every worker. **Enabling Layer 4 against the
-current API would make overload worse, not better.** 429 handling has to land first.
+PR #226 made the retry status-aware: a 429 is now paced on the server's `Retry-After`
+against a separate, smaller budget (`maxOverloadRetries`, default 1), and non-429 4xx are
+not retried at all. `lib/solrHttpError.js` preserves the status and parsed `Retry-After`
+through all four Solr clients.
+
+**Layer 4 remains the one unvalidated piece here:** cluster-side configuration state is
+still not visible from this repo, so whether circuit breakers are actually enabled is not
+asserted — only that turning them on no longer backfires.
 
 ---
 
-## What actually bounds concurrency today
+## What bounded concurrency before Layer 1
 
-Not nothing — but all of it is socket-pool capping, which is a different thing from
+*As of 2026-10-12. Layer 1 now sits above all of these; the table remains accurate as a
+description of the socket pools themselves, which are unchanged.*
+
+Not nothing — but all of it was socket-pool capping, which is a different thing from
 admission control. Every one of these bounds *parallelism*; none of them *rejects* or
 *queues* a request, and none is aware of total system load.
 
@@ -148,34 +205,32 @@ still answer coherently (429 + `Retry-After`), instead of accepting everything a
 
 ---
 
-> **Measured 2026-10-16 — see `Docs/ADMISSION_CONTROL_MEASUREMENT-2026-10-16.md`.**
-> Layer 1 shipped as PR #231 and was A/B'd against alpha with Solr JVM/GC sampled
-> throughout. Admission **roughly doubled throughput** (27 vs 12 identical load passes in
-> equal time), held latency flat (9.0 s mean vs 20.3 s and climbing), kept the socket queue
-> at **0 vs a peak of 17**, and cut filterCache evictions per request **2.9×**.
->
-> It did **not** demonstrate heap protection: zero old-gen collections on all 97 JVMs in
-> both runs, so the cluster was never under heap pressure. That case rests on the June
-> incident analysis and on Phase 1's join rejection, not on these runs.
-
 ## Assessment against the stated goal
 
 > optimize high-performance data download while not overloading Solr into OOM or crashes
 
-| half of the goal | state |
-|---|---|
-| **download performance** | largely addressed — serializer caps, GenBank port, backpressure verified live, distributed query result-identical to the standard path |
-| **not overloading Solr** | **partially addressed, and the remaining gaps are the ones that actually caused the crashes** |
+| half of the goal | state on 2026-10-12 | state on 2026-10-16 |
+|---|---|---|
+| **download performance** | largely addressed | unchanged, and now **measured**: admission roughly doubles throughput under load rather than costing it |
+| **not overloading Solr** | partially addressed; the remaining gaps were the ones that caused the crashes | **both gaps closed in code**; one is validated, the other is argued from incident analysis |
 
-Specifically, of the two historical incidents:
+Of the two historical incidents:
 
-- **June 2 scraping** — the amplification side is much better (Layer 2 done, GenBank port
-  done, backpressure done). But nothing limits *how many* amplifying requests run at once,
-  which was the plan's primary defense. A repeat of the same attack would be slower per
-  request and better behaved on memory, but the concurrency that saturated the shard hosts is
-  still unbounded above the socket caps.
-- **June 25 OOM** — unaddressed. That was broad-taxon joins, covered in the amendment as
-  TODO-1, and none of its countermeasures have shipped.
+- **June 2 scraping** — *then:* amplification was much better (Layer 2, GenBank port,
+  backpressure) but nothing limited *how many* amplifying requests ran at once, which was
+  the plan's primary defense. *Now:* Layer 1 bounds it. Measured 2026-10-16 — 40 concurrent
+  heavy downloads reach Solr as 3, with the rest queued briefly or shed with 429, and
+  throughput roughly **doubles** rather than degrading.
+- **June 25 OOM** — *then:* unaddressed. *Now:* Phase 1 (PR #230) refuses broad-taxon joins
+  at the API; taxa above the threshold return 400 in under a second where they previously
+  burned 120 s, and the `{!terms}` rewrite returns identical results 3–6× faster.
+
+**The honest limit on all of this:** the 2026-10-16 A/B showed **zero old-gen collections
+on all 97 JVMs in both the admission-on and admission-off runs**. The cluster was never
+under heap pressure at that load, so the measurement validates Layer 1 as a throughput,
+latency and contention mechanism — not as demonstrated heap protection. That case still
+rests on the June incident analysis and on Phase 1's join rejection. Full detail and
+caveats: `Docs/ADMISSION_CONTROL_MEASUREMENT-2026-10-16.md`.
 
 ---
 
@@ -290,16 +345,19 @@ Two sizing notes that follow:
 
 ## Recommended order
 
-1. **429 handling on inbound Solr responses — before anything else.** Small, and it is a
+**Progress as of 2026-10-16: steps 1, 2 and 3 are done** (PRs #226, #231, #230). Steps 4–6
+remain, plus the two follow-ups below.
+
+1. ~~**429 handling on inbound Solr responses — before anything else.**~~ **DONE (PR #226).** Small, and it is a
    prerequisite for Layer 4 being safe to enable. Make `_requestWithRetry` status-aware:
    treat 429 as "back off and honour `Retry-After`", not as a generic retriable error. Same
    for `DirectSolrClient`. Without this, turning on Solr's own protection amplifies overload.
-2. **Layer 1 admission control, with the bounded queue described above.** The primary
+2. ~~**Layer 1 admission control, with the bounded queue described above.**~~ **DONE (PR #231), shipped disabled.** The primary
    defense, and the thing that would most directly have blunted the June 2 incident. Returns
    429, so it needs coordinated client updates — that is the main cost, not the semaphore.
    Ship `/stats` instrumentation in the same change; without it the pool and queue sizes
    cannot be tuned.
-3. **TODO-1 join rejection** (see the amendment). Addresses the June 25 crash class.
+3. ~~**TODO-1 join rejection**~~ **DONE (PR #230).** Addresses the June 25 crash class.
    Independent of admission control; can proceed in parallel.
 4. **Revisit the distributed agent's `maxSockets: 50`** — only *after* step 2, when admission
    caps concurrent heavy work. Doing it earlier deepens an unbounded, unobservable agent
@@ -307,10 +365,23 @@ Two sizing notes that follow:
    is non-empty under admission.
 5. **Layer 3 per-host admission.** Only meaningful once distributed query runs somewhere that
    matters — it is off in production today.
-6. **Layer 4 cluster config.** Safe only after step 1.
+6. **Layer 4 cluster config.** ~~Safe only after step 1~~ — step 1 is done, so this is now **unblocked**.
 
 Note steps 2 and 6 both emit 429 to clients, so the "429 System-Wide Requirements" section of
-the plan applies to both and should be done once.
+the plan applies to both and should be done once. **This is now the gating item for turning
+Layer 1 on:** it ships disabled precisely because nothing in the CLI or website honours
+`Retry-After` yet, and a client that retries tightly reproduces the amplification blamed for
+the 2026-06-05 coordinator crash.
+
+Two follow-ups the 2026-10-16 measurement added:
+
+- **Consider raising `heavyMaxConcurrent` from 3 to 6.** At 3 it shed 21% of offered
+  requests while the cluster showed no stress at all (zero old-gen GC, peak heap ~55% on the
+  worst single JVM). 6 stays well under the 8-socket Solr pool, so it preserves the
+  "socket queue stays empty" property that the A/B confirmed matters.
+- **`heavyMaxWaitMs: 10000` is fine as shipped.** An earlier run suggested lowering it, but
+  that run's timeout-heavy rejections reflected a slow cluster rather than a bad deadline —
+  in the clean A/B only 4 of ~85 rejections were wait-timeouts.
 
 ---
 
