@@ -261,6 +261,23 @@ app.use(function (error, req, res, next) {
     return
   }
   res.setHeader('Content-Type', 'application/json')
+
+  // Propagate Retry-After on a 429 regardless of which layer produced it.
+  //
+  // middleware/QueryClassifier sets this header itself for an admission rejection, but a
+  // 429 originating at Solr — a circuit breaker or the request rate limiter tripping —
+  // arrives here as a SolrHttpError carrying `retryAfterMs` parsed from Solr's own
+  // response, and nothing was writing it out. A bare 429 with no guidance is exactly what
+  // provokes the tight retry loop that admission control exists to prevent, and it does
+  // the most damage precisely when Solr is already in trouble. See Docs/CLIENT-429.md.
+  if ((error.status === 429 || error.status === 503) && !res.getHeader('Retry-After')) {
+    const ms = error.retryAfterMs
+    const secs = typeof ms === 'number' && ms >= 0
+      ? Math.max(1, Math.ceil(ms / 1000))
+      : (error.retryAfterSeconds || 1)
+    res.setHeader('Retry-After', String(secs))
+  }
+
   res.status(error.status || 500)
   res.send({
     status: error.status || 500,

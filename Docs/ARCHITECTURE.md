@@ -356,7 +356,7 @@ entirely. Any overlay changing field values must correct counts arithmetically, 
 | gap | status |
 |---|---|
 | **Production is 183 commits behind** | has almost none of the above; still throwing `ERR_HTTP_HEADERS_SENT` from a months-fixed defect |
-| Client `Retry-After` support | **gates enabling admission control**; nothing honours it yet |
+| Client `Retry-After` support | **gates enabling admission control**; nothing honours it yet. Contract specified in `Docs/CLIENT-429.md` |
 | Layer 3 per-host admission | not implemented; latent while distributed query is off in production |
 | Layer 4 Solr circuit breakers | cluster-side; now safe to enable |
 | 4 serializers without backpressure | TODO-10 |
@@ -376,4 +376,5 @@ Sequencing: `Docs/COMPLETION_PLAN-2026-10.md`.
 | `Docs/ADMISSION_CONTROL_STATUS-2026-10.md` | why the admission queue is bounded rather than absent |
 | `Docs/ADMISSION_CONTROL_MEASUREMENT-2026-10-16.md` | the measured A/B |
 | `Docs/COMPLETION_PLAN-2026-10.md` | phase sequencing |
+| `Docs/CLIENT-429.md` | **the client contract for 429s** — normative for CLI, website, P3DataAPI |
 | `Docs/TODO.md` | open items |
