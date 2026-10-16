@@ -411,7 +411,7 @@ async function checkTimeouts (endpoint) {
   }
 }
 
-async function checkLoad (endpoint, concurrency) {
+async function checkLoad (endpoint, concurrency, expect429) {
   section(`Sustained load (${concurrency} concurrent heavy downloads)`)
 
   const before = await getStats(endpoint)
@@ -485,6 +485,64 @@ async function checkLoad (endpoint, concurrency) {
       `${ok.length} completed, ${shed.length} cleanly shed`)
   }
 
+  // --expect-429: assert that shedding actually happened, and that each shed response is
+  // one a client can act on. Counting 429s is not enough — a 429 without Retry-After
+  // invites the tight-retry loop that admission control exists to prevent, and that was
+  // blamed for the 2026-06-05 coordinator crash.
+  if (expect429) {
+    const stats = await getStats(endpoint)
+    const enforcing = stats && stats.admission && stats.admission.enabled
+
+    if (!enforcing) {
+      fail('load', '429s returned under load',
+        'queryAdmission.enabled is false on the server, so no request can ever be shed. ' +
+        'Set it in p3api.conf and restart, or drop --expect-429.')
+    } else if (shed.length === 0) {
+      const h = stats.admission.heavy
+      fail('load', '429s returned under load',
+        `all ${concurrency} admitted with the pool at ${h.max_concurrent} slots + ` +
+        `${h.max_queue} queue. Either concurrency is too low to saturate it, or requests ` +
+        'completed faster than they arrived — raise --concurrency above slots+queue.')
+    } else {
+      pass('load', '429s returned under load',
+        `${shed.length}/${concurrency} shed, ${ok.length} admitted`)
+
+      // Retry-After is what makes a 429 actionable rather than an invitation to hammer.
+      const withHeader = shed.filter((r) => r.headers && r.headers['retry-after'])
+      if (withHeader.length === shed.length) {
+        const vals = [...new Set(shed.map((r) => r.headers['retry-after']))]
+        pass('load', 'every 429 carries Retry-After', `Retry-After: ${vals.join(', ')}`)
+      } else {
+        fail('load', 'every 429 carries Retry-After',
+          `${shed.length - withHeader.length} of ${shed.length} shed responses lacked the header`)
+      }
+
+      // The body should explain itself; a bare 429 is hard to act on from a CLI.
+      const explained = shed.filter((r) => /busy|retry/i.test(r.body || ''))
+      if (explained.length === shed.length) {
+        const sample = json(shed[0])
+        pass('load', '429 body explains the rejection',
+          `"${(sample && (sample.message || sample.error)) || shed[0].body.slice(0, 80)}"`)
+      } else {
+        skip('load', '429 body explains the rejection',
+          `${explained.length}/${shed.length} had an explanatory body`)
+      }
+
+      // Shedding must be fast — the point is to refuse cheaply, not to make the client
+      // wait for the rejection.
+      const shedTimes = shed.map((r) => r.ms).sort((a, b) => a - b)
+      const medShed = shedTimes[Math.floor(shedTimes.length / 2)]
+      if (medShed < 15000) {
+        pass('load', 'shedding is cheap',
+          `median shed latency ${(medShed / 1000).toFixed(2)}s`)
+      } else {
+        fail('load', 'shedding is cheap',
+          `median shed latency ${(medShed / 1000).toFixed(1)}s — a rejection should be ` +
+          'near-immediate; a slow one means the client waited for the full queue deadline')
+      }
+    }
+  }
+
   // Latency spread is the useful capacity signal, and it is what tells you whether the
   // admission pool sizes are in the right range.
   if (ok.length > 0) {
@@ -552,11 +610,11 @@ async function checkLoad (endpoint, concurrency) {
 // Main
 // ---------------------------------------------------------------------------
 function parseArgs (argv) {
-  const out = { endpoint: null, only: null, load: false, concurrency: 8, help: false }
+  const out = { endpoint: null, only: null, load: false, concurrency: 8, expect429: false, help: false }
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]
     if (a === '--help' || a === '-h') out.help = true
-    else if (a === '--load') out.load = true
+    else if (a === '--expect-429') { out.expect429 = true; out.load = true } else if (a === '--load') out.load = true
     else if (a.startsWith('--only=')) out.only = a.slice(7).split(',').map((s) => s.trim())
     else if (a === '--only') out.only = (argv[++i] || '').split(',').map((s) => s.trim())
     else if (a === '--concurrency') out.concurrency = parseInt(argv[++i], 10)
@@ -581,6 +639,10 @@ Options:
                         groups: ${CHECK_GROUPS.join(', ')}
   --load                include the sustained-load phase (issues real downloads)
   --concurrency <n>     concurrent downloads for --load (default 8)
+  --expect-429          implies --load; assert that shedding actually happens.
+                        Requires queryAdmission.enabled on the server, and enough
+                        concurrency to exceed slots+queue. Turns "no 429s" from an
+                        observation into a FAIL, so a misconfigured pool is caught.
   --help
 
 Examples:
@@ -622,7 +684,7 @@ async function main () {
   if (wanted.includes('regression')) await checkRegression(args.endpoint)
   if (wanted.includes('security')) await checkSecurity(args.endpoint)
   if (wanted.includes('timeouts')) await checkTimeouts(args.endpoint)
-  if (wanted.includes('load')) await checkLoad(args.endpoint, args.concurrency)
+  if (wanted.includes('load')) await checkLoad(args.endpoint, args.concurrency, args.expect429)
 
   section('Summary')
   console.log(`  ${C.g}${results.pass} passed${C.x}, ${results.fail ? C.r : ''}${results.fail} failed${C.x}, ${C.y}${results.skip} skipped${C.x}`)
