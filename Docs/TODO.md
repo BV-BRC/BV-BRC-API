@@ -317,6 +317,57 @@ grep returns nothing in `lib/solrjs/`, `lib/distributed/`, or `middleware/`.
 a generic retriable error, and do not count it against the same retry budget as a connection
 failure. Small change, and a prerequisite for the cluster-side work.
 
+### TODO-12 — The 9000-row store cap can be lifted, but doing so makes those requests shed candidates
+
+**Opened 2026-10-16.** A cross-system interaction that is invisible from either side alone,
+recorded for whoever lifts the cap.
+
+**The cap exists for a bug that is fixed.** JIRA-4420 — the API returning HTTP 200 with a
+one-byte body `[` at `rows >= 10000`, which then fails JSON parsing — was the 8 KB
+shard-fetch ceiling. An RQL `in()`/`terms()` clause over a few hundred ids crossed Jetty's
+default `requestHeaderSize` of 8192 bytes, the shard answered `414 URI Too Long`, and
+`media/json.js` had already written the opening bracket so the status could not change.
+Callers worked around it by capping result stores to `Math.min(ids.length, 9000)`.
+
+`ShardCursorStream` now sends each cursor page as a **POST with a form-encoded body**, so
+the filter never touches the header limit. Verified against live alpha 2026-10-16 with the
+exact failing shape — 3,000 feature ids, a **153 KB** filter body (~20× the old ceiling),
+`limit(25000)`:
+
+```
+in()     200, 2,546,003 bytes, 3000 docs, parsed OK
+terms()  200, 2,546,003 bytes, 3000 docs, parsed OK
+```
+
+Gate: `tests/test-distributed/test.shardcursor-post.spec.js` (9 tests; all 9 fail against
+the pre-change module).
+
+**Two things to do when raising the cap above 10,000:**
+
+1. **Those requests become heavy-classified and therefore shed candidates.** `rows >= 10000`
+   is the admission threshold (`middleware/QueryClassifier.js`), so a store that was
+   incidentally kept under it by the 9000 cap will start seeing 429s once admission is
+   enabled. They need `retryRequest` coverage per `Docs/CLIENT-429.md` — and for a pipeline
+   store that means **unattended mode (§3a)**, a delay ceiling with no attempt cap, not the
+   3-retry interactive policy. A pipeline stage that gives up after three 429s loses work.
+
+2. **They will then reach the distributed path for real**, which is where the 8 KB ceiling
+   lived. Accompany the change with an actual large-filter integration test, not just the
+   unit gate.
+
+**Why this needs flagging rather than discovering:** `Limiter.detectFixedIdCount` caps a
+fixed-id query's `rows` to `idCount + 10`, which drops it back below `minLimitThreshold`
+(10000). That now covers `terms()` as well as `in()`, so **nothing in normal use reaches the
+8 KB code path with a large filter any more** — confirmed in the verification above, where
+neither request engaged the distributed path. The regression is currently unreachable
+through ordinary traffic, which means a future change re-enabling the GET path would pass
+every functional test and break only under a specific combination. CLAUDE.md says as much:
+*"do not delete it on the grounds that the bug is unreachable."*
+
+**Also note the truncation bug is a 200, so retry logic must not treat it as retriable** —
+it is not a transient condition, and a client retrying it would loop. That remains true for
+the still-open mid-stream truncation case (TODO-3).
+
 ---
 
 ## Deployment posture — context for everything above
