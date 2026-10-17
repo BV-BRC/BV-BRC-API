@@ -186,6 +186,28 @@ describe('CORS policy', function () {
       ;['facet_counts', 'x-facet-count', 'Content-Range', 'X-Cursor-Mark', 'ETag']
         .forEach((h) => assert.include(exposed, h))
     })
+
+    it('exposes Retry-After, so a cross-origin client can pace its 429 retry', async function () {
+      // app.js's terminal error handler sets Retry-After on every 429/503 --
+      // admission rejections and Solr circuit-breaker trips alike -- and
+      // Docs/CLIENT-429.md instructs clients to honour it. A header the server
+      // sends but does not expose is stripped by the browser before JS sees it,
+      // with no error, so the client silently falls back to its own backoff and
+      // retries faster than the server asked. That is the worst possible
+      // failure direction: it loads a cluster that is already shedding.
+      const res = await request(port, 'GET', ALLOWED)
+      assert.include(res.headers['access-control-expose-headers'], 'Retry-After')
+    })
+
+    it('exposes Retry-After to NON-allowlisted origins too', async function () {
+      // The allowlist gates credentials, not reads. Third-party consumers are
+      // anonymous and cross-origin, and they are exactly the callers most
+      // likely to hammer a shedding API -- so they are the ones who most need
+      // to see the pacing header.
+      const res = await request(port, 'GET', EVIL)
+      assert.equal(res.headers['access-control-allow-origin'], EVIL)
+      assert.include(res.headers['access-control-expose-headers'], 'Retry-After')
+    })
   })
 
   describe('shipped default (empty allowlist)', function () {
