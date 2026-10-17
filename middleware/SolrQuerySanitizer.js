@@ -83,7 +83,6 @@ function isDangerousParam (paramName) {
   return false
 }
 
-
 /**
  * Sanitize a query string by removing dangerous parameters.
  * Fully decodes the entire string first to catch multi-level encoding
@@ -192,11 +191,90 @@ function sanitizeParamsObject (params) {
   return { sanitized, blockedParams }
 }
 
+// Matches a Solr join local param in a filter *value*, in any of its spellings.
+//
+// Unlike everything else this module blocks, {!join} is not a parameter name — it is a
+// local-param block inside an fq value, so isDangerousParam() cannot see it and adding
+// 'join' to DANGEROUS_PARAMS would do nothing.
+const JOIN_LOCALPARAM_PATTERN = /\{!\s*join\b/i
+
+// The one join shape this codebase generates. Both sites — lib/solrjs/rql.js (the RQL
+// genome() clause) and routes/dataRouter.js (summary_by_taxon) — emit exactly this, and
+// JoinResolution counts and gates them. Anything else is not ours.
+const OUR_JOIN_PATTERN = /\{!\s*join\s+method=crossCollection\s+fromIndex=genome\b/i
+
+/**
+ * Does a query contain a join this codebase would never generate?
+ *
+ * Defense in depth against the OOM class: a client-written join — a different fromIndex,
+ * a non-crossCollection join, a nested subquery — is unreviewed and unbounded, and a
+ * broad one is the shape that crashed three data nodes on 2026-06-25.
+ *
+ * A client-submitted join that happens to match our own form is deliberately NOT caught
+ * here. It cannot be distinguished from a generated one at this point in the chain, and
+ * it does not need to be: JoinResolution counts its genome set downstream and refuses it
+ * if it is too broad. Trying to tell them apart from request metadata is exactly the
+ * mistake that broke every genome() query on alpha.
+ *
+ * @param {string} queryString
+ * @returns {boolean}
+ */
+function containsForeignJoin (queryString) {
+  if (!queryString || typeof queryString !== 'string') {
+    return false
+  }
+  // Decode first so an encoded %7B!join cannot slip past, consistent with how dangerous
+  // parameter names are handled above.
+  const candidates = [queryString, fullyDecode(queryString)]
+  for (const text of candidates) {
+    if (!JOIN_LOCALPARAM_PATTERN.test(text)) {
+      continue
+    }
+    // A join is present. Allow it only if every join in the string is our own shape.
+    const joins = text.match(/\{!\s*join\b[^}]*\}/gi) || []
+    for (const join of joins) {
+      if (!OUR_JOIN_PATTERN.test(join)) {
+        return true
+      }
+    }
+  }
+  return false
+}
+
 /**
  * Express middleware to sanitize Solr queries
  */
 module.exports = function SolrQuerySanitizer (req, res, next) {
   let allBlockedParams = []
+
+  // Block a join the CLIENT wrote, without touching the API's own.
+  //
+  // ORDERING IS LOAD-BEARING, and getting this wrong is not a subtle failure — it broke
+  // every genome() RQL query on alpha for the length of one deploy.
+  //
+  // This middleware runs AFTER RQLQueryParser, so by now call_params may already hold
+  // the {!join ...} that rql.js generated for an RQL genome() clause. An earlier version
+  // keyed off `req.queryType === 'solr'` to decide whether call_params was client-written.
+  // It is not: queryType is set from the request's content-type
+  // (routes/dataType.js:108,216), and `application/solrquery+...` is simply how the
+  // website sends RQL-derived queries too. So a perfectly ordinary
+  // `genome(eq(taxon_lineage_ids,N))` was rejected with "prohibited join" — observed live
+  // on alpha against both a 7-genome taxon and a 327K one.
+  //
+  // The reliable discriminator is the JOIN ITSELF, not the request metadata. Every join
+  // this codebase generates is `method=crossCollection fromIndex=genome` (lib/solrjs/rql.js
+  // and routes/dataRouter.js are the only two sites, and JoinResolution handles those).
+  // Anything else in a {!join} is a client's own construction, and that is what gets
+  // refused here. A client-submitted crossCollection join to genome is indistinguishable
+  // from ours at this point, so it is allowed through — and lands in JoinResolution, which
+  // counts its genome set and rejects it if it is too broad. Same protection, by a
+  // different gate.
+  const query = req.call_params && req.call_params[0]
+
+  if (containsForeignJoin(query)) {
+    console.log(`[SECURITY] Blocked client-supplied Solr join from ${req.ip || (req.connection && req.connection.remoteAddress)}`)
+    return res.status(400).json({ error: 'Request contains a prohibited join; use the genome() RQL operator instead' })
+  }
 
   // Sanitize call_params (the main query parameters)
   if (req.call_params && req.call_params.length > 0 && typeof req.call_params[0] === 'string') {
@@ -242,3 +320,4 @@ module.exports.isDangerousParam = isDangerousParam
 module.exports.sanitizeQueryString = sanitizeQueryString
 module.exports.sanitizeParamsObject = sanitizeParamsObject
 module.exports.DANGEROUS_PARAMS = DANGEROUS_PARAMS
+module.exports.containsForeignJoin = containsForeignJoin

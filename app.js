@@ -24,7 +24,10 @@ var sleep = require("sleep-promise");
 
 
 var cors = require('cors')
+var corsOptions = require('./util/corsOptions')
 var crypto = require('crypto')
+const { getAgentStats, totalQueued } = require('./lib/agentStats')
+const { getAdmissionStats } = require('./middleware/QueryClassifier')
 
 // Generate request ID for all requests (used for log correlation)
 function generateRequestId () {
@@ -126,14 +129,10 @@ app.use(function (req, res, next) {
   next()
 })
 
-app.use(cors({
-  origin: true,
-  methods: ['GET,POST,PUT,DELETE'],
-  allowHeaders: ['if-none-match', 'range', 'accept', 'x-range', 'content-type', 'authorization'],
-  exposedHeaders: ['facet_counts', 'x-facet-count', 'Content-Range', 'X-Content-Range', 'X-Cursor-Mark', 'ETag'],
-  credential: true,
-  maxAge: 86400
-}))
+// See util/corsOptions.js. The previous inline configuration misspelled two
+// keys (credential/allowHeaders), so credentials never worked and the header
+// list was silently replaced by reflection of whatever the browser asked for.
+app.use(cors(corsOptions(config)))
 
 var collections = config.get('collections')
 
@@ -148,12 +147,39 @@ app.use('/health', function (req, res, next) {
   res.end()
 })
 
+// Operational stats.
+//
+// `active_requests` is preserved verbatim at the top level — it is the field existing
+// monitoring reads, and the hang investigation used it to diagnose socket exhaustion.
+// Everything new is additive, under its own keys, so no consumer breaks.
+//
+// `agents` is the part that was missing. maxSockets caps concurrency, not queue depth,
+// and Node's http.Agent has no queue cap at all, so requests waiting for a socket
+// accumulate invisibly. `agents.<name>.queued` is that number. Phase 2 of
+// Docs/COMPLETION_PLAN-2026-10.md sizes admission pools on the rule "admission pool <=
+// socket pool, so the socket queue stays empty" — which is unverifiable without this.
 app.use('/stats', function (req, res, next) {
-  if (stats) {
-    res.write(JSON.stringify(stats))
-  } else {
-    res.write('{}')
+  let payload
+  try {
+    payload = {
+      ...stats,
+      uptime_s: Math.round(process.uptime()),
+      pid: process.pid,
+      agents: getAgentStats(),
+      sockets_queued_total: totalQueued(),
+      // Admission pool state. Reported even while admission is disabled, so a dry run
+      // shows what would have been shed before enforcement is turned on — and so the
+      // pool sizes can be tuned against real numbers rather than guesses.
+      admission: getAdmissionStats()
+    }
+  } catch (err) {
+    // A stats endpoint that 500s during an incident is worse than one returning a
+    // partial answer, so fall back to the original payload rather than throwing.
+    console.error(`/stats: failed to collect extended stats: ${err && err.message}`)
+    payload = stats || {}
   }
+  res.setHeader('Content-Type', 'application/json')
+  res.write(JSON.stringify(payload))
   res.end()
 })
 
@@ -235,6 +261,23 @@ app.use(function (error, req, res, next) {
     return
   }
   res.setHeader('Content-Type', 'application/json')
+
+  // Propagate Retry-After on a 429 regardless of which layer produced it.
+  //
+  // middleware/QueryClassifier sets this header itself for an admission rejection, but a
+  // 429 originating at Solr — a circuit breaker or the request rate limiter tripping —
+  // arrives here as a SolrHttpError carrying `retryAfterMs` parsed from Solr's own
+  // response, and nothing was writing it out. A bare 429 with no guidance is exactly what
+  // provokes the tight retry loop that admission control exists to prevent, and it does
+  // the most damage precisely when Solr is already in trouble. See Docs/CLIENT-429.md.
+  if ((error.status === 429 || error.status === 503) && !res.getHeader('Retry-After')) {
+    const ms = error.retryAfterMs
+    const secs = typeof ms === 'number' && ms >= 0
+      ? Math.max(1, Math.ceil(ms / 1000))
+      : (error.retryAfterSeconds || 1)
+    res.setHeader('Retry-After', String(secs))
+  }
+
   res.status(error.status || 500)
   res.send({
     status: error.status || 500,

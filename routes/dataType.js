@@ -19,6 +19,8 @@ var debug = require('debug')('p3api-server:route/dataType')
 var querystring = require('querystring')
 const ShardsPreference = require('../middleware/ShardsPreference')
 const SolrQuerySanitizer = require('../middleware/SolrQuerySanitizer')
+const JoinResolution = require('../middleware/JoinResolution')
+const QueryClassifier = require('../middleware/QueryClassifier')
 const DistributedQuery = require('../middleware/DistributedQuery')
 const JoinFieldInjector = require('../middleware/JoinFieldInjector')
 const JoinEnrichment = require('../middleware/JoinEnrichment')
@@ -258,6 +260,8 @@ router.use([
   DecorateQuery,
   Limiter,
   CrossCollectionSource,  // Validate + permission-scope http_source_* (no-op when absent)
+  JoinResolution,  // Reject over-broad crossCollection joins; rewrite small ones to {!terms}
+  QueryClassifier,  // Layer 1 admission: bound concurrent heavy work (inert unless enabled)
   JoinFieldInjector,  // Inject join key fields into fl= before query execution
   DistributedQuery,  // Distributed query integration (after permission filters applied)
   ShardsPreference,

@@ -3,7 +3,7 @@
   "version": "1.9.3",
   "private": true,
   "scripts": {
-    "start": "node --unhandled-rejections=strict --stack-size=65536 app.js",
+    "start": "node --unhandled-rejections=strict --stack-size=7000 app.js",
     "test-api": "mocha -R spec tests/test-api/test.*.spec.js",
     "test-distributed": "mocha -R spec tests/test-distributed/test.*.spec.js",
     "test-rpc": "mocha -R spec tests/test-rpc/test.*.spec.js",

@@ -60,6 +60,24 @@ const defaults = {
   distributeURL: 'http://localhost:3001/',
   publicURL: 'http://localhost:3001/',
 
+  /*
+   * Origins permitted to make *credentialed* cross-origin requests. Anonymous
+   * cross-origin reads remain open to everyone -- this is a public data API.
+   * See util/corsOptions.js.
+   *
+   * Exact-match serialized origins, enumerated explicitly: BV-BRC uses
+   * alpha./beta./dev-N. while the sibling properties use dev./test., so no
+   * interpolation over a property name is correct for all of them. This is
+   * the same list the OAuth2 redirect_uri registration needs; keep them in
+   * sync (PLAN-oauth2-migration.md, "Multi-Domain Rollout and CORS").
+   *
+   * Empty by default: the deployment places site-facing endpoints under the
+   * site's own registrable domain, so production traffic is same-origin and
+   * needs no entry here. Set it in p3api.conf only for a property that must
+   * genuinely make credentialed cross-origin calls.
+   */
+  cors_origins: [],
+
   jbrowseAPIRoot: 'http://localhost:3001/jbrowse',
 
   treeDirectory: './trees',
@@ -144,6 +162,46 @@ const defaults = {
     subsystem_ref: 'id',
     surveillance: 'id',
     taxonomy: 'taxon_id'
+  },
+
+  // Layer 1 admission control. See lib/SolrAdmissionControl.js and
+  // Docs/ADMISSION_CONTROL_STATUS-2026-10.md.
+  //
+  // DISABLED BY DEFAULT, deliberately. Enabling it makes the API return 429, which needs
+  // coordinated client updates first (CLI tools and the website must honour Retry-After
+  // without tight-retrying). Until then the middleware still classifies every request and
+  // reports pool state at /stats, so a dry run shows what *would* have been shed.
+  //
+  // Pool sizes are per worker, so cluster-facing concurrency is size x worker count.
+  // The rule they are chosen against is "admission pool <= socket pool, so the socket
+  // queue stays empty" — heavy at 3 against the main Solr agent's maxSockets 8.
+  queryAdmission: {
+    enabled: false,
+    heavyMaxConcurrent: 3,
+    heavyMaxQueue: 6,
+    heavyMaxWaitMs: 10000,
+    interactiveMaxConcurrent: 20,
+    interactiveMaxQueue: 20,
+    interactiveMaxWaitMs: 1000
+  },
+
+  // Cross-collection join admission. See lib/joinResolver.js and
+  // Docs/OVERLOAD_PROTECTION_AMENDMENT-2026-10.md.
+  //
+  // Thresholds are genome counts, and they were calibrated against the measured cost
+  // curve on 2026-10-12 — re-measure before changing them, because the corpus grows:
+  // Bacteria was ~500K when the original plan was written and is 1.38M now.
+  //
+  //   <= rewriteMaxGenomes  resolve locally to {!terms} (3-6x faster, identical results)
+  //   <= rejectMaxGenomes   leave the join alone
+  //    > rejectMaxGenomes   refuse with 400 — this is the OOM guard
+  joinResolution: {
+    enabled: true,
+    rewriteMaxGenomes: 50000,
+    rejectMaxGenomes: 150000,
+    countCacheTtlMs: 300000,
+    idCacheTtlMs: 300000,
+    cacheMaxEntries: 200
   },
 
   shards: {
