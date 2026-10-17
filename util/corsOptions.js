@@ -97,13 +97,29 @@ var ALLOWED_HEADERS = [
   'x-requested-with'
 ]
 
+/*
+ * Response headers a cross-origin caller is allowed to READ. A header the
+ * server sends but does not list here is invisible to fetch()/XHR -- the
+ * browser strips it before JS sees it, with no error.
+ *
+ * Retry-After is here because 429 handling depends on it. app.js's terminal
+ * error handler sets it on every 429/503 (admission rejections and Solr
+ * circuit-breaker trips alike), and Docs/CLIENT-429.md tells clients to pace
+ * their retry on it. Without it exposed, a cross-origin client sees the 429
+ * but not the server's pacing, falls back to its own default backoff, and the
+ * failure is silent in exactly the direction that hurts: a too-fast retry loop
+ * into a cluster that is already shedding. Same-origin callers (the website on
+ * /api-for-website/) were never affected, which is why this gap could sit here
+ * unnoticed.
+ */
 var EXPOSED_HEADERS = [
   'facet_counts',
   'x-facet-count',
   'Content-Range',
   'X-Content-Range',
   'X-Cursor-Mark',
-  'ETag'
+  'ETag',
+  'Retry-After'
 ]
 
 /*
