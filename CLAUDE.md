@@ -6,45 +6,58 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 BV-BRC API (p3api) is a Node.js/Express REST API providing access to BV-BRC bioinformatics data. It acts as a gateway to Solr backends, supporting RQL (Resource Query Language) and Solr query syntax.
 
-## Branch state (2026-09-03)
+## Branch state (2026-10-18)
 
-**`origin/alpha` is 25 commits AHEAD of `origin/master`, 0 behind.** Master can be
-fast-forwarded; there is nothing to merge the other way. **This is the reverse of the note
-that stood here through 2026-08-25**, which said master was 14 ahead with nothing to merge
-back — that was true then and is not now. This section goes stale fast; check with
-`git rev-list --left-right --count origin/master...origin/alpha` rather than trusting any
-sentence in it.
+**`upstream/alpha` is 72 commits AHEAD of `upstream/master`, 0 behind** — master is an
+ancestor, so the merge is a **fast-forward with zero conflicts**. This section goes stale
+fast; check with `git rev-list --left-right --count upstream/master...upstream/alpha` rather
+than trusting any sentence in it.
 
-- `origin/master` = **`6397c6cf`**, `origin/alpha` = **`5008579c`**.
-- **PR #202** (`bf9c9207`) merged alpha → master, bringing the distributed-query,
-  join-enrichment, and cross-collection-download subsystems (originally #189, `be1b75aa`)
-  onto master. **PR #203** (`6397c6cf`) added a Solr request timeout on the main data path.
-  Those two are what made master briefly the ahead branch.
-- **PR #206** (`4f64b1d4`, merged 2026-09-03) put 21 commits on alpha: the whole self-call
-  elimination, the `ShardCursorStream` POST fix, and the `MinHeap` UTF-8 comparator fix.
-- **PR #207** (`5008579c`, merged 2026-09-03) added the `terms()` `cache=false` emission and
-  the matching `Limiter` detection.
+- `upstream/master` = **`6397c6cf`** (unmoved since 2026-09-03), `upstream/alpha` =
+  **`dc5fde34`**.
+- **PR #239 (alpha → master) is OPEN and ready**, carrying the whole 72-commit delta:
+  69 files, +12,248 / −283, 24 merged PRs (#206–#240). `package-lock.json` is
+  **byte-identical** between the branches; the only `package.json` delta is one line,
+  `--stack-size=65536` → `--stack-size=7000` (65536 exceeded the OS thread stack, so V8's
+  guard never fired and deep recursion segfaulted the worker instead of throwing
+  `RangeError`). Body carries the deployment checklist; re-measure the counts before merging
+  if alpha has moved again.
+- Everything described in the rest of this file as "on alpha only" is still exactly that.
+  **Master has none of the overload-protection work, neither worker-crash fix
+  (`31a1d5ad` dataRouter, `6b1335e4` ExpandingQuery), nor the self-call elimination.**
 
-**Master does not have the two worker-crash fixes.** `31a1d5ad` (`dataRouter`) and
-`6b1335e4` (`ExpandingQuery`) are on alpha only — `git branch -r --contains 31a1d5ad` lists
-`origin/alpha` and nothing else. Both close paths where an ordinary unauthenticated client
-mistake aborts a worker (see "`JSON.parse` on a self-call body is how a worker dies" below).
-Whether that warrants a merge to master ahead of the normal cadence is a maintainer call, but
-it should be a deliberate one.
+**The remotes are `origin` (`olsonanl/p3_api`, personal fork, HTTPS) and `upstream`
+(`BV-BRC/BV-BRC-API`, canonical).** An earlier version of this section said the opposite —
+that `origin` was canonical, that there was *no* remote named `upstream`, and that the fork
+was called `bob`. All three are wrong now. Push feature branches to `origin` and open the PR
+with `--head olsonanl:<branch>`. **`gh pr edit` still does not work against this repo**
+(`GraphQL: Projects (classic) is being deprecated`); `gh pr create` is fine, and to change a
+body afterwards use `gh api -X PATCH repos/BV-BRC/BV-BRC-API/pulls/<n> -F body=@file`.
 
-Open PRs as of 2026-09-03: **#205** (master ← dependabot, fast-uri 3.1.5→3.1.7) and **#151**
-(alpha ← `bugfix/private-structure`, `protein_structure` access control, open since
-2026-03-05). Note the 9 dependabot PRs listed as open under "Dependency Security
-Maintenance" below (#117, #118, #123–#126, #128, #129, #133) are **closed** — that paragraph
-is stale in the other direction.
+Open PRs as of 2026-10-18: **#239** (the merge, above) and **10 dependabot PRs**, all
+targeting master — #205, #209, #214, #215, #216, #217, #218, #223, #227, #233. Merge #239
+first; because the lockfile is identical on both branches the bumps apply equally either
+side and flow back to alpha on the next sync, so there is no reason to retarget them. Seven
+are transitive-only. **#216 (nodemailer 9.0.5 → 10.0.9) is a semver-major bump** and needs
+the same hand-verification 9.x got — `lib/mailer.js` uses only `createTransport` (sendmail +
+SMTP + auth + tls) and callback-style `sendMail`. Do not batch it with the rest.
 
-Merge-resolution notes worth keeping: the only conflicts were `package.json` and
-`package-lock.json`, and `package.json` was resolved **in alpha's favour on all four
-differing lines** — keep the inlined `lib/solrjs`, keep `dojo-declare`, keep the two test
-scripts, and **do not restore the external `solrjs` dependency**. Taking master's side there
-looks right (its dependency work is newer) but reintroduces the package while the code
-imports `lib/solrjs`; both resolve, so it fails silently. Full risk analysis:
-`Docs/ALPHA_TO_MASTER_MERGE_RISK.md`.
+**#151 is CLOSED** (2026-10-07), not open. It proposed a `protein_structure` access-control
+filter; the premise did not hold. All 18,166 private-genome-joined `protein_structure` rows
+carry a `pdb_id` — they are public RCSB depositions — and 34,086 rows have no `genome_id` at
+all and would have vanished for every user. The filter also cost 0.2–120s. Rationale is on
+the closed PR. The 9 older dependabot PRs listed under "Dependency Security Maintenance"
+below (#117, #118, #123–#126, #128, #129, #133) are **also closed** — that paragraph is
+stale in the other direction.
+
+Merge-resolution notes worth keeping, from the **#202** merge — the current #239 merge is a
+fast-forward and has no conflicts at all, but these apply to any future one that does. The
+only conflicts were `package.json` and `package-lock.json`, and `package.json` was resolved
+**in alpha's favour on all four differing lines** — keep the inlined `lib/solrjs`, keep
+`dojo-declare`, keep the two test scripts, and **do not restore the external `solrjs`
+dependency**. Taking master's side there looks right (its dependency work is newer) but
+reintroduces the package while the code imports `lib/solrjs`; both resolve, so it fails
+silently. Full risk analysis: `Docs/ALPHA_TO_MASTER_MERGE_RISK.md`.
 
 Historical reports (`Docs/ALPHA_MERGE_REPORT.md`, `Docs/ALPHA_PR_BODY.md`,
 `Docs/ALPHA_MERGE_REPORT_SLACK.txt`, `Docs/BRANCH_RISK_ANALYSIS.md`) describe the pre-#189
@@ -56,15 +69,21 @@ master needs `dojo-declare` for the inlined client. A bare `git checkout` in eit
 direction gives every worker `Cannot find module …`. Verify before restarting:
 
 ```bash
+npm ci
 node -e "require('dojo-declare/declare'); require('./lib/solrjs'); console.log('deps OK')"
 ```
 
-**Offline-suite baseline on `origin/alpha` is 370 passing / 1 failing** (measured 2026-09-03,
-`npx mocha tests/test-util/ tests/test-join/ tests/test-distributed/`) — the known
-`fastaHeaderFormatter` case. It was 351/1 before PR #207 added 19 offline specs. Earlier
-notes here said 350/1 and then 327/1; both were stale. The self-call work's own specs all
-need a live API and a populated Solr, so none of them land in these three suites — run those
-against `:23001` with the command in `PLAN_ELIMINATE_SELF_CALL.md`.
+Then **`pm2 reload`**. `pm2 delete` is *not* required to pick up new code — it is only for
+fixing colliding log paths. An earlier note here said otherwise.
+
+**Offline-suite baseline on `upstream/alpha` is 478 passing / 1 failing** (measured
+2026-10-18 at `dc5fde34`, `npx mocha tests/test-util/ tests/test-join/
+tests/test-distributed/`) — the known `fastaHeaderFormatter` case. It was 370/1 on
+2026-09-03; the overload-protection work added ~108 offline specs. Earlier notes here said
+351/1, 350/1 and 327/1; all stale. `tests/test-security/security-cors.spec.js` is also
+offline and passes **19/19** separately. The self-call work's own specs need a live API and
+a populated Solr, so none of them land in these suites — run those against `:23001` with the
+command in `PLAN_ELIMINATE_SELF_CALL.md`.
 
 **`distributedQuery` defaults to `enabled: true` with an empty `excludeNodes`,** and the path
 needs direct network access to every Solr replica, which the production deployment does not
@@ -683,6 +702,67 @@ see queue depth — it is zero before and after. With `queryAdmission.enabled: f
 shipped default) that is a **dry run**: it reports what *would* have been bounded, which is
 what the pool sizes should be tuned against before enforcement is switched on.
 
+### Admission control, measured end to end (alpha, 2026-10-17)
+
+First run with `queryAdmission.enabled: true` on a real deployment. **8/8 in the `load`
+group at `--concurrency 30`:**
+
+```
+30 requests in 8.3s — 27 ok, 3 shed (429), 0 other
+Retry-After: 10        "The server is busy processing other large requests. Please retry shortly."
+median shed latency 0.99s
+peak heavy active=3 depth=6; peak socket queue=0
+all 27 completed downloads returned 2,850,853 bytes — identical
+```
+
+Concurrency pinned at exactly the 3-slot limit, the queue filled to its 6-deep bound,
+overflow shed in ~1 s with a valid `Retry-After`, and **no truncated-but-200 downloads**.
+The socket queue stayed empty throughout, which is the point of keeping the admission pool
+smaller than `maxSockets` (3 vs 8): admitted work never waits on the agent.
+
+**`--concurrency 12` is not enough to shed, and that is not a failure.** A download finishes
+in ~4 s, so 12 requests drain through 3 slots + 6 queue without the queue ever filling —
+the run reports 23/24 with "all 12 admitted". The harness says so in the failure text. Use
+**30** to demonstrate shedding.
+
+**Which pool a request lands in decides whether the website ever sees a 429**, and the split
+is deliberate:
+
+| pool | slots | queue | wait | what lands here |
+|---|---|---|---|---|
+| `heavy` | 3 | 6 | 10 s | `http_download=true`, `call_method=stream`, `rows>=10000` |
+| `interactive` | 20 | 20 | 1 s | grid pages, facets, single gets — everything else |
+
+The harness issues **only heavy downloads**, so it saturates `heavy` and leaves
+`interactive` untouched (`rejected_*` stayed 0 on every run). A user browsing grids during
+the load sees nothing; a user clicking ~10 downloads at once gets shed. That is the intent —
+shed the amplifier, keep the UI alive. Exercising the website's 429 path on *ordinary* grid
+traffic needs >40 concurrent queries or a Solr slow enough to blow the 1 s queue deadline;
+temporarily lowering `interactiveMaxConcurrent`/`interactiveMaxQueue` is far more reliable
+than trying to generate that by hand.
+
+**Pool state is per worker.** `default_pm2_config.js` sets `instances: 1` and nothing in
+`app.js`/`web.js` forks, so today these numbers are the whole deployment. If that ever
+changes, cluster-facing concurrency becomes slots × workers.
+
+### `Retry-After` must stay in `EXPOSED_HEADERS`
+
+`app.js`'s terminal error handler sets `Retry-After` on every 429 and 503 — admission
+rejections and Solr circuit-breaker trips (`SolrHttpError`) alike. It was **not** in
+`EXPOSED_HEADERS` in `util/corsOptions.js` until PR #240, so for a **cross-origin** caller
+the browser stripped it before JS could read it, silently. The client sees the 429, cannot
+see the pacing, and falls back to its own default backoff — retrying faster than the server
+asked, exactly when the cluster is already shedding.
+
+Same-origin callers were never affected: the website reaches the API through the relative
+`/api-for-website/` path and reads every header. **That asymmetry is the trap** — testing
+429 handling same-origin passes while the cross-origin path silently ignores the server's
+pacing. Note the allowlist gates *credentials, not reads*, so anonymous third-party
+consumers get the header too; they are the callers least likely to have bespoke backoff.
+
+Gate: two cases in `tests/test-security/security-cors.spec.js`, both of which fail against
+the pre-#240 list. Client-side contract: `Docs/CLIENT-429.md`.
+
 ## Trace Replay & Shakedown Testing
 
 `scripts/replay-queries.js` replays captured real-user API traces against a dev server and deep-diffs each response against the recorded original. It was moved into this module (it originated in the web module) because the queries it exercises are the API's responsibility. It was the primary tool used to shake down the `feature/distributed-query` branch — full findings in `Docs/DISTRIBUTED_QUERY_SHAKEDOWN.md`.
@@ -877,11 +957,13 @@ old `p3-user` pin depended on it too. It only takes effect stacked on the p3-use
 new `p3-user` has no `forever` dependency. If you try this against an old checkout and see the
 audit numbers not move, that's why.
 
-### Future work: retire `request-promise` (the last 2 criticals)
+### Future work: retire `request-promise` (the remaining criticals)
 
-**Deferred deliberately — not an oversight.** After the p3-user repin and the `forever`
-removal, `npm audit` sits at **35 advisories, 2 critical**, and *both* criticals
-(`form-data`, `request`) come from the single `request-promise` dependency. It is deprecated
+**Deferred deliberately — not an oversight.** `npm audit` on alpha measured 2026-10-18 is
+**61 advisories: 3 critical, 29 high, 22 moderate, 7 low**, and *all three* criticals come
+from the single `request-promise` dependency. (It was 35/2 after the 2026-08-17 refresh;
+advisory counts drift upward on their own as new CVEs are published against unchanged
+versions, so re-measure rather than trusting this number.) `request-promise` is deprecated
 upstream with **no fix available**, so the only remedy is retiring it.
 
 As of pin `105a60b7`, **`request-promise` is the only reason `request` is still in the tree
