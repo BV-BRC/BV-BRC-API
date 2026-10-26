@@ -40,9 +40,12 @@ Three things follow:
   species and both larger than all of Bacteria.
 - **The fix is the `{!terms f=taxon_id cache=false}` rewrite** — 3.6 s for the full
   112,721-taxon subtree, no cache dependency, and verified to match the join **exactly**
-  (1,949,521 genomes both ways, 0.000% difference). Blocked on denormalising
-  `genome_status`, because `genome_sequence` cannot express `ne(genome_status,Deprecated)`
-  and ignoring it over-counts by **20%** on this taxon — silently, as HTTP 200.
+  (1,949,521 genomes both ways, 0.000% difference). **No longer blocked on
+  denormalisation** — see §4.1a: subtract the *deprecated* genome ids as a negative
+  `{!terms}`. Deprecated genomes are rare, so that list is 5–400× smaller than the live
+  one (4.0 MB vs 20.2 MB here). Verified exact on *E. coli* — 21,789,712 both ways,
+  **1,770 ms against the join's 25,097 ms** — and on Influenza A, where the join cannot
+  complete at all, cross-checked arithmetically to the document.
 - **A `newSearcher` warming query** for taxa 2 / 10239 / 2697049 / 2955291 would stop any
   user paying the cold build. Config-only, complementary, and also covers `sp_gene`,
   `genome_amr` and `genome_feature`, which join too.

@@ -177,18 +177,88 @@ Mechanics: fetch the descendant taxon ids from `taxonomy` (`lineage_ids:<taxon>`
 cursor paging), emit `{!terms f=taxon_id cache=false}`. The id list is **0.82 MB** for
 112,721 taxa — deliverable, because shard pages are POSTs.
 
-Two caveats that must be settled first:
+Two caveats:
 
-- **It cannot express `ne(genome_status,Deprecated)`.** `genome_sequence` has no status
-  field, so a bare `taxon_id` filter also returns Deprecated genomes. For this taxon that
-  is **1,949,521 vs 1,625,381 — a 20% over-count**, and it would be silent: HTTP 200 with
-  wrong numbers. Needs the denormalisation in §4.3, or restriction to purely taxonomic
-  filters.
-- **Resolve to `taxon_id`, never to `genome_id`.** The genome-id list for this taxon is
-  ~20 MB, and `Limiter` caps the fetch at 50,000 so it cannot even see the full set.
+- **A bare `taxon_id` filter cannot express `ne(genome_status,Deprecated)`.**
+  `genome_sequence` has no status field, so it also returns Deprecated genomes — for this
+  taxon **1,949,521 vs 1,625,381, a 20% over-count**, silently, as HTTP 200. **Solved by
+  the exclusion filter in §4.1a; denormalisation is not required.**
+- **Resolve to `taxon_id`, never to `genome_id`.** The *live* genome-id list for this taxon
+  is ~20 MB, and `Limiter` caps the fetch at 50,000 so it cannot even see the full set.
   Also: `genome_id` is *usually* `<taxon_id>.<n>` but **not always** — 43 mismatches in a
   4,000-genome sample (1.1%), e.g. `1540896.3` with `taxon_id 2949581`. Do not derive
-  membership from the id prefix.
+  membership from the id prefix. (Note the *deprecated* id list is a different matter — see
+  §4.1a, where listing ids is exactly the right move because there are few of them.)
+
+### 4.1a — Filtering deprecated status: subtract the deprecated ids
+
+**Measured 2026-10-26. This removes the blocker above and makes denormalisation optional.**
+
+The question was whether `ne(genome_status,Deprecated)` forces us to denormalise
+`genome_status` onto `genome_sequence`/`genome_feature`. It does not. The usable asymmetry
+is that **deprecated genomes are rare**, so enumerating *them* is far cheaper than
+enumerating the live ones:
+
+| taxon | deprecated | live | **exclusion body** | inclusion body |
+|---|---|---|---|---|
+| Influenza A (2955291) | 324,140 | 1,631,578 | **4.0 MB** | 20.2 MB |
+| Bacteria (2) | 65,412 | 1,316,755 | **0.8 MB** | 16.3 MB |
+| Viruses (10239) | 702,579 | 14,940,472 | **8.7 MB** | 185.2 MB |
+| SARS-CoV-2 (2697049) | 26,222 | 9,396,322 | **0.3 MB** | 116.5 MB |
+| *E. coli* (562) | 4,894 | 114,570 | **0.1 MB** | 1.4 MB |
+
+So emit the taxon subtree as an inclusion and the deprecated genomes as an exclusion:
+
+```
+fq={!terms f=taxon_id  cache=false}<112,721 subtree taxon ids>
+fq=-{!terms f=genome_id cache=false}<324,140 deprecated genome ids>
+```
+
+**Verified exact on *E. coli*, all three variants against the same data:**
+
+```
+join (ground truth)              21,789,712    25,097 ms
+taxon terms only                 22,807,582     1,786 ms   <- over-counts, as predicted
+taxon terms - deprecated ids     21,789,712     1,770 ms   <- EXACT, 14x faster
+```
+
+**And on Influenza A, where the join cannot complete at all** (3/3 timeouts at 125 s):
+
+```
+taxon terms - deprecated ids      1,742,620     9,807 ms
+```
+
+Correctness there was established arithmetically, since no join result exists to compare
+against: `2,066,759` (subtree, all statuses) − `1,742,620` = **324,139**, and an
+independent join restricted to `genome_status:Deprecated` returns **324,139**. Exact match
+by two routes.
+
+#### Why the two alternatives do not work
+
+- **A deprecated-only collection** is what this already is. `genome` *is* that collection
+  when queried as `genome_status:Deprecated`, and the fetch costs ~1 s. A separate
+  collection would add sync burden for no gain.
+- **An external taxon → deprecated map** is the right shape but cannot be keyed on taxon.
+  **Deprecation is not taxon-aligned**: of the 162 taxa in the Influenza A subtree holding
+  deprecated genomes, **159 are mixed** (live *and* deprecated), covering 324,132 of
+  324,140. Subtracting whole taxon ids would be wrong by essentially the entire set.
+  Deprecation is genuinely per-genome.
+
+#### Costs and limits
+
+- **Three round trips, not one.** Subtree taxa + deprecated ids + the query itself. On
+  Influenza A the two lookups cost **17.3 s** uncached (112,721 taxa, 324,140 ids, cursor-
+  paged). Both change only with ingest, so they cache well — **this is where a local
+  SQLite cache genuinely earns its place**, unlike the simple rewrite where it was merely
+  an optimisation.
+- **Viruses needs an 8.7 MB POST body.** Requires a size guard and a fallback path.
+- The asymmetry holds everywhere measured — deprecation runs 4.5% globally and never above
+  ~17% in any taxon checked — but a densely-deprecated taxon would erode it, so the
+  implementation should compare the two list sizes and pick the smaller.
+
+**Recommended sequence:** ship exclusion filtering first — it is API-side only, needs no
+schema change and no 444 M-doc reindex, and is correct today. Denormalise `genome_status`
+(§4.4) only if the extra round trips prove to be the bottleneck after caching.
 
 **2. `newSearcher` warming queries** for the broad taxa (2, 10239, 2697049, 2955291).
 Pays the 258 s in the background so no user meets it cold. Config-only, complementary to
@@ -197,8 +267,10 @@ Pays the 258 s in the background so no user meets it cold. Config-only, compleme
 **3. Raising `SOLR_REQUEST_TIMEOUT_MS` does NOT work on its own.** Cloudflare still cuts at
 ~100 s, so users would get a 524 instead of a 500. Only useful alongside an async/SSE page.
 
-**4. Denormalise `genome_status`** onto `genome_sequence` and `genome_feature`. This is
-what makes (1) correct. Scope is much smaller than it first appears — with
+**4. Denormalise `genome_status`** onto `genome_sequence` and `genome_feature` —
+**optional, and no longer a prerequisite.** §4.1a makes (1) correct without it; this would
+only collapse three round trips into one. Kept here because the sizing is useful if it is
+ever wanted. Scope is much smaller than it first appears — with
 *absent-means-not-deprecated*, only the deprecated subset needs writing:
 
 | | |
