@@ -178,6 +178,24 @@ describe('BatchedJoinStream', function () {
     assert.equal(s.calls.genome.length, after, 'must not keep walking the cursor')
   })
 
+  it('fetches through a function the caller supplies, not a bound client', function () {
+    // Guards the design note in the header. DirectSolrClient.fetchByIds is NOT a valid
+    // substitute here: it queries ONE replica on the assumption that "any shard should
+    // have the full dataset", which is true for feature_sequence and false for
+    // genome_sequence (12 shards) and genome_feature (80). Swapping it in would return a
+    // fraction of a download as a well-formed file. Keeping the fetch injectable is what
+    // makes that a deliberate choice rather than an accident -- and what lets this be
+    // tested offline at all.
+    const st = new BatchedJoinStream({
+      queryGenome: async () => ({ response: { docs: [] } }),
+      queryTarget: async () => ({ response: { docs: [] } }),
+      genomeFilter: 'x:1'
+    })
+    assert.isFunction(st.queryGenome)
+    assert.isFunction(st.queryTarget)
+    st.destroy()
+  })
+
   it('surfaces a lookup failure as a stream error, not a truncated success', async function () {
     // A download that silently stops early is this codebase's characteristic failure.
     const s = stubs({ total: 100, perGenome: 1 })
