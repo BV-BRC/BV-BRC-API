@@ -8,6 +8,7 @@ const APIMethodHandler = require('../middleware/APIMethodHandler')
 const httpParams = require('../middleware/http-params')
 const { internalQuery } = require('../lib/internalQuery')
 const { resolveJoins } = require('../lib/joinResolver')
+const { slicedFacetCount } = require('../lib/slicedFacet')
 const debug = require('debug')('p3api-server:route/summary')
 const apicache = require('apicache')
 const redis = require('redis')
@@ -45,6 +46,18 @@ router.use(httpParams)
  * internalQuery removes the whole class: Solrjs returns parsed JSON, and a Solr-reported
  * error becomes a real Error carrying `statusCode`.
  */
+/**
+ * Is the sliced-facet fallback enabled?
+ *
+ * Off by default: it turns a fast 400 into a multi-minute cache fill. That is the right
+ * trade for a cached summary nobody waits on, but it is an operational choice and should
+ * be made deliberately per deployment.
+ */
+function slicedSummaryEnabled () {
+  const cfg = config.get('joinResolution') || {}
+  return cfg.slicedSummary === true
+}
+
 async function subQuery (dataType, query, opts) {
   // Cross-collection joins go through the resolver first: an over-broad one is refused
   // with 400 rather than left to time out, and a small one is rewritten to a local
@@ -141,6 +154,44 @@ router.get('/summary_by_taxon/:taxon_id', [
       ).then((results) => {
         const feature_type_count = results.facet_counts.facet_fields.feature_type
         res.results = Object.assign(res.results, feature_type_count)
+      }).catch((err) => {
+        // A taxon too broad to join is exactly the case this endpoint exists to serve —
+        // the top of the taxonomy is the most-visited summary. Rather than fail, compute
+        // the same counts by slicing the genome set and summing the per-slice facets.
+        //
+        // Valid because facet counts are ADDITIVE over disjoint slices (measured; see
+        // lib/slicedFacet.js), and affordable because slicing is 10x CHEAPER than the
+        // join it replaces, not merely survivable: ~5s of Solr work against the join's
+        // ~52s on a 246,835-genome set. Taxon 10239 used to spend 600s here and return a
+        // 500, three times in one 75-minute window.
+        //
+        // This runs behind cacheWithRedis('1 day'), so a slow fill is paid once and
+        // served instantly for a day. Each slice is its own sub-second rows=0 request, so
+        // no single Solr call approaches SOLR_REQUEST_TIMEOUT_MS.
+        if (err && err.name !== 'JoinTooBroadError') {
+          throw err
+        }
+        if (!slicedSummaryEnabled()) {
+          throw err
+        }
+        console.log(`[SlicedFacet] summary_by_taxon=${req.params.taxon_id} genomes=${err.genomeCount} — join refused, slicing`)
+        const mk = (collection) => ({ query }) => internalQuery({
+          collection, query, queryType: 'solr', user: undefined, requestId: req.requestId
+        })
+        return slicedFacetCount({
+          queryGenome: mk('genome'),
+          queryTarget: mk('genome_feature'),
+          genomeFilter: `taxon_lineage_ids:${req.params.taxon_id}`,
+          facetField: 'feature_type',
+          extraFq: ['feature_type:(CDS OR mat_peptide)']
+        }).then((out) => {
+          if (out.truncated) {
+            // Caching a partial sum for a day would be worse than having no number.
+            throw err
+          }
+          console.log(`[SlicedFacet] summary_by_taxon=${req.params.taxon_id} done: ${out.slices} slices, ${out.genomes} genomes`)
+          res.results = Object.assign(res.results, out.counts)
+        })
       })
     )
     defs.push(
