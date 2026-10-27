@@ -246,6 +246,26 @@ app.use(function (req, res, next) {
   res.end()
 })
 
+/*
+ * Error fields safe to return to a client, copied onto the JSON body when present.
+ *
+ * ALLOWLIST, deliberately. An Error picked up by the terminal handler may carry a stack,
+ * a Solr response fragment, or the caller's own filter text; serialising it wholesale is
+ * how internal detail escapes. Add a field here only after deciding it is safe to publish.
+ *
+ * Current members, all from JoinTooBroadError (lib/joinResolver.js) — they let a UI say
+ * "Viruses holds 14.9 million genomes, more than this view can summarise" and offer the
+ * child taxa, instead of printing a sentence it had to regex:
+ *
+ *   genomeCount  how many genomes the join matched
+ *   limit        the threshold it exceeded (config, so do NOT hardcode it client-side)
+ *   taxonId      the taxon at fault, when the filter was purely taxonomic
+ *
+ * `filter` is deliberately NOT here: it is raw Solr the client never wrote and has no use
+ * for, and echoing query internals back is the habit that produces disclosure bugs.
+ */
+const ERROR_DETAIL_FIELDS = ['genomeCount', 'limit', 'taxonId']
+
 // Handle errors
 app.use(function (error, req, res, next) {
   // If the response has already started (e.g. a streaming/distributed download
@@ -278,9 +298,30 @@ app.use(function (error, req, res, next) {
     res.setHeader('Retry-After', String(secs))
   }
 
-  res.status(error.status || 500)
-  res.send({
+  // Structured error detail, for clients that want to react rather than just display.
+  //
+  // `message` stays exactly as it was — it is the human-readable text, several clients
+  // show it verbatim, and nothing about it changes here. The extra fields are ADDITIVE:
+  // a client that ignores them sees the same body it always did.
+  //
+  // Only an explicit allowlist is copied. An error object carries whatever the throwing
+  // code attached — stack frames, Solr response fragments, the user's own filter — and
+  // blanket-serialising that is how internal detail leaks to clients. Anything new has to
+  // be added here deliberately.
+  const body = {
     status: error.status || 500,
     message: error.message || 'Interal Server Error'
-  })
+  }
+  if (error.errorCode) {
+    // A stable machine-readable tag. Clients should branch on this, never on the prose.
+    body.error = error.errorCode
+  }
+  for (const field of ERROR_DETAIL_FIELDS) {
+    if (error[field] !== undefined) {
+      body[field] = error[field]
+    }
+  }
+
+  res.status(error.status || 500)
+  res.send(body)
 })
