@@ -47,15 +47,63 @@ const { internalQuery } = require('../lib/internalQuery')
  * regression rather than a security improvement.
  */
 function makeGenomeQuery (req) {
-  return function queryGenome ({ query }) {
+  return makeCollectionQuery(req, 'genome')
+}
+
+/** Same, against `taxonomy`, for the taxon-subtree rewrite. */
+function makeTaxonomyQuery (req) {
+  return makeCollectionQuery(req, 'taxonomy')
+}
+
+function makeCollectionQuery (req, collection) {
+  return function query ({ query: q }) {
     return internalQuery({
-      collection: 'genome',
-      query,
+      collection,
+      query: q,
       queryType: 'solr',
       user: undefined,
       requestId: req && req.requestId
     })
   }
+}
+
+/**
+ * Should the emitted {!terms} filter be cached?
+ *
+ * The caller knows and the server often cannot: a grid's FIRST page is byte-identical to
+ * a one-shot (`start=0`, `rows=25`), and the difference only appears when a second
+ * request arrives. So `http_filter_cache` lets the caller say. See
+ * Docs/PROPOSAL-http-filter-cache-hint.md.
+ *
+ *   true   caller will re-send this filter (grid paging, cursor download)
+ *   false  one-shot; do not materialise a DocSet that is used once
+ *   auto   (default, or absent) infer below
+ *
+ * The `auto` inference defaults to CACHED, because the mistakes are asymmetric: caching a
+ * one-shot pays one DocSet build, whereas not caching a paged query rebuilds on every
+ * page. It only says `false` for shapes that provably cannot page.
+ *
+ * @returns {boolean}
+ */
+function resolveFilterCacheHint (req) {
+  const raw = req.filterParams && req.filterParams.http_filter_cache
+  if (raw !== undefined) {
+    const v = String(raw).trim().toLowerCase()
+    if (v === 'true' || v === '1') return true
+    if (v === 'false' || v === '0') return false
+    // anything else, including 'auto', falls through to the inference
+  }
+
+  // Downloads and streams cursor by construction (lib/solrjs/index.js _streamQuery).
+  if (req.isDownload || req.call_method === 'stream') return true
+
+  const q = (req.call_params && req.call_params[0]) || ''
+  // rows=0 is a facet-only count (the summary_by_taxon shape) and rows=1 is a probe;
+  // neither can page, so neither benefits from a cached DocSet.
+  if (/[&?]rows=0(?:&|$)/.test(q)) return false
+  if (/[&?]rows=1(?:&|$)/.test(q)) return false
+
+  return true
 }
 
 module.exports = function JoinResolution (req, res, next) {
@@ -74,6 +122,8 @@ module.exports = function JoinResolution (req, res, next) {
 
   resolveJoins(req.call_params[0], {
     queryGenome: makeGenomeQuery(req),
+    queryTaxonomy: makeTaxonomyQuery(req),
+    filterCache: resolveFilterCacheHint(req),
     collection: req.call_collection
   })
     .then((result) => {
@@ -97,3 +147,5 @@ module.exports = function JoinResolution (req, res, next) {
       next()
     })
 }
+
+module.exports.resolveFilterCacheHint = resolveFilterCacheHint

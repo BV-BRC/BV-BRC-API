@@ -144,3 +144,54 @@ describe('Limiter fixed-ID detection', () => {
     assert.equal(rowsOf(limit(q, 'genome_amr')), 25000)
   })
 })
+
+/**
+ * Regression guards for the taxon-subtree join rewrite (TODO-13/TODO-14).
+ *
+ * The rewrite emits two filters that must NOT be read as fixed-id lists:
+ *
+ *   fq={!terms f=taxon_id …}<subtree taxa>      -- taxa do not bound the result set;
+ *                                                  3,754 taxa -> 21.8M sequences
+ *   fq=-{!terms f=genome_id …}<deprecated ids>  -- a NEGATED list bounds nothing at all
+ *
+ * Today's code is already correct on both counts — `primaryKeyMap` only matches the
+ * target collection's own key, and the terms pattern is anchored to `fq={!terms` so a
+ * leading `-` does not match. Neither property was pinned, so a future widening of
+ * either pattern would silently cap `rows` and truncate results with an HTTP 200.
+ */
+describe('Limiter: filters that must NOT cap rows', function () {
+  const BIG = 25000
+
+  it('ignores a taxon_id terms filter on genome_sequence', function () {
+    const taxa = Array.from({ length: 50 }, (_, i) => 1000 + i).join(',')
+    const q = limit(`q=*:*&rows=${BIG}&fq={!terms f=taxon_id cache=true}${taxa}`, 'genome_sequence')
+    assert.equal(rowsOf(q), BIG, 'taxon count must not become a row cap')
+  })
+
+  it('ignores a taxon_id terms filter on genome_feature', function () {
+    const taxa = Array.from({ length: 50 }, (_, i) => 1000 + i).join(',')
+    const q = limit(`q=*:*&rows=${BIG}&fq={!terms f=taxon_id cache=true}${taxa}`, 'genome_feature')
+    assert.equal(rowsOf(q), BIG)
+  })
+
+  it('ignores a NEGATED genome_id exclusion', function () {
+    const ids = Array.from({ length: 30 }, (_, i) => `100${i}.1`).join(',')
+    const q = limit(`q=*:*&rows=${BIG}&fq=-{!terms f=genome_id cache=true}${ids}`, 'genome')
+    assert.equal(rowsOf(q), BIG, 'an exclusion bounds nothing')
+  })
+
+  it('still caps on a POSITIVE primary-key terms filter', function () {
+    // The negative cases above must not be achieved by breaking detection outright.
+    const ids = Array.from({ length: 30 }, (_, i) => `100${i}.1`).join(',')
+    const q = limit(`q=*:*&rows=${BIG}&fq={!terms f=genome_id cache=true}${ids}`, 'genome')
+    assert.equal(rowsOf(q), 30 + ID_COUNT_BUFFER)
+  })
+
+  it('takes the positive count when a query carries both forms', function () {
+    const pos = ['1.1', '2.2'].join(',')
+    const neg = Array.from({ length: 7 }, (_, i) => `9${i}.1`).join(',')
+    const q = limit(
+      `q=*:*&rows=${BIG}&fq={!terms f=genome_id}${pos}&fq=-{!terms f=genome_id}${neg}`, 'genome')
+    assert.equal(rowsOf(q), 2 + ID_COUNT_BUFFER, 'must use the positive 2, not the negated 7')
+  })
+})

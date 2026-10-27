@@ -5,14 +5,14 @@ const URL = require('url')
 const ALLOWED_HEADERS = ['accept', 'range', 'content-type', 'download']
 
 // Sanitize header values to prevent XSS
-function sanitizeHeaderValue(value) {
+function sanitizeHeaderValue (value) {
   if (!value) return ''
   // Remove any HTML tags and dangerous characters
   return String(value).replace(/[<>"'&]/g, '')
 }
 
 // Validate parameter names to prevent XSS via parameter names
-function isValidParameterName(name) {
+function isValidParameterName (name) {
   // Allow RQL syntax: eq(field,value), and(eq(...),eq(...)), etc.
   // Also allow: alphanumeric, underscore, hyphen, dot, parentheses, comma, asterisk, colon, slash, percent
   // Block dangerous characters: <, >, ", ', &, semicolon
@@ -30,13 +30,13 @@ module.exports = function (req, res, next) {
       q.split('&').forEach(function (qp) {
         var parts = qp.split('=')
         var paramName = parts[0]
-        
+
         // Validate parameter name to prevent XSS
         if (!isValidParameterName(paramName)) {
           console.warn(`[SECURITY] Blocked invalid parameter name: ${paramName.substring(0, 50)}`)
           return // Skip this parameter
         }
-        
+
         parsed[paramName] = parts[1] || ''
       })
     }
@@ -58,6 +58,11 @@ module.exports = function (req, res, next) {
       // against a server allowlist there — capturing them here is not trust.
       req.sourceParams = {}
 
+      // Store http_filter_* params separately. These are query-planning hints consumed by
+      // JoinResolution (http_filter_cache declares whether the caller will page through
+      // the same filter), not headers, and must not reach Solr.
+      req.filterParams = {}
+
       Object.keys(parsed).forEach((key) => {
         if (key.match(/^http_fasta_/)) {
           // Store FASTA params for serializer access
@@ -76,6 +81,13 @@ module.exports = function (req, res, next) {
         if (key.match(/^http_source_/)) {
           // Store cross-collection source params for CrossCollectionSource
           req.sourceParams[key] = decodeURIComponent(parsed[key])
+          delete parsed[key]
+          return
+        }
+
+        if (key.match(/^http_filter_/)) {
+          // Store query-planning hints for JoinResolution
+          req.filterParams[key] = decodeURIComponent(parsed[key])
           delete parsed[key]
           return
         }

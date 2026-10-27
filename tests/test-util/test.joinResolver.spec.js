@@ -142,14 +142,24 @@ describe('joinResolver', () => {
 
       assert.isFalse(result.unchanged)
       assert.notInclude(result.query, 'crossCollection')
-      assert.include(result.query, '{!terms f=genome_id cache=false}1000.1,1001.1,1002.1')
+      assert.include(result.query, '{!terms f=genome_id cache=true}1000.1,1001.1,1002.1')
     })
 
-    it('emits cache=false, which is load-bearing not cosmetic', async () => {
-      // A cached terms filter makes Solr materialize the DocSet up front and drive
-      // iteration from the scored query: 3,952ms vs 676ms uncached. See CLAUDE.md.
-      const result = await resolveJoins(TRAILING_JOIN, { queryGenome: stubGenomeQuery(2) })
-      assert.include(result.query, 'cache=false')
+    it('caches by default, and uncaches only when the caller says so', async () => {
+      // CHANGED 2026-10-26. This previously asserted an unconditional cache=false, on the
+      // strength of the terms() analysis in CLAUDE.md (3,952ms cached vs 676ms uncached).
+      // That measurement is about a ONE-SHOT id list racing a scored q=; it does not
+      // describe a client paging through the same filter. Measured on E. coli,
+      // genome_sequence: cursorMark 12 pages -> 786ms/page cached vs 1,017 uncached;
+      // start= paging, interleaved -> 180ms cached vs 381 uncached. The caller declares
+      // intent with http_filter_cache; absent that, cached is the cheap-when-wrong
+      // default. See Docs/PROPOSAL-http-filter-cache-hint.md.
+      const cached = await resolveJoins(TRAILING_JOIN, { queryGenome: stubGenomeQuery(2) })
+      assert.include(cached.query, 'cache=true')
+
+      const uncached = await resolveJoins(TRAILING_JOIN,
+        { queryGenome: stubGenomeQuery(2), filterCache: false })
+      assert.include(uncached.query, 'cache=false')
     })
 
     it('rewrites the v= form too', async () => {
