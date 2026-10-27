@@ -96,8 +96,9 @@ Checked against `upstream/alpha` (`de7873e9`).
 Note the GenBank port deliberately used `Solrjs` rather than `DirectSolrClient`, contrary to
 the plan's Phase 1 wording. That was the right call and is documented in CLAUDE.md: GenBank's
 secondary fetches are small single-genome queries that gain nothing from parallel shard
-fan-out, and `DirectSolrClient` needs direct network access to every replica, which the
-production deployment does not have.
+fan-out, and `DirectSolrClient` needs direct network access to every replica — which an
+off-site dev laptop lacks, making such a path untestable where it is written. (Corrected
+2026-10-27: production itself DOES have that access.)
 
 ### Not shipped
 

@@ -454,9 +454,10 @@ alpha  POST /api/genome_feature/  eq(genome_id,83332.12)&limit(25000)
 prod   same query -> no distributed headers (standard path)
 ```
 
-Production sets `distributedQuery.enabled: false` deliberately — the path needs direct
-network access to every Solr replica, which the production deployment does not have. **Keep
-it that way**; the `excludeNodes` list lives only in the untracked `p3api.conf`. Note the
+Production sets `distributedQuery.enabled: false` deliberately. **Keep it that way** —
+but note the reason is NOT reachability: production does reach every Solr replica
+(corrected 2026-10-27; `excludeNodes` exists to skip individual downed hosts, which only
+makes sense if the rest are reachable). Re-derive the actual reason before changing it. the `excludeNodes` list lives only in the untracked `p3api.conf`. Note the
 default is `enabled: true` with `enabledCollections: []`, and an *empty* `enabledCollections`
 means "no allowlist", i.e. all collections — so a fresh deployment that forgets the flag
 turns it on everywhere.
