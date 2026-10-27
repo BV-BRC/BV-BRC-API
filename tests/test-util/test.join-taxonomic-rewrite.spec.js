@@ -29,17 +29,26 @@ function stubs ({ taxa = [], excluded = [], genomeCount = 2000000 } = {}) {
     calls,
     queryGenome: async ({ query }) => {
       calls.genome.push(query)
-      if (/rows=0/.test(query)) return { response: { numFound: genomeCount, docs: [] } }
       // NB the fq is URL-encoded by the caller, so ':' arrives as %3A.
-      if (/genome_status(?::|%3A)/i.test(query)) {
+      const isStatusQuery = /genome_status(?::|%3A)/i.test(query)
+      if (/rows=0/.test(query)) {
+        // Two different rows=0 counts reach this stub: the join's genome count, and the
+        // pre-check that sizes the exclusion list before paging it.
+        return { response: { numFound: isStatusQuery ? excluded.length : genomeCount, docs: [] } }
+      }
+      if (isStatusQuery) {
         // cursor-paged exclusion fetch: one page then stop
         if (/cursorMark=END/.test(query)) return { response: { numFound: 0, docs: [] }, nextCursorMark: 'END' }
         return page(excluded, 'genome_id')
       }
-      return page([], 'genome_id')
+      // The genome_id fallback path (fetchGenomeIds). Return as many ids as the filter
+      // claims to match, so a stub that says "100,000 genomes" cannot then hand back
+      // three ids and make the fallback look like a successful rewrite.
+      return page(Array.from({ length: Math.min(genomeCount, 5) }, (_, i) => `g${i}.1`), 'genome_id')
     },
     queryTaxonomy: async ({ query }) => {
       calls.taxonomy.push(query)
+      if (/rows=0/.test(query)) return { response: { numFound: taxa.length, docs: [] } }
       if (/cursorMark=END/.test(query)) return { response: { numFound: 0, docs: [] }, nextCursorMark: 'END' }
       return page(taxa, 'taxon_id')
     }
@@ -128,14 +137,37 @@ describe('taxon-subtree join rewrite', function () {
       // MUST NOT emit the subtree alone — that over-counts by every deprecated genome.
       Config.set('joinResolution',
         Object.assign({}, Config.get('joinResolution'), { exclusionMaxIds: 1 }))
-      // genomeCount sits in the leave-alone band (50k..150k) so that "fell back" is
-      // observable as an intact join rather than a reject.
+      // genomeCount sits in the LEAVE-ALONE band (>rewriteMaxGenomes 50k,
+      // <rejectMaxGenomes 150k) so that falling through to the genome_id path neither
+      // rewrites nor rejects — leaving the intact join as the observable signal.
       const s = stubs({ taxa: ['11320'], excluded: ['1.1', '2.2', '3.3'], genomeCount: 100000 })
       const r = await jr.resolveJoins(
         JOIN('(taxon_lineage_ids:2955291 AND !genome_status:Deprecated)'),
         { queryGenome: s.queryGenome, queryTaxonomy: s.queryTaxonomy })
-      assert.include(r.query, 'crossCollection', 'join must survive intact')
+      // The assertion that matters: the subtree must NOT be emitted. Emitting it without
+      // its exclusion is the silent-20%-over-count failure this cap exists to prevent.
+      // What happens afterwards (intact join, or the genome_id path picking it up) is the
+      // pre-existing behaviour and is covered elsewhere.
       assert.notInclude(r.query, 'f=taxon_id')
+      assert.notOk(r.rewrites.some((w) => w.strategy === 'taxon-subtree'))
+    })
+
+    it('sizes the lists BEFORE paging them — the Viruses case', async function () {
+      // Viruses (10239) is 274,702 subtree taxa and 702,579 deprecated genomes against
+      // caps of 250,000/400,000, and 14.9M live genomes so it is refused anyway. Without
+      // the rows=0 pre-check this burned 13 cursor pages (~260,000 ids) discovering that.
+      // Production already fails this query: HTTP 500 at 120s on both genome_sequence and
+      // genome_feature, measured 2026-10-27.
+      Config.set('joinResolution',
+        Object.assign({}, Config.get('joinResolution'), { subtreeMaxTaxa: 100 }))
+      const s = stubs({ taxa: Array.from({ length: 500 }, (_, i) => String(i)), genomeCount: 100000 })
+      await jr.resolveJoins(JOIN('taxon_lineage_ids:10239'),
+        { queryGenome: s.queryGenome, queryTaxonomy: s.queryTaxonomy })
+
+      const counts = s.calls.taxonomy.filter((q) => /rows=0/.test(q)).length
+      const pages = s.calls.taxonomy.filter((q) => /cursorMark/.test(q)).length
+      assert.equal(counts, 1, 'one rows=0 count')
+      assert.equal(pages, 0, 'and NO cursor paging — that is the whole point')
     })
 
     it('falls back when the subtree is too large', async function () {

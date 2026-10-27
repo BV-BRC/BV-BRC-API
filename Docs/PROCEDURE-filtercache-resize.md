@@ -16,6 +16,12 @@ but are in completely different regimes.
 Worst single core: `genome_feature.shard53.replica_t445` — **15,353,139 evictions**,
 33,587,963 lookups, 612 MB.
 
+**Measured for comparison, 2026-10-27:** the Viruses taxon (10239) already fails in
+production on both tabs — `genome_sequence` HTTP 500 at 120.2 s, `genome_feature` HTTP 500
+at 120.6 s, both `"Solr request timed out after 120000ms"`. 14.9 M live genomes is 9× the
+reject threshold, so the join can never materialise inside any deadline. Nothing in this
+procedure changes that; it is recorded here only so the two problems are not conflated.
+
 **What this will and will not fix.** It will reduce eviction churn on the busiest
 collection. It will **not** fix the Influenza A Sequences tab — that is a 258 s cold join
 build on `genome_sequence`, whose cache is 2% full and had **zero** evictions during a
