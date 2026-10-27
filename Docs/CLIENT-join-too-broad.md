@@ -108,6 +108,43 @@ Three different things can fail a broad-taxon request, and they want different U
   what is wrong.
 - The **429** is admission control. Honour `Retry-After`; see `Docs/CLIENT-429.md`.
 
+## Bulk downloads need not be refused
+
+A download is not a grid page. The cap protects the single-`{!terms}` rewrite, whose body
+grows linearly with the genome count — 14.9 M ids would be a ~190 MB filter. But a
+download can resolve the join in **bounded slices**, and the measured cost is roughly flat
+in slice size, because the work tracks the total id count rather than how it is cut up
+(H5N1, 246,835 genomes, `genome_sequence`):
+
+| batch | body | QTime | batches | total |
+|---|---|---|---|---|
+| 500 | 5 KB | 25 ms | 494 | 12 s |
+| 5,000 | 60 KB | 143 ms | 50 | 7 s |
+| 20,000 | 265 KB | 391 ms | 13 | **5 s** |
+
+Projected to Viruses: ~748 batches × ~390 ms ≈ **5 minutes of Solr time**, memory and
+request bodies bounded throughout. Slow, but finite — which for a bulk download beats both
+the 400 and the 120 s timeout that preceded it.
+
+Enabled by `joinResolution.batchedDownloads` (**off by default** — it turns a fast refusal
+into a long response, which is an operational choice). When on:
+
+- `http_download=true` or `call_method=stream` over the limit → **streams**, slowly.
+- an ordinary grid page over the limit → still **400**, as documented above.
+
+So a client may see a 400 on the page and a successful download of the same filter. That
+is deliberate: a page must be fast or fail fast; a download is already understood to take
+a while. If the UI offers "download these results" next to a too-broad grid, the download
+is worth offering even when the grid is refused.
+
+Two caveats for the front end:
+
+- **It can take minutes.** Cloudflare cuts a response at ~100 s *of silence*, so the
+  serializer must emit bytes early and keep emitting — the existing streaming serializers
+  do. Show indeterminate progress, not a spinner with a timeout.
+- **No byte count up front.** `numFound` is never computed; the stream just ends.
+  `PLAN_DOWNLOAD_SSE_NOTIFICATIONS.md` is the existing plan for completion signals.
+
 ## The set of rejected taxa will shrink
 
 Don't hardcode which taxa fail. Today, with `joinResolution` at its default 150,000:
