@@ -17,6 +17,48 @@ each group, roughly highest-value first.
 
 ## Breaking / user-visible
 
+### TODO-13 — Broad-taxon join cold build is 258 s; every deadline in the stack is shorter
+
+**Root cause found 2026-10-23.** Full write-up:
+`Docs/BROAD-TAXON-JOIN-COLD-BUILD-2026-10-23.md`.
+
+A `{!join method=crossCollection fromIndex=genome}` over Influenza A (taxon 2955291,
+1,625,381 genomes) takes **257,898 ms to build cold** and **70–83 ms warm** — ~3,700×.
+The API cuts at 120 s and Cloudflare at ~100 s, so **a cold request can never succeed
+through the website.** Verified direct to Solr with no deadline: `HTTP 200` in 257.9 s,
+`numFound 1,741,906`.
+
+Not an incident. No OOM, no GC, no commits, no recovery, no contention, no LRU pressure —
+all tested and ruled out (§5 of the write-up lists them, plus the measurement traps that
+produced false conclusions, so nobody repeats the work).
+
+Three things follow:
+
+- **The 150,000-genome reject threshold in `lib/joinResolver.js` is calibrated against the
+  wrong variable.** The predictor of disaster is cache-miss, not genome count: a *warm*
+  1.6M-genome join is 70 ms. Rank is also no guide — Influenza A and SARS-CoV-2 are both
+  species and both larger than all of Bacteria.
+- **The fix is the `{!terms f=taxon_id cache=false}` rewrite** — 3.6 s for the full
+  112,721-taxon subtree, no cache dependency, and verified to match the join **exactly**
+  (1,949,521 genomes both ways, 0.000% difference). **No longer blocked on
+  denormalisation** — see §4.1a: subtract the *deprecated* genome ids as a negative
+  `{!terms}`. Deprecated genomes are rare, so that list is 5–400× smaller than the live
+  one (4.0 MB vs 20.2 MB here). Verified exact on *E. coli* — 21,789,712 both ways,
+  **1,770 ms against the join's 25,097 ms** — and on Influenza A, where the join cannot
+  complete at all, cross-checked arithmetically to the document.
+- **A `newSearcher` warming query** for taxa 2 / 10239 / 2697049 / 2955291 would stop any
+  user paying the cold build. Config-only, complementary, and also covers `sp_gene`,
+  `genome_amr` and `genome_feature`, which join too.
+
+**Open sub-question:** what ends a warm period is still unexplained. During a 118-second
+window containing two 120 s timeouts, `genome_sequence`'s filterCache showed **0 evictions,
+0 searcher resets, size 12/512, 98.5% hit**. Neither LRU nor reopen was evicting it.
+
+**Collateral, worth acting on independently:** `genome_feature`'s filterCache is badly
+undersized — **151 of 184 cores pinned at `size=512`, 626,842,974 cumulative evictions,
+107.8 GB resident**. Compare `genome_sequence` at max size 12. Different regimes, same
+hardware.
+
 ### TODO-1 — Large-taxon crossCollection joins time out (Viruses) or crawl (Bacteria) — **RESOLVED 2026-10-15**
 
 > **Fixed by PR #230.** `lib/joinResolver.js` counts a join's genome set before the query
