@@ -359,6 +359,34 @@ grep returns nothing in `lib/solrjs/`, `lib/distributed/`, or `middleware/`.
 a generic retriable error, and do not count it against the same retry budget as a connection
 failure. Small change, and a prerequisite for the cluster-side work.
 
+### TODO-14 — `detectFixedIdCount` does NOT have the bug I claimed — do not "fix" it
+
+**Checked 2026-10-26, no action needed.** Recorded because the bug was asserted twice in
+discussion and someone may otherwise act on it.
+
+The claim: `Limiter.detectFixedIdCount` would match a `{!terms f=taxon_id}` filter emitted
+by the join rewrite and cap `rows` to `idCount + 10` — wrong, because a taxon count does
+not bound a sequence count (3,754 taxa → 21.8 M sequences).
+
+It does not happen. The detector matches only the **target collection's own primary key**
+(`primaryKeyMap`, `middleware/Limiter.js:33`), and `taxon_id` is not a primary key of
+`genome_sequence` or `genome_feature`. Verified directly against the function:
+
+```
+ null  genome_sequence  {!terms f=taxon_id …}      <- the claimed bug: correctly ignored
+ null  genome_sequence  -{!terms f=genome_id …}    <- negated exclusion: correctly ignored
+    4  genome_sequence  {!terms f=sequence_id …}   <- the real PK: correctly counted
+ null  genome_feature   {!terms f=genome_id …}     <- existing rewrite: correctly ignored
+    3  genome_feature   {!terms f=feature_id …}    <- the real PK: correctly counted
+```
+
+The negated form is safe for a second, independent reason: the pattern is anchored
+`(?:^|&)fq=\{!terms`, so `fq=-{!terms …}` never matches. A query carrying both a positive
+2-id filter and a negated 7-id filter correctly yields 2, not 7.
+
+Both properties are load-bearing for the taxon-subtree rewrite and neither was pinned by a
+test before now. Worth adding one when that rewrite is enabled.
+
 ### TODO-12 — The 9000-row store cap can be lifted, but doing so makes those requests shed candidates
 
 **Opened 2026-10-16.** A cross-system interaction that is invisible from either side alone,

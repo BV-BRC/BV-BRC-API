@@ -201,7 +201,21 @@ const defaults = {
     rejectMaxGenomes: 150000,
     countCacheTtlMs: 300000,
     idCacheTtlMs: 300000,
-    cacheMaxEntries: 200
+    cacheMaxEntries: 200,
+
+    // Taxon-subtree rewrite: express a purely taxonomic join as
+    //   fq={!terms f=taxon_id}<subtree>  &  fq=-{!terms f=genome_id}<deprecated>
+    // rather than resolving it to a live genome_id list, which does not scale past
+    // ~50,000 genomes. Measured 1,770ms against the join's 25,097ms on E. coli with
+    // identical numFound, and it answers Influenza A in ~9.8s where the join cannot
+    // complete at all. OFF by default: it changes which query a broad taxon runs and
+    // wants shaking down on alpha first.
+    // See Docs/BROAD-TAXON-JOIN-COLD-BUILD-2026-10-23.md §4.1a.
+    taxonomicRewrite: false,
+    // Caps on the two lookups. Exceeding either abandons the rewrite and leaves the join
+    // intact -- emitting the subtree WITHOUT its exclusion would silently over-count.
+    exclusionMaxIds: 400000,
+    subtreeMaxTaxa: 250000
   },
 
   shards: {
