@@ -34,7 +34,9 @@
  */
 
 const debug = require('debug')('p3api-server:middleware/JoinResolution')
-const { resolveJoins, JoinTooBroadError } = require('../lib/joinResolver')
+const { resolveJoins, findJoins, JoinTooBroadError } = require('../lib/joinResolver')
+const BatchedJoinStream = require('../lib/BatchedJoinStream')
+const Config = require('../config')
 const { internalQuery } = require('../lib/internalQuery')
 
 /**
@@ -106,6 +108,64 @@ function resolveFilterCacheHint (req) {
   return true
 }
 
+/**
+ * Is this a bulk download, as opposed to a page the user is looking at?
+ *
+ * Only these may take the slow batched path. A grid page must stay fast or fail fast —
+ * nobody wants a 25-row page that takes five minutes — whereas a download is already
+ * understood to be a long operation, and "slow but reliable" beats "refused".
+ */
+function isBulkDownload (req) {
+  return !!(req.isDownload || req.call_method === 'stream')
+}
+
+function batchedDownloadsEnabled () {
+  const cfg = Config.get('joinResolution') || {}
+  return cfg.batchedDownloads === true
+}
+
+/**
+ * Replace the refused query with a batched stream over the same join.
+ *
+ * Sets `res.results = { stream }` and `req.skipAPIMethodHandler`, the contract
+ * middleware/CrossCollectionStream.js already uses, so the media serializers consume it
+ * exactly as they would an ordinary streaming result.
+ */
+function attachBatchedJoinStream (req, res, err) {
+  const q = req.call_params[0]
+  const joins = findJoins(q)
+  if (joins.length !== 1) {
+    // Two joins would need a nested walk and nothing emits that today; refusing is
+    // honest, and cheaper than a resolver nobody exercises.
+    throw new Error(`expected exactly one join, found ${joins.length}`)
+  }
+  const join = joins[0]
+
+  // Everything the caller asked for EXCEPT the join clause has to ride along, or the
+  // download silently returns more rows than the request described.
+  const params = new URLSearchParams(q.replace(join.match, ''))
+  const extraFq = params.getAll('fq').filter(Boolean)
+  const fl = params.get('fl') || undefined
+
+  const stream = new BatchedJoinStream({
+    queryGenome: makeGenomeQuery(req),
+    queryTarget: makeCollectionQuery(req, req.call_collection),
+    genomeFilter: join.filter,
+    toField: join.toField,
+    extraFq,
+    fl
+  })
+
+  // The client going away must stop the pumping, not leave it walking a 748-batch cursor
+  // for a response nobody will read.
+  res.once('close', () => { if (!res.writableEnded) stream.destroy() })
+
+  res.results = { stream }
+  req.skipAPIMethodHandler = true
+  res.locals = res.locals || {}
+  res.locals.batchedJoin = { genomeCount: err.genomeCount, filter: err.filter }
+}
+
 module.exports = function JoinResolution (req, res, next) {
   // Only query/stream carry a Solr query string worth inspecting.
   if (req.call_method !== 'query' && req.call_method !== 'stream') {
@@ -139,6 +199,22 @@ module.exports = function JoinResolution (req, res, next) {
     })
     .catch((err) => {
       if (err instanceof JoinTooBroadError) {
+        // A DOWNLOAD does not have to be refused. The cap protects the single-{!terms}
+        // rewrite, whose filter body grows linearly with the genome count; a download can
+        // instead resolve the join in bounded slices, which measured roughly FLAT in
+        // slice size because the cost tracks the total id count rather than how it is cut
+        // up. See lib/BatchedJoinStream.js for the numbers.
+        if (isBulkDownload(req) && batchedDownloadsEnabled()) {
+          try {
+            attachBatchedJoinStream(req, res, err)
+            console.log(`[JoinBatched] collection=${req.call_collection} genomes=${err.genomeCount} filter=${err.filter} rid=${req.requestId || '-'}`)
+            return next()
+          } catch (e) {
+            // Fall through to the rejection: a download that cannot be set up is better
+            // refused with the actionable 400 than failed obscurely mid-stream.
+            console.error(`[JoinBatched] setup failed, refusing instead: ${e && e.message}`)
+          }
+        }
         console.log(`[JoinRejected] collection=${req.call_collection} genomes=${err.genomeCount} limit=${err.limit} filter=${err.filter} rid=${req.requestId || '-'}`)
         return next(err)
       }

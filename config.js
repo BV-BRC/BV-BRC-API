@@ -212,6 +212,23 @@ const defaults = {
     // wants shaking down on alpha first.
     // See Docs/BROAD-TAXON-JOIN-COLD-BUILD-2026-10-23.md §4.1a.
     taxonomicRewrite: false,
+
+    // Let a BULK DOWNLOAD whose join exceeds rejectMaxGenomes stream anyway, resolving
+    // the join in bounded slices instead of one oversized {!terms} filter. Grid pages
+    // are still refused -- a page must be fast or fail fast -- but a download is already
+    // a long operation, and slow-but-reliable beats a 400. ~5 min of Solr time for
+    // Viruses (14.9M genomes), with memory and request bodies bounded throughout.
+    // See lib/BatchedJoinStream.js. OFF by default: it turns a fast refusal into a long
+    // response, which is a deliberate operational choice.
+    batchedDownloads: false,
+
+    // Fill /data/summary_by_taxon by slicing the genome set and summing per-slice facets
+    // when the join is refused. Facet counts are additive over disjoint slices, and
+    // slicing measured ~10x CHEAPER than the join (5s vs 52s on 246,835 genomes), so this
+    // is not merely a survivable fallback. Taxon 10239 previously spent 600s here and
+    // returned a 500. Behind cacheWithRedis('1 day'), so the cost is paid once per day.
+    // OFF by default: a fast 400 becoming a multi-minute fill is an operational choice.
+    slicedSummary: false,
     // Caps on the two lookups. Exceeding either abandons the rewrite and leaves the join
     // intact -- emitting the subtree WITHOUT its exclusion would silently over-count.
     exclusionMaxIds: 400000,
