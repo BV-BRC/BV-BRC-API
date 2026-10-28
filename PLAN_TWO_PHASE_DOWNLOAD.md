@@ -254,6 +254,73 @@ resource-exhaustion concern, addressed by the concurrency cap, not a security ho
 
 ---
 
+## 7a. Alternative — the dribble reserve (implemented, and it may be enough)
+
+**Added 2026-10-28, after the plan above was drafted.** This is a cheaper fix that
+addresses the same failure without touching DNS, TLS, or Cloudflare, and it is worth
+evaluating before committing to two-phase.
+
+### The measurement that enables it
+
+A **single byte** resets Cloudflare's silence budget. Measured against alpha through the
+production chain: one space written every 100 s, three times — three gaps each longer than
+the 150 s gap that truncated the earlier test — kept a **300-second response alive to
+completion**.
+
+### The idea
+
+Not synthesised filler. **Hold back the tail of output already produced, and spend it one
+byte at a time while the producer is quiet.** When the producer resumes, flush the reserve
+and continue normally.
+
+No byte is invented, so format legality never arises — the bytes on the wire are
+**identical**, only their timing changes. That makes it correct for every serializer,
+binary xlsx included, which is precisely where a keepalive-byte scheme fails.
+
+(For the record, my earlier claim that JSON admits no filler was wrong: RFC 8259 allows
+whitespace between structural tokens. But that rescues one more text format, not binary
+ones, so the reserve is still the better mechanism.)
+
+### Status
+
+Implemented in `util/streamWithBackpressure.js` as `makeDribbleReserve`, opted into with
+`dribbleMs` / `reserveBytes`, **off by default** — all seven serializers that use the
+helper are unchanged unless they ask for it. Eight tests, the load-bearing one asserting
+byte-identical output with and without the reserve.
+
+Cost when idle: one `Buffer.concat` per write and a timer that is cleared and reset. The
+fast path never enters the dribble branch, because real data resets the clock by itself —
+the two modes are mutually exclusive rather than interleaved.
+
+### What it does NOT fix
+
+**The reserve must be non-empty when the silence begins.** It protects gaps *between*
+records, not a slow first record. The Viruses `annotation:"PATRIC"` download is silent
+from byte zero, so it still depends on the producer reaching its first row promptly —
+which is what the row-limit cap (PR #250) addresses.
+
+It also does nothing about **total** duration if Cloudflare enforces one; the 300 s test
+says there is no cap at that scale, but a 33-minute download is untested.
+
+### How this bears on two-phase
+
+| | dribble reserve | two-phase |
+|---|---|---|
+| infrastructure change | none | DNS, TLS, nginx vhost |
+| loses CF protection | no | yes, for the download host |
+| fixes mid-stream gaps | yes | yes |
+| fixes slow first byte | no | yes |
+| fixes unbounded duration | unproven past 300 s | yes |
+| effort | done | substantial |
+
+**Recommended sequencing:** ship the dribble reserve now and measure whether real
+downloads still fail. If they do — or if a download genuinely needs 30+ minutes — two-phase
+remains the durable answer and this plan stands. If they do not, two-phase becomes a
+nice-to-have rather than a necessity, and the infrastructure conversation can be had at
+leisure.
+
+---
+
 ## 8. What this makes unnecessary
 
 Worth stating, because there is in-flight work it would supersede:
