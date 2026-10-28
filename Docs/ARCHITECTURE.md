@@ -157,7 +157,10 @@ distributed fan-out, which is why §5 says not to shrink it before admission con
 
 **GenBank deliberately uses `lib/solrjs`, not `DirectSolrClient`.** Its secondary fetches are
 small single-genome queries that gain nothing from parallel fan-out, and `DirectSolrClient`
-needs network access to every replica — which the production deployment does not have.
+needs direct network access to every replica. Production HAS that; an off-site dev
+laptop does not, and neither does anything reaching Solr through a proxy URL — so a path
+built on it could not be developed or tested where the work happens. (Corrected
+2026-10-27: this previously said production lacked the access. It does not.)
 
 ---
 

@@ -86,9 +86,27 @@ a populated Solr, so none of them land in these suites — run those against `:2
 command in `PLAN_ELIMINATE_SELF_CALL.md`.
 
 **`distributedQuery` defaults to `enabled: true` with an empty `excludeNodes`,** and the path
-needs direct network access to every Solr replica, which the production deployment does not
-have. Production `p3api.conf` sets `enabled: false` — that is deliberate, keep it. The
-`excludeNodes` list lives only in that untracked file.
+needs direct network access to every Solr replica. Production `p3api.conf` sets
+`enabled: false` — that is deliberate, keep it. The `excludeNodes` list lives only in that
+untracked file.
+
+**Correction (2026-10-27): production DOES reach every Solr replica.** Several notes in
+this file and under `Docs/` said it does not; that was wrong, and it muddled two separate
+constraints:
+
+- **Production** has direct replica access. `DirectSolrClient` is viable there, and the
+  `excludeNodes` option exists to skip individual hosts that are down — which only makes
+  sense if the rest are reachable.
+- **An off-site dev laptop does not**, and neither does anything reaching Solr through a
+  proxy URL. That is the real reason `media/genbank.js` and `lib/internalQuery.js` use the
+  ordinary `Solrjs` client: a path that only works on-prem cannot be developed or tested
+  where the work actually happens.
+
+So "do not use `DirectSolrClient` here" remains good advice for code that must run
+anywhere, but **not** because production lacks the access. If a path is production-only
+and would benefit from parallel shard fan-out, `DirectSolrClient` is on the table.
+Whatever keeps `distributedQuery.enabled: false` in production, it is not reachability —
+re-derive the reason before changing it.
 
 ## Planning docs (not yet implemented)
 
