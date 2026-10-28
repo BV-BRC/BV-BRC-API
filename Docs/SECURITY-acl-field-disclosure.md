@@ -7,7 +7,11 @@ one.
 **Scope:** every private collection (`genome`, `genome_feature`, `genome_sequence`, `pathway`,
 `sp_gene`, `subsystem`, `genome_amr`, `genome_typing`, and now `private_genome_metadata`).
 **Predates** the `private_genome_metadata` work — that collection surfaced it, it did not cause it.
-**Requires an authenticated account.** Anonymous requests disclose nothing (verified).
+**UPDATE 2026-10-28 — the "requires an account" qualifier is WRONG.** An anonymous caller
+can enumerate **30,513 account names** in a single request. See "Anonymous enumeration via
+facet.mincount=0" below. The original text, retained for provenance, read: *"Requires an
+authenticated account. Anonymous requests disclose nothing (verified)."* That verification
+used the default `mincount=1`, which is exactly the case where nothing leaks.
 
 ---
 
@@ -150,7 +154,55 @@ Checks performed:
 - `user_read` facet over `genome` → 12 principals, 14,756-row DocSet;
 - `owner` facet → 4 principals;
 - targeted `eq(user_read,<user>)` oracle → distinguishes real from non-existent accounts;
-- **anonymous** equivalent → `numFound: 0`, empty facet. No unauthenticated exposure.
+- **anonymous** equivalent at the default `mincount=1` → `numFound: 0`, empty facet.
+  **But see below: `mincount=0` changes this completely.**
+
+---
+
+## Anonymous enumeration via `facet.mincount=0` (added 2026-10-28)
+
+**This is the most serious part of the finding and it was missed in the original writeup.**
+
+Solr's `facet.mincount=0` asks for terms with zero matches — so it enumerates the FIELD'S
+TERM DICTIONARY rather than the permission-filtered DocSet. The permission `fq` restricts
+which documents match; it does not restrict which terms Solr is willing to name.
+
+Measured against production, **unauthenticated, no token, one request**:
+
+```
+GET /genome/?eq(public,false)&limit(1)&facet((field,owner),(limit,-1),(mincount,0))
+
+  numFound: 0                      <- the permission filter works
+  owner values returned: 30,513    <- every account that owns a private genome
+  ...with nonzero counts: 0
+  sample: ['-Biotech_123.@bvbrc', '-H0N6_F31-@bvbrc', '...@bvbrc', '.K04230423@patricbrc.org']
+```
+
+The contrast is the whole point:
+
+```
+mincount=1  ->      0 owner values
+mincount=0  -> 30,513 owner values
+```
+
+Every count is zero — no private record content is exposed, and `numFound` is honestly 0.
+What leaks is the **term dictionary**: a complete, alphabetised roster of BV-BRC accounts
+that own private data, available to anyone on the internet. Most are `@patricbrc.org` or
+`@bvbrc` identifiers, i.e. login names.
+
+That is a bulk account-enumeration primitive, and unlike the authenticated case it needs no
+relationship to the data and no credentials at all. It also makes the severity assessment at
+the top of this document too generous.
+
+`user_read` and `user_write` currently 400 on the same request (not facetable as configured),
+so `owner` is the demonstrated vector. Do not read that as a guarantee — a schema change
+could expose them the same way.
+
+### What a fix has to cover
+
+Blocking `mincount=0` alone is insufficient — `facet.prefix` and `terms.*` walk the same
+dictionary. The durable fix is to stop ACL fields being facetable/termable at all, which is
+the same conclusion the authenticated case reaches.
 
 A regression test for any fix should assert on **exact counts** (`facet` returns zero ACL
 buckets; a shared record's response omits `user_read`), not merely that a request succeeds —
