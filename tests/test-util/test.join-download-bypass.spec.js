@@ -192,6 +192,16 @@ describe('join reject: download bypass', function () {
       assert.equal(joins[0].toField, 'genome_id')
     })
 
+    it('extracts the caller\'s rows= so the walk can stop', function () {
+      // The 2026-10-28 live failure: rows was never read, so a limit(100) Bacteria
+      // download walked all 264 genome slices and Cloudflare cut it at 125s with zero
+      // bytes emitted.
+      const q = `q=*:*&fq=${JOIN}&fq=public:true&rows=100&fl=genome_id`
+      const { findJoins } = require('../../lib/joinResolver')
+      const rest = new URLSearchParams(q.replace(findJoins(q)[0].match, ''))
+      assert.equal(parseInt(rest.get('rows'), 10), 100)
+    })
+
     it('finds nothing to strip when there is no join', function () {
       const { findJoins } = require('../../lib/joinResolver')
       assert.lengthOf(findJoins('q=*:*&fq=public:true&rows=25'), 0)

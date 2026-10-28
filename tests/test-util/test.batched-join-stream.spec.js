@@ -160,6 +160,56 @@ describe('BatchedJoinStream', function () {
     assert.include(s.calls.target[0], 'rows=50000')
   })
 
+  describe('the caller\'s row limit', function () {
+    // Live failure, alpha 2026-10-28: a limit(100) CSV download of Bacteria returned
+    // HTTP 524 after 125s having emitted ZERO bytes. maxRows was never passed, so the
+    // stream walked all 1,316,755 genomes -- 264 slices -- before the serializer could
+    // write anything, and Cloudflare cut it first. A fast 400 had become a slow dead end.
+    it('stops walking once maxRows is satisfied', async function () {
+      const s = stubs({ total: 1000000, perGenome: 1 })
+      const docs = await drain(new BatchedJoinStream({
+        queryGenome: s.queryGenome,
+        queryTarget: s.queryTarget,
+        genomeFilter: 'taxon_lineage_ids:2',
+        genomeBatch: 1000,
+        maxRows: 100
+      }))
+      assert.isAtMost(docs.length, 102, 'must not stream the whole taxon')
+      assert.equal(s.calls.genome.length, 1, 'ONE genome slice, not 1000')
+      assert.equal(s.calls.target.length, 1)
+    })
+
+    it('streams the whole set when no limit is given', async function () {
+      const s = stubs({ total: 25, perGenome: 2 })
+      const docs = await drain(new BatchedJoinStream({
+        queryGenome: s.queryGenome,
+        queryTarget: s.queryTarget,
+        genomeFilter: 'x:1',
+        genomeBatch: 10
+      }))
+      assert.equal(docs.length, 25 * 2 + 1)
+    })
+
+    it('ignores a nonsensical limit rather than emitting nothing', async function () {
+      for (const bad of [0, -5, NaN, undefined]) {
+        const s = stubs({ total: 10, perGenome: 1 })
+        const docs = await drain(new BatchedJoinStream({
+          queryGenome: s.queryGenome,
+          queryTarget: s.queryTarget,
+          genomeFilter: 'x:1',
+          maxRows: bad || undefined
+        }))
+        assert.isAbove(docs.length, 1, `maxRows=${bad} must not silence the stream`)
+      }
+    })
+  })
+
+  it('defaults to the measured-optimal genome batch size', function () {
+    // 20,000, not 5,000: summing Solr QTime across slices on H5N1 gave ~5.0s at 20,000
+    // against ~24.6s at 5,000 -- a 5x penalty that is all per-request overhead.
+    assert.equal(BatchedJoinStream.DEFAULT_GENOME_BATCH, 20000)
+  })
+
   it('stops pumping when destroyed mid-stream', async function () {
     const s = stubs({ total: 10000, perGenome: 1 })
     const st = new BatchedJoinStream({

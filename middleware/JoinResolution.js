@@ -147,13 +147,21 @@ function attachBatchedJoinStream (req, res, err) {
   const extraFq = params.getAll('fq').filter(Boolean)
   const fl = params.get('fl') || undefined
 
+  // The caller's row limit MUST reach the stream. Without it the walk runs to the end of
+  // the genome set regardless: a `limit(100)` download of Bacteria (1,316,755 genomes)
+  // traversed all 264 slices before emitting anything, and Cloudflare cut it at 125s with
+  // zero bytes — turning a fast 400 into a slow dead end, which is worse for the user.
+  const rowsParam = parseInt(params.get('rows'), 10)
+  const maxRows = Number.isFinite(rowsParam) && rowsParam > 0 ? rowsParam : undefined
+
   const stream = new BatchedJoinStream({
     queryGenome: makeGenomeQuery(req),
     queryTarget: makeCollectionQuery(req, req.call_collection),
     genomeFilter: join.filter,
     toField: join.toField,
     extraFq,
-    fl
+    fl,
+    maxRows
   })
 
   // The client going away must stop the pumping, not leave it walking a 748-batch cursor
