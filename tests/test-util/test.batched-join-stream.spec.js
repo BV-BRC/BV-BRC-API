@@ -179,6 +179,38 @@ describe('BatchedJoinStream', function () {
       assert.equal(s.calls.target.length, 1)
     })
 
+    it('caps the TARGET fetch to the outstanding rows, not just the walk', async function () {
+      // The second half of the 2026-10-28 failure, and the half the first fix missed.
+      // Stopping the genome walk early is not enough if each slice still asks Solr for
+      // 50,000 documents: Bacteria's first slice of 20,000 genomes matches 3,635,755
+      // sequences, so Solr materialised 50,000 full docs before the serializer saw a
+      // row, and Cloudflare cut the response at 125s having emitted nothing.
+      const s = stubs({ total: 100000, perGenome: 1 })
+      await drain(new BatchedJoinStream({
+        queryGenome: s.queryGenome,
+        queryTarget: s.queryTarget,
+        genomeFilter: 'taxon_lineage_ids:2',
+        genomeBatch: 20000,
+        targetRows: 50000,
+        maxRows: 100
+      }))
+      const rows = parseInt(/rows=(\d+)/.exec(s.calls.target[0])[1], 10)
+      assert.equal(rows, 100, 'must ask for 100 docs, not 50,000')
+    })
+
+    it('still asks for the generous cap when unbounded', async function () {
+      // One-to-many is real: defaulting rows to the id count truncated a 105-contig
+      // download to 2 records in the cross-collection work.
+      const s = stubs({ total: 5, perGenome: 1 })
+      await drain(new BatchedJoinStream({
+        queryGenome: s.queryGenome,
+        queryTarget: s.queryTarget,
+        genomeFilter: 'x:1',
+        targetRows: 50000
+      }))
+      assert.include(s.calls.target[0], 'rows=50000')
+    })
+
     it('streams the whole set when no limit is given', async function () {
       const s = stubs({ total: 25, perGenome: 2 })
       const docs = await drain(new BatchedJoinStream({
