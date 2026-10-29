@@ -183,13 +183,24 @@ describe('admin cache refresh', function () {
         'a 500 body must not replace a good cached value')
     })
 
-    it('reports 503 and touches nothing when redis is down', async function () {
+    it('reports the REAL redis error rather than a guess made before connecting', async function () {
+      // There is deliberately no `client.connected` precheck: createClient() connects
+      // asynchronously, so such a check is false for the first few milliseconds and the
+      // FIRST admin request on each worker always 503'd -- observed on alpha, failing
+      // the first taxa of a run on every worker in turn. node_redis queues commands
+      // until ready, so the command is issued and a genuine failure surfaces here.
       const r = stubRedis()
-      r.connected = false
+      r.hset = function (key, field, value, cb) {
+        this.log.push(['hset-failed', key])
+        cb(new Error('NOAUTH Authentication required.'))
+      }
       const out = await withRouter(r, (port) =>
         call(port, '/admin/cache/refresh/summary_by_taxon/10239'))
       assert.equal(out.status, 503)
-      assert.lengthOf(r.log, 0)
+      assert.isFalse(out.body.refreshed)
+      assert.include(out.body.error, 'NOAUTH',
+        'the warmer log must name the real cause, not "not connected"')
+      assert.lengthOf(r.log.filter((e) => e[0] === 'del'), 0)
     })
   })
 
@@ -240,5 +251,66 @@ describe('admin cache refresh', function () {
       assert.isTrue(out.body.cached)
       assert.equal(out.body.ttlSeconds, 86400)
     })
+  })
+})
+
+/**
+ * Redis option handling.
+ *
+ * node_redis 2.8 reads the password from `options.auth_pass || options.password`
+ * (redis/index.js:149). The deployed config carries BOTH `pass` and `password` with the
+ * same value — only `password` is live — and some hosts use `xpass`/`xpassword`, where
+ * the `x` marks a key as deliberately disabled. Getting this wrong fails NOAUTH on every
+ * command, which from a cron report looks like "redis is broken."
+ */
+describe('admin redis options', function () {
+  const Config = require('../../config')
+  const { redisOptions } = require('../../routes/adminRouter')
+  let saved
+
+  beforeEach(function () { saved = Config.get('redis') })
+  afterEach(function () { Config.set('redis', saved) })
+
+  const opts = (redisCfg) => { Config.set('redis', redisCfg); return redisOptions() }
+
+  it('passes a live `password` through as auth_pass', function () {
+    // The deployed shape.
+    const o = opts({ host: 'localhost', port: 6379, db: 2, password: 'secret', pass: 'secret' })
+    assert.equal(o.auth_pass, 'secret')
+  })
+
+  it('keeps host/port/db intact', function () {
+    const o = opts({ host: 'h', port: 1234, db: 7, prefix: '', password: 'p' })
+    assert.equal(o.host, 'h')
+    assert.equal(o.port, 1234)
+    assert.equal(o.db, 7)
+  })
+
+  it('falls back to the disabled spellings rather than authenticating with nothing', function () {
+    assert.equal(opts({ xpass: 'x1' }).auth_pass, 'x1')
+    assert.equal(opts({ xpassword: 'x2' }).auth_pass, 'x2')
+    assert.equal(opts({ pass: 'x3' }).auth_pass, 'x3')
+  })
+
+  it('prefers the live spellings over the disabled ones', function () {
+    const o = opts({ password: 'live', pass: 'dead', xpass: 'deader' })
+    assert.equal(o.auth_pass, 'live')
+  })
+
+  it('does not forward the inert keys', function () {
+    const o = opts({ password: 'p', pass: 'p', xpass: 'p', xpassword: 'p' })
+    assert.notProperty(o, 'pass')
+    assert.notProperty(o, 'xpass')
+    assert.notProperty(o, 'xpassword')
+  })
+
+  it('sets no auth_pass when the config has no password at all', function () {
+    const o = opts({ host: 'localhost', port: 6379 })
+    assert.isUndefined(o.auth_pass)
+  })
+
+  it('tolerates a missing redis block', function () {
+    Config.set('redis', undefined)
+    assert.doesNotThrow(() => redisOptions())
   })
 })
