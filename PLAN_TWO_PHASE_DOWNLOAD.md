@@ -237,7 +237,9 @@ exist anywhere to be re-served.
 ### The current behaviour, measured 2026-10-29 on alpha
 
 A user interrupted a 2.5M-record download and asked Chrome to resume it. Chrome produced
-a **zero-length file**. That is the correct outcome and the safe one:
+a **zero-length file**.
+
+The API advertises none of what HTTP resume requires:
 
 | requirement for HTTP resume | status |
 |---|---|
@@ -246,17 +248,49 @@ a **zero-length file**. That is the correct outcome and the safe one:
 | honor `Range` → `206` + `Content-Range` | **ignored — returns `200` and the WHOLE body** |
 | stable `ETag`/`Last-Modified` validator | not sent |
 
-Verified: `Range: bytes=500000-` against a 920,614-byte download returned HTTP **200**
-with all 920,614 bytes, byte-identical to the unranged response, starting at record 1.
-Had Chrome treated that as a continuation it would have **appended a complete second copy
-onto the partial file** — a silently corrupt download, which is strictly worse than an
-empty one. Chrome asked for a range, got a `200` instead of a `206`, and refused. The
-zero-length file is the browser protecting the user.
+The third row is verified **with curl**: `Range: bytes=500000-` against a 920,614-byte
+download returns HTTP `200` with all 920,614 bytes, byte-identical to the unranged
+response and starting at record 1. A client that treated that as a continuation would
+append a complete second copy onto its partial file.
 
-### How a browser actually resumes (Chrome 156, measured against a local test server)
+**What the browser actually does on Resume is NOT that, and an earlier draft of this
+section said otherwise.** It claimed Chrome sent a `Range`, received the `200`, and
+refused it — "the browser protecting the user." That was an inference from the curl probe
+above, not an observation of Chrome, and direct measurement contradicts it:
 
-Chrome re-issues the **identical request** — same method, same URL — with two headers
-added, and resumes entirely on its own without asking the user:
+- Against the current no-`Accept-Ranges` shape, a manual Resume click issued **no new
+  request at all**. The test server's log did not move; the download stayed interrupted
+  with `lastReason: "Failed - Network error"`.
+- So the empty file comes from Chrome's resume failing **before it reaches the API**, not
+  from the API answering badly. The API's `Range` handling is never exercised.
+
+The practical conclusions are unchanged — resume does not work, do not add
+`Accept-Ranges`, send bulk users to the toolkit — but the mechanism is simpler than the
+earlier text claimed, and the corrected version is what belongs in user-facing copy.
+
+### Can the server tell Chrome not to offer Resume? No.
+
+`Accept-Ranges: none` is the RFC 9110 signal for "do not attempt range requests," and it
+**does not suppress the Resume button**. Measured against Chrome 156, a response carrying
+`Accept-Ranges: none` and one carrying no such header behaved identically: both reached
+`resume: true` in `chrome://downloads`, and both offered Resume in the UI.
+
+Chrome decides resumability from its own interrupt reason and the partial file it has
+kept (`Unconfirmed NNNNN.crdownload`), not from what the server advertised. There is no
+server-side header that reliably removes the affordance, which is why this has to be
+handled as **documentation plus a better client**, not as a response-header fix.
+
+Send `Accept-Ranges: none` anyway if phase 2 is built — it is one header, it is the
+honest declaration, and a non-browser client may well respect it. Just do not expect it
+to change what the user sees.
+
+### How a browser resumes when the server DOES support it
+
+Measured against a local test server, Chrome 156. This is what the API would be signing
+up for — it is **not** a description of current behaviour, which is the section above.
+
+Against a properly resumable response, Chrome re-issues the **identical request** — same
+method, same URL — with two headers added, and resumes on its own without asking:
 
 ```
 range: bytes=2097152-          <- exactly the byte count already on disk
@@ -275,7 +309,8 @@ Three behaviours worth knowing, all observed:
 | server shape | Chrome's behaviour |
 |---|---|
 | `Accept-Ranges` + `Content-Length` + `ETag`, honoring `Range` with `206` | **6 attempts**, auto-retried without prompting, offsets advancing `2097152 → 3145728 → 3670016 → 3932160 → 4063232` until complete |
-| no `Accept-Ranges`, no `Content-Length` — **today's BV-BRC shape** | **1 attempt**, then gives up. It never tries to resume |
+| no `Accept-Ranges`, no `Content-Length` — **today's BV-BRC shape** | **1 attempt**, then gives up. No automatic retry, and a manual Resume sends nothing |
+| `Accept-Ranges: none` | **identical to the row above** — the signal does not suppress the Resume button |
 | advertises `Accept-Ranges` but ignores `Range`, returning `200` + full body | **retries forever without advancing** — same `bytes=1048576-` five times running |
 
 The third row is the trap for any future implementation, and it is what would happen if

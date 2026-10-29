@@ -29,18 +29,24 @@ release time.
 
 **Why this needs to be in the notes rather than left to discover.** The failure is
 confusing in a specific way: Chrome offers a Resume button, the user clicks it, and gets
-a zero-byte file with no error. That looks like a server bug. It is not — it is the
-browser *protecting* the user, and saying so up front prevents a bug report and a lost
-download.
+a zero-byte file with no error. That looks like a server bug, and saying so up front
+prevents a support ticket and a lost download.
+
+**We cannot suppress the Resume button.** `Accept-Ranges: none` is the standard "do not
+attempt ranges" signal and Chrome ignores it for this purpose — measured, a response
+with that header and one without behave identically, both offering Resume. The
+affordance is Chrome's, driven by its own interrupt reason and the partial file it kept.
+Documentation is the only lever we have, which is why this entry matters.
 
 Detail for anyone who asks (full analysis in `PLAN_TWO_PHASE_DOWNLOAD.md` §6a):
 
 - Downloads are chunked with no `Content-Length` and no `Accept-Ranges`, so a browser
-  will not attempt a resume at all. Measured against Chrome 156: **1 attempt** against
-  this shape, versus **6 auto-retries to completion** against a resumable one.
-- The API ignores a `Range` header and returns `200` with the **whole body**. A client
-  that accepted that as a continuation would append a second complete copy onto its
-  partial file. Chrome correctly refuses, which is where the empty file comes from.
+  will not resume them. Measured against Chrome 156: **1 attempt** against this shape,
+  versus **6 auto-retries to completion** against a properly resumable one.
+- On a manual Resume click, Chrome issues **no request at all** — the resume fails
+  locally, before anything reaches the API. (An earlier draft of this note said Chrome
+  sent a `Range`, got a `200`, and rejected it; that was inferred from a curl probe and
+  direct measurement disproved it. The user-visible outcome is the same.)
 - This is not a planned fix for browsers. Resumable bulk transfer belongs in the
   toolkit, which has the partial file on disk and can truncate to a record boundary —
   something a browser cannot do.
