@@ -147,6 +147,14 @@ function attachBatchedJoinStream (req, res, err) {
   const extraFq = params.getAll('fq').filter(Boolean)
   const fl = params.get('fl') || undefined
 
+  // The caller's sort MUST ride along. Omitting it does not merely lose ordering: an
+  // unsorted Solr fetch returns internal docid order, which varies by replica, so the
+  // per-slice `rows` cap selected an arbitrary and different subset on every run. Three
+  // runs of one limit(5000) Viruses download on alpha returned 5000 records each with
+  // ~75% of the ids differing. See "ORDERING" in lib/BatchedJoinStream.js for what this
+  // does and does not guarantee.
+  const sort = params.get('sort') || undefined
+
   // The caller's row limit MUST reach the stream. Without it the walk runs to the end of
   // the genome set regardless: a `limit(100)` download of Bacteria (1,316,755 genomes)
   // traversed all 264 slices before emitting anything, and Cloudflare cut it at 125s with
@@ -161,6 +169,7 @@ function attachBatchedJoinStream (req, res, err) {
     toField: join.toField,
     extraFq,
     fl,
+    sort,
     maxRows
   })
 
