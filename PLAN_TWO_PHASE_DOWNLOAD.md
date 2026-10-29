@@ -225,6 +225,172 @@ Those are already proven on `/api/` and are what make a 30-minute stream possibl
 
 ---
 
+## 6a. Resumability — why the browser cannot have it, and who should
+
+**Nothing is materialized.** Phase 2 streams live from Solr through the same cursor-paged
+pipeline as `/api/` (step 5 above). There is no file on the download host at any point.
+An earlier draft of this section claimed two-phase would make downloads "an ordinary
+static file" and give `Accept-Ranges` for free — **that was wrong**, and the distinction
+matters: two-phase changes *which host and which timeout regime*, not *whether the bytes
+exist anywhere to be re-served.
+
+### The current behaviour, measured 2026-10-29 on alpha
+
+A user interrupted a 2.5M-record download and asked Chrome to resume it. Chrome produced
+a **zero-length file**.
+
+The API advertises none of what HTTP resume requires:
+
+| requirement for HTTP resume | status |
+|---|---|
+| `Accept-Ranges: bytes` | not sent |
+| `Content-Length` known up front | not sent — chunked; length unknown until the stream ends |
+| honor `Range` → `206` + `Content-Range` | **ignored — returns `200` and the WHOLE body** |
+| stable `ETag`/`Last-Modified` validator | not sent |
+
+The third row is verified **with curl**: `Range: bytes=500000-` against a 920,614-byte
+download returns HTTP `200` with all 920,614 bytes, byte-identical to the unranged
+response and starting at record 1. A client that treated that as a continuation would
+append a complete second copy onto its partial file.
+
+**What the browser actually does on Resume is NOT that, and an earlier draft of this
+section said otherwise.** It claimed Chrome sent a `Range`, received the `200`, and
+refused it — "the browser protecting the user." That was an inference from the curl probe
+above, not an observation of Chrome, and direct measurement contradicts it:
+
+- Against the current no-`Accept-Ranges` shape, a manual Resume click issued **no new
+  request at all**. The test server's log did not move; the download stayed interrupted
+  with `lastReason: "Failed - Network error"`.
+- So the empty file comes from Chrome's resume failing **before it reaches the API**, not
+  from the API answering badly. The API's `Range` handling is never exercised.
+
+The practical conclusions are unchanged — resume does not work, do not add
+`Accept-Ranges`, send bulk users to the toolkit — but the mechanism is simpler than the
+earlier text claimed, and the corrected version is what belongs in user-facing copy.
+
+### Can the server tell Chrome not to offer Resume? No.
+
+`Accept-Ranges: none` is the RFC 9110 signal for "do not attempt range requests," and it
+**does not suppress the Resume button**. Measured against Chrome 156, a response carrying
+`Accept-Ranges: none` and one carrying no such header behaved identically: both reached
+`resume: true` in `chrome://downloads`, and both offered Resume in the UI.
+
+Chrome decides resumability from its own interrupt reason and the partial file it has
+kept (`Unconfirmed NNNNN.crdownload`), not from what the server advertised. There is no
+server-side header that reliably removes the affordance, which is why this has to be
+handled as **documentation plus a better client**, not as a response-header fix.
+
+Send `Accept-Ranges: none` anyway if phase 2 is built — it is one header, it is the
+honest declaration, and a non-browser client may well respect it. Just do not expect it
+to change what the user sees.
+
+### How a browser resumes when the server DOES support it
+
+Measured against a local test server, Chrome 156. This is what the API would be signing
+up for — it is **not** a description of current behaviour, which is the section above.
+
+Against a properly resumable response, Chrome re-issues the **identical request** — same
+method, same URL — with two headers added, and resumes on its own without asking:
+
+```
+range: bytes=2097152-          <- exactly the byte count already on disk
+if-range: "resume-test-v1"     <- the ETag from the original response
+accept-encoding: identity      <- drops gzip, so byte offsets stay meaningful
+```
+
+`If-Range` is the safety mechanism, and it is already part of the protocol: it makes the
+resume **conditional**. The server returns `206` only if the validator still matches; if
+it does not, the server returns `200` with the whole body and the browser discards its
+partial file and starts over. The "splice two different versions together" hazard is
+therefore solved at the protocol level — *provided the server participates honestly*.
+
+Three behaviours worth knowing, all observed:
+
+| server shape | Chrome's behaviour |
+|---|---|
+| `Accept-Ranges` + `Content-Length` + `ETag`, honoring `Range` with `206` | **6 attempts**, auto-retried without prompting, offsets advancing `2097152 → 3145728 → 3670016 → 3932160 → 4063232` until complete |
+| no `Accept-Ranges`, no `Content-Length` — **today's BV-BRC shape** | **1 attempt**, then gives up. No automatic retry, and a manual Resume sends nothing |
+| `Accept-Ranges: none` | **identical to the row above** — the signal does not suppress the Resume button |
+| advertises `Accept-Ranges` but ignores `Range`, returning `200` + full body | **retries forever without advancing** — same `bytes=1048576-` five times running |
+
+The third row is the trap for any future implementation, and it is what would happen if
+someone "added resume support" by setting the header. **`Accept-Ranges` is a promise.**
+Advertising it without honoring `Range` with a real `206` + `Content-Range` is worse than
+not advertising it at all: the client correctly refuses to treat each `200` as a
+continuation, so it loops against a server that keeps restarting. Half-implementing this
+is the one outcome to avoid.
+
+### Why byte-exact resume is hard here, and it is not the offset table
+
+The obvious design is to record `(byte offset → cursorMark)` at page boundaries.
+`_streamQuery` already threads `cursorMark` through every page (`lib/solrjs/index.js:146`)
+and `middleware/content-range.js:13` already exposes `X-Cursor-Mark` to clients, so the
+plumbing largely exists. Two constraints decide how far it can go:
+
+1. **Resume is only exact at page boundaries.** A client asks for `bytes=N-` where N is
+   wherever the socket died — mid-record, usually. The server must restart at the
+   preceding mark and discard the overshoot to land on byte N, which means reproducing
+   those bytes identically.
+2. **That requires the result set to be stable between the two requests, and it is not.**
+   `cursorMark` guarantees no duplicates *within one walk over one searcher*. Across a gap
+   it resumes against whatever the index looks like now, and `genome_feature` ingests
+   hourly. A document inserted before the resume point shifts every subsequent byte, so
+   offsets recorded in run 1 no longer describe run 2's stream — and the client splices
+   two slightly different files into one that looks fine. Same silent-corruption class as
+   the `sort()` trap and the mid-stream shard failure; it needs an explicit answer, not
+   best effort.
+
+So the cost is the **index-stability contract**, not the bookkeeping. Options, in
+increasing order of ambition:
+
+- **Validator only (cheap, worth doing regardless).** Serve an `ETag` encoding the query
+  plus an index version; a resume revalidates and gets **`412`** if the index moved. That
+  converts today's silent risk into a clean, actionable failure without implementing
+  resume at all.
+
+  **Use the collection's commit/index version, not a `date_inserted` probe over the
+  matched records.** Scanning the result set for its newest insertion date is the obvious
+  idea and it is **unsafe, not merely expensive**: `date_inserted` only witnesses
+  *insertions*. Deprecating a genome removes all of its features from a result set
+  filtered by `ne(genome_status,Deprecated)` — the shape these downloads actually use —
+  **without touching any `date_inserted` on `genome_feature`**; a hard delete behaves the
+  same way. So `max(date_inserted)` can report "unchanged" while the result set shrank,
+  which is the one direction a validator must never fail in. A validator may
+  over-invalidate freely (the client simply restarts); it may never under-invalidate.
+
+  The index version over-invalidates — with hourly ingest, roughly hourly, even when the
+  caller's own slice did not move — but it is one cheap lookup and it errs safely. That
+  trade is the right one: a needless restart costs a re-download, a missed invalidation
+  costs a silently spliced file.
+- **Pin the searcher** for the life of a token. Correct, but holds merge resources per
+  in-flight download across a 30-minute window. Needs the architects.
+- **Record-level resume** — `?resume_after=<mark>`, returning a fresh file from that
+  point. Honest semantics and no byte arithmetic, but it is not HTTP range resume, so a
+  browser cannot use it. It needs a client that concatenates.
+
+### Preferred direction: point large downloads at the Go toolkit
+
+The third option above is the one that actually fits, and the toolkit is the client for
+it — **because it has the downloaded file on disk and can truncate to a record boundary.**
+That is precisely the capability a browser lacks: Chrome can only append at a byte offset
+it chose, with no idea where a FASTA record starts. A toolkit client can scan back to the
+last complete record, discard the partial tail, and ask to resume from the corresponding
+cursor — making the page-boundary constraint above a non-issue rather than something the
+server must work around with byte arithmetic.
+
+This also puts the retry logic where the operational need is. Bulk consumers pulling
+hundreds of MB over flaky links are the population that needs resume; a human re-clicking
+a download tolerates "start over" fine. Steering them to the toolkit means the server
+contract can stay simple (`resume_after=<mark>` + a validator) instead of emulating
+byte-range semantics over a non-seekable source.
+
+**Implication for this plan:** do not add `Accept-Ranges` or range handling to phase 2.
+Ship the `412` validator so stale resumes fail loudly, document that browser resume is
+unsupported, and treat record-level `resume_after` as a toolkit-facing feature if and when
+demand justifies it.
+
+---
+
 ## 7. What we lose with Cloudflare off, and what replaces it
 
 This is the section for the network admins.
@@ -319,6 +485,34 @@ remains the durable answer and this plan stands. If they do not, two-phase becom
 nice-to-have rather than a necessity, and the infrastructure conversation can be had at
 leisure.
 
+> **Measured 2026-10-29 — that step is done, and the answer was neither branch.**
+>
+> The reserve shipped (#253) and changed nothing on the reported query: still
+> `ttfb=125 s`, HTTP 524, 16 bytes. The prediction in that PR was right — the reserve
+> protects gaps *between* records, and that download was silent from byte zero, so there
+> was nothing held back to spend.
+>
+> **The cause was not silence at all.** `DistributedQuery` overwrote `res.results`
+> unconditionally, discarding the `BatchedJoinStream` that `JoinResolution` had attached,
+> and sent the raw `{!join method=crossCollection}` to every shard — the 258 s cold build.
+> The apparent 10,000-row cliff was only `minLimitThreshold` choosing the transport:
+> `limit(9000)` *forced* distributed also failed, `limit(10000)` *forced* standard
+> succeeded. Fixed in **PR #255**; the originally-failing download now returns 2,500,000
+> records through Chrome and Cloudflare.
+>
+> **What this means for this plan.** The acute failure is gone, so two-phase drops from
+> *necessary* to *durable insurance* — which is the plan's own second branch. It still
+> earns its place for downloads that genuinely exceed the CF budget on producer time
+> rather than on a bug, and §6a is now the other reason to keep it on the table. But the
+> infrastructure conversation is no longer blocking anyone.
+>
+> Worth recording as a method note: the reserve was built on a diagnosis
+> ("producer-side sparse walk") that measurement later falsified — 91% of non-deprecated
+> Viruses genomes have `patric_cds > 0`, **zero** have none, and the first 20,000-genome
+> slice alone holds 405,827 CDS and answers in 1.6 s. Nothing was sparse. The reserve is
+> still correct and still useful for genuinely slow producers; it just was not the fix
+> for this.
+
 ---
 
 ## 8. What this makes unnecessary
@@ -353,6 +547,11 @@ Worth stating, because there is in-flight work it would supersede:
 5. **IP binding: yes or no?** Tightens the token materially; breaks for roaming clients.
 6. **Does this extend to all bulk downloads eventually,** or only the ones that currently
    fail? Starting narrow (joins over the rewrite threshold) is lower risk and reversible.
+7. **Resumability — settled in principle (§6a): point large downloads at the Go toolkit,
+   not at browser range requests.** What remains open is whether to ship the `412`
+   validator on its own now (it makes a stale resume fail loudly rather than silently,
+   and is useful with or without resume), and whether there is real demand for
+   record-level `resume_after` from toolkit users. Worth asking before building.
 
 ---
 
@@ -370,3 +569,14 @@ Cloudflare, nginx, and the API.
 | failure mode past the budget | **HTTP 200 with a truncated body**, not an error |
 | Viruses summary fill (comparable walk) | 783 slices, 15,643,163 genomes, **32.8 min** |
 | batched slice cost | ~5 s per 20,000 genomes; ~10× cheaper than the join |
+
+Added 2026-10-29, after the transport fix (PR #255) landed — these supersede the premise
+of §7a's "ship the reserve and measure" step, which has now been done:
+
+| what | value |
+|---|---|
+| the originally-failing Viruses download | **completes**: 2,500,000 records through Chrome + CF |
+| `limit(10000)` taxon 10239, before / after | 524 @ 125 s → **200 @ ~5 s** |
+| dribble reserve's effect on that query | **none** — it was a transport bug, not a silence bug |
+| `Range:` on a streaming download | **ignored**: `200` + full body, not `206` (§6a) |
+| browser resume outcome | zero-length file — Chrome refusing a `200` as a continuation |
