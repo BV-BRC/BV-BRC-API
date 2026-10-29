@@ -40,6 +40,98 @@ const DANGEROUS_PARAMS = [
 // Pattern to match shards.* parameters (e.g., shards.qt, shards.info, etc.)
 const SHARDS_PREFIX_PATTERN = /^shards\./i
 
+// ---------------------------------------------------------------------------
+// ACL fields may not be used as AGGREGATION targets.
+//
+// Permission enforcement in this codebase is row-level only: DecorateQuery appends an fq
+// deciding which documents you see, and nothing decides which FIELDS of a visible
+// document you may read, facet, or sort on. `owner`/`user_read`/`user_write` are ordinary
+// indexed fields, so on any record shared with you, you can read its full ACL.
+//
+// Faceting turns that from per-record visibility into BULK ENUMERATION, because facet
+// counts are computed over the whole permission-filtered DocSet rather than the returned
+// page. Measured anonymously against alpha, no credentials:
+//
+//   eq(public,false)&limit(1)&facet((field,user_read),(mincount,0))
+//     -> 100 account names (the default facet limit; facet.limit=-1 yields 30,513)
+//
+// A ranked facet over `user_read` is also a collaborator graph — who shares with whom,
+// ordered by how much.
+//
+// This blocks the AGGREGATE vector only. Per-record ACL visibility and the targeted
+// `eq(user_read,<user>)` existence oracle remain; closing those is field-level projection
+// filtering, a new concern for this codebase (Option B in
+// Docs/SECURITY-acl-field-disclosure.md). Option A — this — is what removes the part
+// that scales.
+//
+// Deliberately blocked for EVERYONE rather than for non-owners. Ownership is per record
+// and a facet spans records, so there is no requester for whom an aggregate over these
+// fields is well-defined.
+const ACL_FIELDS = ['owner', 'user_read', 'user_write']
+
+// Parameters whose VALUE names a field to aggregate, sort, or group by. These are the
+// routes by which a field name reaches Solr as something other than a filter term.
+//
+// Note `fl` is absent on purpose: projecting an ACL field returns it only for rows the
+// requester can already see, which is the per-record visibility this does not address.
+// Adding it here would break owners legitimately reading their own ACLs.
+const FIELD_NAMING_PARAMS = [
+  'facet.field',
+  'facet.pivot',
+  'facet.range',
+  'facet.interval',
+  'group.field',
+  'sort',
+  'stats.field'
+]
+
+// A field reference inside a parameter value. Values are lists or decorated:
+//   facet.pivot=owner,user_read        (comma-separated pivot chain)
+//   sort=user_read asc,genome_id desc  (comma-separated, each "field direction")
+//   facet.field={!ex=dt}owner          (local param prefix)
+// so matching the bare name against the whole value would both over- and under-match.
+const ACL_FIELD_IN_VALUE = new RegExp(
+  '(^|[,\\s{}!=])(' + ACL_FIELDS.join('|') + ')($|[,\\s}])', 'i'
+)
+
+/**
+ * Does this parameter name a field to aggregate/sort/group by?
+ * Case-insensitive, matching how the rest of this module treats parameter names.
+ */
+function isFieldNamingParam (paramName) {
+  if (!paramName || typeof paramName !== 'string') return false
+  return FIELD_NAMING_PARAMS.includes(paramName.trim().toLowerCase())
+}
+
+/**
+ * Is an ACL field used as an aggregation target anywhere in this query string?
+ *
+ * Scans the fully-decoded form as well as the raw one, so an encoded
+ * `facet.field=%75ser_read` cannot slip past — consistent with how dangerous parameter
+ * names are handled above.
+ *
+ * @param {string} queryString
+ * @returns {string|null} the offending "param=value" pair, or null
+ */
+function findAclAggregation (queryString) {
+  if (!queryString || typeof queryString !== 'string') return null
+
+  for (const text of [queryString, fullyDecode(queryString)]) {
+    for (const pair of text.split('&')) {
+      const eq = pair.indexOf('=')
+      if (eq <= 0) continue
+      const name = pair.slice(0, eq)
+      if (!isFieldNamingParam(name)) continue
+      // Decode the value independently: the pair may be raw while the value is encoded.
+      const value = fullyDecode(pair.slice(eq + 1))
+      if (ACL_FIELD_IN_VALUE.test(value)) {
+        return `${name.trim().toLowerCase()}=${value}`
+      }
+    }
+  }
+  return null
+}
+
 /**
  * Fully decode a string by repeatedly applying decodeURIComponent
  * until no further decoding is possible. This catches double, triple,
@@ -276,6 +368,23 @@ module.exports = function SolrQuerySanitizer (req, res, next) {
     return res.status(400).json({ error: 'Request contains a prohibited join; use the genome() RQL operator instead' })
   }
 
+  // Block aggregation over ACL fields — see ACL_FIELDS above for the measured vector.
+  //
+  // Checked against call_params (post-RQLQueryParser, so an RQL facet() has already
+  // become facet.field=) AND against the raw body, which is what a client sending
+  // Solr-format queries supplies directly. RQLQueryParser returns early for
+  // queryType === 'solr', so the body is the only place that form is visible.
+  const aclTargets = [query, typeof req.body === 'string' ? req.body : null]
+  for (const candidate of aclTargets) {
+    const offending = findAclAggregation(candidate)
+    if (offending) {
+      console.log(`[SECURITY] Blocked ACL-field aggregation (${offending}) from ${req.ip || (req.connection && req.connection.remoteAddress)}`)
+      return res.status(400).json({
+        error: 'Faceting, sorting, or grouping on owner/user_read/user_write is not permitted'
+      })
+    }
+  }
+
   // Sanitize call_params (the main query parameters)
   if (req.call_params && req.call_params.length > 0 && typeof req.call_params[0] === 'string') {
     const result = sanitizeQueryString(req.call_params[0])
@@ -321,3 +430,6 @@ module.exports.sanitizeQueryString = sanitizeQueryString
 module.exports.sanitizeParamsObject = sanitizeParamsObject
 module.exports.DANGEROUS_PARAMS = DANGEROUS_PARAMS
 module.exports.containsForeignJoin = containsForeignJoin
+module.exports.findAclAggregation = findAclAggregation
+module.exports.ACL_FIELDS = ACL_FIELDS
+module.exports.FIELD_NAMING_PARAMS = FIELD_NAMING_PARAMS
