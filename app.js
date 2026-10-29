@@ -8,7 +8,6 @@ var logger = require('morgan')
 var cookieParser = require('cookie-parser')
 var hpiSearchRouter = require('./routes/hpiSearch')
 var dataTypeRouter = require('./routes/dataType')
-var downloadRouter = require('./routes/download')
 var multiQueryRouter = require('./routes/multiQuery')
 var contentRouter = require('./routes/content')
 var rpcHandler = require('./routes/rpcHandler')
@@ -223,10 +222,6 @@ app.param('dataType', function (req, res, next, dataType) {
   }
   next('route')
 })
-
-app.use('/bundle/:dataType/', [
-  downloadRouter
-])
 
 app.use('/permissions/genome', [
   genomePermissionRouter
