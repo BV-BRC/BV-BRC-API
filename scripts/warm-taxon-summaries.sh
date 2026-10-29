@@ -9,7 +9,8 @@
 # refused; with joinResolution.slicedSummary enabled it is instead computed by slicing the
 # genome set and summing the per-slice facets, which is correct (facet counts are additive
 # over disjoint slices) and ~10x cheaper than the join — but SLOW. Viruses measured at
-# 32.8 minutes: 783 slices over 15,643,163 genomes.
+# 32.8 minutes when first characterised; 22.9 minutes (1373s) in the first live run of
+# this script after the join-resolution work landed.
 #
 # That is fine for a cache fill and useless inside a user request: the caller disconnects
 # long before it finishes, apicache's onlyStatus200 then stores nothing, and the next
@@ -59,11 +60,25 @@
 #
 # Crontab (nightly, off-peak — this is hours of work, not minutes). Cron output goes to
 # the admin list, so the per-taxon lines are the report:
-#   17 2 * * *  /path/to/warm-taxon-summaries.sh
+#   30 1 * * *  /path/to/warm-taxon-summaries.sh
 #
 # No secret in the crontab: the token is read from p3api.conf, which also keeps it out of
 # `ps` output and cron mail. The path is derived from this script's own location, so the
 # job does not depend on cron's working directory.
+#
+# MEASURED, first successful live run on alpha 2026-10-29 (loopback, post-#262):
+#
+#     taxon 2       Bacteria          1.38M genomes      77 s
+#     taxon 10239   Viruses           14.9M            1373 s   (22.9 min)
+#     taxon 11308   Orthomyxoviridae  2.2M              198 s
+#     taxon 2955291 A. influenzae     2.0M              119 s
+#
+# So --top6 is roughly 30-45 min and the full 22 perhaps 1-2 h. That is why the cron
+# entry is 01:30 — off-peak, clear of the hourly ingest at the top of each hour, and
+# finishing long before the 26 h TTL on the previous day's entries expires.
+#
+# Note 1373 s is ELEVEN TIMES Cloudflare's ~125 s budget. These fills are not merely
+# faster over loopback, they are impossible through the public URL at any speed.
 #
 # Exit status is the number of failures, so cron mail is actionable. A refresh that fails
 # leaves the PREVIOUS cached value in place, so a bad run degrades to "no change" rather
@@ -90,7 +105,7 @@ set -uo pipefail
 #
 # Set BASE to a public URL only for a read-only check; warming will not work.
 BASE="${BASE:-http://127.0.0.1:13001}"
-TIMEOUT="${TIMEOUT:-3600}"          # per taxon; Viruses measured 32.8 min
+TIMEOUT="${TIMEOUT:-3600}"          # per taxon; the slowest measured is 1373s (Viruses)
 PAUSE="${PAUSE:-5}"                 # breathing room between taxa
 DRY_RUN="${DRY_RUN:-0}"
 UA="${UA:-bvbrc-api/warm-taxa}"
