@@ -195,6 +195,22 @@ const defaults = {
   //   <= rewriteMaxGenomes  resolve locally to {!terms} (3-6x faster, identical results)
   //   <= rejectMaxGenomes   leave the join alone
   //    > rejectMaxGenomes   refuse with 400 — this is the OOM guard
+  // Dribble reserve for streaming downloads. Cloudflare cuts a response that goes quiet
+  // for more than ~120-150s even after it has started, returning HTTP 200 with a
+  // truncated body. The reserve holds back the tail of real output and spends it one byte
+  // at a time during silence -- bytes are identical, only timing changes. Measured: a
+  // single space every 100s kept a 300-second response alive.
+  //
+  // OFF by default: it changes write timing on every streaming response. Note it protects
+  // gaps BETWEEN records, not a slow first record -- a walk that is silent from byte zero
+  // has nothing in reserve to spend. See util/streamWithBackpressure.js and
+  // PLAN_TWO_PHASE_DOWNLOAD.md section 7a.
+  streamDribble: {
+    enabled: false,
+    intervalMs: 60000,
+    reserveBytes: 256
+  },
+
   joinResolution: {
     enabled: true,
     rewriteMaxGenomes: 50000,
