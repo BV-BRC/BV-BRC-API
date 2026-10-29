@@ -75,9 +75,40 @@ const router = express.Router()
 let redisClient = null
 let redisErrLogged = false
 
+/**
+ * Build the client options.
+ *
+ * Redis requires auth in the deployed environments. node_redis 2.8 reads the password
+ * from `options.auth_pass || options.password` (redis/index.js:149), so the deployed
+ * config's `password` key already works and is passed through untouched — this function
+ * exists for the other spellings, not that one.
+ *
+ * The deployed block carries BOTH `pass` and `password` with the same value. Only
+ * `password` is honoured; `pass` is inert. Some configs instead use `xpass`/`xpassword`,
+ * where the `x` prefix marks a key as deliberately disabled. Accepting all of them means
+ * /admin works against whichever variant a host happens to have, rather than failing
+ * NOAUTH in a way that is very hard to read from a cron report.
+ *
+ * `routes/dataRouter.js` passes the raw config block straight to apicache and relies on
+ * `password` being the live key; that works today and is not this file's to change.
+ */
+function redisOptions () {
+  const cfg = Object.assign({}, Config.get('redis') || {})
+  const pass = cfg.auth_pass || cfg.password || cfg.pass || cfg.xpass || cfg.xpassword
+  if (pass) {
+    cfg.auth_pass = pass
+  }
+  // Drop the spellings node_redis does not read. It ignores unknown keys, but leaving an
+  // inert `xpass` next to a live `auth_pass` invites someone to "tidy" the wrong one.
+  delete cfg.pass
+  delete cfg.xpass
+  delete cfg.xpassword
+  return cfg
+}
+
 function getRedis () {
   if (!redisClient) {
-    redisClient = redis.createClient(Config.get('redis'))
+    redisClient = redis.createClient(redisOptions())
     redisClient.on('error', (err) => {
       // Log once per client rather than per retry; the handler below reports the failure
       // to the caller, which is the signal that matters.
@@ -86,6 +117,7 @@ function getRedis () {
         console.error(`[ADMIN] redis error: ${err && err.message}`)
       }
     })
+    redisClient.on('ready', () => { redisErrLogged = false })
   }
   return redisClient
 }
@@ -151,10 +183,14 @@ router.post('/cache/refresh/:resource/:id', function (req, res) {
   }
   const key = spec.key(req.params.id)
 
+  // No `client.connected` precheck. createClient() connects ASYNCHRONOUSLY, so
+  // `connected` is false for a few milliseconds after the lazy client is built and the
+  // FIRST admin request on each worker would always 503 -- observed on alpha, where the
+  // first taxa of a run failed on every worker in turn. node_redis 2.x queues commands
+  // until the connection is ready (enable_offline_queue, on by default), so issuing the
+  // command directly is both correct and simpler; a genuinely dead Redis surfaces as a
+  // command error below rather than as a guess made before connecting.
   const client = getRedis()
-  if (!client.connected) {
-    return res.status(503).json({ error: 'Redis is not connected', key })
-  }
 
   // Default to apicache's configured duration for these routes (1 day). Overridable so a
   // caller can shorten a refresh it knows is provisional.
@@ -202,7 +238,11 @@ router.post('/cache/refresh/:resource/:id', function (req, res) {
       // away, so readers saw the old value right up to this write.
       client.hset(key, 'response', JSON.stringify(value), (e1) => {
         if (e1) {
-          return res.status(500).json({ key, refreshed: false, error: 'Redis HSET failed' })
+          // Surface the real reason. A NOAUTH here means the password is missing or
+          // under a key redisOptions() does not recognise, which is otherwise a very
+          // confusing failure to diagnose from the warmer's output.
+          console.error(`[ADMIN] cache refresh ${key}: redis HSET failed: ${e1.message}`)
+          return res.status(503).json({ key, refreshed: false, error: `Redis write failed: ${e1.message}` })
         }
         client.hset(key, 'duration', durationMs, () => {
           client.expire(key, durationMs / 1000, () => {
@@ -244,14 +284,19 @@ router.get('/cache/ttl/:resource/:id', function (req, res) {
   }
   const key = spec.key(req.params.id)
 
+  // No `client.connected` precheck. createClient() connects ASYNCHRONOUSLY, so
+  // `connected` is false for a few milliseconds after the lazy client is built and the
+  // FIRST admin request on each worker would always 503 -- observed on alpha, where the
+  // first taxa of a run failed on every worker in turn. node_redis 2.x queues commands
+  // until the connection is ready (enable_offline_queue, on by default), so issuing the
+  // command directly is both correct and simpler; a genuinely dead Redis surfaces as a
+  // command error below rather than as a guess made before connecting.
   const client = getRedis()
-  if (!client.connected) {
-    return res.status(503).json({ error: 'Redis is not connected', key })
-  }
 
   client.ttl(key, (err, ttl) => {
     if (err) {
-      return res.status(500).json({ error: 'Redis TTL failed', key })
+      console.error(`[ADMIN] cache ttl ${key}: ${err.message}`)
+      return res.status(503).json({ error: `Redis TTL failed: ${err.message}`, key })
     }
     // Redis TTL: -2 absent, -1 present but no expiry.
     res.json({
@@ -270,3 +315,6 @@ router.get('/ping', function (req, res) {
 })
 
 module.exports = router
+// Exported for testing: the password-spelling handling is easy to get wrong and hard to
+// diagnose from a cron report, so it is pinned directly.
+module.exports.redisOptions = redisOptions
