@@ -4,23 +4,45 @@
  * Authorization is middleware/adminGate.js (loopback peer + X-Admin-Token). Every route
  * here is behind it; nothing in this file re-checks.
  *
- * WHY INVALIDATE RATHER THAN REFILL
+ * REFRESH WITHOUT EVER DELETING — compute first, then overwrite
  *
- * The obvious operation is "refresh this cache entry," and that is not what this
- * provides. `apicache` exposes no public API for WRITING an entry — `cacheResponse` is
- * internal, and an entry is only ever stored by a real request passing through the cache
- * middleware (apicache.js:132-145). So a server-side "refill" would have to either
- * reimplement the handler chain or self-call our own port, and
- * PLAN_ELIMINATE_SELF_CALL.md is a long account of why the second is a bad idea.
+ * The obvious implementation is invalidate-then-fetch: DEL the key, then GET the public
+ * URL so the miss refills it. **That is a regression and this endpoint does not do it.**
  *
- * Invalidate-then-fetch gives the same result with none of that:
+ * `apicache` does NO request coalescing — there is no inflight/pending/lock anywhere in
+ * the module — so every concurrent miss on a key runs the handler independently. Deleting
+ * the key therefore opens a hole lasting the ENTIRE fill, during which every arriving
+ * request starts its own full recomputation of the same answer:
  *
- *   POST http://127.0.0.1:13001/admin/cache/invalidate/data/summary_by_taxon/10239
- *   GET  http://127.0.0.1:13001/data/summary_by_taxon/10239
+ *     taxon 10239   1967.8 s   (32.8 minutes)
+ *     taxon 11646     56.0 s
  *
- * The GET misses, runs the real handler chain, and apicache stores the result under the
- * clean key with a full fresh TTL — because every apicache write reissues `hset` +
- * `expire` together (apicache.js:138-140).
+ * Half an hour of the most-visited summary endpoint uncached, with each visitor kicking
+ * off another 33-minute sliced-facet walk into a heavy admission pool of 3 slots per
+ * worker. And it is strictly worse than doing nothing: today an expired entry costs the
+ * *next* user one fill, whereas invalidate-first opens that hole deliberately and widens
+ * it, because the warmer's own fetch now competes with the users it displaced.
+ *
+ * It also fails badly. If the fill errors — taxon 11118's 524, or any Solr blip — the key
+ * is already gone, so a broken warmer actively destroys a good cached value.
+ *
+ * So: fetch with `X-Apicache-Bypass`, which apicache honours at :602 by skipping the
+ * cache entirely (neither reading nor writing), then write the result under the clean key
+ * ourselves. The old value serves every user throughout and is replaced in one step; a
+ * failed fill leaves it untouched.
+ *
+ *   POST http://127.0.0.1:13001/admin/cache/refresh/summary_by_taxon/10239
+ *
+ * The endpoint names an OPERATION and its parameter, not a path — see REFRESHABLE below
+ * for why taking a caller-supplied path would be a request-forgery primitive.
+ *
+ * Writing by hand is safe because the stored shape is small, stable, and fully specified
+ * by `createCacheObject` (apicache.js:122-130) — `{status, headers, data, encoding,
+ * timestamp}` in a Redis hash field `response`, with a sibling `duration` field and a key
+ * TTL. `sendCachedResponse` reads exactly those back. buildCacheObject() below mirrors it,
+ * and tests/test-util/test.admin-cache-refresh.spec.js pins the contract so an apicache
+ * upgrade that changes the shape fails loudly rather than silently serving corrupt
+ * entries.
  *
  * Fetching over loopback has a second payoff: it does not traverse Cloudflare, whose
  * ~125 s silence budget is what makes taxon 11118 (9,468,441 genomes) impossible to warm
@@ -34,6 +56,7 @@
  */
 
 const express = require('express')
+const http = require('http')
 const debug = require('debug')('p3api-server:route/admin')
 const Config = require('../config')
 const redis = require('redis')
@@ -69,39 +92,136 @@ function getRedis () {
 
 router.use(adminGate)
 
+// Mirrors apicache's createCacheObject (apicache.js:122-130). The shape is the contract
+// between this endpoint and apicache's sendCachedResponse; if an apicache upgrade changes
+// it, tests/test-util/test.admin-cache-refresh.spec.js fails rather than this silently
+// writing entries that deserialize wrong.
+//
+// `timestamp` is seconds since epoch and is load-bearing: sendCachedResponse uses it to
+// decrement the max-age header it returns to clients.
+function buildCacheObject (status, headers, body) {
+  return {
+    status,
+    headers,
+    data: body,
+    encoding: undefined,
+    timestamp: new Date().getTime() / 1000
+  }
+}
+
 /**
- * Invalidate one cached entry.
+ * Named refreshable resources.
  *
- *   POST /admin/cache/invalidate/<the exact path apicache keyed on>
+ * The endpoint takes an OPERATION plus its parameter, not a path. An earlier draft of
+ * this took `/cache/refresh/*` and self-fetched whatever path the caller supplied, which
+ * is a request-forgery primitive: it would happily fetch any route on the loopback
+ * listener, `/admin/*` included, and write the result into a cache key of the caller's
+ * choosing. Gated or not, that is the wrong shape to build.
  *
- * The key is the request's `originalUrl` as the public route saw it, so the caller
- * supplies that path verbatim after the prefix. Deliberately NOT a pattern or a wildcard:
- * this endpoint can force expensive recomputation, and "invalidate everything matching *"
- * is an amplifier waiting to be misused.
+ * Adding a resource here is deliberate work: supply the key template and validate the
+ * parameter. Both are required — the key must match what the public route's apicache saw
+ * (`req.originalUrl`), or the refresh writes somewhere nothing reads.
  */
-router.post('/cache/invalidate/*', function (req, res) {
-  // Everything after the prefix is the cached path. Leading slash restored because
-  // apicache stores `req.originalUrl`, which always has one.
-  const suffix = req.params[0] || ''
-  const key = '/' + suffix.replace(/^\/+/, '')
+const REFRESHABLE = {
+  summary_by_taxon: {
+    // Must match routes/dataRouter.js's mount exactly: /data + /summary_by_taxon/:taxon_id
+    key: (id) => `/data/summary_by_taxon/${id}`,
+    // Taxon ids are integers. Anything else cannot reach path construction.
+    valid: (id) => /^\d{1,12}$/.test(id)
+  }
+}
+
+/**
+ * Recompute one named cached resource and overwrite it, never leaving the key absent.
+ *
+ *   POST /admin/cache/refresh/summary_by_taxon/10239
+ *
+ * See the header for why this does not DEL first.
+ */
+router.post('/cache/refresh/:resource/:id', function (req, res) {
+  const spec = REFRESHABLE[req.params.resource]
+  if (!spec) {
+    return res.status(404).json({
+      error: `Unknown refreshable resource '${req.params.resource}'`,
+      known: Object.keys(REFRESHABLE)
+    })
+  }
+  if (!spec.valid(req.params.id)) {
+    return res.status(400).json({ error: `Invalid id for ${req.params.resource}` })
+  }
+  const key = spec.key(req.params.id)
 
   const client = getRedis()
   if (!client.connected) {
     return res.status(503).json({ error: 'Redis is not connected', key })
   }
 
-  client.del(key, (err, removed) => {
-    if (err) {
-      console.error(`[ADMIN] cache invalidate failed for ${key}: ${err.message}`)
-      return res.status(500).json({ error: 'Redis DEL failed', key })
+  // Default to apicache's configured duration for these routes (1 day). Overridable so a
+  // caller can shorten a refresh it knows is provisional.
+  const durationMs = parseInt(req.query.duration_ms, 10) > 0
+    ? parseInt(req.query.duration_ms, 10)
+    : 24 * 60 * 60 * 1000
+
+  // Fetch over loopback with the bypass header, so this request neither reads the cache
+  // (we want a real recomputation) nor writes it (we write it ourselves, atomically).
+  const started = Date.now()
+  const opts = {
+    host: '127.0.0.1',
+    port: Config.get('http_port'),
+    path: key,
+    method: 'GET',
+    headers: {
+      'X-Apicache-Bypass': '1',
+      'User-Agent': 'bvbrc-api/admin-refresh'
     }
-    // `removed` is 0 when the key was absent — already expired, or never cached. That is
-    // a successful no-op, not an error: the caller's goal is "this key is not cached",
-    // which now holds either way. Reported distinctly so a warmer can tell the
-    // difference between "I expired a live entry" and "there was nothing there."
-    console.log(`[ADMIN] cache invalidate key=${key} removed=${removed}`)
-    res.json({ key, removed: removed > 0 })
+  }
+
+  const upstream = http.request(opts, (r) => {
+    const chunks = []
+    r.on('data', (c) => chunks.push(c))
+    r.on('end', () => {
+      const body = Buffer.concat(chunks).toString('utf8')
+      const elapsedMs = Date.now() - started
+
+      // Only a 200 may replace a good cached value. This matches apicache's own
+      // onlyStatus200 toggle on these routes, and it is what makes a failed refresh
+      // harmless: the previous entry is still there, untouched.
+      if (r.statusCode !== 200) {
+        console.error(`[ADMIN] cache refresh ${key} upstream ${r.statusCode} after ${elapsedMs}ms — cache left intact`)
+        return res.status(502).json({
+          key,
+          refreshed: false,
+          upstreamStatus: r.statusCode,
+          elapsedMs,
+          note: 'Previous cached value left intact'
+        })
+      }
+
+      const value = buildCacheObject(200, { 'content-type': r.headers['content-type'] || 'application/json' }, body)
+      // hset + expire, exactly as apicache's cacheResponse does. The key never went
+      // away, so readers saw the old value right up to this write.
+      client.hset(key, 'response', JSON.stringify(value), (e1) => {
+        if (e1) {
+          return res.status(500).json({ key, refreshed: false, error: 'Redis HSET failed' })
+        }
+        client.hset(key, 'duration', durationMs, () => {
+          client.expire(key, durationMs / 1000, () => {
+            console.log(`[ADMIN] cache refresh key=${key} bytes=${body.length} elapsed=${elapsedMs}ms ttl=${durationMs / 1000}s`)
+            res.json({ key, refreshed: true, bytes: body.length, elapsedMs, ttlSeconds: durationMs / 1000 })
+          })
+        })
+      })
+    })
   })
+
+  // No timeout is set deliberately: a legitimate refresh of taxon 10239 measured 32.8
+  // minutes, and cutting it short would be the one thing this endpoint exists to avoid.
+  // The caller (cron) owns the deadline.
+  upstream.on('error', (err) => {
+    console.error(`[ADMIN] cache refresh ${key} failed: ${err && err.message} — cache left intact`)
+    res.status(502).json({ key, refreshed: false, error: err && err.message, note: 'Previous cached value left intact' })
+  })
+  upstream.end()
 })
 
 /**
@@ -111,9 +231,18 @@ router.post('/cache/invalidate/*', function (req, res) {
  * is exactly how the nightly run came to report "done in 4 min, 0 failures" while
  * refilling nothing. A TTL near the full duration means freshly written.
  */
-router.get('/cache/ttl/*', function (req, res) {
-  const suffix = req.params[0] || ''
-  const key = '/' + suffix.replace(/^\/+/, '')
+router.get('/cache/ttl/:resource/:id', function (req, res) {
+  const spec = REFRESHABLE[req.params.resource]
+  if (!spec) {
+    return res.status(404).json({
+      error: `Unknown resource '${req.params.resource}'`,
+      known: Object.keys(REFRESHABLE)
+    })
+  }
+  if (!spec.valid(req.params.id)) {
+    return res.status(400).json({ error: `Invalid id for ${req.params.resource}` })
+  }
+  const key = spec.key(req.params.id)
 
   const client = getRedis()
   if (!client.connected) {

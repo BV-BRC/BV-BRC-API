@@ -30,9 +30,16 @@
 # "done in 4 min, 1 failure(s)" having warmed nothing. Cached vs cold, same taxon, same
 # work: 11646 0.16s vs 56.0s; 11676 0.28s vs 52.6s; 543 0.20s vs 16.2s.
 #
-# So each taxon is INVALIDATED first (POST /admin/cache/invalidate/...), which forces the
-# following GET to miss and refill under the clean key with a full fresh TTL. That
-# endpoint is loopback-only, which is why BASE now defaults to 127.0.0.1 — see the
+# So each taxon goes through POST /admin/cache/refresh/summary_by_taxon/<id>, which
+# recomputes with X-Apicache-Bypass and then OVERWRITES the key.
+#
+# NOTE IT DOES NOT DELETE FIRST, and that is deliberate. apicache does no request
+# coalescing, so deleting a key opens a hole lasting the whole fill during which every
+# arriving request starts its own recomputation -- 32.8 minutes of that for taxon 10239.
+# Overwriting means the old value serves readers throughout, and a failed refresh leaves
+# it intact instead of destroying it.
+#
+# The endpoint is loopback-only, which is why BASE defaults to 127.0.0.1 -- see the
 # comment on BASE below for the three separate reasons that matters.
 #
 # WHICH TAXA
@@ -47,15 +54,14 @@
 #   ADMIN_TOKEN=xxx ./warm-taxon-summaries.sh              # all 22, sequential
 #   ADMIN_TOKEN=xxx ./warm-taxon-summaries.sh --top6       # 6 taxa, ~79% of the traffic
 #   DRY_RUN=1 ./warm-taxon-summaries.sh                    # print what it would do
-#   NO_INVALIDATE=1 ./warm-taxon-summaries.sh              # fill only already-cold entries
 #
 # Crontab (nightly, off-peak — this is hours of work, not minutes). Cron output goes to
 # the admin list, so the per-taxon lines are the report:
 #   17 2 * * *  ADMIN_TOKEN=xxx /path/to/warm-taxon-summaries.sh
 #
-# Exit status is the number of failures. A taxon served from cache AFTER a successful
-# invalidate counts as a failure, because it means no warming happened — a fast green run
-# that does nothing is the exact failure this script already had once.
+# Exit status is the number of failures, so cron mail is actionable. A refresh that fails
+# leaves the PREVIOUS cached value in place, so a bad run degrades to "no change" rather
+# than to an empty cache.
 
 set -uo pipefail
 
@@ -67,7 +73,7 @@ set -uo pipefail
 #      races its own expiry: run slightly early and every request is a free cache hit.
 #      Measured on alpha 2026-10-29 — 21 of 22 taxa returned in 0-1s and the run reported
 #      "done in 4 min, 1 failure(s)" while refilling NOTHING. Cached vs cold for the same
-#      taxon: 0.16s vs 56.0s. /admin/cache/invalidate is only reachable over loopback.
+#      taxon: 0.16s vs 56.0s. /admin/cache/refresh is only reachable over loopback.
 #   2. CLOUDFLARE. Taxon 11118 (9,468,441 genomes) 524s after 125s through the public URL
 #      on alpha AND production — the edge silence budget cuts the fill long before
 #      TIMEOUT below is relevant. Loopback does not traverse Cloudflare.
@@ -78,16 +84,15 @@ set -uo pipefail
 #
 # Set BASE to a public URL only for a read-only check; warming will not work.
 BASE="${BASE:-http://127.0.0.1:13001}"
-ADMIN_TOKEN="${ADMIN_TOKEN:-}"      # required for invalidation; see PLAN_ADMIN_ENDPOINT.md
+ADMIN_TOKEN="${ADMIN_TOKEN:-}"      # required; see PLAN_ADMIN_ENDPOINT.md
 TIMEOUT="${TIMEOUT:-3600}"          # per taxon; Viruses measured 32.8 min
 PAUSE="${PAUSE:-5}"                 # breathing room between taxa
 DRY_RUN="${DRY_RUN:-0}"
-NO_INVALIDATE="${NO_INVALIDATE:-0}" # skip invalidation (then this only fills COLD entries)
 UA="${UA:-bvbrc-api/warm-taxa}"
 
-# A fill does real work and takes seconds to minutes. Anything faster than this was served
-# from cache, which means no warming happened. Reported distinctly, because a run that is
-# fast and green while doing nothing is exactly how this went unnoticed for weeks.
+# A real recomputation takes seconds to minutes. A refresh faster than this did not do
+# the work we think it did. Reported distinctly, because a run that is fast and green
+# while achieving nothing is exactly how this script's previous failure went unnoticed.
 HIT_THRESHOLD_S="${HIT_THRESHOLD_S:-2}"
 
 # Ordered by hit count over three days. Bacteria and Viruses dominate (236 and 162 hits);
@@ -128,83 +133,64 @@ echo "### base=$BASE  taxa=${#TAXA[@]}  timeout=${TIMEOUT}s"
 
 # Refuse to run uselessly rather than produce a green report that warms nothing. This is
 # the failure the 2026-10-29 run hid.
-if [ "$NO_INVALIDATE" != "1" ] && [ -z "$ADMIN_TOKEN" ]; then
+if [ -z "$ADMIN_TOKEN" ]; then
   echo "### ERROR: ADMIN_TOKEN is not set."
-  echo "###   Without invalidation every already-cached taxon is a no-op cache hit and"
-  echo "###   nothing is refilled. Set ADMIN_TOKEN (see PLAN_ADMIN_ENDPOINT.md), or set"
-  echo "###   NO_INVALIDATE=1 to deliberately fill only entries that are already cold."
+  echo "###   The refresh endpoint requires it, and without a refresh a plain GET of an"
+  echo "###   already-cached taxon is a no-op. Set ADMIN_TOKEN; see PLAN_ADMIN_ENDPOINT.md."
   exit 1
 fi
-[ "$NO_INVALIDATE" = "1" ] && echo "### NO_INVALIDATE=1 — only cold entries will be filled"
 
 FAILED=0
 HITS=0
 START=$(date +%s)
 
 for t in "${TAXA[@]}"; do
-  url="${BASE}/data/summary_by_taxon/${t}"
-  # The apicache key is req.originalUrl as the PUBLIC route saw it — no host, no
-  # BASE prefix. Keep these two in step: invalidating the wrong key reports success and
-  # changes nothing.
-  cache_path="/data/summary_by_taxon/${t}"
+  # One call does the whole refresh: the admin endpoint recomputes with
+  # X-Apicache-Bypass and then OVERWRITES the key, so the cached value is never absent
+  # and a failed fill leaves the previous one intact. The script no longer fetches the
+  # public URL itself -- doing so after a delete is what opened a 33-minute hole.
+  refresh_url="${BASE}/admin/cache/refresh/summary_by_taxon/${t}"
 
-  # Skip a taxon whose genomes have not changed since the cached entry would have been
-  # written. One cheap query; most taxa ingest rarely (taxon 1773's newest genome is from
-  # April), so this usually skips nearly everything after the first run of the day.
+  # Informational: when this taxon last ingested a genome. Cheap, and it makes a run log
+  # interpretable ("why did that one take 30 minutes").
   newest=$(curl -s -m 60 -H "User-Agent: $UA" \
     "${BASE}/genome/?eq(taxon_lineage_ids,${t})&sort(-date_inserted)&limit(1)&select(date_inserted)&http_accept=application/json" \
     2>/dev/null | sed -n 's/.*"date_inserted":"\([^"]*\)".*/\1/p')
 
   if [ "$DRY_RUN" = "1" ]; then
-    echo "  [dry-run] $t  newest_genome=${newest:-unknown}  invalidate=${cache_path}"
+    echo "  [dry-run] $t  newest_genome=${newest:-unknown}  refresh=${refresh_url}"
     continue
   fi
 
-  # Expire the entry so the fetch below MISSES and runs the real handler chain, which is
-  # what causes apicache to store a fresh value with a full TTL (hset + expire are
-  # reissued together on every write). Without this step an already-cached taxon is a
-  # free hit and no warming occurs.
-  inval=''
-  if [ "$NO_INVALIDATE" != "1" ]; then
-    inval=$(curl -s -m 30 -X POST -H "User-Agent: $UA" -H "X-Admin-Token: ${ADMIN_TOKEN}" \
-      -w '\n%{http_code}' "${BASE}/admin/cache/invalidate${cache_path}" 2>/dev/null | tail -1)
-    if [ "$inval" != "200" ]; then
-      printf '  %-9s INVALIDATE FAILED (http %s) — not warming; check ADMIN_TOKEN and that BASE is loopback\n' \
-        "$t" "${inval:-000}"
-      FAILED=$((FAILED+1))
-      sleep "$PAUSE"
-      continue
-    fi
-  fi
-
   t0=$(date +%s)
-  code=$(curl -s -m "$TIMEOUT" -o /dev/null -w '%{http_code}' -H "User-Agent: $UA" "$url")
+  body=$(curl -s -m "$TIMEOUT" -X POST -H "User-Agent: $UA" \
+    -H "X-Admin-Token: ${ADMIN_TOKEN}" -w '\n%{http_code}' "$refresh_url" 2>/dev/null)
+  code=$(printf '%s' "$body" | tail -1)
   el=$(( $(date +%s) - t0 ))
 
   case "$code" in
     200)
-      # A real fill takes seconds to minutes. Sub-threshold means this was served from
-      # cache, so nothing was warmed -- which after a successful invalidate means
-      # something is wrong (wrong key, wrong Redis db, another process refilled it).
-      if [ "$el" -lt "$HIT_THRESHOLD_S" ] && [ "$NO_INVALIDATE" != "1" ]; then
-        printf '  %-9s CACHE HIT (%ds) — NOT warmed; invalidate did not take effect\n' "$t" "$el"
-        HITS=$((HITS+1))
-        FAILED=$((FAILED+1))
-      elif [ "$el" -lt "$HIT_THRESHOLD_S" ]; then
-        printf '  %-9s hit   %5ds  (already cached; NO_INVALIDATE)\n' "$t" "$el"
+      # The endpoint reports elapsed time itself; a sub-threshold refresh means the
+      # recomputation did not actually happen (an unexpectedly cheap taxon, or a
+      # misconfiguration), which is worth seeing rather than counting as success.
+      if [ "$el" -lt "$HIT_THRESHOLD_S" ]; then
+        printf '  %-9s refreshed %3ds  (suspiciously fast -- verify this taxon is costly)\n' "$t" "$el"
         HITS=$((HITS+1))
       else
-        printf '  %-9s FILLED %4ds  newest=%s\n' "$t" "$el" "${newest:-?}"
+        printf '  %-9s REFRESHED %3ds  newest=%s\n' "$t" "$el" "${newest:-?}"
       fi
       ;;
-    000) printf '  %-9s TIMEOUT after %ds — raise TIMEOUT or investigate\n' "$t" "$el"
+    000) printf '  %-9s TIMEOUT after %ds -- raise TIMEOUT or investigate\n' "$t" "$el"
          FAILED=$((FAILED+1)) ;;
-    400) printf '  %-9s HTTP 400 (%ds) — is joinResolution.slicedSummary enabled?\n' "$t" "$el"
+    403) printf '  %-9s HTTP 403 (%ds) -- admin gate refused; BASE must be 127.0.0.1 and ADMIN_TOKEN must match\n' "$t" "$el"
          FAILED=$((FAILED+1)) ;;
-    502|503|504)
-         printf '  %-9s HTTP %s (%ds) — upstream refused/timed out\n' "$t" "$code" "$el"
+    404) printf '  %-9s HTTP 404 (%ds) -- is admin.enabled true in p3api.conf?\n' "$t" "$el"
          FAILED=$((FAILED+1)) ;;
-    524) printf '  %-9s HTTP 524 (%ds) — Cloudflare cut the fill; BASE must be loopback\n' "$t" "$el"
+    502) printf '  %-9s REFRESH FAILED (%ds) -- upstream error; previous cached value left intact\n' "$t" "$el"
+         FAILED=$((FAILED+1)) ;;
+    503) printf '  %-9s HTTP 503 (%ds) -- redis not connected\n' "$t" "$el"
+         FAILED=$((FAILED+1)) ;;
+    524) printf '  %-9s HTTP 524 (%ds) -- Cloudflare cut it; BASE must be loopback\n' "$t" "$el"
          FAILED=$((FAILED+1)) ;;
     *)   printf '  %-9s HTTP %s (%ds)\n' "$t" "$code" "$el"
          FAILED=$((FAILED+1)) ;;
@@ -213,11 +199,10 @@ for t in "${TAXA[@]}"; do
   sleep "$PAUSE"
 done
 
-echo "### done in $(( ($(date +%s) - START) / 60 )) min, ${FAILED} failure(s), ${HITS} cache hit(s)"
-if [ "$HITS" -gt 0 ] && [ "$NO_INVALIDATE" != "1" ]; then
-  echo "### WARNING: ${HITS} taxa were served from cache after invalidation — those were NOT"
-  echo "###          warmed. Check that the apicache key matches ${BASE%/}/data/summary_by_taxon/<id>"
-  echo "###          and that /admin talks to the same Redis db as the API."
+echo "### done in $(( ($(date +%s) - START) / 60 )) min, ${FAILED} failure(s), ${HITS} suspiciously fast"
+if [ "$HITS" -gt 0 ]; then
+  echo "### NOTE: ${HITS} taxa refreshed in under ${HIT_THRESHOLD_S}s. Either those taxa are"
+  echo "###       genuinely cheap, or the refresh is not recomputing what we expect."
 fi
 
 # NOTES
