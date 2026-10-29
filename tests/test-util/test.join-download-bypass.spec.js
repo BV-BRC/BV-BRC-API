@@ -134,6 +134,26 @@ describe('join reject: download bypass', function () {
       res.results.stream.destroy()
     })
 
+    it('THREADS the caller\'s sort into the stream', async function () {
+      // Without this the stream fetches unsorted, Solr returns internal docid order, and
+      // the per-slice rows cap selects a different subset on every run. Measured on alpha
+      // 2026-10-28: three runs of one limit(5000) Viruses download returned 5000 records
+      // each with ~75% of the ids differing. Asserted on the constructed stream, not on a
+      // URLSearchParams re-derivation, because the defect was that the middleware never
+      // passed it on -- a parsing test would have passed throughout.
+      const q = `q=*:*&fq=${JOIN}&rows=5000&sort=feature_id+asc`
+      const { req, res } = await exercise({ isDownload: true, call_params: [q] })
+      assert.isTrue(req.skipAPIMethodHandler)
+      assert.equal(res.results.stream.sort, 'feature_id asc')
+      res.results.stream.destroy()
+    })
+
+    it('leaves sort undefined when the caller sent none', async function () {
+      const { res } = await exercise({ isDownload: true })
+      assert.isUndefined(res.results.stream.sort)
+      res.results.stream.destroy()
+    })
+
     it('still refuses a download when batchedDownloads is off', async function () {
       Config.set('joinResolution',
         Object.assign({}, Config.get('joinResolution'), { batchedDownloads: false }))

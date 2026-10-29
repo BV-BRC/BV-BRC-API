@@ -278,6 +278,114 @@ describe('BatchedJoinStream', function () {
     st.destroy()
   })
 
+  describe('determinism — the caller\'s sort', function () {
+    /**
+     * A target that behaves like a real sharded collection: UNSORTED fetches come back in
+     * an arbitrary order that differs per call (internal docid order, replica-dependent),
+     * while a sorted fetch is honoured. Combined with a `rows` cap this is what made the
+     * same download return different rows every time.
+     */
+    // Shared ACROSS stubs on purpose: the real instability is between REQUESTS (a
+    // different replica answers, segments merged in between), so a counter that reset
+    // per stub would make every run start from the same rotation and the negative
+    // control below would pass for the wrong reason.
+    let flip = 0
+
+    function unstableTarget ({ perGenome = 4 } = {}) {
+      const calls = []
+      return {
+        calls,
+        queryTarget: async ({ query }) => {
+          calls.push(query)
+          const q = decodeURIComponent(query)
+          const ids = q.includes('}') ? q.split('}')[1].split('&')[0].split(',').filter(Boolean) : []
+          const rows = parseInt((/rows=(\d+)/.exec(query) || [])[1], 10) || 10
+          // The full candidate set for this slice, in canonical order.
+          const all = []
+          for (const g of ids) for (let i = 0; i < perGenome; i++) all.push({ id: `${g}:${i}` })
+          // A replica would not hand them over in that order. Rotate per call.
+          const shifted = all.slice(flip % (all.length || 1)).concat(all.slice(0, flip % (all.length || 1)))
+          flip++
+          const ordered = /[&?]sort=/.test(query)
+            ? all.slice().sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
+            : shifted
+          return { response: { numFound: all.length, docs: ordered.slice(0, rows) } }
+        }
+      }
+    }
+
+    const run = (sort) => {
+      const g = stubs({ total: 6 }).queryGenome
+      const t = unstableTarget({ perGenome: 4 })
+      return drain(new BatchedJoinStream({
+        queryGenome: g,
+        queryTarget: t.queryTarget,
+        genomeFilter: 'taxon_lineage_ids:10239',
+        genomeBatch: 3,
+        maxRows: 8,
+        sort
+      })).then((docs) => docs.filter((d) => !d._batchedJoin).map((d) => d.id))
+    }
+
+    it('returns the SAME rows on every run when a sort is given', async function () {
+      // The defect, measured on alpha 2026-10-28: three runs of one limit(5000) Viruses
+      // download returned 5000 records each with ~75% of the ids DIFFERING between runs.
+      // Correct count, well-formed file, different data -- nothing flags it.
+      const a = await run('id asc')
+      const b = await run('id asc')
+      const c = await run('id asc')
+      assert.deepEqual(b, a, 'repeat downloads must be identical')
+      assert.deepEqual(c, a, 'repeat downloads must be identical')
+    })
+
+    it('is NOT reproducible without one — the stub proves the hazard is real', async function () {
+      // Guards the guard: if this ever starts passing, the stub stopped modelling
+      // replica-order instability and the test above proves nothing.
+      const a = await run(undefined)
+      const b = await run(undefined)
+      assert.notDeepEqual(b, a)
+    })
+
+    it('passes the sort to Solr on every slice, not just the first', async function () {
+      const g = stubs({ total: 9 }).queryGenome
+      const t = unstableTarget({ perGenome: 1 })
+      await drain(new BatchedJoinStream({
+        queryGenome: g,
+        queryTarget: t.queryTarget,
+        genomeFilter: 'x:1',
+        genomeBatch: 3,
+        sort: 'feature_id asc'
+      }))
+      assert.isAbove(t.calls.length, 1, 'want several slices')
+      for (const q of t.calls) {
+        assert.include(decodeURIComponent(q), 'sort=feature_id asc')
+      }
+    })
+
+    it('omits sort entirely when the caller gave none', async function () {
+      const s = stubs({ total: 2, perGenome: 1 })
+      await drain(new BatchedJoinStream({
+        queryGenome: s.queryGenome, queryTarget: s.queryTarget, genomeFilter: 'x:1'
+      }))
+      assert.notInclude(s.calls.target[0], 'sort=')
+    })
+
+    it('encodes a multi-field sort rather than splitting the query string', async function () {
+      // 'a asc,b desc' contains a comma and spaces; unencoded it would corrupt the
+      // parameter and Solr would reject or silently mis-sort.
+      const s = stubs({ total: 2, perGenome: 1 })
+      await drain(new BatchedJoinStream({
+        queryGenome: s.queryGenome,
+        queryTarget: s.queryTarget,
+        genomeFilter: 'x:1',
+        sort: 'genome_id asc,feature_id asc'
+      }))
+      const raw = (/sort=([^&]*)/.exec(s.calls.target[0]) || [])[1]
+      assert.equal(decodeURIComponent(raw), 'genome_id asc,feature_id asc')
+      assert.notInclude(raw, ' ')
+    })
+  })
+
   it('surfaces a lookup failure as a stream error, not a truncated success', async function () {
     // A download that silently stops early is this codebase's characteristic failure.
     const s = stubs({ total: 100, perGenome: 1 })
