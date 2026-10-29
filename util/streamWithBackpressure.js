@@ -13,6 +13,8 @@
  *   })
  */
 
+const Config = require('../config')
+
 /**
  * Stream data from a source stream to an HTTP response with proper backpressure.
  *
@@ -28,6 +30,18 @@
  * @param {number} [options.reserveBytes=256] - Bytes held back to spend during silence.
  * @returns {Promise<number>} Resolves with document count when complete
  */
+/**
+ * Config-driven defaults, read per call so the flag can be flipped in p3api.conf without
+ * a restart -- the same convention lib/joinResolver.js uses for its thresholds.
+ */
+function dribbleDefaults () {
+  const cfg = Config.get('streamDribble') || {}
+  return {
+    dribbleMs: cfg.enabled === true ? (cfg.intervalMs || 60000) : 0,
+    reserveBytes: cfg.reserveBytes || 256
+  }
+}
+
 /**
  * THE DRIBBLE RESERVE — surviving Cloudflare's silence budget without inventing bytes.
  *
@@ -118,10 +132,12 @@ function streamWithBackpressure (sourceStream, res, options = {}) {
     onHeader,
     onEnd,
     skipFirstDoc = true,
-    // Off by default: changes write timing on every streaming response, so it is opted
-    // into by the paths that can actually stall. 60s is half the measured 120-150s budget.
-    dribbleMs = 0,
-    reserveBytes = 256
+    // Defaults come from config so the reserve can be switched on for ALL streaming
+    // serializers at once, rather than threading an option through eight call sites
+    // (media/{csv,tsv,json,ndjson,gff,dna+fasta,protein+fasta}.js). A caller may still
+    // override per-response. Ships disabled; see config.js `streamDribble`.
+    dribbleMs = dribbleDefaults().dribbleMs,
+    reserveBytes = dribbleDefaults().reserveBytes
   } = options
 
   // Disable nginx proxy buffering to enable end-to-end backpressure

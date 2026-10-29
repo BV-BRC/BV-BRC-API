@@ -93,6 +93,38 @@ describe('dribble reserve', function () {
     }, 40)
   })
 
+  describe('config-driven defaults', function () {
+    const Config = require('../../config')
+    let saved
+
+    beforeEach(function () { saved = Config.get('streamDribble') })
+    afterEach(function () { Config.set('streamDribble', saved) })
+
+    it('ships DISABLED', function () {
+      // Wiring it on changes write timing for every streaming serializer, so it must be
+      // an explicit operational choice.
+      const cfg = Config.get('streamDribble') || {}
+      assert.notStrictEqual(cfg.enabled, true)
+    })
+
+    it('enabling it in config turns the reserve on for every serializer at once', async function () {
+      // The point of config-driven defaults: one switch rather than threading an option
+      // through eight call sites.
+      Config.set('streamDribble', { enabled: true, intervalMs: 60000, reserveBytes: 8 })
+      const res = fakeRes()
+      await streamWithBackpressure(docsStream(DOCS), res, { transform })
+      assert.equal(res.body, '{"a":1}\n{"b":2}\n{"c":3}\n', 'output still identical')
+      assert.isAbove(res.chunks.length, 1, 'but the reserve split the writes')
+    })
+
+    it('an explicit option still overrides the config', async function () {
+      Config.set('streamDribble', { enabled: true, intervalMs: 60000, reserveBytes: 8 })
+      const res = fakeRes()
+      await streamWithBackpressure(docsStream(DOCS), res, { transform, dribbleMs: 0 })
+      assert.equal(res.chunks.length, 3, 'dribbleMs:0 opts out regardless of config')
+    })
+  })
+
   it('is inert when dribbleMs is 0 (the default)', async function () {
     const res = fakeRes()
     await streamWithBackpressure(docsStream(DOCS), res, { transform })
