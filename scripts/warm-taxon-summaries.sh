@@ -50,14 +50,20 @@
 # waste. The long tail of ~120,000 one-hit taxa is irrelevant — those are under the
 # threshold and answer in normal time.
 #
-# Usage (ADMIN_TOKEN is required; the script refuses to run uselessly without it):
-#   ADMIN_TOKEN=xxx ./warm-taxon-summaries.sh              # all 22, sequential
-#   ADMIN_TOKEN=xxx ./warm-taxon-summaries.sh --top6       # 6 taxa, ~79% of the traffic
-#   DRY_RUN=1 ./warm-taxon-summaries.sh                    # print what it would do
+# Usage. The admin token is read from p3api.conf automatically, so there is nothing to
+# configure here once admin.token is set there:
+#   ./warm-taxon-summaries.sh                    # all 22, sequential
+#   ./warm-taxon-summaries.sh --top6             # 6 taxa, ~79% of the traffic
+#   DRY_RUN=1 ./warm-taxon-summaries.sh          # print what it would do
+#   ADMIN_TOKEN=xxx ./warm-taxon-summaries.sh    # override, for an ad-hoc run
 #
 # Crontab (nightly, off-peak — this is hours of work, not minutes). Cron output goes to
 # the admin list, so the per-taxon lines are the report:
-#   17 2 * * *  ADMIN_TOKEN=xxx /path/to/warm-taxon-summaries.sh
+#   17 2 * * *  /path/to/warm-taxon-summaries.sh
+#
+# No secret in the crontab: the token is read from p3api.conf, which also keeps it out of
+# `ps` output and cron mail. The path is derived from this script's own location, so the
+# job does not depend on cron's working directory.
 #
 # Exit status is the number of failures, so cron mail is actionable. A refresh that fails
 # leaves the PREVIOUS cached value in place, so a bad run degrades to "no change" rather
@@ -84,11 +90,41 @@ set -uo pipefail
 #
 # Set BASE to a public URL only for a read-only check; warming will not work.
 BASE="${BASE:-http://127.0.0.1:13001}"
-ADMIN_TOKEN="${ADMIN_TOKEN:-}"      # required; see PLAN_ADMIN_ENDPOINT.md
 TIMEOUT="${TIMEOUT:-3600}"          # per taxon; Viruses measured 32.8 min
 PAUSE="${PAUSE:-5}"                 # breathing room between taxa
 DRY_RUN="${DRY_RUN:-0}"
 UA="${UA:-bvbrc-api/warm-taxa}"
+
+# The admin token comes from p3api.conf by default — the same file the API reads, so
+# there is ONE copy of the secret and no way for a crontab and the server to drift apart.
+# A token in a crontab is also visible to anyone who can run `ps` while the job starts,
+# and ends up in cron mail and shell history; reading the file avoids all three.
+#
+# Resolution order, first hit wins:
+#   $ADMIN_TOKEN        explicit override, for ad-hoc runs
+#   $P3_API_CONFIG      same env var config.js:360 honours
+#   ./p3api.conf        relative to the repo root, as config.js defaults to
+#
+# Note config.js resolves './p3api.conf' against the API's CWD, not this script's
+# location, so when run from cron the path is derived from the script instead — cron's
+# CWD is the invoking user's home and would silently find nothing.
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+CONF="${P3_API_CONFIG:-${REPO_ROOT}/p3api.conf}"
+
+if [ -z "${ADMIN_TOKEN:-}" ] && [ -r "$CONF" ]; then
+  # python3 rather than a grep/sed: p3api.conf is JSON, and a regex would be fooled by
+  # the token appearing in a comment key or by any reordering. Fails silently to empty,
+  # which the check below turns into a clear error.
+  ADMIN_TOKEN=$(python3 -c '
+import json, sys
+try:
+    with open(sys.argv[1]) as fh:
+        print((json.load(fh).get("admin") or {}).get("token") or "")
+except Exception:
+    print("")
+' "$CONF" 2>/dev/null)
+fi
+ADMIN_TOKEN="${ADMIN_TOKEN:-}"
 
 # A real recomputation takes seconds to minutes. A refresh faster than this did not do
 # the work we think it did. Reported distinctly, because a run that is fast and green
@@ -134,9 +170,14 @@ echo "### base=$BASE  taxa=${#TAXA[@]}  timeout=${TIMEOUT}s"
 # Refuse to run uselessly rather than produce a green report that warms nothing. This is
 # the failure the 2026-10-29 run hid.
 if [ -z "$ADMIN_TOKEN" ]; then
-  echo "### ERROR: ADMIN_TOKEN is not set."
-  echo "###   The refresh endpoint requires it, and without a refresh a plain GET of an"
-  echo "###   already-cached taxon is a no-op. Set ADMIN_TOKEN; see PLAN_ADMIN_ENDPOINT.md."
+  echo "### ERROR: no admin token."
+  if [ ! -r "$CONF" ]; then
+    echo "###   $CONF is missing or unreadable."
+  else
+    echo "###   $CONF has no admin.token. Add:"
+    echo '###       "admin": { "enabled": true, "token": "<a long random string>" }'
+  fi
+  echo "###   Or pass ADMIN_TOKEN=... for a one-off run. See PLAN_ADMIN_ENDPOINT.md."
   exit 1
 fi
 
