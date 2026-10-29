@@ -9,7 +9,8 @@
 # refused; with joinResolution.slicedSummary enabled it is instead computed by slicing the
 # genome set and summing the per-slice facets, which is correct (facet counts are additive
 # over disjoint slices) and ~10x cheaper than the join — but SLOW. Viruses measured at
-# 32.8 minutes: 783 slices over 15,643,163 genomes.
+# 32.8 minutes when first characterised; 22.9 minutes (1373s) in the first live run of
+# this script after the join-resolution work landed.
 #
 # That is fine for a cache fill and useless inside a user request: the caller disconnects
 # long before it finishes, apicache's onlyStatus200 then stores nothing, and the next
@@ -59,11 +60,33 @@
 #
 # Crontab (nightly, off-peak — this is hours of work, not minutes). Cron output goes to
 # the admin list, so the per-taxon lines are the report:
-#   17 2 * * *  /path/to/warm-taxon-summaries.sh
+#   30 1 * * *  /path/to/warm-taxon-summaries.sh
 #
 # No secret in the crontab: the token is read from p3api.conf, which also keeps it out of
 # `ps` output and cron mail. The path is derived from this script's own location, so the
 # job does not depend on cron's working directory.
+#
+# MEASURED, complete --top6 run on alpha 2026-10-29 (loopback, post-#262).
+# "### done in 53 min, 0 failure(s), 0 suspiciously fast":
+#
+#     taxon 2       Bacteria          1.38M genomes      77 s
+#     taxon 10239   Viruses           14.9M            1373 s   (22.9 min)
+#     taxon 11308   Orthomyxoviridae  2.2M              124 s
+#     taxon 2955291 A. influenzae     2.0M              103 s
+#     taxon 2697049 SARS-CoV-2        9.4M              796 s
+#     taxon 11118   Coronaviridae     9.5M              719 s
+#
+# 53 min for six, so the full 22 should fit comfortably in the overnight window. That is
+# why the cron entry is 01:30 — off-peak, clear of the hourly ingest at the top of each
+# hour, and finishing long before the 26 h TTL on the previous day's entries expires.
+#
+# FOUR OF THE SIX EXCEEDED CLOUDFLARE'S ~125 s BUDGET, and 1373 s is eleven times it.
+# These fills are not merely faster over loopback, most of this list is impossible
+# through the public URL at any speed. Taxon 11118 is the proof: it returned 524 on
+# alpha AND production and could not be warmed by any means before this.
+#
+# All four taxa spot-checked after the run returned counts IDENTICAL to production, so
+# the entries this script writes are correct, not merely present.
 #
 # Exit status is the number of failures, so cron mail is actionable. A refresh that fails
 # leaves the PREVIOUS cached value in place, so a bad run degrades to "no change" rather
@@ -90,7 +113,7 @@ set -uo pipefail
 #
 # Set BASE to a public URL only for a read-only check; warming will not work.
 BASE="${BASE:-http://127.0.0.1:13001}"
-TIMEOUT="${TIMEOUT:-3600}"          # per taxon; Viruses measured 32.8 min
+TIMEOUT="${TIMEOUT:-3600}"          # per taxon; the slowest measured is 1373s (Viruses)
 PAUSE="${PAUSE:-5}"                 # breathing room between taxa
 DRY_RUN="${DRY_RUN:-0}"
 UA="${UA:-bvbrc-api/warm-taxa}"
