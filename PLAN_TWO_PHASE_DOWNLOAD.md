@@ -253,6 +253,38 @@ onto the partial file** — a silently corrupt download, which is strictly worse
 empty one. Chrome asked for a range, got a `200` instead of a `206`, and refused. The
 zero-length file is the browser protecting the user.
 
+### How a browser actually resumes (Chrome 156, measured against a local test server)
+
+Chrome re-issues the **identical request** — same method, same URL — with two headers
+added, and resumes entirely on its own without asking the user:
+
+```
+range: bytes=2097152-          <- exactly the byte count already on disk
+if-range: "resume-test-v1"     <- the ETag from the original response
+accept-encoding: identity      <- drops gzip, so byte offsets stay meaningful
+```
+
+`If-Range` is the safety mechanism, and it is already part of the protocol: it makes the
+resume **conditional**. The server returns `206` only if the validator still matches; if
+it does not, the server returns `200` with the whole body and the browser discards its
+partial file and starts over. The "splice two different versions together" hazard is
+therefore solved at the protocol level — *provided the server participates honestly*.
+
+Three behaviours worth knowing, all observed:
+
+| server shape | Chrome's behaviour |
+|---|---|
+| `Accept-Ranges` + `Content-Length` + `ETag`, honoring `Range` with `206` | **6 attempts**, auto-retried without prompting, offsets advancing `2097152 → 3145728 → 3670016 → 3932160 → 4063232` until complete |
+| no `Accept-Ranges`, no `Content-Length` — **today's BV-BRC shape** | **1 attempt**, then gives up. It never tries to resume |
+| advertises `Accept-Ranges` but ignores `Range`, returning `200` + full body | **retries forever without advancing** — same `bytes=1048576-` five times running |
+
+The third row is the trap for any future implementation, and it is what would happen if
+someone "added resume support" by setting the header. **`Accept-Ranges` is a promise.**
+Advertising it without honoring `Range` with a real `206` + `Content-Range` is worse than
+not advertising it at all: the client correctly refuses to treat each `200` as a
+continuation, so it loops against a server that keeps restarting. Half-implementing this
+is the one outcome to avoid.
+
 ### Why byte-exact resume is hard here, and it is not the offset table
 
 The obvious design is to record `(byte offset → cursorMark)` at page boundaries.
@@ -280,6 +312,21 @@ increasing order of ambition:
   plus an index version; a resume revalidates and gets **`412`** if the index moved. That
   converts today's silent risk into a clean, actionable failure without implementing
   resume at all.
+
+  **Use the collection's commit/index version, not a `date_inserted` probe over the
+  matched records.** Scanning the result set for its newest insertion date is the obvious
+  idea and it is **unsafe, not merely expensive**: `date_inserted` only witnesses
+  *insertions*. Deprecating a genome removes all of its features from a result set
+  filtered by `ne(genome_status,Deprecated)` — the shape these downloads actually use —
+  **without touching any `date_inserted` on `genome_feature`**; a hard delete behaves the
+  same way. So `max(date_inserted)` can report "unchanged" while the result set shrank,
+  which is the one direction a validator must never fail in. A validator may
+  over-invalidate freely (the client simply restarts); it may never under-invalidate.
+
+  The index version over-invalidates — with hourly ingest, roughly hourly, even when the
+  caller's own slice did not move — but it is one cheap lookup and it errs safely. That
+  trade is the right one: a needless restart costs a re-download, a missed invalidation
+  costs a silently spliced file.
 - **Pin the searcher** for the life of a token. Correct, but holds merge resources per
   in-flight download across a 30-minute window. Needs the architects.
 - **Record-level resume** — `?resume_after=<mark>`, returning a fresh file from that
