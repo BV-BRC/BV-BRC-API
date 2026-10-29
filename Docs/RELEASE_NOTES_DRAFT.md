@@ -105,5 +105,9 @@ Placeholders — fill in from the merge log:
 - [ ] `Retry-After` now readable cross-origin (PR #240).
 - [ ] Join rejection for over-broad queries: the `400` message and `join_too_broad`
       error code — cross-reference `Docs/CLIENT-join-too-broad.md`.
-- [ ] Confirm the final worker/instance count, which affects documented concurrency
-      limits.
+- [ ] Concurrency limits, **if** any are documented for users: alpha runs 3 workers and
+      the admission pools are per worker, so published numbers must be slots × workers
+      (heavy 9/18, interactive 60/60 on a 3-worker deployment) — not the per-pool
+      figures. **Confirm production's worker count separately; do not assume it matches
+      alpha.** Tuning is deferred until production runs this, so hold this item until
+      the numbers settle rather than publishing figures that will move.

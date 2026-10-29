@@ -772,9 +772,35 @@ traffic needs >40 concurrent queries or a Solr slow enough to blow the 1 s queue
 temporarily lowering `interactiveMaxConcurrent`/`interactiveMaxQueue` is far more reliable
 than trying to generate that by hand.
 
-**Pool state is per worker.** `default_pm2_config.js` sets `instances: 1` and nothing in
-`app.js`/`web.js` forks, so today these numbers are the whole deployment. If that ever
-changes, cluster-facing concurrency becomes slots × workers.
+**Pool state is per worker, and alpha runs THREE workers — so the table above is per
+worker, not per deployment.** Confirmed 2026-10-29. Effective cluster-facing limits on
+alpha are **heavy 9 slots / 18 queue** and **interactive 60 / 60**, i.e. slots × workers.
+
+`default_pm2_config.js` (tracked) says `instances: 1`, so the worker count comes from an
+untracked deployment override — the same pattern as `p3api.conf`. **Do not infer the
+worker count from the tracked config.** Measure it:
+
+```bash
+# distinct pids across repeated calls = worker count
+for i in $(seq 1 8); do curl -s $BASE/stats | python3 -c 'import json,sys; print(json.load(sys.stdin)["pid"])'; done | sort -u
+```
+
+Two consequences that bite immediately:
+
+- **`/stats` is a per-worker sample, not a deployment view.** Whichever worker answers
+  reports only its own pools, so a single reading showing `heavy.active=0` means nothing
+  — a download may be saturating a different worker. Repeated samples appear to
+  oscillate; that is round-robin across workers, not activity changing. Any load harness
+  reading `/stats` must either aggregate across pids or be read as a lower bound.
+- **The 2026-10-17 admission measurements above were taken against one worker.** Their
+  per-pool conclusions still hold, but the deployment-level shedding threshold on a
+  3-worker alpha is 3× what that run implies.
+
+**Tuning is deliberately deferred until production runs this.** Alpha is the wrong place
+to size these: production carries heavier, currently unprotected traffic, and tuning
+against alpha's lighter load would bake in the wrong numbers. Expect to revisit
+`heavyMaxConcurrent` / `interactiveMaxConcurrent` and the worker count together — they
+multiply, so changing one without the other moves the real limit unexpectedly.
 
 ### `Retry-After` must stay in `EXPOSED_HEADERS`
 
