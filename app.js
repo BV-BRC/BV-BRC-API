@@ -16,6 +16,7 @@ var jbrowseRouter = require('./routes/JBrowse')
 var genomePermissionRouter = require('./routes/genomePermissionRouter')
 var dataRouter = require('./routes/dataRouter')
 var indexer = require('./routes/indexer')
+var adminRouter = require('./routes/adminRouter')
 var docRouter = require('./routes/documentation')
 var indexRouter = require('./routes/index')
 var distributedQueryRouter = require('./routes/distributedQueryRouter')
@@ -137,6 +138,11 @@ app.use(cors(corsOptions(config)))
 var collections = config.get('collections')
 
 app.use('/indexer', indexer)
+
+// Local-only operational endpoints. Every route is behind middleware/adminGate.js
+// (loopback peer address + X-Admin-Token) and the whole surface 404s unless
+// `admin.enabled` is true in config. See PLAN_ADMIN_ENDPOINT.md.
+app.use('/admin', adminRouter)
 
 app.get('/', indexRouter)
 app.use('/doc', docRouter)

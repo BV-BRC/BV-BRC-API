@@ -16,12 +16,31 @@
 # visitor starts over. So the fill has to be driven by something with no client attached.
 #
 # The cache key is `req.originalUrl` and nothing else (apicache.js:620), so an ordinary
-# unauthenticated GET to the public URL writes exactly the entry the website reads. No
-# special endpoint, no credentials.
+# GET to the public path writes exactly the entry the website reads.
+#
+# A PLAIN GET IS NOT ENOUGH, THOUGH, AND THE EARLIER VERSION OF THIS SCRIPT DID NOTHING.
 #
 # TTL is a hard Redis expiry set at write time (`redis.expire(key, duration/1000)`), not a
-# sliding window — an entry dies 24h after it was written however often it is read. So a
-# daily run is not merely sufficient, it is required.
+# sliding window, and a cache HIT returns at apicache.js:649 before any handler runs — so
+# reads never extend an entry. A warmer on a 24h cycle against a 24h TTL therefore races
+# its own expiry: run slightly early and every request is a free hit, nothing is
+# refilled, and the entry dies hours later in front of a real user.
+#
+# Measured on alpha 2026-10-29: 21 of 22 taxa returned in 0-1s and the run reported
+# "done in 4 min, 1 failure(s)" having warmed nothing. Cached vs cold, same taxon, same
+# work: 11646 0.16s vs 56.0s; 11676 0.28s vs 52.6s; 543 0.20s vs 16.2s.
+#
+# So each taxon goes through POST /admin/cache/refresh/summary_by_taxon/<id>, which
+# recomputes with X-Apicache-Bypass and then OVERWRITES the key.
+#
+# NOTE IT DOES NOT DELETE FIRST, and that is deliberate. apicache does no request
+# coalescing, so deleting a key opens a hole lasting the whole fill during which every
+# arriving request starts its own recomputation -- 32.8 minutes of that for taxon 10239.
+# Overwriting means the old value serves readers throughout, and a failed refresh leaves
+# it intact instead of destroying it.
+#
+# The endpoint is loopback-only, which is why BASE defaults to 127.0.0.1 -- see the
+# comment on BASE below for the three separate reasons that matters.
 #
 # WHICH TAXA
 #
@@ -31,24 +50,86 @@
 # waste. The long tail of ~120,000 one-hit taxa is irrelevant — those are under the
 # threshold and answer in normal time.
 #
-# Usage:
+# Usage. The admin token is read from p3api.conf automatically, so there is nothing to
+# configure here once admin.token is set there:
 #   ./warm-taxon-summaries.sh                    # all 22, sequential
-#   ./warm-taxon-summaries.sh --top6             # the 6 covering ~79% of the traffic
-#   BASE=https://alpha.bv-brc.org/api ./warm-taxon-summaries.sh
+#   ./warm-taxon-summaries.sh --top6             # 6 taxa, ~79% of the traffic
 #   DRY_RUN=1 ./warm-taxon-summaries.sh          # print what it would do
+#   ADMIN_TOKEN=xxx ./warm-taxon-summaries.sh    # override, for an ad-hoc run
 #
-# Crontab (nightly, off-peak — this is hours of work, not minutes):
-#   17 2 * * *  /path/to/warm-taxon-summaries.sh >> /var/log/warm-taxa.log 2>&1
+# Crontab (nightly, off-peak — this is hours of work, not minutes). Cron output goes to
+# the admin list, so the per-taxon lines are the report:
+#   17 2 * * *  /path/to/warm-taxon-summaries.sh
 #
-# Exit status is the number of taxa that failed, so cron mail only arrives on trouble.
+# No secret in the crontab: the token is read from p3api.conf, which also keeps it out of
+# `ps` output and cron mail. The path is derived from this script's own location, so the
+# job does not depend on cron's working directory.
+#
+# Exit status is the number of failures, so cron mail is actionable. A refresh that fails
+# leaves the PREVIOUS cached value in place, so a bad run degrades to "no change" rather
+# than to an empty cache.
 
 set -uo pipefail
 
-BASE="${BASE:-https://www.bv-brc.org/api}"
+# Loopback BY DEFAULT, and that is load-bearing in three separate ways:
+#
+#   1. INVALIDATION. Without it the warmer does nothing. apicache sets a key's TTL only
+#      on a WRITE (apicache.js:140) and a cache HIT returns before any handler runs
+#      (:649), so reads never extend an entry. A warmer on a 24h cycle against a 24h TTL
+#      races its own expiry: run slightly early and every request is a free cache hit.
+#      Measured on alpha 2026-10-29 — 21 of 22 taxa returned in 0-1s and the run reported
+#      "done in 4 min, 1 failure(s)" while refilling NOTHING. Cached vs cold for the same
+#      taxon: 0.16s vs 56.0s. /admin/cache/refresh is only reachable over loopback.
+#   2. CLOUDFLARE. Taxon 11118 (9,468,441 genomes) 524s after 125s through the public URL
+#      on alpha AND production — the edge silence budget cuts the fill long before
+#      TIMEOUT below is relevant. Loopback does not traverse Cloudflare.
+#   3. The admin gate requires a LOOPBACK PEER. This host reaches itself over its public
+#      address (netstat shows 140.221.39.6 -> 140.221.39.6), and the previous version of
+#      this script used https://alpha.bv-brc.org/api — which the gate refuses. Use
+#      127.0.0.1 explicitly; a hostname that resolves to the public address will 403.
+#
+# Set BASE to a public URL only for a read-only check; warming will not work.
+BASE="${BASE:-http://127.0.0.1:13001}"
 TIMEOUT="${TIMEOUT:-3600}"          # per taxon; Viruses measured 32.8 min
 PAUSE="${PAUSE:-5}"                 # breathing room between taxa
 DRY_RUN="${DRY_RUN:-0}"
 UA="${UA:-bvbrc-api/warm-taxa}"
+
+# The admin token comes from p3api.conf by default — the same file the API reads, so
+# there is ONE copy of the secret and no way for a crontab and the server to drift apart.
+# A token in a crontab is also visible to anyone who can run `ps` while the job starts,
+# and ends up in cron mail and shell history; reading the file avoids all three.
+#
+# Resolution order, first hit wins:
+#   $ADMIN_TOKEN        explicit override, for ad-hoc runs
+#   $P3_API_CONFIG      same env var config.js:360 honours
+#   ./p3api.conf        relative to the repo root, as config.js defaults to
+#
+# Note config.js resolves './p3api.conf' against the API's CWD, not this script's
+# location, so when run from cron the path is derived from the script instead — cron's
+# CWD is the invoking user's home and would silently find nothing.
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+CONF="${P3_API_CONFIG:-${REPO_ROOT}/p3api.conf}"
+
+if [ -z "${ADMIN_TOKEN:-}" ] && [ -r "$CONF" ]; then
+  # python3 rather than a grep/sed: p3api.conf is JSON, and a regex would be fooled by
+  # the token appearing in a comment key or by any reordering. Fails silently to empty,
+  # which the check below turns into a clear error.
+  ADMIN_TOKEN=$(python3 -c '
+import json, sys
+try:
+    with open(sys.argv[1]) as fh:
+        print((json.load(fh).get("admin") or {}).get("token") or "")
+except Exception:
+    print("")
+' "$CONF" 2>/dev/null)
+fi
+ADMIN_TOKEN="${ADMIN_TOKEN:-}"
+
+# A real recomputation takes seconds to minutes. A refresh faster than this did not do
+# the work we think it did. Reported distinctly, because a run that is fast and green
+# while achieving nothing is exactly how this script's previous failure went unnoticed.
+HIT_THRESHOLD_S="${HIT_THRESHOLD_S:-2}"
 
 # Ordered by hit count over three days. Bacteria and Viruses dominate (236 and 162 hits);
 # everything after Coronaviridae is a shallow tail.
@@ -86,33 +167,71 @@ TAXA=("${ALL_TAXA[@]}")
 echo "### warm-taxon-summaries  $(date '+%Y-%m-%d %H:%M:%S %Z')"
 echo "### base=$BASE  taxa=${#TAXA[@]}  timeout=${TIMEOUT}s"
 
+# Refuse to run uselessly rather than produce a green report that warms nothing. This is
+# the failure the 2026-10-29 run hid.
+if [ -z "$ADMIN_TOKEN" ]; then
+  echo "### ERROR: no admin token."
+  if [ ! -r "$CONF" ]; then
+    echo "###   $CONF is missing or unreadable."
+  else
+    echo "###   $CONF has no admin.token. Add:"
+    echo '###       "admin": { "enabled": true, "token": "<a long random string>" }'
+  fi
+  echo "###   Or pass ADMIN_TOKEN=... for a one-off run. See PLAN_ADMIN_ENDPOINT.md."
+  exit 1
+fi
+
 FAILED=0
+HITS=0
 START=$(date +%s)
 
 for t in "${TAXA[@]}"; do
-  url="${BASE}/data/summary_by_taxon/${t}"
+  # One call does the whole refresh: the admin endpoint recomputes with
+  # X-Apicache-Bypass and then OVERWRITES the key, so the cached value is never absent
+  # and a failed fill leaves the previous one intact. The script no longer fetches the
+  # public URL itself -- doing so after a delete is what opened a 33-minute hole.
+  refresh_url="${BASE}/admin/cache/refresh/summary_by_taxon/${t}"
 
-  # Skip a taxon whose genomes have not changed since the cached entry would have been
-  # written. One cheap query; most taxa ingest rarely (taxon 1773's newest genome is from
-  # April), so this usually skips nearly everything after the first run of the day.
+  # Informational: when this taxon last ingested a genome. Cheap, and it makes a run log
+  # interpretable ("why did that one take 30 minutes").
   newest=$(curl -s -m 60 -H "User-Agent: $UA" \
     "${BASE}/genome/?eq(taxon_lineage_ids,${t})&sort(-date_inserted)&limit(1)&select(date_inserted)&http_accept=application/json" \
     2>/dev/null | sed -n 's/.*"date_inserted":"\([^"]*\)".*/\1/p')
 
   if [ "$DRY_RUN" = "1" ]; then
-    echo "  [dry-run] $t  newest_genome=${newest:-unknown}"
+    echo "  [dry-run] $t  newest_genome=${newest:-unknown}  refresh=${refresh_url}"
     continue
   fi
 
   t0=$(date +%s)
-  code=$(curl -s -m "$TIMEOUT" -o /dev/null -w '%{http_code}' -H "User-Agent: $UA" "$url")
+  body=$(curl -s -m "$TIMEOUT" -X POST -H "User-Agent: $UA" \
+    -H "X-Admin-Token: ${ADMIN_TOKEN}" -w '\n%{http_code}' "$refresh_url" 2>/dev/null)
+  code=$(printf '%s' "$body" | tail -1)
   el=$(( $(date +%s) - t0 ))
 
   case "$code" in
-    200) printf '  %-9s OK    %5ds  newest=%s\n' "$t" "$el" "${newest:-?}" ;;
-    000) printf '  %-9s TIMEOUT after %ds — raise TIMEOUT or investigate\n' "$t" "$el"
+    200)
+      # The endpoint reports elapsed time itself; a sub-threshold refresh means the
+      # recomputation did not actually happen (an unexpectedly cheap taxon, or a
+      # misconfiguration), which is worth seeing rather than counting as success.
+      if [ "$el" -lt "$HIT_THRESHOLD_S" ]; then
+        printf '  %-9s refreshed %3ds  (suspiciously fast -- verify this taxon is costly)\n' "$t" "$el"
+        HITS=$((HITS+1))
+      else
+        printf '  %-9s REFRESHED %3ds  newest=%s\n' "$t" "$el" "${newest:-?}"
+      fi
+      ;;
+    000) printf '  %-9s TIMEOUT after %ds -- raise TIMEOUT or investigate\n' "$t" "$el"
          FAILED=$((FAILED+1)) ;;
-    400) printf '  %-9s HTTP 400 (%ds) — is joinResolution.slicedSummary enabled?\n' "$t" "$el"
+    403) printf '  %-9s HTTP 403 (%ds) -- admin gate refused; BASE must be 127.0.0.1 and ADMIN_TOKEN must match\n' "$t" "$el"
+         FAILED=$((FAILED+1)) ;;
+    404) printf '  %-9s HTTP 404 (%ds) -- is admin.enabled true in p3api.conf?\n' "$t" "$el"
+         FAILED=$((FAILED+1)) ;;
+    502) printf '  %-9s REFRESH FAILED (%ds) -- upstream error; previous cached value left intact\n' "$t" "$el"
+         FAILED=$((FAILED+1)) ;;
+    503) printf '  %-9s HTTP 503 (%ds) -- redis not connected\n' "$t" "$el"
+         FAILED=$((FAILED+1)) ;;
+    524) printf '  %-9s HTTP 524 (%ds) -- Cloudflare cut it; BASE must be loopback\n' "$t" "$el"
          FAILED=$((FAILED+1)) ;;
     *)   printf '  %-9s HTTP %s (%ds)\n' "$t" "$code" "$el"
          FAILED=$((FAILED+1)) ;;
@@ -121,7 +240,11 @@ for t in "${TAXA[@]}"; do
   sleep "$PAUSE"
 done
 
-echo "### done in $(( ($(date +%s) - START) / 60 )) min, ${FAILED} failure(s)"
+echo "### done in $(( ($(date +%s) - START) / 60 )) min, ${FAILED} failure(s), ${HITS} suspiciously fast"
+if [ "$HITS" -gt 0 ]; then
+  echo "### NOTE: ${HITS} taxa refreshed in under ${HIT_THRESHOLD_S}s. Either those taxa are"
+  echo "###       genuinely cheap, or the refresh is not recomputing what we expect."
+fi
 
 # NOTES
 #

@@ -17,6 +17,23 @@ const redisOptions = config.get('redis')
 const cacheWithRedis = apicache.options({ redisClient: redis.createClient(redisOptions) }).middleware
 const onlyStatus200 = (req, res) => res.statusCode === 200
 
+// 26 hours, NOT 24, and the extra two are the point.
+//
+// scripts/warm-taxon-summaries.sh refreshes these entries from cron on a 24-hour cycle.
+// With a 24-hour TTL the two periods are equal, so the schedule races its own expiry:
+// a run that starts late, queues behind a slow taxon, or takes longer than usual leaves
+// the entry expired for the gap — and an expired entry means the next user pays the full
+// fill, which for taxon 10239 measured 32.8 minutes.
+//
+// A 2-hour margin means the refresh always lands while the previous value is still
+// serving. It costs nothing: the value is overwritten on every successful refresh
+// (/admin/cache/refresh rewrites hset + expire together), so entries do not actually
+// live 26 hours in steady state — the margin is only consumed when a run is late.
+//
+// Keep this strictly greater than the cron interval. If the schedule changes, change
+// this with it.
+const CACHE_TTL = '26 hours'
+
 router.use(httpParams)
 
 /**
@@ -128,7 +145,7 @@ function failSubQuery (res, label) {
 }
 
 router.get('/summary_by_taxon/:taxon_id', [
-  cacheWithRedis('1 day', onlyStatus200),
+  cacheWithRedis(CACHE_TTL, onlyStatus200),
   bodyParser.json({ extended: true }),
   function (req, res, next) {
     const defs = []
@@ -274,7 +291,7 @@ router.get('/distinct/:collection/:field', [
       res.end(JSON.stringify({ status: 405, message: `/distinct/${collection}/${field} is not allowed` }))
     }
   },
-  cacheWithRedis('1 day', onlyStatus200),
+  cacheWithRedis(CACHE_TTL, onlyStatus200),
   (req, res, next) => {
     const collection = req.params.collection
     const field = req.params.field
@@ -341,7 +358,7 @@ router.get('/taxon_category/', [
 
 router.get('/subsystem_summary/:genome_id', [
   bodyParser.json({ extended: true }),
-  cacheWithRedis('1 day', onlyStatus200),
+  cacheWithRedis(CACHE_TTL, onlyStatus200),
   (req, res, next) => {
     const genome_id = req.params.genome_id
     const query = `q=*:*&fq=genome_id:${genome_id}&rows=0&facet=true&facet.limit=-1&facet.pivot.mincount=1&facet.pivot=superclass,class,subclass,subsystem_id`
