@@ -211,6 +211,19 @@ const defaults = {
     reserveBytes: 256
   },
 
+  // Local-only operational endpoints (/admin). See PLAN_ADMIN_ENDPOINT.md.
+  //
+  // OFF by default, and when off the routes 404 rather than 403 — an admin surface
+  // should not appear on upgrade, nor advertise that it exists.
+  //
+  // `token` has no default on purpose: with enabled:true and token:null the gate fails
+  // CLOSED (every request refused) rather than falling back to address-only. Set both in
+  // the untracked p3api.conf, same as the Solr credentials.
+  admin: {
+    enabled: false,
+    token: null
+  },
+
   joinResolution: {
     enabled: true,
     rewriteMaxGenomes: 50000,
