@@ -13,6 +13,109 @@ release time.
 
 ---
 
+## Rollup: what this release contains, versus `master`
+
+Measured **2026-10-29**: `upstream/master` `6397c6cf` → `upstream/alpha` `0d286757`,
+**114 commits ahead / 0 behind** (a fast-forward), **90 files, +17,325 / −298**,
+**38 merged PRs** (#206–#257). Of those additions, **5,501 lines across 28 files are
+tests**. Re-measure before publishing:
+
+```bash
+git rev-list --left-right --count upstream/master...upstream/alpha
+git diff --shortstat upstream/master...upstream/alpha
+```
+
+This is a large release and most of it is invisible to users — the headline is that the
+API now **protects itself under load** and **fails loudly instead of silently**. Grouped
+by what a reader would care about:
+
+### Stability and crash fixes
+
+- **Worker crashes from internal HTTP self-calls eliminated.** The API used to call its
+  own listening port at 17 sites — over a 36-hour window that was 33% of all traffic.
+  A sub-query error returned a plain-text body, `JSON.parse` threw inside an unhandled
+  promise, and the worker hung holding a slot; the *next* request then aborted the
+  process. Converted to in-process calls (`multiQuery`, `dataRouter`, `ExpandingQuery`).
+  Two separate reproducible worker aborts fixed.
+- **Every outbound request now has a wall-clock deadline.** Previously a stalled
+  connection could hang ~166 s with no timeout. The deadline is armed at request
+  *creation*, so it also bounds time spent queued for a socket — which a socket timeout
+  does not.
+- **Upstream Solr timeouts are now `504`, not `500`.**
+
+### Protection under load
+
+- **Admission control** with separate pools for heavy downloads and interactive traffic,
+  so a burst of downloads sheds with `429` + `Retry-After` instead of starving the
+  website. Ships **disabled** (`queryAdmission.enabled`); see `Docs/CLIENT-429.md` for
+  the client contract that should land first.
+- **Over-broad cross-collection joins are refused with an actionable `400`** carrying a
+  machine-readable `join_too_broad` code and the genome count, rather than being sent to
+  Solr where they have caused JVM OOM on data nodes. Smaller joins are rewritten to a
+  local `{!terms}` filter — 3.2× faster on a measured case.
+- **`Retry-After` is readable cross-origin** (added to the CORS expose list). Previously
+  browsers stripped it, so cross-origin clients ignored the server's pacing and retried
+  faster than asked.
+- **`scripts/verify-protections.js`** exercises a deployment and reports which
+  protections actually work — written because twice a fully green offline suite covered
+  the wrong code path.
+
+### Downloads
+
+- **Broad-taxon bulk downloads complete** (see below).
+- **Repeated downloads return the same records** (see below).
+- **Cross-collection downloads** resolve a source filter server-side instead of making
+  the browser round-trip millions of IDs.
+- **GenBank downloads** must target `/genome/`; other collections now get a clear `400`
+  pointing there rather than streaming millions of feature docs.
+
+### Correctness fixes that produced plausible-looking wrong output
+
+This class matters most for anyone who downloaded data previously — each returned
+HTTP 200 with a well-formed but wrong body:
+
+- **Distributed sorted results were mis-ordered.** The merge comparator used ICU
+  collation while Solr sorts by UTF-8 bytes, so correctly-sorted shards were interleaved
+  wrongly — 7 out-of-order positions in 25,000 rows on a live query.
+- **Large `terms()`/`in()` filters silently returned nothing** past ~148 IDs: shard pages
+  were GETs, the shard answered `414`, and the client saw HTTP 200 with a one-byte body.
+  Shard pages are POSTs now; verified at 3,000 IDs / 166 KB.
+- **Join enrichment could serve one user's private data to another** — a process-wide
+  cache keyed without the permission scope. Fixed and verified against live Solr.
+
+### Security
+
+- **Anonymous account enumeration** via `facet.mincount=0` on ACL fields — 30,513 account
+  names with no credentials. **Documented, not yet fixed**; decide before release whether
+  it ships mitigated or disclosed (`Docs/SECURITY-acl-field-disclosure.md`).
+- CORS credentials gated on an origin allowlist; CORS option typos fixed.
+
+### Performance
+
+- **`terms()` filters emit `cache=false`** — measured 3952 ms → 676 ms on a 6,000-ID
+  query co-occurring with another clause. The win is `fq`-versus-`q`, not hash-set versus
+  boolean.
+- **`Limiter` recognizes both `in()` and `terms()` ID lists**, so the two operators get
+  identical `rows` and the same transport.
+
+### New operator-facing configuration
+
+All default to the conservative setting; none changes behaviour until switched on:
+
+| key | default | effect |
+|---|---|---|
+| `queryAdmission.enabled` | `false` | bounded concurrency + queue, `429` on overflow |
+| `joinResolution.enabled` | `true` | reject/rewrite over-broad joins |
+| `joinResolution.batchedDownloads` | `false` | let a refused join stream in slices |
+| `joinResolution.slicedSummary` | `false` | compute `summary_by_taxon` by slicing |
+| `joinResolution.taxonomicRewrite` | `false` | taxon-subtree rewrite with deprecated exclusion |
+| `streamDribble.enabled` | `false` | hold back a byte reserve to survive proxy silence limits |
+
+**Operational note:** rolling between these two points needs `npm ci`, not just a
+checkout — the manifests differ. Then `pm2 reload`.
+
+---
+
 ## Known limitations to state explicitly
 
 ### Large downloads cannot be resumed
@@ -58,6 +161,9 @@ support is worse than none.
 ---
 
 ## Fixes worth calling out
+
+These two are summarized in the rollup above; the detail is kept here because both need
+user-facing wording and one needs an advisory for people who downloaded data earlier.
 
 ### Broad-taxon bulk downloads now complete
 
