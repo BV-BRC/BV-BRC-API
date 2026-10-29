@@ -66,19 +66,27 @@
 # `ps` output and cron mail. The path is derived from this script's own location, so the
 # job does not depend on cron's working directory.
 #
-# MEASURED, first successful live run on alpha 2026-10-29 (loopback, post-#262):
+# MEASURED, complete --top6 run on alpha 2026-10-29 (loopback, post-#262).
+# "### done in 53 min, 0 failure(s), 0 suspiciously fast":
 #
 #     taxon 2       Bacteria          1.38M genomes      77 s
 #     taxon 10239   Viruses           14.9M            1373 s   (22.9 min)
-#     taxon 11308   Orthomyxoviridae  2.2M              198 s
-#     taxon 2955291 A. influenzae     2.0M              119 s
+#     taxon 11308   Orthomyxoviridae  2.2M              124 s
+#     taxon 2955291 A. influenzae     2.0M              103 s
+#     taxon 2697049 SARS-CoV-2        9.4M              796 s
+#     taxon 11118   Coronaviridae     9.5M              719 s
 #
-# So --top6 is roughly 30-45 min and the full 22 perhaps 1-2 h. That is why the cron
-# entry is 01:30 — off-peak, clear of the hourly ingest at the top of each hour, and
-# finishing long before the 26 h TTL on the previous day's entries expires.
+# 53 min for six, so the full 22 should fit comfortably in the overnight window. That is
+# why the cron entry is 01:30 — off-peak, clear of the hourly ingest at the top of each
+# hour, and finishing long before the 26 h TTL on the previous day's entries expires.
 #
-# Note 1373 s is ELEVEN TIMES Cloudflare's ~125 s budget. These fills are not merely
-# faster over loopback, they are impossible through the public URL at any speed.
+# FOUR OF THE SIX EXCEEDED CLOUDFLARE'S ~125 s BUDGET, and 1373 s is eleven times it.
+# These fills are not merely faster over loopback, most of this list is impossible
+# through the public URL at any speed. Taxon 11118 is the proof: it returned 524 on
+# alpha AND production and could not be warmed by any means before this.
+#
+# All four taxa spot-checked after the run returned counts IDENTICAL to production, so
+# the entries this script writes are correct, not merely present.
 #
 # Exit status is the number of failures, so cron mail is actionable. A refresh that fails
 # leaves the PREVIOUS cached value in place, so a bad run degrades to "no change" rather
