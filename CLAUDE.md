@@ -6,17 +6,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 BV-BRC API (p3api) is a Node.js/Express REST API providing access to BV-BRC bioinformatics data. It acts as a gateway to Solr backends, supporting RQL (Resource Query Language) and Solr query syntax.
 
-## Branch state (2026-10-18)
+## Branch state (2026-10-29)
 
-**`upstream/alpha` is 72 commits AHEAD of `upstream/master`, 0 behind** — master is an
+**`upstream/alpha` is 130 commits AHEAD of `upstream/master`, 0 behind** — master is an
 ancestor, so the merge is a **fast-forward with zero conflicts**. This section goes stale
 fast; check with `git rev-list --left-right --count upstream/master...upstream/alpha` rather
 than trusting any sentence in it.
 
 - `upstream/master` = **`6397c6cf`** (unmoved since 2026-09-03), `upstream/alpha` =
-  **`dc5fde34`**.
-- **PR #239 (alpha → master) is OPEN and ready**, carrying the whole 72-commit delta:
-  69 files, +12,248 / −283, 24 merged PRs (#206–#240). `package-lock.json` is
+  **`2d535a5a`**.
+- **PR #239 (alpha → master) is still OPEN**, and its body now understates the delta:
+  it was written at 72 commits and the delta is now **130 commits, 96 files,
+  +19,057 / −301, PRs #206–#263**. Re-measure and refresh the body before merging.
+- A draft of the user-facing notes for this release is `Docs/RELEASE_NOTES_DRAFT.md`.
+  Two items need a decision before publication: whether the ACL finding ships described
+  or silent, and that concurrency figures stay out until production tuning settles.
+- **Historical note on the figures below** — they describe the state at 2026-10-18 and are
+  kept because the `package.json` reasoning is still correct. `package-lock.json` is
   **byte-identical** between the branches; the only `package.json` delta is one line,
   `--stack-size=65536` → `--stack-size=7000` (65536 exceeded the OS thread stack, so V8's
   guard never fired and deep recursion segfaulted the worker instead of throwing
@@ -1156,26 +1162,121 @@ All JBrowse endpoints sanitize user inputs before interpolating into Solr querie
 - `sanitizeSolrValue()` strips `& = ? # ; \ { } [ ] " ' \`` from string inputs
 - `sanitizeNumeric()` validates against `/^-?\d+(\.\d+)?$/`, returns null on failure → early 400 response
 
-### Open finding — ACL fields are readable and facetable (`Docs/SECURITY-acl-field-disclosure.md`)
+### ACL fields: aggregation BLOCKED (PR #260), per-record visibility remains
 
 **Permission enforcement here is row-level only.** `DecorateQuery` appends an `fq` deciding
 *which documents* you see; nothing decides *which fields* of a visible document you may read,
 facet, or sort on. `owner`/`user_read`/`user_write` are ordinary indexed fields, so on any
 record shared with you, you can read its full ACL — including third parties.
 
-Faceting amplifies this into bulk enumeration, because facet counts are computed over the whole
-permission-filtered DocSet: one `facet((field,user_read))` over `genome` returns a ranked list
-of every principal with access to anything you can see (measured: 12 accounts over a 14,756-row
-DocSet, service accounts included). `eq(user_read,<user>)` also works as an account-existence
-oracle. Anonymous requests disclose nothing.
+Faceting amplified that into **bulk enumeration**, because facet counts are computed over the
+whole permission-filtered DocSet rather than the returned page. Measured anonymously against
+alpha, no credentials: `eq(public,false)&limit(1)&facet((field,user_read),(mincount,0))`
+returned **100 account names** (the default facet limit; `facet.limit=-1` yielded **30,513**).
+A ranked facet is also a collaborator graph.
 
-Unfixed, and **pre-dates `private_genome_metadata`** — that collection surfaced it. Cheapest
-mitigation is blocking the ACL fields as `facet.field`/`sort` targets, extending the
-`SolrQuerySanitizer` parameter-policing precedent. Full write-up, evidence, and fix options in
-the doc.
+**Fixed 2026-10-29 by PR #260** — `SolrQuerySanitizer` now 400s any query naming an ACL field
+as the value of `facet.field`, `facet.pivot`, `facet.range`, `facet.interval`, `group.field`,
+`sort`, or `stats.field`. Verified live on alpha: the original vector, the `facet.limit=-1`
+form, and a raw Solr-format body (which bypasses `RQLQueryParser` entirely) all 400.
+
+Three things not to "tidy" later:
+
+- **Matching is anchored, not substring.** Values are lists or decorated
+  (`facet.pivot=a,b`, `sort=f asc,g desc`, `facet.field={!ex=dt}owner`), so a whole-value
+  compare under-matches while a bare substring would reject `owner_institution`,
+  `downer_count`, `user_read_count`. Half of `tests/test-security/security-acl-aggregation.spec.js`
+  (40 cases) is must-still-pass cases guarding that.
+- **`fl` is deliberately NOT blocked.** Projection returns the field only for rows already
+  visible, and owners must be able to read their own ACLs.
+- **ACL fields as filter terms still work** — blocking them would break sharing, and it is
+  not the scaling vector.
+
+**Still open:** per-record ACL visibility and the targeted `eq(user_read,<user>)`
+existence oracle. Closing those is field-level projection filtering (Option B in the doc) —
+a new concern for this codebase and much larger. What shipped removes the part that *scales*.
 
 Keep this in mind when designing anything that aggregates over private collections — see the
 same row-level-vs-DocSet property in `PLAN_PRIVATE_METADATA_OVERLAY.md`.
+
+### `/admin` — local-only operational endpoints (PR #261, #262)
+
+`routes/adminRouter.js` behind `middleware/adminGate.js`. **Ships disabled**; every route
+404s (not 403 — a disabled surface should not advertise itself) until `p3api.conf` carries:
+
+```json
+"admin": { "enabled": true, "token": "<a long random string>" }
+```
+
+Two independent factors, both required: a **loopback peer socket address** and
+`X-Admin-Token`.
+
+- **Reads `req.socket.remoteAddress`, never `req.ip` or `X-Forwarded-For`.** A TCP peer
+  cannot be forged off-path; headers can. `req.ip` coincides today only because no
+  `trust proxy` is set — reading the socket directly stops a future config change silently
+  turning this into a header check. Note `app.js:77`'s log token *prefers* `x-forwarded-for`,
+  so **the access log is not evidence of origin**.
+- **Sound only because nginx runs on a separate host.** Colocating nginx would make every
+  proxied request loopback and open the gate silently. That is why the token exists, and
+  why port 13001 being reachable off-host matters.
+- **Fails closed**: enabled with no token → 403, no peer address → 403.
+
+**The trap: this host reaches itself over its PUBLIC address.** `netstat` on alpha shows
+many `140.221.39.6:13001 ← 140.221.39.6:*` connections. On-host is not loopback — admin
+callers must use `127.0.0.1` explicitly or get a 403.
+
+**Refresh overwrites; it never deletes.** `apicache` does **no request coalescing** (no
+inflight/pending/lock in the module), so every concurrent miss runs the handler
+independently. Deleting a key opens a hole lasting the entire fill — **22.9 minutes** for
+taxon 10239 — during which each arriving request starts its own recomputation. That is
+strictly worse than doing nothing, and on failure the key is already gone. So the endpoint
+fetches with `X-Apicache-Bypass` (honoured at `apicache.js:602`, skipping read *and* write)
+and then writes the result itself; a non-200 leaves the previous value intact.
+
+**It names an operation, not a path.** `REFRESHABLE` maps `summary_by_taxon` to a key
+template plus an id validator. An earlier draft took `/cache/refresh/*` and self-fetched
+whatever path the caller supplied — a request-forgery primitive that would fetch any
+loopback route, `/admin` included, and store the result under a caller-chosen key.
+
+**No `client.connected` precheck.** `createClient()` connects asynchronously and the client
+is lazy, so such a check is false for the first few milliseconds — every worker 503'd its
+first admin request, which with 3 workers meant the first three taxa of a run. node_redis
+2.x queues commands until ready, so the command is issued directly and a real failure
+surfaces as the actual error (`NOAUTH` says `NOAUTH`).
+
+### Cache warming (`scripts/warm-taxon-summaries.sh`)
+
+**Cron at 01:30, and the TTL on the three cached `/data` endpoints is 26 hours, not 24.**
+Equal periods mean the schedule races its own expiry whenever a run is late — and losing
+that race costs a user the full fill. The 2 h margin is only consumed when a run overruns.
+`CACHE_TTL` in `routes/dataRouter.js`; **keep it strictly greater than the cron interval.**
+
+**The warmer used to do nothing, and reported success.** A plain GET of an already-cached
+URL is a hit, and `apicache` sets the TTL only on a *write* (`:140`) while a hit returns at
+`:649` before any handler runs — reads never extend an entry. The 2026-10-29 run reported
+`done in 4 min, 1 failure(s)` having refilled nothing; cached vs cold for the same taxon
+measured 0.16 s vs 56.0 s. It now calls `/admin/cache/refresh/...` instead, reads the token
+from `p3api.conf` (one copy of the secret; nothing in the crontab), and counts a
+suspiciously fast refresh as a failure.
+
+Complete `--top6` run after the fixes — **`53 min, 0 failure(s), 0 suspiciously fast`**:
+
+| taxon | genomes | time |
+|---|---|---|
+| 2 Bacteria | 1.38M | 77 s |
+| 10239 Viruses | 14.9M | **1373 s** (22.9 min) |
+| 11308 Orthomyxoviridae | 2.2M | 124 s |
+| 2955291 A. influenzae | 2.0M | 103 s |
+| 2697049 SARS-CoV-2 | 9.4M | 796 s |
+| 11118 Coronaviridae | 9.5M | 719 s |
+
+All four spot-checked taxa returned counts **identical to production**, so the hand-rolled
+cache write round-trips correctly through apicache's read path.
+
+**Four of the six exceeded Cloudflare's ~125 s budget.** Most of this list is impossible
+through the public URL at any speed, not merely slower — taxon 11118 returned 524 on alpha
+*and* production and could not be warmed by any means before. **This is why the refresh must
+run over loopback**; do not "simplify" it onto the public hostname.
 
 ### Other security fixes
 
