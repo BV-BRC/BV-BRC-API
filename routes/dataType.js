@@ -21,6 +21,7 @@ const ShardsPreference = require('../middleware/ShardsPreference')
 const SolrQuerySanitizer = require('../middleware/SolrQuerySanitizer')
 const JoinResolution = require('../middleware/JoinResolution')
 const { describeFields } = require('../lib/collectionFields')
+const { validateTemplate } = require('../util/fastaHeaderFormatter')
 const { makeSolrClient } = require('../middleware/APIMethodHandler')
 const QueryClassifier = require('../middleware/QueryClassifier')
 const DistributedQuery = require('../middleware/DistributedQuery')
@@ -274,6 +275,37 @@ router.use([
           'instead of /' + req.call_collection + '/.'
       })
     }
+    next()
+  },
+  // Validate http_fasta_header BEFORE the response starts.
+  //
+  // An unknown field name is a 400 rather than an empty substitution (decision 4 in
+  // util/fastaHeaderFormatter.js): silently emitting nothing is how the enrichment bug
+  // hid -- a header that looks plausible and is quietly missing data. That is only
+  // possible here, ahead of the serializer: once streaming begins the status is
+  // committed and the best a serializer can do is truncate.
+  function fastaHeaderTemplateGuard (req, res, next) {
+    const template = req.fastaParams && req.fastaParams.http_fasta_header
+    if (!template || String(template).trim() === '') {
+      return next()
+    }
+
+    const syntaxError = validateTemplate(String(template))
+    if (syntaxError) {
+      return res.status(400).send({ status: 400, message: syntaxError })
+    }
+
+    // SYNTAX is validated here; FIELD NAMES are not.
+    //
+    // Deciding whether a bare name is valid needs the collection's Solr schema, and
+    // fetching it would add a round trip to every templated download -- on the request
+    // path, for a check the caller can make once against /:collection/fields. The
+    // trade is deliberate: a mistyped name renders empty rather than 400ing, which is
+    // the weaker half of decision 4 and is recorded as such.
+    //
+    // Syntax errors are the ones worth catching here because they are silent and
+    // total: an unbalanced brace does not render "mostly right", it renders the raw
+    // template text into every header in the file.
     next()
   },
   // Snapshot the RQL as the client sent it, before RQLQueryParser rewrites

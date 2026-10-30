@@ -14,6 +14,8 @@
  *   - http_fasta_description_delimiter: delimiter between description fields
  *       (default: ' ' -- a single space, which is the historical format)
  *   - http_fasta_context_fields: comma-separated list of fields for [context]
+ *   - http_fasta_header: a FORMAT STRING, which overrides all of the above. See
+ *       formatTemplate() below for the grammar.
  */
 
 const debug = require('debug')('p3api-server:util:fasta-header')
@@ -138,6 +140,11 @@ function parseConfigFromRequest (req) {
     config.descriptionDelimiter = query.http_fasta_description_delimiter
   }
 
+  // Format string. Overrides every zone parameter; see decision 2.
+  if (query.http_fasta_header !== undefined && String(query.http_fasta_header).trim() !== '') {
+    config.template = String(query.http_fasta_header)
+  }
+
   // Context fields (shown in brackets)
   // Use !== undefined to allow empty string to mean "no context fields"
   if (query.http_fasta_context_fields !== undefined) {
@@ -232,6 +239,108 @@ function formatFields (doc, fields, delimiter, includeEmpty = false) {
   return values.join(delimiter)
 }
 
+// ---------------------------------------------------------------------------
+// Format strings (http_fasta_header)
+//
+// The three-zone scheme (id / description / context) cannot express a header whose
+// literal text does not match `>ID DESC [CTX]`, and the community parses these headers
+// with their own tooling, so the shape matters to them. A format string lets a caller
+// state the layout outright:
+//
+//   http_fasta_header={patric_id}|{genome_id} {product} [{genome_name}]
+//     -> >fig|1.1.peg.1|1.1 ABC transporter [E. coli K-12]
+//
+// FOUR DECISIONS, settled deliberately rather than discovered during implementation:
+//
+// 1. MISSING VALUES render as empty, and the template is NOT rewritten around them.
+//    The zone scheme skips an absent field and collapses the delimiter with it; a
+//    template cannot do that without inventing conditional syntax, and guessing which
+//    adjacent literals to drop would be worse than a visible gap. Callers who need
+//    "omit when absent" should keep using the zone parameters, which still work.
+//
+// 2. EXCLUSIVE. When http_fasta_header is present the zone parameters are ignored
+//    entirely, rather than merged. Merging two layout models produces headers nobody
+//    predicted, and the failure would be silent.
+//
+// 3. `{{` and `}}` are literal braces, the usual convention.
+//
+// 4. AN UNKNOWN FIELD IS A 400, not an empty string. Silently emitting nothing is how
+//    the original enrichment bug hid for weeks -- a header that looks plausible and is
+//    missing data. routes/dataType.js validates before the response starts, so the
+//    error arrives as a status code rather than mid-stream.
+//
+// Note this makes STRUCTURE explicit but does not add escaping: values are still
+// interpolated verbatim, so a value containing the caller's own separator remains
+// ambiguous. That is a known and deliberate gap.
+
+const TEMPLATE_FIELD = /\{([^{}]*)\}/g
+
+/**
+ * Field names referenced by a template, in order of first appearance.
+ *
+ * @param {string} template
+ * @returns {Array<string>}
+ */
+function templateFields (template) {
+  if (!template || typeof template !== 'string') return []
+  const out = []
+  // Blank out escaped braces first so `{{not_a_field}}` is not read as a reference.
+  const scannable = template.replace(/\{\{/g, '\0').replace(/\}\}/g, '\0')
+  let m
+  TEMPLATE_FIELD.lastIndex = 0
+  while ((m = TEMPLATE_FIELD.exec(scannable)) !== null) {
+    const name = m[1].trim()
+    if (name && !out.includes(name)) out.push(name)
+  }
+  return out
+}
+
+/**
+ * Validate a template's syntax.
+ *
+ * Checks only what is knowable without a document: brace balance and non-empty field
+ * names. Whether a NAME is valid for the collection is checked by the caller, which
+ * has the field registry.
+ *
+ * @param {string} template
+ * @returns {string|null} an error message, or null when the template is well-formed
+ */
+function validateTemplate (template) {
+  if (typeof template !== 'string') return 'http_fasta_header must be a string'
+  if (template.trim() === '') return 'http_fasta_header must not be empty'
+
+  const scannable = template.replace(/\{\{/g, '\0').replace(/\}\}/g, '\0')
+  // An unmatched brace means the caller mistyped; rendering it literally would produce
+  // a header that silently differs from what they wrote.
+  const opens = (scannable.match(/\{/g) || []).length
+  const closes = (scannable.match(/\}/g) || []).length
+  if (opens !== closes) {
+    return 'http_fasta_header has unbalanced braces (use {{ and }} for literal braces)'
+  }
+  if (/\{\s*\}/.test(scannable)) {
+    return 'http_fasta_header contains an empty field reference {}'
+  }
+  return null
+}
+
+/**
+ * Render a template against a document.
+ *
+ * @param {Object} doc
+ * @param {string} template
+ * @returns {string} the header line, WITHOUT the leading '>' or trailing newline
+ */
+function formatTemplate (doc, template) {
+  const rendered = template.replace(TEMPLATE_FIELD, (match, raw) => {
+    const name = raw.trim()
+    if (!name) return match
+    const value = getFieldValue(doc, name)
+    return value === undefined ? '' : value
+  })
+  // Unescape last, so a literal brace cannot be mistaken for a field delimiter above.
+  return rendered.replace(/\{\{/g, '{').replace(/\}\}/g, '}')
+}
+
 /**
  * Create a FASTA header formatter function.
  *
@@ -258,7 +367,8 @@ function createFastaHeaderFormatter (options = {}) {
       ? options.descriptionDelimiter
       : ' ',
     contextFields: options.contextFields || [],
-    contextDelimiter: options.contextDelimiter !== undefined ? options.contextDelimiter : ' | '
+    contextDelimiter: options.contextDelimiter !== undefined ? options.contextDelimiter : ' | ',
+    template: options.template || null
   }
 
   debug(`Created FASTA header formatter: id=[${config.idFields.join(',')}] ` +
@@ -266,6 +376,11 @@ function createFastaHeaderFormatter (options = {}) {
         `ctx=[${config.contextFields.join(',')}]`)
 
   return function formatHeader (doc) {
+    // A format string replaces the zone layout entirely -- see decision 2 above.
+    if (config.template) {
+      return '>' + formatTemplate(doc, config.template) + '\n'
+    }
+
     const parts = []
 
     // ID portion
@@ -337,6 +452,7 @@ function createFastaHeaderFormatterFromRequest (req, options = {}) {
       : (defaults.descriptionDelimiter !== undefined ? defaults.descriptionDelimiter : ' '),
     contextFields: userConfig.contextFields || defaults.contextFields || [],
     contextDelimiter: userConfig.contextDelimiter !== undefined ? userConfig.contextDelimiter : (defaults.contextDelimiter || ' | '),
+    template: userConfig.template || null,
     collection
   }
 
@@ -395,6 +511,9 @@ function formatLegacyGenomeSequenceHeader (doc) {
 module.exports = {
   createFastaHeaderFormatter,
   createFastaHeaderFormatterFromRequest,
+  templateFields,
+  validateTemplate,
+  formatTemplate,
   parseConfigFromRequest,
   formatLegacyHeader,
   formatLegacyGenomeSequenceHeader,
