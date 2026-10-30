@@ -11,6 +11,8 @@
  *   - http_fasta_id_fields: comma-separated list of fields for ID portion
  *   - http_fasta_id_delimiter: delimiter between ID fields (default: '|')
  *   - http_fasta_description_fields: comma-separated list of fields for description
+ *   - http_fasta_description_delimiter: delimiter between description fields
+ *       (default: ' ' -- a single space, which is the historical format)
  *   - http_fasta_context_fields: comma-separated list of fields for [context]
  */
 
@@ -129,6 +131,13 @@ function parseConfigFromRequest (req) {
       .filter(f => f.length > 0)
   }
 
+  // Description delimiter. Mirrors the id/context delimiters: `!== undefined` so an
+  // explicitly empty value is honoured (fields run together) rather than falling back
+  // to the default.
+  if (query.http_fasta_description_delimiter !== undefined) {
+    config.descriptionDelimiter = query.http_fasta_description_delimiter
+  }
+
   // Context fields (shown in brackets)
   // Use !== undefined to allow empty string to mean "no context fields"
   if (query.http_fasta_context_fields !== undefined) {
@@ -242,6 +251,12 @@ function createFastaHeaderFormatter (options = {}) {
     idDelimiter: options.idDelimiter !== undefined ? options.idDelimiter : '|',
     idPrefix: options.idPrefix || '',
     descriptionFields: options.descriptionFields || [],
+    // Defaults to a single space: the historical format, which the community already
+    // parses with their own tooling. Every existing header stays byte-identical unless
+    // a caller explicitly asks for something else.
+    descriptionDelimiter: options.descriptionDelimiter !== undefined
+      ? options.descriptionDelimiter
+      : ' ',
     contextFields: options.contextFields || [],
     contextDelimiter: options.contextDelimiter !== undefined ? options.contextDelimiter : ' | '
   }
@@ -266,7 +281,7 @@ function createFastaHeaderFormatter (options = {}) {
 
     // Description portion
     if (config.descriptionFields.length > 0) {
-      const description = formatFields(doc, config.descriptionFields, ' ')
+      const description = formatFields(doc, config.descriptionFields, config.descriptionDelimiter)
       if (description) {
         parts.push(description)
       }
@@ -317,6 +332,9 @@ function createFastaHeaderFormatterFromRequest (req, options = {}) {
     idDelimiter: userConfig.idDelimiter !== undefined ? userConfig.idDelimiter : (defaults.idDelimiter || '|'),
     idPrefix: userConfig.idPrefix !== undefined ? userConfig.idPrefix : (defaults.idPrefix || ''),
     descriptionFields: userConfig.descriptionFields || defaults.descriptionFields || [],
+    descriptionDelimiter: userConfig.descriptionDelimiter !== undefined
+      ? userConfig.descriptionDelimiter
+      : (defaults.descriptionDelimiter !== undefined ? defaults.descriptionDelimiter : ' '),
     contextFields: userConfig.contextFields || defaults.contextFields || [],
     contextDelimiter: userConfig.contextDelimiter !== undefined ? userConfig.contextDelimiter : (defaults.contextDelimiter || ' | '),
     collection
