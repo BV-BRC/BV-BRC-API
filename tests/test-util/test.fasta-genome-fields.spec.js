@@ -183,3 +183,62 @@ describe('fastaHeaderFormatter bare-name fallback', function () {
     assert.doesNotThrow(() => header(['no_such_field']))
   })
 })
+
+/**
+ * genome_sequence FASTA enrichment, and the record-loss hazard in wiring it.
+ *
+ * The genome_sequence branches of media/dna+fasta.js formatted headers but never
+ * performed the genome join, so `/genome_sequence/fields` advertised 33 enriched fields
+ * that a FASTA download silently dropped — bare and prefixed alike.
+ *
+ * The non-obvious part of fixing it is header handoff. GenomeMetadataJoinStream consumes
+ * the leading Solr metadata document (`skipHeader: true`), and `streamWithBackpressure`
+ * ALSO skips a first document by default. Both skipping loses the FIRST REAL CONTIG —
+ * a download that looks fine and is one record short, which is this codebase's
+ * characteristic failure. The feature path solves the same problem at the
+ * SequenceJoinStream boundary with `skipHeader: !includeGenomeMetadata`.
+ */
+describe('streamWithBackpressure first-document handoff', function () {
+  const { streamWithBackpressure } = require('../../util/streamWithBackpressure')
+  const { Readable } = require('stream')
+
+  function fakeRes () {
+    const chunks = []
+    return {
+      chunks,
+      headersSent: false,
+      writableEnded: false,
+      destroyed: false,
+      set () {},
+      write (c) { chunks.push(String(c)); return true },
+      end () { this.writableEnded = true; if (this._onEnd) this._onEnd() },
+      on () {},
+      removeListener () {},
+      get body () { return chunks.join('') }
+    }
+  }
+
+  const docs = () => Readable.from(
+    [{ _header: true }, { sequence_id: 'c1' }, { sequence_id: 'c2' }],
+    { objectMode: true })
+
+  it('drops the header when nothing upstream consumed it', async function () {
+    const res = fakeRes()
+    await streamWithBackpressure(docs(), res, {
+      skipFirstDoc: true,
+      transform: (d) => `${d.sequence_id}\n`
+    })
+    assert.equal(res.body, 'c1\nc2\n')
+  })
+
+  it('keeps every record when a join stream already consumed the header', async function () {
+    // skipFirstDoc:false is what stops the first contig vanishing once the genome
+    // join is in the pipeline.
+    const res = fakeRes()
+    await streamWithBackpressure(
+      Readable.from([{ sequence_id: 'c1' }, { sequence_id: 'c2' }], { objectMode: true }),
+      res,
+      { skipFirstDoc: false, transform: (d) => `${d.sequence_id}\n` })
+    assert.equal(res.body, 'c1\nc2\n', 'no contig may be lost to a double skip')
+  })
+})
