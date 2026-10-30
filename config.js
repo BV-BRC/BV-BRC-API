@@ -82,7 +82,6 @@ const defaults = {
 
   treeDirectory: './trees',
   contentDirectory: './content',
-  publicGenomeDir: '/genomes',
   queueDirectory: './index-queue-dir',
   signingSubjectURL: 'https://user.patricbrc.org/public_key',
   solr: {
