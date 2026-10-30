@@ -264,16 +264,25 @@ function formatFields (doc, fields, delimiter, includeEmpty = false) {
 //
 // 3. `{{` and `}}` are literal braces, the usual convention.
 //
-// 4. AN UNKNOWN FIELD IS A 400, not an empty string. Silently emitting nothing is how
-//    the original enrichment bug hid for weeks -- a header that looks plausible and is
-//    missing data. routes/dataType.js validates before the response starts, so the
-//    error arrives as a status code rather than mid-stream.
+// 4. SYNTAX errors are a 400; an UNKNOWN FIELD NAME renders empty and returns 200.
+//
+//    An earlier draft of this comment claimed unknown names were rejected too. They
+//    are not, and saying so was worse than the gap itself -- a GUI client read the
+//    contract, relied on it, and found `{hostname}` (a typo of host_name) producing a
+//    silently truncated header with HTTP 200.
+//
+//    The reason is cost: deciding whether a bare name is valid needs the collection's
+//    Solr schema, and fetching it would add a round trip to EVERY templated download,
+//    on the request path, for a check a client can make once against
+//    /:collection/fields. Syntax is checked because it needs nothing but the string.
+//
+//    CONSEQUENCE FOR CLIENTS: validating template field names against
+//    /:collection/fields is load-bearing, not a nicety. Nothing server-side will catch
+//    a typo.
 //
 // Note this makes STRUCTURE explicit but does not add escaping: values are still
 // interpolated verbatim, so a value containing the caller's own separator remains
 // ambiguous. That is a known and deliberate gap.
-
-const TEMPLATE_FIELD = /\{([^{}]*)\}/g
 
 /**
  * Field names referenced by a template, in order of first appearance.
@@ -282,17 +291,52 @@ const TEMPLATE_FIELD = /\{([^{}]*)\}/g
  * @returns {Array<string>}
  */
 function templateFields (template) {
-  if (!template || typeof template !== 'string') return []
-  const out = []
-  // Blank out escaped braces first so `{{not_a_field}}` is not read as a reference.
-  const scannable = template.replace(/\{\{/g, '\0').replace(/\}\}/g, '\0')
-  let m
-  TEMPLATE_FIELD.lastIndex = 0
-  while ((m = TEMPLATE_FIELD.exec(scannable)) !== null) {
-    const name = m[1].trim()
-    if (name && !out.includes(name)) out.push(name)
+  return scanTemplate(template, () => '').fields
+}
+
+/**
+ * Single-pass template scanner. THE ONE PLACE template syntax is interpreted.
+ *
+ * templateFields() and formatTemplate() both go through this, because when they parsed
+ * separately they disagreed: discovery blanked escaped braces with a sentinel and
+ * returned a corrupted name for `{{{field}}}`, while the renderer substituted the real
+ * field. A field the join never fetched then rendered empty -- the silent-drop failure
+ * this whole module exists to avoid.
+ *
+ * @param {string} template
+ * @param {Function} resolve - (name) => string, the value to emit for a reference
+ * @returns {{ text: string, fields: Array<string> }}
+ */
+function scanTemplate (template, resolve) {
+  if (!template || typeof template !== 'string') return { text: '', fields: [] }
+
+  const fields = []
+  let out = ''
+  let i = 0
+
+  while (i < template.length) {
+    const two = template.slice(i, i + 2)
+    // Escaped braces are literal, and are consumed before any reference is considered.
+    if (two === '{{') { out += '{'; i += 2; continue }
+    if (two === '}}') { out += '}'; i += 2; continue }
+
+    if (template[i] === '{') {
+      const close = template.indexOf('}', i + 1)
+      if (close !== -1) {
+        const name = template.slice(i + 1, close).trim()
+        if (name) {
+          if (!fields.includes(name)) fields.push(name)
+          out += resolve(name)
+          i = close + 1
+          continue
+        }
+      }
+    }
+    out += template[i]
+    i += 1
   }
-  return out
+
+  return { text: out, fields }
 }
 
 /**
@@ -331,14 +375,10 @@ function validateTemplate (template) {
  * @returns {string} the header line, WITHOUT the leading '>' or trailing newline
  */
 function formatTemplate (doc, template) {
-  const rendered = template.replace(TEMPLATE_FIELD, (match, raw) => {
-    const name = raw.trim()
-    if (!name) return match
+  return scanTemplate(template, (name) => {
     const value = getFieldValue(doc, name)
     return value === undefined ? '' : value
-  })
-  // Unescape last, so a literal brace cannot be mistaken for a field delimiter above.
-  return rendered.replace(/\{\{/g, '{').replace(/\}\}/g, '}')
+  }).text
 }
 
 /**
@@ -512,6 +552,7 @@ module.exports = {
   createFastaHeaderFormatter,
   createFastaHeaderFormatterFromRequest,
   templateFields,
+  scanTemplate,
   validateTemplate,
   formatTemplate,
   parseConfigFromRequest,

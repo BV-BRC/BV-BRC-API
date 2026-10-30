@@ -60,20 +60,77 @@ describe('FASTA format strings', function () {
         '>fig|1.1.peg.1||ABC transporter')
     })
 
-    it('renders an unknown field as empty at render time', function () {
-      // Syntax is rejected with 400 before the response starts; an unknown NAME is not
-      // caught there because validating it needs the Solr schema. Documented trade.
+    it('renders an unknown field as empty, returning 200 not 400', function () {
+      // PINNED AS THE DOCUMENTED CONTRACT, not as an aspiration. An earlier version of
+      // the contract comment claimed unknown names were rejected; they are not, and a
+      // GUI client relied on that claim and hit a silently truncated header from a
+      // typo. Validating a bare name needs the Solr schema, so clients must check
+      // against /:collection/fields. If that ever changes, change this test with it.
       assert.equal(render('{patric_id} {no_such_field}'), '>fig|1.1.peg.1')
+      assert.equal(render('{patric_id} {hostname}'), '>fig|1.1.peg.1',
+        'the exact reported typo of host_name')
     })
   })
 
   describe('escaping braces', function () {
-    it('renders {{ and }} as literal braces', function () {
+    // Reported live 2026-10-30: `A{{x}}B` rendered `>A{}B` instead of `>A{x}B`. The
+    // renderer ran its field regex over the RAW string, so it matched the inner `{x}`
+    // and substituted it away before the unescape pass ever saw it.
+    it('renders escaped content, not an empty brace pair', function () {
+      assert.equal(render('A{{x}}B'), '>A{x}B')
+      assert.equal(render('{{lit}}'), '>{lit}')
+      assert.equal(render('{{}}'), '>{}')
+    })
+
+    it('treats {{{field}}} as a literal brace around a real reference', function () {
       assert.equal(render('{{{patric_id}}}'), '>{fig|1.1.peg.1}')
+    })
+
+    it('mixes escapes and references in one template', function () {
+      assert.equal(render('{patric_id} {{x}} {genome_id}'), '>fig|1.1.peg.1 {x} 1.1')
     })
 
     it('does not treat an escaped brace as a field reference', function () {
       assert.deepEqual(templateFields('{patric_id} {{not_a_field}}'), ['patric_id'])
+    })
+  })
+
+  describe('discovery and rendering cannot disagree', function () {
+    // They parsed SEPARATELY and did disagree: discovery blanked escapes with a
+    // sentinel and returned a corrupted name for `{{{field}}}` while the renderer
+    // substituted the real field -- so the join never fetched it and it rendered
+    // empty. Both now go through scanTemplate(), and these cases pin that.
+    const CASES = [
+      '{patric_id}',
+      '{{{patric_id}}}',
+      'A{{x}}B',
+      '{patric_id} {{x}} {genome_id}',
+      '{{}}',
+      '{patric_id}{genome_id}'
+    ]
+
+    it('every field the renderer substitutes is also discovered', function () {
+      for (const tpl of CASES) {
+        const discovered = templateFields(tpl)
+        // Render with a doc whose values are the field names themselves; anything the
+        // renderer substitutes must therefore appear in the output.
+        const probe = {}
+        for (const f of ['patric_id', 'genome_id', 'x', 'not_a_field']) probe[f] = `<${f}>`
+        const out = createFastaHeaderFormatter({ template: tpl })(probe)
+        for (const f of ['patric_id', 'genome_id', 'x']) {
+          if (out.includes(`<${f}>`)) {
+            assert.include(discovered, f,
+              `${tpl}: renderer substituted ${f} but discovery missed it -- the join ` +
+              'would not fetch it and the field would render empty')
+          }
+        }
+      }
+    })
+
+    it('discovery never reports a name the renderer ignores', function () {
+      // The converse: a spurious name makes the join fetch fields nobody asked for.
+      assert.deepEqual(templateFields('A{{x}}B'), [])
+      assert.deepEqual(templateFields('{{}}'), [])
     })
   })
 
