@@ -307,53 +307,22 @@ const defaults = {
 
     // Admin users who can modify runtime config
     adminUsers: []
-  },
+  }
 
   // Join enrichment for paginated queries
   // Adds fields from related collections when explicitly requested via select()
-  joinEnrichment: {
-    enabled: true,
-    cacheSize: 200, // LRU cache size per target collection
-    collections: {
-      // genome_feature can fetch genome metadata
-      genome_feature: {
-        joinableFields: {
-          genome_name: { from: 'genome', via: 'genome_id', field: 'genome_name' },
-          taxon_id: { from: 'genome', via: 'genome_id', field: 'taxon_id' },
-          genome_status: { from: 'genome', via: 'genome_id', field: 'genome_status' },
-          strain: { from: 'genome', via: 'genome_id', field: 'strain' }
-        }
-      },
-      // pathway can fetch genome metadata
-      pathway: {
-        joinableFields: {
-          genome_name: { from: 'genome', via: 'genome_id', field: 'genome_name' },
-          taxon_id: { from: 'genome', via: 'genome_id', field: 'taxon_id' }
-        }
-      },
-      // subsystem can fetch genome metadata
-      subsystem: {
-        joinableFields: {
-          genome_name: { from: 'genome', via: 'genome_id', field: 'genome_name' },
-          taxon_id: { from: 'genome', via: 'genome_id', field: 'taxon_id' }
-        }
-      },
-      // sp_gene can fetch genome metadata
-      sp_gene: {
-        joinableFields: {
-          genome_name: { from: 'genome', via: 'genome_id', field: 'genome_name' },
-          taxon_id: { from: 'genome', via: 'genome_id', field: 'taxon_id' }
-        }
-      },
-      // genome_amr can fetch genome metadata
-      genome_amr: {
-        joinableFields: {
-          genome_name: { from: 'genome', via: 'genome_id', field: 'genome_name' },
-          taxon_id: { from: 'genome', via: 'genome_id', field: 'taxon_id' }
-        }
-      }
-    }
-  }
+  // Join enrichment defaults live in lib/joinConfig.js (DEFAULT_JOIN_CONFIG), NOT here.
+  //
+  // There used to be a second full copy of the collections map at this spot, and it
+  // silently WON: getJoinConfig() spreads p3api.conf's `joinEnrichment` over the
+  // defaults per collection, and an entry in this file is indistinguishable from one an
+  // operator wrote, so it overrode lib/joinConfig.js entirely. Adding a joinable field
+  // to lib/joinConfig.js therefore had no effect at all -- discovered when 33 new genome
+  // metadata fields did not appear.
+  //
+  // Leaving the key ABSENT means getJoinConfig() returns DEFAULT_JOIN_CONFIG untouched,
+  // while an operator overriding `joinEnrichment` in p3api.conf still works exactly as
+  // documented. Do not reintroduce a default here; add fields to lib/joinConfig.js.
 
 }
 

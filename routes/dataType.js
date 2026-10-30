@@ -20,6 +20,8 @@ var querystring = require('querystring')
 const ShardsPreference = require('../middleware/ShardsPreference')
 const SolrQuerySanitizer = require('../middleware/SolrQuerySanitizer')
 const JoinResolution = require('../middleware/JoinResolution')
+const { describeFields } = require('../lib/collectionFields')
+const { makeSolrClient } = require('../middleware/APIMethodHandler')
 const QueryClassifier = require('../middleware/QueryClassifier')
 const DistributedQuery = require('../middleware/DistributedQuery')
 const JoinFieldInjector = require('../middleware/JoinFieldInjector')
@@ -91,6 +93,40 @@ router.use(function (req, res, next) {
 
   debug('REQ IS DOWNLOAD: ', req.isDownload)
   next()
+})
+
+/**
+ * GET /:collection/fields — what can this collection return?
+ *
+ * Exists so the website can build a column picker without hardcoding a field list that
+ * drifts from the API. Reports NATIVE fields (from the live Solr schema, filtered to
+ * stored ones — an unstored field cannot be returned and would be a permanently empty
+ * column) and ENRICHED fields (from the same join config the enrichment middleware
+ * reads, so the two cannot disagree), each with a readable label and a `source` flag.
+ *
+ * Mounted ahead of the catch-all GET because that handler would otherwise treat
+ * `/fields` as a record id. `app.param('dataType')` has already validated the
+ * collection against the allowlist before this runs.
+ *
+ * Readable labels are DERIVED, not curated — see lib/fieldLabels.js for why there is no
+ * authoritative label source to read from.
+ */
+router.get('/fields', function (req, res, next) {
+  const collection = req.params.dataType
+  const solrClient = makeSolrClient(collection)
+
+  solrClient.getSchema()
+    .then((body) => {
+      if (body && typeof body === 'string') {
+        body = JSON.parse(body)
+      }
+      res.set('content-type', 'application/json')
+      res.end(JSON.stringify(describeFields(collection, body)))
+    })
+    .catch((err) => {
+      console.error(`Error building field list for ${collection}: ${err && err.message}`)
+      next(err)
+    })
 })
 
 router.get('*', function (req, res, next) {
