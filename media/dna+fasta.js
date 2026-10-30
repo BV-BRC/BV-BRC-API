@@ -25,6 +25,7 @@
  */
 
 const debug = require('debug')('p3api-server:media:dna-fasta')
+const fastaGenomeFields = require('../lib/fastaGenomeFields')
 const LineWrap = require('../util/linewrap')
 const { streamWithBackpressure } = require('../util/streamWithBackpressure')
 const { registerAgent } = require('../lib/agentStats')
@@ -198,42 +199,18 @@ function formatGenomeSequenceRecord (doc) {
 }
 
 /**
- * Check if any FASTA header fields reference genome_metadata.
+ * Does this request need genome metadata joined in?
  *
- * @param {Object} req - Express request object
- * @returns {boolean} True if genome join is needed
+ * Delegates to lib/fastaGenomeFields.js, which resolves names against the SAME join
+ * registry that `/:collection/fields` reports and JoinEnrichment uses. The previous
+ * implementation tested for the literal 'genome_metadata.' substring, so a bare
+ * `host_name` -- which is what `/fields` advertises and what select() accepts --
+ * triggered no join and was silently dropped from the header.
  */
-function needsGenomeJoin (req) {
-  const fastaParams = req.fastaParams || {}
-  const fieldsToCheck = [
-    fastaParams.http_fasta_id_fields,
-    fastaParams.http_fasta_description_fields,
-    fastaParams.http_fasta_context_fields
-  ]
-
-  return fieldsToCheck.some(fields => {
-    return fields && fields.includes('genome_metadata.')
-  })
+function needsGenomeJoin (req, collection) {
+  return fastaGenomeFields.needsGenomeJoin(req, collection || (req && req.call_collection))
 }
 
-/**
- * Check if any FASTA header fields reference genome_metadata.
- *
- * @param {Object} req - Express request object
- * @returns {boolean} True if genome join is needed
- */
-function needsGenomeJoin (req) {
-  const fastaParams = req.fastaParams || {}
-  const fieldsToCheck = [
-    fastaParams.http_fasta_id_fields,
-    fastaParams.http_fasta_description_fields,
-    fastaParams.http_fasta_context_fields
-  ]
-
-  return fieldsToCheck.some(fields => {
-    return fields && fields.includes('genome_metadata.')
-  })
-}
 
 /**
  * Serialize genome_feature stream using SequenceJoinStream (new efficient path).
@@ -260,6 +237,10 @@ async function serializeFeatureStreamDirect (stream, res, req, directSolrClient)
       batchSize: 50,
       cacheSize: 100,
       skipHeader: true,
+      // Fetch what the HEADER actually asked for, not a hardcoded list. The stream's
+      // DEFAULT_CONFIG.genomeFields covers 8 fields; the join registry exposes 35, and
+      // the extras resolved to undefined and vanished from the header.
+      genomeFields: fastaGenomeFields.genomeFieldsFor(req, req.call_collection),
       user: req.user,
       publicFree: req.publicFree
     })
