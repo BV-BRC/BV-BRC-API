@@ -166,8 +166,28 @@ function getFieldValue (doc, field) {
     if (value && typeof value === 'object' && part in value) {
       value = value[part]
     } else {
-      return undefined
+      value = undefined
+      break
     }
+  }
+
+  // BARE NAMES fall back to the joined genome metadata.
+  //
+  // `/fields` reports `host_name`, not `genome_metadata.host_name`, and select() has
+  // always taken bare names -- so a client consuming the field registry passes bare
+  // names here. Without this fallback they resolve to undefined and are SILENTLY
+  // dropped from the header, which is exactly what a GUI session hit on 2026-10-30.
+  //
+  // Checked only after a direct lookup fails, so a field that genuinely exists on the
+  // document always wins; this can only add a value where there would have been none.
+  if (value === undefined && parts.length === 1 &&
+      doc.genome_metadata && typeof doc.genome_metadata === 'object' &&
+      field in doc.genome_metadata) {
+    value = doc.genome_metadata[field]
+  }
+
+  if (value === undefined) {
+    return undefined
   }
 
   // Handle arrays (join with comma)

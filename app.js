@@ -8,7 +8,6 @@ var logger = require('morgan')
 var cookieParser = require('cookie-parser')
 var hpiSearchRouter = require('./routes/hpiSearch')
 var dataTypeRouter = require('./routes/dataType')
-var downloadRouter = require('./routes/download')
 var multiQueryRouter = require('./routes/multiQuery')
 var contentRouter = require('./routes/content')
 var rpcHandler = require('./routes/rpcHandler')
@@ -16,6 +15,7 @@ var jbrowseRouter = require('./routes/JBrowse')
 var genomePermissionRouter = require('./routes/genomePermissionRouter')
 var dataRouter = require('./routes/dataRouter')
 var indexer = require('./routes/indexer')
+var adminRouter = require('./routes/adminRouter')
 var docRouter = require('./routes/documentation')
 var indexRouter = require('./routes/index')
 var distributedQueryRouter = require('./routes/distributedQueryRouter')
@@ -24,7 +24,10 @@ var sleep = require("sleep-promise");
 
 
 var cors = require('cors')
+var corsOptions = require('./util/corsOptions')
 var crypto = require('crypto')
+const { getAgentStats, totalQueued } = require('./lib/agentStats')
+const { getAdmissionStats } = require('./middleware/QueryClassifier')
 
 // Generate request ID for all requests (used for log correlation)
 function generateRequestId () {
@@ -126,18 +129,19 @@ app.use(function (req, res, next) {
   next()
 })
 
-app.use(cors({
-  origin: true,
-  methods: ['GET,POST,PUT,DELETE'],
-  allowHeaders: ['if-none-match', 'range', 'accept', 'x-range', 'content-type', 'authorization'],
-  exposedHeaders: ['facet_counts', 'x-facet-count', 'Content-Range', 'X-Content-Range', 'X-Cursor-Mark', 'ETag'],
-  credential: true,
-  maxAge: 86400
-}))
+// See util/corsOptions.js. The previous inline configuration misspelled two
+// keys (credential/allowHeaders), so credentials never worked and the header
+// list was silently replaced by reflection of whatever the browser asked for.
+app.use(cors(corsOptions(config)))
 
 var collections = config.get('collections')
 
 app.use('/indexer', indexer)
+
+// Local-only operational endpoints. Every route is behind middleware/adminGate.js
+// (loopback peer address + X-Admin-Token) and the whole surface 404s unless
+// `admin.enabled` is true in config. See PLAN_ADMIN_ENDPOINT.md.
+app.use('/admin', adminRouter)
 
 app.get('/', indexRouter)
 app.use('/doc', docRouter)
@@ -148,12 +152,39 @@ app.use('/health', function (req, res, next) {
   res.end()
 })
 
+// Operational stats.
+//
+// `active_requests` is preserved verbatim at the top level — it is the field existing
+// monitoring reads, and the hang investigation used it to diagnose socket exhaustion.
+// Everything new is additive, under its own keys, so no consumer breaks.
+//
+// `agents` is the part that was missing. maxSockets caps concurrency, not queue depth,
+// and Node's http.Agent has no queue cap at all, so requests waiting for a socket
+// accumulate invisibly. `agents.<name>.queued` is that number. Phase 2 of
+// Docs/COMPLETION_PLAN-2026-10.md sizes admission pools on the rule "admission pool <=
+// socket pool, so the socket queue stays empty" — which is unverifiable without this.
 app.use('/stats', function (req, res, next) {
-  if (stats) {
-    res.write(JSON.stringify(stats))
-  } else {
-    res.write('{}')
+  let payload
+  try {
+    payload = {
+      ...stats,
+      uptime_s: Math.round(process.uptime()),
+      pid: process.pid,
+      agents: getAgentStats(),
+      sockets_queued_total: totalQueued(),
+      // Admission pool state. Reported even while admission is disabled, so a dry run
+      // shows what would have been shed before enforcement is turned on — and so the
+      // pool sizes can be tuned against real numbers rather than guesses.
+      admission: getAdmissionStats()
+    }
+  } catch (err) {
+    // A stats endpoint that 500s during an incident is worse than one returning a
+    // partial answer, so fall back to the original payload rather than throwing.
+    console.error(`/stats: failed to collect extended stats: ${err && err.message}`)
+    payload = stats || {}
   }
+  res.setHeader('Content-Type', 'application/json')
+  res.write(JSON.stringify(payload))
   res.end()
 })
 
@@ -192,10 +223,6 @@ app.param('dataType', function (req, res, next, dataType) {
   next('route')
 })
 
-app.use('/bundle/:dataType/', [
-  downloadRouter
-])
-
 app.use('/permissions/genome', [
   genomePermissionRouter
 ])
@@ -220,6 +247,26 @@ app.use(function (req, res, next) {
   res.end()
 })
 
+/*
+ * Error fields safe to return to a client, copied onto the JSON body when present.
+ *
+ * ALLOWLIST, deliberately. An Error picked up by the terminal handler may carry a stack,
+ * a Solr response fragment, or the caller's own filter text; serialising it wholesale is
+ * how internal detail escapes. Add a field here only after deciding it is safe to publish.
+ *
+ * Current members, all from JoinTooBroadError (lib/joinResolver.js) — they let a UI say
+ * "Viruses holds 14.9 million genomes, more than this view can summarise" and offer the
+ * child taxa, instead of printing a sentence it had to regex:
+ *
+ *   genomeCount  how many genomes the join matched
+ *   limit        the threshold it exceeded (config, so do NOT hardcode it client-side)
+ *   taxonId      the taxon at fault, when the filter was purely taxonomic
+ *
+ * `filter` is deliberately NOT here: it is raw Solr the client never wrote and has no use
+ * for, and echoing query internals back is the habit that produces disclosure bugs.
+ */
+const ERROR_DETAIL_FIELDS = ['genomeCount', 'limit', 'taxonId']
+
 // Handle errors
 app.use(function (error, req, res, next) {
   // If the response has already started (e.g. a streaming/distributed download
@@ -235,9 +282,47 @@ app.use(function (error, req, res, next) {
     return
   }
   res.setHeader('Content-Type', 'application/json')
-  res.status(error.status || 500)
-  res.send({
+
+  // Propagate Retry-After on a 429 regardless of which layer produced it.
+  //
+  // middleware/QueryClassifier sets this header itself for an admission rejection, but a
+  // 429 originating at Solr — a circuit breaker or the request rate limiter tripping —
+  // arrives here as a SolrHttpError carrying `retryAfterMs` parsed from Solr's own
+  // response, and nothing was writing it out. A bare 429 with no guidance is exactly what
+  // provokes the tight retry loop that admission control exists to prevent, and it does
+  // the most damage precisely when Solr is already in trouble. See Docs/CLIENT-429.md.
+  if ((error.status === 429 || error.status === 503) && !res.getHeader('Retry-After')) {
+    const ms = error.retryAfterMs
+    const secs = typeof ms === 'number' && ms >= 0
+      ? Math.max(1, Math.ceil(ms / 1000))
+      : (error.retryAfterSeconds || 1)
+    res.setHeader('Retry-After', String(secs))
+  }
+
+  // Structured error detail, for clients that want to react rather than just display.
+  //
+  // `message` stays exactly as it was — it is the human-readable text, several clients
+  // show it verbatim, and nothing about it changes here. The extra fields are ADDITIVE:
+  // a client that ignores them sees the same body it always did.
+  //
+  // Only an explicit allowlist is copied. An error object carries whatever the throwing
+  // code attached — stack frames, Solr response fragments, the user's own filter — and
+  // blanket-serialising that is how internal detail leaks to clients. Anything new has to
+  // be added here deliberately.
+  const body = {
     status: error.status || 500,
     message: error.message || 'Interal Server Error'
-  })
+  }
+  if (error.errorCode) {
+    // A stable machine-readable tag. Clients should branch on this, never on the prose.
+    body.error = error.errorCode
+  }
+  for (const field of ERROR_DETAIL_FIELDS) {
+    if (error[field] !== undefined) {
+      body[field] = error[field]
+    }
+  }
+
+  res.status(error.status || 500)
+  res.send(body)
 })

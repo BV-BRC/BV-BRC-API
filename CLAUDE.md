@@ -6,27 +6,113 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 BV-BRC API (p3api) is a Node.js/Express REST API providing access to BV-BRC bioinformatics data. It acts as a gateway to Solr backends, supporting RQL (Resource Query Language) and Solr query syntax.
 
-## Branch state (2026-08-20)
+## Branch state (2026-10-29)
 
-**`feature/distributed-query` is MERGED into `upstream/alpha`** — PR #189, merge commit
-`be1b75aa`. The distributed-query, join-enrichment, and cross-collection-download subsystems
-are now alpha baseline, not branch-local. Historical reports (`Docs/ALPHA_MERGE_REPORT.md`,
-`Docs/ALPHA_PR_BODY.md`, `Docs/ALPHA_MERGE_REPORT_SLACK.txt`, `Docs/BRANCH_RISK_ANALYSIS.md`)
-describe that pre-merge delta and are kept for provenance only.
+**`upstream/alpha` is 130 commits AHEAD of `upstream/master`, 0 behind** — master is an
+ancestor, so the merge is a **fast-forward with zero conflicts**. This section goes stale
+fast; check with `git rev-list --left-right --count upstream/master...upstream/alpha` rather
+than trusting any sentence in it.
 
-**`upstream/master` is ~175 commits behind alpha** and does not have any of it. Master *does*
-carry the same dependency-security work under different hashes (verified: `p3-user`, `forever`,
-`npm`, `install`, `uuid`, `ejs`, `nconf`, `nodemailer`, `apicache` are identical on both lines),
-so an alpha→master merge should be conflict-free on those files. Master has no `CLAUDE.md`, so
-this file arrives there as a new file rather than a conflict.
+- `upstream/master` = **`6397c6cf`** (unmoved since 2026-09-03), `upstream/alpha` =
+  **`2d535a5a`**.
+- **PR #239 (alpha → master) is still OPEN**, and its body now understates the delta:
+  it was written at 72 commits and the delta is now **130 commits, 96 files,
+  +19,057 / −301, PRs #206–#263**. Re-measure and refresh the body before merging.
+- A draft of the user-facing notes for this release is `Docs/RELEASE_NOTES_DRAFT.md`.
+  Two items need a decision before publication: whether the ACL finding ships described
+  or silent, and that concurrency figures stay out until production tuning settles.
+- **Historical note on the figures below** — they describe the state at 2026-10-18 and are
+  kept because the `package.json` reasoning is still correct. `package-lock.json` is
+  **byte-identical** between the branches; the only `package.json` delta is one line,
+  `--stack-size=65536` → `--stack-size=7000` (65536 exceeded the OS thread stack, so V8's
+  guard never fired and deep recursion segfaulted the worker instead of throwing
+  `RangeError`). Body carries the deployment checklist; re-measure the counts before merging
+  if alpha has moved again.
+- Everything described in the rest of this file as "on alpha only" is still exactly that.
+  **Master has none of the overload-protection work, neither worker-crash fix
+  (`31a1d5ad` dataRouter, `6b1335e4` ExpandingQuery), nor the self-call elimination.**
 
-Offline-suite baseline on alpha is now **327 passing / 1 failing** — the known
-`fastaHeaderFormatter` case. (It was 247/2 before the merge; the extra suites came with #189,
-and alpha no longer hits the old `test.config.spec.js` failure because the config keys that
-test expects are the ones #189 added.)
+**The remotes are `origin` (`olsonanl/p3_api`, personal fork, HTTPS) and `upstream`
+(`BV-BRC/BV-BRC-API`, canonical).** An earlier version of this section said the opposite —
+that `origin` was canonical, that there was *no* remote named `upstream`, and that the fork
+was called `bob`. All three are wrong now. Push feature branches to `origin` and open the PR
+with `--head olsonanl:<branch>`. **`gh pr edit` still does not work against this repo**
+(`GraphQL: Projects (classic) is being deprecated`); `gh pr create` is fine, and to change a
+body afterwards use `gh api -X PATCH repos/BV-BRC/BV-BRC-API/pulls/<n> -F body=@file`.
 
-When branching from alpha, **diff against `upstream/alpha`, not a git merge-base** — merge-bases
-in this repo are reliably stale and over-count the delta by re-showing already-shipped fixes.
+Open PRs as of 2026-10-18: **#239** (the merge, above) and **10 dependabot PRs**, all
+targeting master — #205, #209, #214, #215, #216, #217, #218, #223, #227, #233. Merge #239
+first; because the lockfile is identical on both branches the bumps apply equally either
+side and flow back to alpha on the next sync, so there is no reason to retarget them. Seven
+are transitive-only. **#216 (nodemailer 9.0.5 → 10.0.9) is a semver-major bump** and needs
+the same hand-verification 9.x got — `lib/mailer.js` uses only `createTransport` (sendmail +
+SMTP + auth + tls) and callback-style `sendMail`. Do not batch it with the rest.
+
+**#151 is CLOSED** (2026-10-07), not open. It proposed a `protein_structure` access-control
+filter; the premise did not hold. All 18,166 private-genome-joined `protein_structure` rows
+carry a `pdb_id` — they are public RCSB depositions — and 34,086 rows have no `genome_id` at
+all and would have vanished for every user. The filter also cost 0.2–120s. Rationale is on
+the closed PR. The 9 older dependabot PRs listed under "Dependency Security Maintenance"
+below (#117, #118, #123–#126, #128, #129, #133) are **also closed** — that paragraph is
+stale in the other direction.
+
+Merge-resolution notes worth keeping, from the **#202** merge — the current #239 merge is a
+fast-forward and has no conflicts at all, but these apply to any future one that does. The
+only conflicts were `package.json` and `package-lock.json`, and `package.json` was resolved
+**in alpha's favour on all four differing lines** — keep the inlined `lib/solrjs`, keep
+`dojo-declare`, keep the two test scripts, and **do not restore the external `solrjs`
+dependency**. Taking master's side there looks right (its dependency work is newer) but
+reintroduces the package while the code imports `lib/solrjs`; both resolve, so it fails
+silently. Full risk analysis: `Docs/ALPHA_TO_MASTER_MERGE_RISK.md`.
+
+Historical reports (`Docs/ALPHA_MERGE_REPORT.md`, `Docs/ALPHA_PR_BODY.md`,
+`Docs/ALPHA_MERGE_REPORT_SLACK.txt`, `Docs/BRANCH_RISK_ANALYSIS.md`) describe the pre-#189
+delta and are provenance only.
+
+**Rolling the deployment between these two points requires `npm ci`, not just a checkout.**
+The manifests differ: pre-merge master needs the external `solrjs` package, post-merge
+master needs `dojo-declare` for the inlined client. A bare `git checkout` in either
+direction gives every worker `Cannot find module …`. Verify before restarting:
+
+```bash
+npm ci
+node -e "require('dojo-declare/declare'); require('./lib/solrjs'); console.log('deps OK')"
+```
+
+Then **`pm2 reload`**. `pm2 delete` is *not* required to pick up new code — it is only for
+fixing colliding log paths. An earlier note here said otherwise.
+
+**Offline-suite baseline on `upstream/alpha` is 478 passing / 1 failing** (measured
+2026-10-18 at `dc5fde34`, `npx mocha tests/test-util/ tests/test-join/
+tests/test-distributed/`) — the known `fastaHeaderFormatter` case. It was 370/1 on
+2026-09-03; the overload-protection work added ~108 offline specs. Earlier notes here said
+351/1, 350/1 and 327/1; all stale. `tests/test-security/security-cors.spec.js` is also
+offline and passes **19/19** separately. The self-call work's own specs need a live API and
+a populated Solr, so none of them land in these suites — run those against `:23001` with the
+command in `PLAN_ELIMINATE_SELF_CALL.md`.
+
+**`distributedQuery` defaults to `enabled: true` with an empty `excludeNodes`,** and the path
+needs direct network access to every Solr replica. Production `p3api.conf` sets
+`enabled: false` — that is deliberate, keep it. The `excludeNodes` list lives only in that
+untracked file.
+
+**Correction (2026-10-27): production DOES reach every Solr replica.** Several notes in
+this file and under `Docs/` said it does not; that was wrong, and it muddled two separate
+constraints:
+
+- **Production** has direct replica access. `DirectSolrClient` is viable there, and the
+  `excludeNodes` option exists to skip individual hosts that are down — which only makes
+  sense if the rest are reachable.
+- **An off-site dev laptop does not**, and neither does anything reaching Solr through a
+  proxy URL. That is the real reason `media/genbank.js` and `lib/internalQuery.js` use the
+  ordinary `Solrjs` client: a path that only works on-prem cannot be developed or tested
+  where the work actually happens.
+
+So "do not use `DirectSolrClient` here" remains good advice for code that must run
+anywhere, but **not** because production lacks the access. If a path is production-only
+and would benefit from parallel shard fan-out, `DirectSolrClient` is on the table.
+Whatever keeps `distributedQuery.enabled: false` in production, it is not reachability —
+re-derive the reason before changing it.
 
 ## Planning docs (not yet implemented)
 
@@ -34,10 +120,283 @@ Repo-root `PLAN_*.md` files are proposals, in varying states of vetting:
 
 | doc | subject |
 |---|---|
+| `PLAN_ELIMINATE_SELF_CALL.md` | **DONE — merged to alpha as PR #206** (`4f64b1d4`, 2026-09-03). All 8 steps. Not on master; see below for what remains deferred. |
 | `PLAN_PRIVATE_METADATA_OVERLAY.md` | Private per-user metadata collection overlaying `genome` — display, filter, facet. See below. |
 | `PLAN_GENOME_POSTFILTER.md` | JS-side post-filtering for negation-only `genome()` conditions |
 | `PLAN_DOWNLOAD_SSE_NOTIFICATIONS.md` | SSE start/complete events for downloads (hidden-form POSTs can't read headers) |
-| `PLAN_SOLR_OVERLOAD_PROTECTION.md` | Multi-layer throttling; broad-taxon join OOM mitigation |
+| `PLAN_SOLR_OVERLOAD_PROTECTION.md` | Multi-layer throttling; broad-taxon join OOM mitigation. **Amended — read `Docs/OVERLOAD_PROTECTION_AMENDMENT-2026-10.md` first**: the download-amplification half shipped, the join half did not, and the plan's `timeAllowed` mitigation and 10,000-genome threshold are both measurably wrong. **For the order of remaining work see `Docs/COMPLETION_PLAN-2026-10.md`**, which sequences the joins, admission control, and the production deployment into phases. |
+
+### HTTP self-calls (merged to alpha as PR #206; not on master)
+
+**The API called its own listening port instead of invoking handlers in-process**, at 17
+sites. Over a 36-hour production window `::ffff:127.0.0.1` was the top client by a factor of
+three: **33,101 requests (33% of all traffic), 615,681s cumulative**. Beyond the wasted round
+trip it is a resource-loop hazard — an outer request holds a slot in the same worker pool its
+children need, so parents can occupy every slot while children queue behind them.
+
+Find the survivors with `grep -rn "get('http_port')" --include=*.js` (excluding `app.js`'s own
+`listen`). The sites were **identical on master and alpha**; the fixes below are now on
+**alpha only**, so every one of them is still live on master.
+
+**There is no remote named `upstream`.** Earlier notes here and in the plan said "pushed to
+upstream"; that was wrong. The remotes are `origin`
+(`https://github.com/BV-BRC/BV-BRC-API`, canonical) and `bob`
+(`https://github.com/olsonanl/p3_api`, a personal fork). `bob` was an SSH URL until
+2026-09-03 and no key is loaded on this host, so pushes failed with
+`Permission denied (publickey)`; it is HTTPS now. Also note **`gh pr edit` does not work
+against this repo** — it fails with `GraphQL: Projects (classic) is being deprecated
+(repository.pullRequest.projectCards)`. `gh pr create` is fine; to change a body afterwards
+use `gh api -X PATCH repos/BV-BRC/BV-BRC-API/pulls/<n> -F body=@file`.
+
+Shipped, based on `6397c6cf` (master) and merged into alpha by `4f64b1d4`:
+
+- **`febb9cf8`** — `multiQuery` no longer stores sub-query failures as results.
+  `util/http.js`'s `httpRequest` discards `res.statusCode` and resolves the body regardless,
+  so a 500's error body was `JSON.parse`d into the caller's result slot inside an outer HTTP
+  200. New `httpRequestWithStatus()` exposes the status; `httpRequest` is unchanged because
+  four other call sites expect a bare string.
+- **`fcee5a0a`** — `lib/internalQuery.js`, inert until the conversions land. Goes **direct to
+  Solr** rather than synthesizing a `req`/`res` and replaying the ~27-middleware chain,
+  following the `media/genbank.js` precedent (`06dd7618`).
+- **`73e5d2a3`** — `multiQuery` converted.
+- **`31a1d5ad`** — `dataRouter` converted (3 sites; `/taxon_category/` was already
+  in-process). Also fixes a **production-crash defect** — see below.
+- **`6b1335e4`** — `ExpandingQuery` converted (`runJoinQuery`, `runSDISubQuery`). Fixes the
+  **same abort from a second route** and a live cross-collection-download break; see below.
+- **`3fc64ead`** — wall-clock deadline in `util/http.js`. See "Outbound request timeouts"
+  below; that section's two gaps are now closed.
+
+That is the whole of the branch's code scope. **All three hot-path self-callers
+(`multiQuery`, `dataRouter`, `ExpandingQuery`) are converted**; the remaining `http_port`
+matches are `app.js`'s own `listen`, the 10 deferred RPC sites, `bundler/genome.js:10`, and
+`util/featureSequence.js:12,29`. Status table and pickup instructions are at the top of the
+plan.
+
+Two invariants for anything built on `internalQuery`:
+
+- **`user` is explicit at every call site; `publicFree` defaults.** Neither default is safe
+  for `user` — `multiQuery` forwards the caller's identity, while `/data` must stay anonymous
+  because its `apicache` key is **not user-scoped**, so inheriting an identity would leak
+  private counts into a shared cache. `publicFree` defaults because `buildPermissionFq`
+  fails **closed** without it and would silently over-filter exempt collections.
+- **The collection allowlist must be reinstated.** The HTTP path gates it at `app.js:187`
+  via `app.param('dataType')`; callers build the target from client-supplied input, so
+  bypassing HTTP would otherwise allow a query against an arbitrary Solr core.
+
+A third invariant, learned in step 6: **`lib/internalQuery.js` must not require anything
+under `middleware/`.** Doing so closes a cycle through `ExpandingQuery`, and the cycle is not
+benign — `RQLQueryParser` assigns `module.exports = function (…)`, replacing the exports
+object, so whichever module loads first captures a stale `{}` for its partner and the failure
+surfaces only when a query needs it. That is why `sanitizeErrorMessage` lives in
+`lib/sanitizeErrorMessage.js` and is merely *re-exported* from `RQLQueryParser`.
+
+The 10 RPC self-call sites are deliberately deferred (the RPC identity model is
+client-supplied `params[1].token`, validated only by the inner self-call — see item 4 of
+"Five defects" below). `bundler/genome.js` and `util/featureSequence.js:12,29` also
+self-call and were never in the 17-site tally; they carry the same `JSON.parse` shape.
+`bundler/genome.js` is still unaudited; `util/featureSequence.js:29` turned out to be dead
+code (item 5).
+
+#### `JSON.parse` on a self-call body is how a worker dies
+
+The self-calls are not only slow — one of them has been **aborting production workers**, and
+the mechanism generalizes to every remaining site. Chain, verified end to end locally:
+
+1. `util/http.js`'s `httpRequest` **discards `res.statusCode`** and resolves the body either
+   way. An inner error response is the plain-text `"A Database Error Occured: …"`, not JSON.
+2. `JSON.parse(body)` throws a `SyntaxError` **inside a promise**.
+3. If that promise has no rejection handler, the rejection is unhandled.
+4. `--unhandled-rejections=strict` (set in `package.json`'s `start`) turns it into an
+   `uncaughtException`, which **`app.js:34` swallows and continues past**.
+5. The request never reaches `next()` — it **hangs forever holding a worker slot**.
+6. `async_hooks` state is now corrupt, and the **next** Solr-backed request aborts the
+   process: `node::AsyncHooks::push_async_context … Assertion failed: (trigger_async_id) >= (-1)`.
+
+Reproduced **3/3** on the dev server from two unauthenticated GETs, with a control run
+confirming neither alone is sufficient:
+
+```bash
+curl 'http://localhost:23001/data/distinct/genome/host_group?q=foo%3A%28'   # hangs
+curl -H 'Accept: application/solr+json' http://localhost:23001/data/taxon_category/  # aborts
+```
+
+The 22 native frames match `api.err.crash-162500` exactly, and the production log lines
+immediately before that abort are `dataRouter.js:60` and `:157` self-calls timing out at 120s.
+
+**`ExpandingQuery` had the same defect, and it did not need a malformed *outer* query.**
+`runJoinQuery` did `JSON.parse(body).facet_counts.facet_fields[field]` inside the **success**
+handler of a `.then(ok, fail)` pair — which `fail` does not catch — so a sub-query error took
+the identical path. Three ordinary client mistakes each killed the worker 3/3, unauthenticated,
+one request apiece: an undefined field in the sub-query, an unknown sub-query collection, and
+a smuggled `shards` parameter (the sanitizer *correctly* 400s that one; the 400 is what did
+the damage on the way back). Note the second variant of the chain — when the body *is* valid
+JSON, `JSON.parse` succeeds and the `.facet_counts` dereference throws instead. Same outcome.
+Fixed in step 6; regression test is `tests/test-api/test.expanding-errors.spec.js`, which
+takes the pre-conversion worker down on its first case.
+
+**Fixed in `dataRouter` by `31a1d5ad` and in `ExpandingQuery` by step 6; the pattern is still
+live elsewhere.** Other `JSON.parse`-on-a-self-call-body sites, each needing the same audit —
+three questions, because there turned out to be three ways in: does its promise have a
+rejection handler, is the parse in the `ok` or the `fail` arm, and **does its `catch`
+actually `return`?**
+
+`rpc/proteinFamily.js:51,118,131` · `rpc/msa.js:28` ·
+`rpc/biosetResult.js:27,52` · `rpc/transcriptomicsGene.js:30,95,97,141,146,166,247` ·
+`routes/indexer.js:151` · `bundler/genome.js` · `util/featureSequence.js`
+
+**`rpc/transcriptomicsGene.js:141` is the worked example of the third question, and it is
+live — it took the dev worker down during step 7's test runs, on both codepaths.**
+`readPublicExperiments` wraps everything in `new Promise(async (resolve, reject) => …)`, an
+async executor, so anything thrown inside becomes an unhandled rejection of the inner async
+function rather than rejecting the outer promise. Then:
+
+```js
+let response
+try {
+  response = JSON.parse(res)
+} catch (err) {
+  reject(new Error(`readPublicExperiments(): Error parsing JSON from SOLR: ${err}`))
+}          // <- no return; execution continues
+
+const numFound = response.response.numFound   // response is undefined -> TypeError
+```
+
+The `catch` looks like it handles the error. It rejects, but it does not `return`, so control
+falls straight through to a deref of `undefined`. The resulting `TypeError: Cannot read
+properties of undefined (reading 'numFound')` then takes the documented six-step path to an
+aborted worker. Observed identically in the pre-change and post-change logs; step 7's deadline
+did not cause it, it only made it fire sooner by letting the caller give up and issue the next
+Solr-backed request. Deferred with the rest of the RPC sites — but of the deferred set this is
+the one with a confirmed live abort.
+
+Two things make this worse than it looks. `app.js:34` swallowing `uncaughtException` converts
+a clean crash into silent state corruption that surfaces later on an unrelated request, so
+the stack trace never names the guilty route. And an `if` with no `else` around a response —
+there were two in `dataRouter` — hangs by exactly the same mechanism without any exception at
+all.
+
+#### All `/data/*` counts are public-data-only
+
+`dataRouter`'s sub-queries run with **`user: undefined`**, matching the hardcoded
+`Authorization: ''` of the HTTP version they replaced. Private rows are never counted, for
+any caller, authenticated or not.
+
+**Do not "fix" this by forwarding the caller's identity.** Three of the four endpoints are
+wrapped in `cacheWithRedis('1 day')` whose key is `req.originalUrl` with `appendKey: []` — it
+is **not user-scoped**. An identity reaching these queries would publish one user's private
+counts to every subsequent requester for 24 hours. Making these counts private-aware requires
+scoping the cache key first.
+
+**One exception to the heading, and it cuts the other way.** `/taxon_category/` does not use
+`subQuery` at all — it hand-assembles its own chain and skips `DecorateQuery`, so it is not
+public-only, it is **unfiltered**. See item 2 of "Five defects found during this work" below.
+The `subQuery` doc comment in `routes/dataRouter.js` says "ALL /data/* COUNTS ARE
+PUBLIC-DATA-ONLY"; read that as scoped to `subQuery`'s three consumers, which is where it
+sits.
+
+#### `join()` identity, and the two expanders that differ
+
+The RQL expanders in `ExpandingQuery.js` do **not** share one identity policy. Each choice is
+deliberate:
+
+- **`runJoinQuery` forwards the caller** (`opts.req.user`), preserving what the self-call did
+  with `opts.req.headers['authorization']`. A user joining against their own private genomes
+  must still see them.
+- **`runSDISubQuery` is pinned anonymous** (`user: undefined`). It *looks* like it forwarded,
+  but its only call site passes no `opts` at all, so it always was; `ppi` is `publicFree`, so
+  today this is moot either way. It is pinned explicitly, with a comment, rather than
+  silently promoted.
+
+Two behavior notes for this file:
+
+- **A failed `join()` sub-query now returns 400** rather than degrading to
+  `in(field,(NOT_A_VALID_ID))` → HTTP 200 with zero rows. Nothing was lost: before the
+  conversion every reachable error *hung* instead of degrading. `GenomeGroup()` and
+  `FeatureGroup()` **keep** their degradation — that path is reachable and clients depend on
+  the empty answer. `tests/test-api/test.expanding-errors.spec.js` pins both.
+- **A broad `join()` can pin the event loop.** `join(genome,eq(genome_status,Complete),genome_id)`
+  facets to tens of thousands of ids and parsing the resulting `in(genome_id,(...))` took the
+  dev server to 3.3 GB RSS with `/health` unanswerable. This is the RQL parse, not the
+  transport, so the conversion neither caused nor cured it — see
+  `PLAN_SOLR_OVERLOAD_PROTECTION.md`.
+
+#### `ResolveQuery` needs the real `req`, not `{}`
+
+`ExpandingQuery.ResolveQuery(rql, { req, res })` reads `req.user` (permission scope for join
+sub-queries) and `req.headers.authorization` (the Workspace API). Passing `{}` used to throw a
+`TypeError` on the unguarded `req.headers` deref, inside an unwatched promise — which killed
+the process. That is fixed, but the trap moved rather than vanished: with the guard in place,
+`{}` now resolves **anonymously and silently**, dropping the caller's private rows.
+`middleware/CrossCollectionSource.js` was the one caller doing this, so **every
+cross-collection download whose source filter contained `join()`/`GenomeGroup()`/
+`FeatureGroup()` was broken**; it now threads the real `req`. Any new caller must too.
+
+#### Five defects found during this work and deliberately NOT fixed
+
+Each was found while auditing the self-call sites, each is out of the branch's scope, and
+each was re-verified against the code on 2026-08-27. They are recorded here because the
+next person to touch these files needs to know, and because two of them are worse than
+their one-line descriptions suggest.
+
+**1. `rpc/proteinFamily.js`'s `pfs_` cache serves one user's private genome to the next.**
+This is the one to fix first. `fetchFamilyDataByGenomeId` (`:96`) keys Redis on
+`'pfs_' + genomeId` with **no user scoping**, while the fetch that populates it forwards
+`options.token` (`:114`) and therefore runs permission-scoped. So the cache is written with
+one identity and read with any other, for a 24-hour TTL:
+
+- owner requests a private genome → `pfs_<id>` holds its `pgfam_id`/`plfam_id`/`figfam_id`/
+  `aa_length` rows → any anonymous caller asking for the same `genomeId` reads them back;
+- and in the other direction, an anonymous request caches the empty public answer, after
+  which the owner gets zero rows for their own genome until the TTL expires.
+
+This is the **identical shape** as the enrichment leak under "Permission scoping" below —
+process-wide cache, unscoped key — which is documented there as a real, live cross-user
+read that was fixed. The fix is the same: prefix the key with `permissionScopeKey()` from
+`lib/permissionFilter.js`. It is deferred only because it sits behind the RPC identity model
+(item 3), not because it is theoretical. Note the RPC endpoint is unauthenticated at the
+route level, so no login is needed to read a warm cache.
+
+`fetchFamilyDescriptionBatch`'s cache (`:22,:53`, keyed on bare `family_id`) is **fine** and
+should not be "fixed" alongside it: `protein_family_ref` is public reference data and that
+fetch sends no `Authorization` at all.
+
+**2. `routes/dataRouter.js:217` (`/taxon_category/`) queries `genome` with no permission
+filter whatsoever.** It hand-assembles `RQLQueryParser → APIMethodHandler → media`, skipping
+both `DecorateQuery` and `PublicDataTypes`. It returns only the *keys* of the
+superkingdom/order/family facets, so this discloses the taxonomic names present among
+private genomes rather than any row content — much milder than item 1, but it is the one
+`/data` endpoint where "public-data-only" (see above) is not merely a limitation but an
+unenforced one. It is also the only `/data` route with no `cacheWithRedis`, which is why it
+has no cache-key problem of its own.
+
+**3. `routes/rpcHandler.js:25` is a dead auth gate.** It tests `methodDef.requireAuth`;
+all six RPC modules declare **`requireAuthentication`** (verified: `biosetResult:153`,
+`cluster:107`, `msa:231`, `panaconda:63`, `proteinFamily:237`, `transcriptomicsGene:349`).
+The property never matches, so the 401 has never fired. Harmless *today* only because every
+method declares `false` — the hazard is that setting one to `true` looks like it enforces
+authentication and silently does not. Fix the name and the declarations together, or delete
+the gate; leaving it is the worst of the three options.
+
+**4. The RPC identity model is client-supplied, which is why those 10 sites are deferred.**
+`app.js:144` is `app.post('/', rpcHandler)` with **no auth middleware** — verified, there is
+no global one either — so `req.user` is always `undefined` inside RPC. The real identity is
+`params[1].token`, forwarded as an `Authorization` header on the inner self-call and
+validated only by that self-call's own chain. Converting these to `internalQuery` naively
+would drop the token and break private workspace transcriptomics; doing it properly means
+validating the token at the RPC boundary first. That is a design change, not a transport
+change.
+
+**5. `util/featureSequence.js:24` `_getSequenceDictByHash` is dead code.** Defined, never
+exported (`module.exports` at `:84` lists only `getSequenceByHash` and
+`getSequenceDictByHash`), never called anywhere in the tree. Its self-call at `:29` is
+therefore unreachable, unlike `getSequenceByHash`'s at `:12`, which is live. Worth deleting
+rather than auditing.
+
+One incidental payoff of step 7 worth knowing: `rpc/proteinFamily.js:7` gives its self-calls
+an agent with **`maxSockets: 1`** — literally the configuration the queue-wait test models.
+Concurrent RPC calls serialize behind that one socket, and before `3fc64ead` the queued ones
+had no deadline of any kind. They now inherit the `util/http.js` wall-clock deadline even
+though the site itself is unconverted.
 
 ### Facet counts cannot be corrected inside Solr
 
@@ -69,9 +428,10 @@ effort belongs:
 The join-enrichment hooks pipe streaming results through `JoinEnrichmentStream` whenever
 `req._joinSpecs` is set. Setup is `try/catch`-guarded; mid-stream errors are handled for the
 distributed path (error forwarding across the pipe boundary) but that pattern is newer than
-the rest. Everything else is additive, guard-gated, or already in alpha. Against
-`upstream/master` the whole distributed-query + join subsystem is net-new. Older breakdown:
-`Docs/BRANCH_RISK_ANALYSIS.md`.
+the rest. Everything else is additive or guard-gated. The table is **provenance for the #189
+/ #202 review** — it was written when the whole distributed-query + join subsystem was
+net-new against master; PR #202 landed it there, so it is no longer a branch delta. Older
+breakdown: `Docs/BRANCH_RISK_ANALYSIS.md`.
 
 ## Common Commands
 
@@ -174,6 +534,19 @@ Some collections support private data with owner-based permissions managed via `
 - `genome_amr` - Antimicrobial resistance data
 - `genome_typing` - Genome typing data (fields: genome_id, scheme_name, id, allele_profile)
 
+**`private_genome_metadata`** (added 2026-08-21) is private but **not** in that sharing set —
+see below. Registering it needed only two `config.js` entries (`collections`, and
+`collectionUniqueKeys: 'id'`) because its permission fields match the contract
+`lib/permissionFilter.js` already implements; `DecorateQuery` scopes it with no special code.
+Its `uniqueKey` is a **UUID, not `genome_id`**, so one genome may carry several metadata
+records from different owners.
+
+**Its permissions are managed out of band, so it is deliberately absent from
+`genomeCoresUUIDs` (`routes/genomePermissionRouter.js`).** That map lists the cores whose ACLs
+are rewritten when a genome is shared; adding this collection would silently widen access to
+private metadata every time the underlying genome is shared. The omission looks like an
+oversight and carries a comment saying it is not — **don't "fix" it.**
+
 ## Testing Requirements
 
 - Local Solr instance — **see `Docs/LOCAL_SOLR_SETUP.md`** (Solr 9.6.1, cloud mode, configsets from [bv-brc/bv-brc-solr](https://github.com/bv-brc/bv-brc-solr)). `tests/README.md`'s pointer to `PATRIC3/patric_solr` is stale: that repo is archived and Solr 5.3-era.
@@ -250,6 +623,208 @@ curl -X POST http://localhost:3001/test/distributed-query \
 ### Network Requirements
 
 The distributed query system requires direct network access to all Solr shard replicas. If some hosts are inaccessible, use `excludeNodes` to filter them out. Each shard must have at least one accessible replica.
+
+### Shard pages are POSTs — do not convert them back to GET
+
+`ShardCursorStream` sends each cursor page as a **POST with a form-encoded body**. It was the
+last GET in the subsystem carrying a user-sized filter, and that broke `terms()`:
+
+- An RQL `terms()`/`in()` clause over a few hundred feature ids crosses Jetty's default
+  **`requestHeaderSize` of 8192 bytes**. The shard answers **`414 URI Too Long`**.
+- The client sees **HTTP 200 with a one-byte body, `[`** — `media/json.js` writes the opening
+  bracket before the first document arrives, so no mid-stream shard failure can change the
+  status code. Same empty-200-on-failure class as the streaming-`sort()` and shard-failure
+  defects documented elsewhere in this file.
+- Measured ceiling ≈ **148 feature ids** (~55 bytes each). Verified after the fix: 3000 ids,
+  a **166 KB** `fq` (~20× the old ceiling), returns 2,338,240 bytes byte-identical to the
+  standard path.
+
+Two traps if you touch `_buildQueryParams`:
+
+- **Parse the caller's fragment, don't concatenate it.** `URLSearchParams` decodes it exactly
+  as Solr decodes a query string (`+`→space, `%XX`→byte) and re-encodes it for the body, so
+  Solr local params like `{!terms f=x}` and values containing spaces survive intact.
+- **`append()`, not `set()`, for caller params, and only default `q=*:*` when the caller has
+  none.** Repeated `fq=` must all survive, and an unconditional `q=*:*` produces a duplicate
+  `q=` and an empty result set when the RQL constraint landed in `q=` rather than `fq=`.
+
+This bug only bites where `distributedQuery.enabled` is true. Production sets it `false`, and
+`in()` never reached the path at all — `Limiter.detectFixedIdCount` caps a fixed-id query's
+limit to `idCount + 10`, dropping it below `minLimitThreshold` (10000). `feature_sequence` is
+likewise immune because it is not in `enabledCollections`.
+
+`terms()` used to be the exception that let a user-sized filter through; as of the
+`detectFixedIdCount` change it is capped the same way, so **nothing in normal use reaches this
+code path with a large filter any more**. That makes the gate below the only thing holding the
+regression down — do not delete it on the grounds that the bug is unreachable.
+
+Gate: `tests/test-distributed/test.shardcursor-post.spec.js` (9 tests, fully offline against a
+stub Solr; all 9 fail against the pre-change module).
+
+### The merge comparator must match Solr's byte order, not ICU collation
+
+**`MinHeap.compareUtf8` exists because `localeCompare` silently misordered sorted distributed
+results.** Solr sorts string fields on their indexed BytesRef, which Lucene compares as
+**unsigned UTF-8 bytes**. `localeCompare` is ICU collation and orders by base letter, ignoring
+case at the primary level, so the two disagree: ICU puts `misc_feature` before `misc_RNA`,
+Solr puts `misc_RNA` first (`R` 0x52 < `f` 0x66).
+
+That only matters because each shard arrives **already sorted by Solr** — `MergeSortStream`'s
+k-way merge is only correct if its comparator agrees with the order its inputs came in.
+Disagreement interleaves correctly-sorted shards into a wrongly-ordered output. A live
+`sort(+feature_id)&limit(25000)` returned **7 out-of-order positions** in 25,000 rows against
+a monotonic standard-path response.
+
+Anything comparing sort-field values must go through `MinHeap.compareUtf8`. It is not simply
+`Buffer.compare`: JS `<` is UTF-16 code-unit order, which is *identical* to UTF-8 byte order
+for any string without a surrogate pair, so the common case is handled natively and only
+strings carrying a supplementary character fall back to an explicit byte compare. That
+matters — `Buffer.compare` on every comparison measured **10× slower than the `localeCompare`
+it replaces** (1071 vs 107 ns), while the guarded form is 123 ns, i.e. free. The fallback is
+not decorative: UTF-8 sorts supplementary characters above all BMP code points, whereas their
+UTF-16 surrogates (0xD800–0xDBFF) fall below the 0xE000–0xFFFF range, so plain `<` gets emoji
+vs. private-use characters backwards.
+
+Verified live after the fix, distributed vs standard path, **byte-identical documents** in
+every case: `sort(+feature_id)`, `sort(+feature_type)` (the field carrying the
+`misc_RNA`/`misc_feature` collision), `sort(+product)` (free text), a descending sort, and a
+3000-id `terms()` filter combined with a mixed-case sort. Each previously had out-of-order
+positions or, for the last, failed outright.
+
+Gate: the `compareUtf8` and mixed-case cases in `tests/test-distributed/test.minheap.spec.js`
+(6 tests, offline; all 6 fail against the pre-change comparator, and the 23 pre-existing tests
+in that file pass either way — none of them encoded the ICU behavior).
+
+Note this fix does **not** touch missing-value ordering. `fieldComparator` sorts
+`null`/`undefined` last on ascending, which is Solr's `sortMissingLast` behavior but not its
+universal default; if a sorted distributed query ever disagrees with the standard path on rows
+missing the sort field, that is where to look.
+
+## Verifying the overload protections against a running server
+
+`scripts/verify-protections.js` exercises a deployment and reports which protections are
+present and working. **Run it after every deploy that touches the query path.**
+
+```bash
+node scripts/verify-protections.js https://alpha.bv-brc.org/api
+node scripts/verify-protections.js https://alpha.bv-brc.org/api --load --concurrency 10
+node scripts/verify-protections.js http://localhost:3001 --only=joins,regression
+```
+
+Read-only (every request is a query), no dependencies, exit code = number of failures.
+Groups: `admission`, `joins`, `timeouts`, `security`, `regression`, `load` (opt-in).
+
+**Why it exists: twice, a full green offline suite covered the wrong code path and the bug
+only appeared against a deployed server.** Phase 0.1 patched solrjs's `subQuery()` but not
+`query()` — the method the main data path actually uses — so every unit test passed while a
+real 429 still reached the client as a 500. Phase 1's sanitizer keyed off `req.queryType` to
+tell a client-written join from a generated one; `queryType` comes from the *content-type*,
+so **every `genome()` query 400'd on alpha**, through a suite that contained a test named for
+exactly that trap. Offline tests cannot catch a wrong assumption about the live request
+shape; this can.
+
+Two things it is careful about, both learned the hard way:
+
+- **A 200 is not success.** `regression` asserts byte counts on a streaming download,
+  because this codebase's characteristic failure is HTTP 200 with a truncated or empty body
+  (the `sort()` trap, mid-stream shard failure, the 8 KB shard-fetch ceiling). The `load`
+  group asserts every concurrent download returns an *identical* size.
+- **A Cloudflare 524 is not a protection failure.** The origin was simply slower than the
+  edge's ~100s limit, and it is intermittent — measured on alpha 2026-10-16, 10 concurrent
+  downloads produced nine 524s on one run and ten 200s minutes later. Reported as SKIP with
+  the numbers, so a transient edge timeout cannot make a healthy deployment look broken.
+
+The `load` group samples `/stats` every 250 ms while the load runs, which is the only way to
+see queue depth — it is zero before and after. With `queryAdmission.enabled: false` (the
+shipped default) that is a **dry run**: it reports what *would* have been bounded, which is
+what the pool sizes should be tuned against before enforcement is switched on.
+
+### Admission control, measured end to end (alpha, 2026-10-17)
+
+First run with `queryAdmission.enabled: true` on a real deployment. **8/8 in the `load`
+group at `--concurrency 30`:**
+
+```
+30 requests in 8.3s — 27 ok, 3 shed (429), 0 other
+Retry-After: 10        "The server is busy processing other large requests. Please retry shortly."
+median shed latency 0.99s
+peak heavy active=3 depth=6; peak socket queue=0
+all 27 completed downloads returned 2,850,853 bytes — identical
+```
+
+Concurrency pinned at exactly the 3-slot limit, the queue filled to its 6-deep bound,
+overflow shed in ~1 s with a valid `Retry-After`, and **no truncated-but-200 downloads**.
+The socket queue stayed empty throughout, which is the point of keeping the admission pool
+smaller than `maxSockets` (3 vs 8): admitted work never waits on the agent.
+
+**`--concurrency 12` is not enough to shed, and that is not a failure.** A download finishes
+in ~4 s, so 12 requests drain through 3 slots + 6 queue without the queue ever filling —
+the run reports 23/24 with "all 12 admitted". The harness says so in the failure text. Use
+**30** to demonstrate shedding.
+
+**Which pool a request lands in decides whether the website ever sees a 429**, and the split
+is deliberate:
+
+| pool | slots | queue | wait | what lands here |
+|---|---|---|---|---|
+| `heavy` | 3 | 6 | 10 s | `http_download=true`, `call_method=stream`, `rows>=10000` |
+| `interactive` | 20 | 20 | 1 s | grid pages, facets, single gets — everything else |
+
+The harness issues **only heavy downloads**, so it saturates `heavy` and leaves
+`interactive` untouched (`rejected_*` stayed 0 on every run). A user browsing grids during
+the load sees nothing; a user clicking ~10 downloads at once gets shed. That is the intent —
+shed the amplifier, keep the UI alive. Exercising the website's 429 path on *ordinary* grid
+traffic needs >40 concurrent queries or a Solr slow enough to blow the 1 s queue deadline;
+temporarily lowering `interactiveMaxConcurrent`/`interactiveMaxQueue` is far more reliable
+than trying to generate that by hand.
+
+**Pool state is per worker, and alpha runs THREE workers — so the table above is per
+worker, not per deployment.** Confirmed 2026-10-29. Effective cluster-facing limits on
+alpha are **heavy 9 slots / 18 queue** and **interactive 60 / 60**, i.e. slots × workers.
+
+`default_pm2_config.js` (tracked) says `instances: 1`, so the worker count comes from an
+untracked deployment override — the same pattern as `p3api.conf`. **Do not infer the
+worker count from the tracked config.** Measure it:
+
+```bash
+# distinct pids across repeated calls = worker count
+for i in $(seq 1 8); do curl -s $BASE/stats | python3 -c 'import json,sys; print(json.load(sys.stdin)["pid"])'; done | sort -u
+```
+
+Two consequences that bite immediately:
+
+- **`/stats` is a per-worker sample, not a deployment view.** Whichever worker answers
+  reports only its own pools, so a single reading showing `heavy.active=0` means nothing
+  — a download may be saturating a different worker. Repeated samples appear to
+  oscillate; that is round-robin across workers, not activity changing. Any load harness
+  reading `/stats` must either aggregate across pids or be read as a lower bound.
+- **The 2026-10-17 admission measurements above were taken against one worker.** Their
+  per-pool conclusions still hold, but the deployment-level shedding threshold on a
+  3-worker alpha is 3× what that run implies.
+
+**Tuning is deliberately deferred until production runs this.** Alpha is the wrong place
+to size these: production carries heavier, currently unprotected traffic, and tuning
+against alpha's lighter load would bake in the wrong numbers. Expect to revisit
+`heavyMaxConcurrent` / `interactiveMaxConcurrent` and the worker count together — they
+multiply, so changing one without the other moves the real limit unexpectedly.
+
+### `Retry-After` must stay in `EXPOSED_HEADERS`
+
+`app.js`'s terminal error handler sets `Retry-After` on every 429 and 503 — admission
+rejections and Solr circuit-breaker trips (`SolrHttpError`) alike. It was **not** in
+`EXPOSED_HEADERS` in `util/corsOptions.js` until PR #240, so for a **cross-origin** caller
+the browser stripped it before JS could read it, silently. The client sees the 429, cannot
+see the pacing, and falls back to its own default backoff — retrying faster than the server
+asked, exactly when the cluster is already shedding.
+
+Same-origin callers were never affected: the website reaches the API through the relative
+`/api-for-website/` path and reads every header. **That asymmetry is the trap** — testing
+429 handling same-origin passes while the cross-origin path silently ignores the server's
+pacing. Note the allowlist gates *credentials, not reads*, so anonymous third-party
+consumers get the header too; they are the callers least likely to have bespoke backoff.
+
+Gate: two cases in `tests/test-security/security-cors.spec.js`, both of which fail against
+the pre-#240 list. Client-side contract: `Docs/CLIENT-429.md`.
 
 ## Trace Replay & Shakedown Testing
 
@@ -445,11 +1020,13 @@ old `p3-user` pin depended on it too. It only takes effect stacked on the p3-use
 new `p3-user` has no `forever` dependency. If you try this against an old checkout and see the
 audit numbers not move, that's why.
 
-### Future work: retire `request-promise` (the last 2 criticals)
+### Future work: retire `request-promise` (the remaining criticals)
 
-**Deferred deliberately — not an oversight.** After the p3-user repin and the `forever`
-removal, `npm audit` sits at **35 advisories, 2 critical**, and *both* criticals
-(`form-data`, `request`) come from the single `request-promise` dependency. It is deprecated
+**Deferred deliberately — not an oversight.** `npm audit` on alpha measured 2026-10-18 is
+**61 advisories: 3 critical, 29 high, 22 moderate, 7 low**, and *all three* criticals come
+from the single `request-promise` dependency. (It was 35/2 after the 2026-08-17 refresh;
+advisory counts drift upward on their own as new CVEs are published against unchanged
+versions, so re-measure rather than trusting this number.) `request-promise` is deprecated
 upstream with **no fix available**, so the only remedy is retiring it.
 
 As of pin `105a60b7`, **`request-promise` is the only reason `request` is still in the tree
@@ -509,6 +1086,62 @@ Offline suites (`test-util`, `test-join`, `test-distributed`) run without Solr o
 `ECONNREFUSED` without one. `npx eslint` reports 56 pre-existing errors on the files touched
 here; that count is unchanged by the refresh.
 
+## Outbound request timeouts — both gaps now closed
+
+The recurring failure mode in this codebase is an **outbound HTTP call with no deadline**. A
+connection that is accepted but never answered (classically a pooled keepAlive socket the far
+side has already dropped — a silent drop leaves no FIN, so the socket cannot be probed before
+use) hangs until the OS tears down the TCP session. Measured at ~166s in
+`Docs/GENBANK_DOWNLOAD_PERFORMANCE.md`; Cloudflare's ~100s origin limit fires first, so the
+user sees a **524** while the worker still holds a socket slot.
+
+PR #203 added `SOLR_REQUEST_TIMEOUT_MS` (default 120000) to the main data path.
+`middleware/APIMethodHandler.js` builds all its Solr clients through `makeSolrClient()` so no
+path can miss it, and `armTimeout()` in `lib/solrjs/index.js` now covers `query`, `get`,
+`getSchema`, and the streaming path (previously only `query` honored `this.timeout`).
+
+**Two gaps were found, both verified by experiment 2026-08-25:**
+
+1. **A socket timeout does not bound time spent queued for a socket.** `req.setTimeout` only
+   starts once the agent assigns a socket. Tested with `maxSockets: 1` against a black-hole
+   server: a request with a 2000 ms timeout was **still pending after 6000 ms**. With
+   `maxSockets: 8`, anything that slows Solr fills the pool and request 9 waits with no timer
+   running — worst case is *(unbounded queue wait) + 120s*.
+2. **`util/http.js` had no timeout mechanism at all** — not merely unset, absent. It carries
+   the Workspace API calls and all 17 self-call sites.
+
+**Both are fixed in `util/http.js` by `3fc64ead`** (step 7 of `PLAN_ELIMINATE_SELF_CALL.md`)
+with a wall-clock deadline armed at request *creation* — a plain `setTimeout`, deliberately
+**not** `req.setTimeout`, which is what makes gap 1 go away: one number covers queue wait,
+connect, TLS, write, and response body.
+
+- `HTTP_REQUEST_TIMEOUT_MS`, default 120000, matching `SOLR_REQUEST_TIMEOUT_MS`.
+- Per-call override via `options.timeout`; **`timeout: 0` disables** the deadline entirely,
+  for a caller that genuinely wants to wait.
+- Rejects with `err.code === 'ETIMEDOUT'` and destroys the request so the socket is released.
+  The message names host and path with the **query string stripped** — these reach clients,
+  and a self-call path carries the caller's filter.
+- All 10 async helpers are covered; the non-async `requestUrlForUrl` is not.
+
+Two things to preserve when touching this file. The timer must be cleared on **both** settle
+paths — mocha runs without `--exit`, so a leaked 120s timer stalls an entire suite rather
+than failing one test. And `tests/test-util/test.userAgent.spec.js:126` counts
+`'http[a-zA-Z]*':\s*async` against `withUserAgent(options` and requires the two to be equal,
+so a new helper needs both the UA merge and the deadline.
+
+Gate: `tests/test-util/test.httpTimeout.spec.js` (9 tests, fully offline — two local servers,
+no API/Solr/Redis). 8 of the 9 fail against the pre-change module. The one that matters most
+is "the deadline bounds time spent QUEUED for a socket": swap `armDeadline`'s `setTimeout` for
+`req.setTimeout` and that test hangs while the other eight still pass.
+
+**Gap 1 still applies to the Solr path.** `armTimeout()` in `lib/solrjs/index.js` remains
+`req.setTimeout`-based, so `SOLR_REQUEST_TIMEOUT_MS` does not bound queue wait. Only
+`util/http.js` has the creation-time deadline.
+
+Also note `maxFreeSockets: 0` does **not** disable pooling — Node treats `0` as unset and
+falls back to its default, so idle sockets are still retained. (Tested; an earlier note in
+this file claiming otherwise was wrong.)
+
 ## Security Notes
 
 ### SolrQuerySanitizer (`middleware/SolrQuerySanitizer.js`)
@@ -528,6 +1161,122 @@ Tests: `tests/test-security/security-solr-ssrf.spec.js`
 All JBrowse endpoints sanitize user inputs before interpolating into Solr queries:
 - `sanitizeSolrValue()` strips `& = ? # ; \ { } [ ] " ' \`` from string inputs
 - `sanitizeNumeric()` validates against `/^-?\d+(\.\d+)?$/`, returns null on failure → early 400 response
+
+### ACL fields: aggregation BLOCKED (PR #260), per-record visibility remains
+
+**Permission enforcement here is row-level only.** `DecorateQuery` appends an `fq` deciding
+*which documents* you see; nothing decides *which fields* of a visible document you may read,
+facet, or sort on. `owner`/`user_read`/`user_write` are ordinary indexed fields, so on any
+record shared with you, you can read its full ACL — including third parties.
+
+Faceting amplified that into **bulk enumeration**, because facet counts are computed over the
+whole permission-filtered DocSet rather than the returned page. Measured anonymously against
+alpha, no credentials: `eq(public,false)&limit(1)&facet((field,user_read),(mincount,0))`
+returned **100 account names** (the default facet limit; `facet.limit=-1` yielded **30,513**).
+A ranked facet is also a collaborator graph.
+
+**Fixed 2026-10-29 by PR #260** — `SolrQuerySanitizer` now 400s any query naming an ACL field
+as the value of `facet.field`, `facet.pivot`, `facet.range`, `facet.interval`, `group.field`,
+`sort`, or `stats.field`. Verified live on alpha: the original vector, the `facet.limit=-1`
+form, and a raw Solr-format body (which bypasses `RQLQueryParser` entirely) all 400.
+
+Three things not to "tidy" later:
+
+- **Matching is anchored, not substring.** Values are lists or decorated
+  (`facet.pivot=a,b`, `sort=f asc,g desc`, `facet.field={!ex=dt}owner`), so a whole-value
+  compare under-matches while a bare substring would reject `owner_institution`,
+  `downer_count`, `user_read_count`. Half of `tests/test-security/security-acl-aggregation.spec.js`
+  (40 cases) is must-still-pass cases guarding that.
+- **`fl` is deliberately NOT blocked.** Projection returns the field only for rows already
+  visible, and owners must be able to read their own ACLs.
+- **ACL fields as filter terms still work** — blocking them would break sharing, and it is
+  not the scaling vector.
+
+**Still open:** per-record ACL visibility and the targeted `eq(user_read,<user>)`
+existence oracle. Closing those is field-level projection filtering (Option B in the doc) —
+a new concern for this codebase and much larger. What shipped removes the part that *scales*.
+
+Keep this in mind when designing anything that aggregates over private collections — see the
+same row-level-vs-DocSet property in `PLAN_PRIVATE_METADATA_OVERLAY.md`.
+
+### `/admin` — local-only operational endpoints (PR #261, #262)
+
+`routes/adminRouter.js` behind `middleware/adminGate.js`. **Ships disabled**; every route
+404s (not 403 — a disabled surface should not advertise itself) until `p3api.conf` carries:
+
+```json
+"admin": { "enabled": true, "token": "<a long random string>" }
+```
+
+Two independent factors, both required: a **loopback peer socket address** and
+`X-Admin-Token`.
+
+- **Reads `req.socket.remoteAddress`, never `req.ip` or `X-Forwarded-For`.** A TCP peer
+  cannot be forged off-path; headers can. `req.ip` coincides today only because no
+  `trust proxy` is set — reading the socket directly stops a future config change silently
+  turning this into a header check. Note `app.js:77`'s log token *prefers* `x-forwarded-for`,
+  so **the access log is not evidence of origin**.
+- **Sound only because nginx runs on a separate host.** Colocating nginx would make every
+  proxied request loopback and open the gate silently. That is why the token exists, and
+  why port 13001 being reachable off-host matters.
+- **Fails closed**: enabled with no token → 403, no peer address → 403.
+
+**The trap: this host reaches itself over its PUBLIC address.** `netstat` on alpha shows
+many `140.221.39.6:13001 ← 140.221.39.6:*` connections. On-host is not loopback — admin
+callers must use `127.0.0.1` explicitly or get a 403.
+
+**Refresh overwrites; it never deletes.** `apicache` does **no request coalescing** (no
+inflight/pending/lock in the module), so every concurrent miss runs the handler
+independently. Deleting a key opens a hole lasting the entire fill — **22.9 minutes** for
+taxon 10239 — during which each arriving request starts its own recomputation. That is
+strictly worse than doing nothing, and on failure the key is already gone. So the endpoint
+fetches with `X-Apicache-Bypass` (honoured at `apicache.js:602`, skipping read *and* write)
+and then writes the result itself; a non-200 leaves the previous value intact.
+
+**It names an operation, not a path.** `REFRESHABLE` maps `summary_by_taxon` to a key
+template plus an id validator. An earlier draft took `/cache/refresh/*` and self-fetched
+whatever path the caller supplied — a request-forgery primitive that would fetch any
+loopback route, `/admin` included, and store the result under a caller-chosen key.
+
+**No `client.connected` precheck.** `createClient()` connects asynchronously and the client
+is lazy, so such a check is false for the first few milliseconds — every worker 503'd its
+first admin request, which with 3 workers meant the first three taxa of a run. node_redis
+2.x queues commands until ready, so the command is issued directly and a real failure
+surfaces as the actual error (`NOAUTH` says `NOAUTH`).
+
+### Cache warming (`scripts/warm-taxon-summaries.sh`)
+
+**Cron at 01:30, and the TTL on the three cached `/data` endpoints is 26 hours, not 24.**
+Equal periods mean the schedule races its own expiry whenever a run is late — and losing
+that race costs a user the full fill. The 2 h margin is only consumed when a run overruns.
+`CACHE_TTL` in `routes/dataRouter.js`; **keep it strictly greater than the cron interval.**
+
+**The warmer used to do nothing, and reported success.** A plain GET of an already-cached
+URL is a hit, and `apicache` sets the TTL only on a *write* (`:140`) while a hit returns at
+`:649` before any handler runs — reads never extend an entry. The 2026-10-29 run reported
+`done in 4 min, 1 failure(s)` having refilled nothing; cached vs cold for the same taxon
+measured 0.16 s vs 56.0 s. It now calls `/admin/cache/refresh/...` instead, reads the token
+from `p3api.conf` (one copy of the secret; nothing in the crontab), and counts a
+suspiciously fast refresh as a failure.
+
+Complete `--top6` run after the fixes — **`53 min, 0 failure(s), 0 suspiciously fast`**:
+
+| taxon | genomes | time |
+|---|---|---|
+| 2 Bacteria | 1.38M | 77 s |
+| 10239 Viruses | 14.9M | **1373 s** (22.9 min) |
+| 11308 Orthomyxoviridae | 2.2M | 124 s |
+| 2955291 A. influenzae | 2.0M | 103 s |
+| 2697049 SARS-CoV-2 | 9.4M | 796 s |
+| 11118 Coronaviridae | 9.5M | 719 s |
+
+All four spot-checked taxa returned counts **identical to production**, so the hand-rolled
+cache write round-trips correctly through apicache's read path.
+
+**Four of the six exceeded Cloudflare's ~125 s budget.** Most of this list is impossible
+through the public URL at any speed, not merely slower — taxon 11118 returned 524 on alpha
+*and* production and could not be warmed by any means before. **This is why the refresh must
+run over loopback**; do not "simplify" it onto the public hostname.
 
 ### Other security fixes
 
@@ -754,7 +1503,8 @@ All `require('solrjs')` calls now use `require('../lib/solrjs')`. Do NOT add sol
 
 ### RQL `terms()` operator
 
-The `terms(field,(val1,val2,...))` operator generates a Solr `{!terms f=field}val1,val2,...` filter query. This uses Solr's hash-set-based terms filter which is much more efficient than the boolean OR tree generated by `in()` for large value lists (hundreds+ values).
+The `terms(field,(val1,val2,...))` operator generates a Solr
+`{!terms f=field cache=false}val1,val2,...` filter query. This uses Solr's hash-set-based terms filter which is much more efficient than the boolean OR tree generated by `in()` for large value lists (hundreds+ values).
 
 ```
 # Efficient — uses {!terms} hash filter
@@ -764,7 +1514,172 @@ terms(genome_id,(123.456,789.012,345.678))
 in(genome_id,(123.456,789.012,345.678))
 ```
 
-Use `terms()` instead of `in()` when the value list is large. The `terms()` output goes into an `&fq=` parameter (cached by Solr's filter cache) rather than into the main `&q=` query.
+Use `terms()` instead of `in()` when the value list is large. The `terms()` output goes into an `&fq=` parameter rather than into the main `&q=` query. It is marked `cache=false` — see "Vacating `q=` is the real cost" below; that is load-bearing, not a micro-optimization.
+
+#### The win is `fq` vs `q`, not hash-set vs boolean
+
+The rationale above ("hash-set filter beats the boolean OR tree") is **mostly wrong about the
+mechanism**, though the conclusion holds. Measured 2026-09-03 against the production cluster,
+direct to Solr, POST, **`rows` held constant** and a **fresh id list per repetition** so
+nothing hits the filterCache (min-of-3 QTime ms, `genome_feature`/`feature_id`):
+
+| n | `in()` → `q=` bool | `{!terms}` → `fq=` | `{!terms cache=false}` → `fq=` | bool → `fq=` |
+|---|---|---|---|---|
+| 100 | 47 | 33 | 50 | 32 |
+| 500 | 152 | 71 | 71 | 80 |
+| 1500 | 299 | 169 | 158 | 172 |
+| 5000 | 925 | 479 | 393 | 357 |
+
+Read the last column against the second: a **boolean OR in `fq` is as fast as `{!terms}`**, and
+at n=5000 it is faster. Nearly all of `terms()`'s advantage over `in()` comes from the clause
+landing in `fq` (a filter, unscored, no `maxScore` bookkeeping) instead of `q` (scored across
+every matching doc). The hash set is close to a wash against Lucene's own boolean rewrite.
+
+Practical consequence: **the same benefit is available to `in()`** by emitting it into `fq`
+when the query needs no scoring — a cheaper change than pushing callers onto a second
+operator. Not implemented. Note that `detectFixedIdCount` would need the matching pattern
+change in the same commit, exactly as it did for `terms()` (see below).
+
+#### Vacating `q=` is the real cost — hence `cache=false`
+
+**List size is not the main variable; whether the id list is the *only* clause is.** This came
+from an external harness
+(`p3_core/t/client-tests/p3-rql-terms-bench.pl`) and it is correct — reproduced here on the
+production cluster. `terms()` moves the id list to `fq` and leaves whatever else the client
+sent as the entire scored query:
+
+```
+in(feature_type,(mat_peptide,CDS)) & in(feature_id,(6000 ids))
+  -> q=(feature_type:(...)) AND (feature_id:(a OR b ...))   one boolean; Solr leads
+                                                            with the selective id clause
+in(feature_type,(mat_peptide,CDS)) & terms(feature_id,(6000 ids))
+  -> q=(feature_type:(...))   fq={!terms f=feature_id}...   scores ~the whole core,
+                                                            filters afterwards
+```
+
+Their measurement, `patric_id` over 6053 ids: alone `0.86×` (terms faster), plus
+`in(feature_type,...)` `1.65×` (terms slower). Two `P3DataAPI` call sites send exactly this
+shape — `retrieve_protein_feature_sequence` and `retrieve_nucleotide_feature_sequence` both
+carry `in(feature_type,...)`.
+
+Their proposed fix was to move the *remaining* clauses to `fq` too. Measured, it helps but
+does not win. `cache=false` on the terms filter does (production cluster, 6000 ids +
+`feature_type:(mat_peptide OR CDS)`, `rows` held constant, min-of-2 QTime):
+
+| variant | QTime |
+|---|---|
+| both as `in()` → one boolean in `q=` | 2418 ms |
+| `terms()` as we emitted it (cached filter) | 3952 ms |
+| **`terms()` with `cache=false`** | **676 ms** |
+| move both clauses to `fq` (their proposal) | 3005 ms |
+| terms in `q=`, type clause to `fq` | 3200 ms |
+
+Caching the filter makes Solr materialize its DocSet up front and then drive iteration from
+the scored query. Uncached, the terms query is an ordinary scorer inside the intersection and,
+being far more selective, **leads** it — which is the whole win, and it is bigger than the
+one available by relocating clauses. Note the cached figure does **not** improve on a repeat of
+the same id list: the cost is the scoring, not building the filter, so a filterCache hit does
+not rescue that shape.
+
+Standalone (no co-occurring clause) the two are a wash — 33/31, 74/80, 178/174 ms at
+n=100/500/1500, min-of-5, fresh id list per rep — so this gives up nothing in the simple case
+and it stops one-shot id lists from evicting reusable entries from the filterCache. An earlier
+note here read a 50-vs-33 sample as evidence against a blanket `cache=false`; that was noise.
+
+Emitted by `lib/solrjs/rql.js`; gate is `tests/test-util/test.rql-terms-cache.spec.js` (6 tests,
+offline; 4 fail against the pre-change emitter). The remaining trade is a client that re-sends
+an identical `terms()` filter while paging — that pays for the cache. No such caller exists
+today: the web grid pages with `in()`, and `terms()` must be written explicitly.
+
+**The other `{!terms}` emitters are deliberately unchanged.** `media/genbank.js:136`,
+`rpc/transcriptomicsGene.js:233,253` and `lib/distributed/DirectSolrClient.js:280` all pair
+their filter with `q=*:*`, so there is no scored query for the filter to lose a race against
+and the degradation mechanism does not apply.
+
+**A client-supplied Solr-format `{!terms}` does not get `cache=false`, and that gap is real.**
+`RQLQueryParser` returns early for `queryType === 'solr'` (`:68`), and neither
+`SolrQuerySanitizer` nor `SolrQueryParser` touches `fq` at all (zero `terms` references in
+either). So a request sent as `application/solrquery+x-www-form-urlencoded` carrying its own
+`fq={!terms f=…}` keeps Solr's default *cached* filter, and if it also carries a scored `q=`
+it lands on the slow shape above. Left alone on purpose: rewriting an explicit client local
+param is a different call from choosing what our own emitter produces, and a client paging
+with a repeated identical filter genuinely wants the cache. Nothing in-tree is affected —
+the four emitters above bypass this chain and all pair with `q=*:*`.
+
+**Routing is *not* part of that gap.** `detectFixedIdCount`'s pattern is
+`\{!terms\b([^}]*)\}` — the cache directive is deliberately not required, pinned by
+"recognizes the filter without the cache directive" in
+`tests/test-util/test.limiter-terms.spec.js`. A bare Solr-format
+`fq={!terms f=feature_id}a,b,c,d,e` with `rows=25000` still comes out of `Limiter` at
+`rows=15`, hence still below `minLimitThreshold`, hence still on the standard path.
+
+#### The reported small-list slowdown was the distributed path, not `terms()`
+
+The same external report measured `terms()` **2.3× slower at n=100**, shrinking to parity at a
+crossover around 15k values on `genome_feature`, and hypothesized per-request overhead in the
+`fq` construction. **That hypothesis is wrong, and the numbers are real** — the cause is on our
+side but it is not `terms()`.
+
+The harness runs against **alpha, which sets `distributedQuery.enabled: true`**; production and
+this dev config set it `false`, which is why it did not reproduce locally at first. `P3DataAPI`
+sends `limit(25000)` on every `query_cb` (`chunk_size`). So:
+
+- `in()` is caught by `Limiter.detectFixedIdCount` and capped to `rows = idCount + 10` — below
+  `minLimitThreshold` (10000) — and takes the **standard** path.
+- `terms()` was invisible to that regex, kept `rows=25000`, and took the **distributed** path.
+
+**Fixed** — `detectFixedIdCount` now recognizes both forms and the two operators get identical
+`rows`; see "`detectFixedIdCount` sees both operators" below.
+
+The two operators were never running on the same transport. Confirmed on their own endpoint:
+with `rows` held equal, `terms()` is faster there too (0.88× / 0.47× / 0.44× at n=100/500/1500);
+at `limit(25000)` it is 5.82× / 3.65× / 2.50× slower and comes back with
+`x-distributed-query: true`. The ratio shrinks with n because the distributed path's fixed
+setup cost amortizes, and at n=15000 `in()`'s capped 15010 rows also crosses the threshold, so
+both go distributed and the ratio lands at their measured 0.95×. That accounts for the
+crossover exactly.
+
+With `rows` held constant, `terms()` is faster at every size on both
+`genome_feature`/`feature_id` and `feature_sequence`/`md5`, with contiguous *and* scattered id
+lists (min-of-3 wall ms, scattered `feature_id`, `limit(n)`): 100 → 117 vs 51, 500 → 342 vs
+158, 1500 → 680 vs 355, 5000 → 2696 vs 931. Scattering the ids *widens* the gap in `terms()`'s
+favour, which is the expected direction — a boolean rewrite pays per-term dictionary seeks.
+
+Also note a best-of-N harness that reuses **one** id list lets runs 2..N hit the filterCache,
+which flatters `terms()` — that design can only understate a `terms()` loss, never invent one.
+
+#### `detectFixedIdCount` sees both operators
+
+`middleware/Limiter.js` recognizes both id-list forms and caps `rows` to `idCount + 10` for
+either:
+
+```
+in(pk,(a,b,c))     -> q= ... (pk:(a OR b OR c))
+terms(pk,(a,b,c))  -> &fq={!terms f=pk cache=false}a,b,c
+```
+
+Verified end to end (RQL → `toSolr` → `Limiter`, `genome_feature`, `limit(25000)`): at
+n=100/1500/9000/15000 both operators now emit `rows` of 110/1510/9010/15010, so both stay on
+the standard path below 15000 and both cross `minLimitThreshold` at 15000. Previously `terms()`
+held `rows=25000` at every size.
+
+Three things about the detection worth preserving:
+
+- **It is anchored to `&fq=`.** Only an `fq` is unconditionally ANDed, so only there does the
+  value count bound the result set. The `in()` pattern has no such anchor and will happily
+  match inside an `or()`, where the count bounds nothing — a **pre-existing** looseness that
+  the terms pattern deliberately does not copy.
+- **It skips a filter carrying a `separator` local param** rather than comma-counting it. The
+  emitter never sets one; skipping leaves `rows` uncapped, which is the safe direction.
+- **`cache=false` is optional to the match.** Other emitters and captured queries predate it.
+
+Note this is what exposed the 8 KB shard-fetch ceiling — a `terms()` query used to be the only
+way a user-sized `in`-style filter reached the distributed path. It no longer is, so
+`tests/test-distributed/test.shardcursor-post.spec.js` is now the only thing holding that
+regression down; see "Shard pages are POSTs" above.
+
+Gate: `tests/test-util/test.limiter-terms.spec.js` (13 tests, offline; 8 fail against the
+pre-change middleware, and the 5 that pass are the negative cases).
 
 ## Cross-Collection Joins and Query Safety
 
@@ -783,7 +1698,19 @@ Broad taxon joins (e.g., `taxon_lineage_ids:2` = all Bacteria) generate 57-93M m
 
 ### Planned fix: local join resolution
 
-Replace the Solr cross-collection join with API-side resolution using a local SQLite cache (`better-sqlite3`) of `taxon_id → genome_id` mappings, rewriting joins as `{!terms f=genome_id}` filters. See the "Eliminating Cross-Collection Joins" section in `PLAN_SOLR_OVERLOAD_PROTECTION.md`.
+Replace the Solr cross-collection join with API-side resolution, rewriting joins as
+`{!terms f=genome_id cache=false}` filters. See the "Eliminating Cross-Collection Joins"
+section in `PLAN_SOLR_OVERLOAD_PROTECTION.md` **and the corrections in
+`Docs/OVERLOAD_PROTECTION_AMENDMENT-2026-10.md`**.
+
+Measured 2026-10-12, taxon 1386 (14,317 genomes), all ids: the `{!terms}` rewrite returns
+**identical `numFound`** (129,545,777) in **769 ms** against the join's **2,447 ms** — 3.2×,
+carrying a 144 KB body. Fetching the id list from `genome` costs ~0.5 s, so **the SQLite
+cache (`better-sqlite3`) is an optimization, not a prerequisite** — build the rewrite first.
+
+`cache=false` is load-bearing here for the same reason it is on `terms()` (see "Vacating `q=`
+is the real cost" above). Note the 144 KB body depends on shard pages being POSTs; reverting
+that would break this rewrite.
 
 ## Join Enrichment System
 
@@ -857,6 +1784,7 @@ Every bug found in this feature produced a plausible-looking file with HTTP 200.
 - **Pass an explicit `rows` to `fetchByIds` for one-to-many links.** It defaults to `values.length`, assuming one target doc per key — true for md5→sequence, false for `genome_id`→contigs. A 105-contig download returned 2 records.
 - **Union serializer join keys into the target `fl`.** The FASTA serializers join to `feature_sequence` on `aa_sequence_md5`/`na_sequence_md5`, which no client `select()` would name. `JoinFieldInjector` protects the ordinary path; this path bypasses it. Missing it yields correct headers with empty sequences (`SERIALIZER_REQUIRED_FIELDS` in `CrossCollectionStream.js`).
 - **Read the source RQL from `req._originalRql`**, captured before `RQLQueryParser` rewrites `call_params[0]` against the target. `req._rawBody` only exists for `application/x-www-form-urlencoded`; relying on it dropped the filter for `rqlquery+...` requests, so the download silently resolved the *entire* source collection.
+- **Pass the real `req` to `Expander.ResolveQuery`, not `{}`.** This call site did the latter, so a source filter containing `join()`/`GenomeGroup()`/`FeatureGroup()` crashed the worker; with that guarded it would instead resolve anonymously and drop the user's own private rows. See "`ResolveQuery` needs the real `req`" above.
 - **Permission-scope every collection independently** — source, target, and each `enrichDocsChained` hop. They differ in `publicFree` status.
 
 ### Result counts are not readable from headers
