@@ -215,15 +215,21 @@ Four behaviours, each chosen deliberately:
    parameters.**
 2. **It is exclusive.** When `http_fasta_header` is present the zone parameters are
    ignored entirely, including for deciding which fields to join.
-3. **`{{` and `}}` are literal braces.**
+3. **`{{` and `}}` are literal braces.** `A{{x}}B` → `>A{x}B`; `{{{patric_id}}}` →
+   `>{fig|1.1.peg.1}`, i.e. a literal brace followed by a real reference.
 4. **Syntax errors are rejected with 400 before the response starts** — unbalanced
    braces, an empty `{}`, an empty template. This matters because an unbalanced brace is
    not a partial failure: the raw template text lands in every header in the file.
 
-**An unknown FIELD NAME is not rejected** — it renders empty. Validating a bare name
-needs the collection's Solr schema, and fetching it would add a round trip to every
-templated download for a check the caller can make once against `/:collection/fields`.
-Check your names there.
+> **An unknown FIELD NAME is NOT rejected — it renders empty and returns 200.**
+>
+> `{hostname}` (a typo of `host_name`) produces a silently truncated header, not an
+> error. Validating a bare name needs the collection's Solr schema, and fetching it
+> would add a round trip to every templated download for a check a client can make once.
+>
+> **So validating template field names against `/:collection/fields` is load-bearing
+> for any client, not a nicety.** Nothing server-side will catch a typo. Syntax errors
+> *are* caught, because checking them needs nothing but the string.
 
 ### What formatting does not do
 
