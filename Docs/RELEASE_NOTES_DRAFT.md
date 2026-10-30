@@ -1,4 +1,11 @@
-# Release notes — draft for the next major Data API update
+# Release notes — working draft (SUPERSEDED)
+
+> **Superseded by `Docs/RELEASE_NOTES_alpha_to_master.md`**, which covers the full
+> `master`→`alpha` delta measured 2026-10-30 and is the publication candidate.
+>
+> This file was the scratchpad that accumulated items as they landed. It is kept for the
+> wording of individual entries, several of which were drafted here first. Do not publish
+> from this file — its rollup section was measured at 114 commits and is stale.
 
 **Status:** working draft. Accumulate items here as work lands; edit into final copy at
 release time.
