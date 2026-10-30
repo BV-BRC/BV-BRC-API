@@ -63,12 +63,12 @@ Configured in **`lib/joinConfig.js`** (overridable via `joinEnrichment` in `p3ap
 > lived there until 2026-10-30 and meant that adding a field to `lib/joinConfig.js` had
 > no effect at all. A regression test now pins that `config.js` declares no default.
 
-All six genome-keyed collections expose the **same 37 fields** from `genome` via
+All six genome-keyed collections expose the **same 44 fields** from `genome` via
 `genome_id`:
 
 | Source collection | Joined from | Via key | Fields |
 |---|---|---|---|
-| genome_feature | genome | genome_id | the shared 35, plus `genome_name`, `taxon_id` |
+| genome_feature | genome | genome_id | the shared 42, plus `genome_name`, `taxon_id` |
 | genome_sequence | genome | genome_id | same |
 | pathway | genome | genome_id | same |
 | subsystem | genome | genome_id | same |
@@ -87,7 +87,14 @@ host_name, host_common_name, host_scientific_name, host_gender, host_age,
 phenotype, gram_stain, cell_shape, motility, sporulation, temperature_range,
   optimal_temperature, salinity, oxygen_requirement, habitat
 disease
+species, lineage, clade, h5_clade, segment, subtype, genbank_accessions
 ```
+
+**`segment` and `h5_clade` are multiValued**, as are `disease`, `other_environmental`
+and `other_clinical`. In a FASTA header a multi-valued field renders **comma-joined**
+and that is not configurable — so a client parsing a header on commas cannot tell a
+multi-valued field from two single-valued ones. Request CSV or JSON if the distinction
+matters.
 
 **`genome` itself has no join config, and that is correct** — its own fields already
 include all of this, so a `genome`→`genome` join would be a no-op and would list every

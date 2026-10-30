@@ -307,3 +307,36 @@ describe('FASTA description delimiter', function () {
     assert.include(createFastaHeaderFormatterFromRequest(req)(doc), 'ABC transporter ~ K-12')
   })
 })
+
+/**
+ * Multi-valued joinable fields.
+ *
+ * `segment` and `h5_clade` are the first multiValued fields added to the shared set
+ * since `disease`/`other_clinical`. They render comma-joined by getFieldValue(), which
+ * is NOT configurable -- worth pinning, because a client parsing a header on commas
+ * cannot distinguish a multi-valued field from two single-valued ones.
+ */
+describe('multi-valued genome metadata fields', function () {
+  const { GENOME_METADATA_FIELDS } = require('../../lib/joinConfig')
+  const { createFastaHeaderFormatter } = require('../../util/fastaHeaderFormatter')
+
+  it('exposes the influenza typing and taxonomy fields', function () {
+    for (const f of ['species', 'lineage', 'clade', 'h5_clade', 'segment', 'subtype',
+      'genbank_accessions']) {
+      assert.include(GENOME_METADATA_FIELDS, f)
+    }
+  })
+
+  it('renders a multi-valued field comma-joined', function () {
+    const doc = { patric_id: 'P', segment: ['4', '6'], h5_clade: ['2.3.4.4b'] }
+    assert.equal(
+      createFastaHeaderFormatter({ template: '{patric_id} {segment} {h5_clade}' })(doc).trim(),
+      '>P 4,6 2.3.4.4b')
+  })
+
+  it('renders a single-element array without brackets or quotes', function () {
+    // Real data: most segment/h5_clade values are single-element arrays.
+    const doc = { patric_id: 'P', segment: ['4'] }
+    assert.equal(createFastaHeaderFormatter({ template: '{segment}' })(doc).trim(), '>4')
+  })
+})
