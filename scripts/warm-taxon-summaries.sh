@@ -66,26 +66,42 @@
 # `ps` output and cron mail. The path is derived from this script's own location, so the
 # job does not depend on cron's working directory.
 #
-# MEASURED, complete --top6 run on alpha 2026-10-29 (loopback, post-#262).
-# "### done in 53 min, 0 failure(s), 0 suspiciously fast":
+# MEASURED, first full unattended cron run, alpha 2026-10-30 01:30.
+# "### done in 68 min, 0 failure(s), 0 suspiciously fast" -- all 22 refreshed:
 #
-#     taxon 2       Bacteria          1.38M genomes      77 s
-#     taxon 10239   Viruses           14.9M            1373 s   (22.9 min)
-#     taxon 11308   Orthomyxoviridae  2.2M              124 s
-#     taxon 2955291 A. influenzae     2.0M              103 s
-#     taxon 2697049 SARS-CoV-2        9.4M              796 s
-#     taxon 11118   Coronaviridae     9.5M              719 s
+#     10239   Viruses            1516 s  (25.3 min)    11646  Lentivirus         58 s
+#     2697049 SARS-CoV-2          841 s                3418650 L. humimdef1      54 s
+#     11118   Coronaviridae       727 s                11050  Flaviviridae       22 s
+#     11320   Influenza A         131 s                1239   Bacillota          19 s
+#     11308   Orthomyxoviridae    119 s                543    Enterobacteriaceae 18 s
+#     2955291 A. influenzae       104 s                3151693 Bunyaviricetes    17 s
+#     197911  Alphainfluenzavirus 104 s                2732541 Reovirales        15 s
+#     11676   HIV-1                80 s                12058  Picornaviridae     14 s
+#     2       Bacteria             82 s                11102  Hepacivirus        13 s
+#     3052230 Hepacivirus hominis  12 s                2497574 Monjiviricetes    12 s
+#                                                      10912  Rotavirus           7 s
+#                                                      12059  Enterovirus         7 s
 #
-# 53 min for six, so the full 22 should fit comfortably in the overnight window. That is
-# why the cron entry is 01:30 — off-peak, clear of the hourly ingest at the top of each
-# hour, and finishing long before the 26 h TTL on the previous day's entries expires.
+# THE DISTRIBUTION IS HEAVILY SKEWED and that is the thing to know before touching the
+# schedule: three taxa (10239, 2697049, 11118) are 78% of the fill time, while eleven
+# finish in under 25 s. Trimming the tail would save almost nothing; runtime is set
+# almost entirely by the three giants. Total fill is 3972 s (66.2 min) against 68 min
+# wall clock -- the remainder is PAUSE plus the per-taxon date_inserted probe.
 #
-# FOUR OF THE SIX EXCEEDED CLOUDFLARE'S ~125 s BUDGET, and 1373 s is eleven times it.
+# 68 min finishing ~02:38 leaves a wide margin against the 26 h TTL on the previous
+# day's entries (~03:30). The 01:30 slot also lands AFTER the hourly ingest rather than
+# racing it -- taxon 10239's newest genome that night was 01:02.
+#
+# Watch 10239 as a trend: 1373 s on 2026-10-29, 1516 s on 2026-10-30 (+10%). Still far
+# inside the 3600 s per-taxon TIMEOUT, but it is the one taxon whose growth could
+# eventually matter.
+#
+# FOUR OF THE 22 EXCEEDED CLOUDFLARE'S ~125 s BUDGET, and 1516 s is twelve times it.
 # These fills are not merely faster over loopback, most of this list is impossible
 # through the public URL at any speed. Taxon 11118 is the proof: it returned 524 on
 # alpha AND production and could not be warmed by any means before this.
 #
-# All four taxa spot-checked after the run returned counts IDENTICAL to production, so
+# Every taxon spot-checked after a run has returned counts IDENTICAL to production, so
 # the entries this script writes are correct, not merely present.
 #
 # Exit status is the number of failures, so cron mail is actionable. A refresh that fails
