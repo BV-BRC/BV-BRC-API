@@ -242,3 +242,68 @@ describe('streamWithBackpressure first-document handoff', function () {
     assert.equal(res.body, 'c1\nc2\n', 'no contig may be lost to a double skip')
   })
 })
+
+/**
+ * http_fasta_description_delimiter.
+ *
+ * The description zone was the only one with a hardcoded separator — a single space —
+ * so a multi-field description was unparseable whenever a value contained a space,
+ * which most do (`host_name` is literally "Human, Homo sapiens").
+ *
+ * THE DEFAULT MUST NOT CHANGE. The community already parses these headers with their
+ * own tooling, so every existing request has to produce byte-identical output; this is
+ * purely additive.
+ */
+describe('FASTA description delimiter', function () {
+  const { createFastaHeaderFormatter } = require('../../util/fastaHeaderFormatter')
+
+  const doc = { patric_id: 'fig|1.1.peg.1', product: 'ABC transporter', strain: 'K-12' }
+  const fmt = (o) => createFastaHeaderFormatter(
+    Object.assign({ idFields: ['patric_id'], contextFields: [] }, o))(doc).trim()
+
+  it('defaults to a single space — existing headers are unchanged', function () {
+    assert.equal(fmt({ descriptionFields: ['product', 'strain'] }),
+      '>fig|1.1.peg.1| ABC transporter K-12')
+  })
+
+  it('honours a custom delimiter', function () {
+    assert.equal(fmt({ descriptionFields: ['product', 'strain'], descriptionDelimiter: ' | ' }),
+      '>fig|1.1.peg.1| ABC transporter | K-12')
+  })
+
+  it('honours a tab', function () {
+    assert.include(fmt({ descriptionFields: ['product', 'strain'], descriptionDelimiter: '\t' }),
+      'ABC transporter\tK-12')
+  })
+
+  it('honours an EXPLICITLY EMPTY delimiter rather than falling back', function () {
+    // Mirrors the id/context delimiters, which use `!== undefined` for this reason.
+    assert.equal(fmt({ descriptionFields: ['product', 'strain'], descriptionDelimiter: '' }),
+      '>fig|1.1.peg.1| ABC transporterK-12')
+  })
+
+  it('still skips empty values rather than emitting a bare delimiter', function () {
+    const sparse = { patric_id: 'x', product: 'ABC transporter', strain: '' }
+    const out = createFastaHeaderFormatter({
+      idFields: ['patric_id'],
+      contextFields: [],
+      descriptionFields: ['product', 'strain'],
+      descriptionDelimiter: '~'
+    })(sparse).trim()
+    assert.equal(out, '>x| ABC transporter', 'no trailing delimiter for a missing value')
+  })
+
+  it('is read from the request like the other delimiters', function () {
+    const { createFastaHeaderFormatterFromRequest } = require('../../util/fastaHeaderFormatter')
+    const req = {
+      call_collection: 'genome_feature',
+      fastaParams: {
+        http_fasta_id_fields: 'patric_id',
+        http_fasta_description_fields: 'product,strain',
+        http_fasta_description_delimiter: ' ~ ',
+        http_fasta_context_fields: ''
+      }
+    }
+    assert.include(createFastaHeaderFormatterFromRequest(req)(doc), 'ABC transporter ~ K-12')
+  })
+})
