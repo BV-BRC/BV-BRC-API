@@ -219,3 +219,8 @@ module.exports = function (req, res, next) {
       return streamQuery(req, res, next)
   }
 }
+
+// Exported so routes/dataType.js's /fields endpoint can read a collection schema
+// through the same configured client (TLS, agents, SOLR_REQUEST_TIMEOUT_MS) rather
+// than building a second one that would drift.
+module.exports.makeSolrClient = makeSolrClient
