@@ -137,10 +137,16 @@ describe('genome_sequence join config', function () {
   const { DEFAULT_JOIN_CONFIG, GENOME_METADATA_FIELDS } = require('../../lib/joinConfig')
 
   it('offers the metadata set — it was reporting 0 enriched fields', function () {
+    // `segment` is excluded ON PURPOSE: contigs carry their own, and joining the
+    // genome's value over it silently replaced "6" with the genome's whole segment
+    // list (reported from beta 2026-11-02). See tests/test-join/
+    // test.native-field-shadowing.spec.js.
     const fields = DEFAULT_JOIN_CONFIG.collections.genome_sequence.joinableFields
-    for (const f of GENOME_METADATA_FIELDS) {
+    const expected = GENOME_METADATA_FIELDS.filter((f) => f !== 'segment')
+    for (const f of expected) {
       assert.property(fields, f)
     }
+    assert.notProperty(fields, 'segment', 'native on genome_sequence; must not be joined')
   })
 
   it('does NOT add a self-join config for `genome`', function () {
