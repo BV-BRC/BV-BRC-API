@@ -36,7 +36,7 @@ GET /genome_feature/fields
     { "name": "host_name",  "label": "Host Name",  "source": "enriched",
       "from": "genome", "via": "genome_id", "hops": 1 }
   ],
-  "counts": { "total": 81, "native": 46, "enriched": 35 }
+  "counts": { "total": 88, "native": 46, "enriched": 42 }
 }
 ```
 
@@ -63,17 +63,26 @@ Configured in **`lib/joinConfig.js`** (overridable via `joinEnrichment` in `p3ap
 > lived there until 2026-10-30 and meant that adding a field to `lib/joinConfig.js` had
 > no effect at all. A regression test now pins that `config.js` declares no default.
 
-All six genome-keyed collections expose the **same 44 fields** from `genome` via
-`genome_id`:
+All six genome-keyed collections are **configured with the same 44 joinable fields**
+from `genome` via `genome_id` — the 42 shared metadata fields below plus `genome_name`
+and `taxon_id`.
 
-| Source collection | Joined from | Via key | Fields |
+**What a client actually sees is slightly fewer, and that is correct.** A field that is
+also *native* to the collection is reported once, as native, because the native value
+wins. Measured against the live API:
+
+| Source collection | `/fields` total | enriched | why not 42 |
 |---|---|---|---|
-| genome_feature | genome | genome_id | the shared 42, plus `genome_name`, `taxon_id` |
-| genome_sequence | genome | genome_id | same |
-| pathway | genome | genome_id | same |
-| subsystem | genome | genome_id | same |
-| sp_gene | genome | genome_id | same |
-| genome_amr | genome | genome_id | same |
+| genome_feature | 88 | 42 | `genome_name`, `taxon_id` are native here |
+| pathway | 68 | 42 | same |
+| subsystem | 65 | 42 | same |
+| sp_gene | 76 | 42 | same |
+| genome_amr | 70 | 42 | same |
+| genome_sequence | 68 | **41** | also has a native `segment` — contigs carry their own |
+
+**Do not compute the list; read it from `/:collection/fields`.** The config count and
+the client-visible count differ for exactly this reason, and the difference is
+per-collection.
 
 The shared set (`GENOME_METADATA_FIELDS` in `lib/joinConfig.js`):
 
