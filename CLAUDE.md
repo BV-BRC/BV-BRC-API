@@ -6,31 +6,42 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 BV-BRC API (p3api) is a Node.js/Express REST API providing access to BV-BRC bioinformatics data. It acts as a gateway to Solr backends, supporting RQL (Resource Query Language) and Solr query syntax.
 
-## Branch state (2026-10-29)
+## Branch state (2026-11-02)
 
-**`upstream/alpha` is 130 commits AHEAD of `upstream/master`, 0 behind** — master is an
+**`upstream/alpha` is 161 commits AHEAD of `upstream/master`, 0 behind** — master is an
 ancestor, so the merge is a **fast-forward with zero conflicts**. This section goes stale
 fast; check with `git rev-list --left-right --count upstream/master...upstream/alpha` rather
 than trusting any sentence in it.
 
 - `upstream/master` = **`6397c6cf`** (unmoved since 2026-09-03), `upstream/alpha` =
-  **`2d535a5a`**.
-- **PR #239 (alpha → master) is still OPEN**, and its body now understates the delta:
-  it was written at 72 commits and the delta is now **130 commits, 96 files,
-  +19,057 / −301, PRs #206–#263**. Re-measure and refresh the body before merging.
-- A draft of the user-facing notes for this release is `Docs/RELEASE_NOTES_DRAFT.md`.
-  Two items need a decision before publication: whether the ACL finding ships described
-  or silent, and that concurrency figures stay out until production tuning settles.
-- **Historical note on the figures below** — they describe the state at 2026-10-18 and are
-  kept because the `package.json` reasoning is still correct. `package-lock.json` is
-  **byte-identical** between the branches; the only `package.json` delta is one line,
-  `--stack-size=65536` → `--stack-size=7000` (65536 exceeded the OS thread stack, so V8's
-  guard never fired and deep recursion segfaulted the worker instead of throwing
-  `RangeError`). Body carries the deployment checklist; re-measure the counts before merging
-  if alpha has moved again.
+  **`bec12ba9`**.
+- **PR #239 (alpha → master) is the ONLY open PR**, carrying **161 commits, 119 files,
+  +22,178 / −34,479, 59 merged PRs (#206–#280)**.
+  - **The large deletion count is not churn.** 33k of it is the retired download bundler
+    and its fixtures (`tests/test-download/83332.12/*.faa` alone is 28,590 lines);
+    excluding `package-lock.json` the code/test/doc delta is +21,933 / −34,124.
+  - **`package-lock.json` is NO LONGER byte-identical between the branches** — an earlier
+    version of this section said it was, and the claim was load-bearing for "the
+    dependabot bumps apply equally either side." Alpha removed the `archiver` tree in
+    `a89d1ae6` ("retire the download bundler") and reworked the lockfile again in #280.
+  - The only `package.json` delta besides dependencies is one line,
+    `--stack-size=65536` → `--stack-size=7000` (65536 exceeded the OS thread stack, so
+    V8's guard never fired and deep recursion segfaulted the worker instead of throwing
+    `RangeError`).
+- A draft of the user-facing notes for this release is
+  `Docs/RELEASE_NOTES_alpha_to_master.md` (the older `Docs/RELEASE_NOTES_DRAFT.md` is
+  marked superseded). Two items need a decision before publication: whether the ACL
+  finding ships described or silent, and that concurrency figures stay out until
+  production tuning settles.
+
 - Everything described in the rest of this file as "on alpha only" is still exactly that.
   **Master has none of the overload-protection work, neither worker-crash fix
   (`31a1d5ad` dataRouter, `6b1335e4` ExpandingQuery), nor the self-call elimination.**
+
+**Dependabot now targets `alpha`** (`.github/dependabot.yml`, added 2026-11-02). It used
+to default to `master`, where every bump was useless twice over: the fix was not where
+the work was, and a commit on `master` would end the fast-forward. **Dependabot reads
+that file from the DEFAULT branch only**, so it takes effect when #239 merges.
 
 **The remotes are `origin` (`olsonanl/p3_api`, personal fork, HTTPS) and `upstream`
 (`BV-BRC/BV-BRC-API`, canonical).** An earlier version of this section said the opposite —
@@ -40,13 +51,28 @@ with `--head olsonanl:<branch>`. **`gh pr edit` still does not work against this
 (`GraphQL: Projects (classic) is being deprecated`); `gh pr create` is fine, and to change a
 body afterwards use `gh api -X PATCH repos/BV-BRC/BV-BRC-API/pulls/<n> -F body=@file`.
 
-Open PRs as of 2026-10-18: **#239** (the merge, above) and **10 dependabot PRs**, all
-targeting master — #205, #209, #214, #215, #216, #217, #218, #223, #227, #233. Merge #239
-first; because the lockfile is identical on both branches the bumps apply equally either
-side and flow back to alpha on the next sync, so there is no reason to retarget them. Seven
-are transitive-only. **#216 (nodemailer 9.0.5 → 10.0.9) is a semver-major bump** and needs
-the same hand-verification 9.x got — `lib/mailer.js` uses only `createTransport` (sendmail +
-SMTP + auth + tls) and callback-style `sendMail`. Do not batch it with the rest.
+**All dependabot PRs are closed as of 2026-11-02** — #209, #214, #215, #217, #218, #223,
+#227, #233, #242, #256, #275, superseded by **#280**, one sweep against alpha.
+
+That queue should not be treated as noise, which is how an earlier version of this section
+read. **Every one of the eleven carried an advisory**, and #227 was **critical**:
+`proxy-addr` IP spoofing via an IPv4-mapped IPv6 trust subnet, in the package Express uses
+to derive client IP from `X-Forwarded-For`. (Not exploitable through
+`middleware/adminGate.js`, which reads `req.socket.remoteAddress` and never `req.ip` —
+that was deliberate, and this advisory is why it was right.)
+
+#280 measured **`npm audit` 66 → 55**, critical 3 → 2, high 25 → 18; confirmed by `npm ci`
+on alpha after deploy. The two surviving criticals are the documented ones —
+`request-promise` (deprecated upstream, no fix; retiring it is the 5-file job below) and
+`@pm2/js-api`'s pinned axios 0.21.4. **Do not run `npm audit fix --force`:** it offers
+`redis` 2.x → 4+, which removes the callback API `rpc/proteinFamily.js` and
+`routes/dataRouter.js` both use.
+
+**nodemailer 9.0.5 → ^10.1.4 (installed 10.3.1) shipped in #280** and was hand-verified
+first: `lib/mailer.js` uses only `createTransport` (sendmail + SMTP + auth + tls) and
+**callback-style** `sendMail`, all three tested against 10.3.1. Engine `>=20.0.0`; prod
+runs 22.4.1. A live send has not been exercised — worth triggering one deliberately if
+anything on alpha mails (indexer alerts go to `bvbrc-admin@lists.cels.anl.gov`).
 
 **#151 is CLOSED** (2026-10-07), not open. It proposed a `protein_structure` access-control
 filter; the premise did not hold. All 18,166 private-genome-joined `protein_structure` rows
