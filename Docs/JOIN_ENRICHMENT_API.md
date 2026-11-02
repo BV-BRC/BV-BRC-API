@@ -196,6 +196,7 @@ separate switch.
 | `http_fasta_description_delimiter` | `' '` (single space) | between description fields |
 | `http_fasta_context_fields` | per-collection | the bracketed `[...]` zone |
 | `http_fasta_context_delimiter` | `' \| '` (spaces included) | between context fields |
+| `http_fasta_strict` | `false` | with `http_fasta_header`: reject unknown field names with 400 |
 
 **An empty value is skipped entirely** — no placeholder, and no stray delimiter. A zone
 whose fields all resolve empty is omitted along with its brackets. That is why a missing
@@ -228,15 +229,39 @@ Four behaviours, each chosen deliberately:
    braces, an empty `{}`, an empty template. This matters because an unbalanced brace is
    not a partial failure: the raw template text lands in every header in the file.
 
-> **An unknown FIELD NAME is NOT rejected — it renders empty and returns 200.**
->
-> `{hostname}` (a typo of `host_name`) produces a silently truncated header, not an
-> error. Validating a bare name needs the collection's Solr schema, and fetching it
-> would add a round trip to every templated download for a check a client can make once.
->
-> **So validating template field names against `/:collection/fields` is load-bearing
-> for any client, not a nicety.** Nothing server-side will catch a typo. Syntax errors
-> *are* caught, because checking them needs nothing but the string.
+### Unknown field names: empty by default, 400 with `http_fasta_strict=true`
+
+**By default an unknown field renders empty and returns 200.** `{hostname}` (a typo of
+`host_name`) produces a silently truncated header, not an error — validating a bare name
+needs the collection's Solr schema, and fetching it on every templated download would be
+a round trip for a check most callers do not want.
+
+**Add `http_fasta_strict=true` to turn unknown names into a 400:**
+
+```
+?http_fasta_header={patric_id} {hostname}
+  -> 200, >fig|1.1.peg.1                                   (silently truncated)
+
+?http_fasta_header={patric_id} {hostname}&http_fasta_strict=true
+  -> 400, "http_fasta_header references unknown field(s): hostname.
+           See /genome_feature/fields for the fields this collection can return."
+```
+
+Strict mode validates against the same set `/:collection/fields` reports, so **joinable
+fields are accepted** (`host_name` passes even though it is not in the Solr schema) and
+**unstored fields are rejected** (they could never be returned). Dotted paths such as
+`genome_metadata.host_name` are skipped rather than guessed at. The schema is cached for
+10 minutes, so even a strict caller rarely pays the fetch.
+
+**Strict mode fails open.** If the schema cannot be fetched the request proceeds
+unvalidated rather than 400ing — it is a convenience for catching typos, not a security
+control, and a Solr blip should not break a valid download.
+
+Syntax errors (unbalanced braces, an empty `{}`) are **always** a 400, strict or not,
+because checking them needs nothing but the string.
+
+> **Clients that do not set `http_fasta_strict` should still validate against
+> `/:collection/fields`** — nothing server-side will catch a typo for them.
 
 ### What formatting does not do
 

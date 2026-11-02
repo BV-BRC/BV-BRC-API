@@ -276,9 +276,14 @@ function formatFields (doc, fields, delimiter, includeEmpty = false) {
 //    on the request path, for a check a client can make once against
 //    /:collection/fields. Syntax is checked because it needs nothing but the string.
 //
-//    CONSEQUENCE FOR CLIENTS: validating template field names against
-//    /:collection/fields is load-bearing, not a nicety. Nothing server-side will catch
-//    a typo.
+//    OPT IN with http_fasta_strict=true to get the 400. That inverts the cost: a
+//    caller who wants typo detection pays the schema fetch (cached 10 minutes), and
+//    everyone else does not. Strict mode fails OPEN if the schema is unavailable --
+//    it catches typos, it is not a security control.
+//
+//    CONSEQUENCE FOR CLIENTS NOT USING STRICT MODE: validating template field names
+//    against /:collection/fields is load-bearing, not a nicety. Nothing server-side
+//    will catch a typo for them.
 //
 // Note this makes STRUCTURE explicit but does not add escaping: values are still
 // interpolated verbatim, so a value containing the caller's own separator remains
