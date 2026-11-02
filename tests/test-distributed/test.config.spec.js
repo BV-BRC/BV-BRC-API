@@ -69,6 +69,7 @@ describe('DistributedQueryConfig', function () {
         'maxParallelism',
         'maxRetries',
         'initialRetryDelayMs',
+        'maxOverloadRetries',
         'schemaCacheTTLMinutes',
         'clusterStatusCacheTTLSeconds',
         'maxMergeSortHeapDocs',

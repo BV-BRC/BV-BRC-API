@@ -19,6 +19,12 @@ var debug = require('debug')('p3api-server:route/dataType')
 var querystring = require('querystring')
 const ShardsPreference = require('../middleware/ShardsPreference')
 const SolrQuerySanitizer = require('../middleware/SolrQuerySanitizer')
+const JoinResolution = require('../middleware/JoinResolution')
+const { describeFields } = require('../lib/collectionFields')
+const { validateTemplate, templateFields } = require('../util/fastaHeaderFormatter')
+const { findUnknownFields } = require('../lib/collectionFields')
+const { makeSolrClient } = require('../middleware/APIMethodHandler')
+const QueryClassifier = require('../middleware/QueryClassifier')
 const DistributedQuery = require('../middleware/DistributedQuery')
 const JoinFieldInjector = require('../middleware/JoinFieldInjector')
 const JoinEnrichment = require('../middleware/JoinEnrichment')
@@ -89,6 +95,40 @@ router.use(function (req, res, next) {
 
   debug('REQ IS DOWNLOAD: ', req.isDownload)
   next()
+})
+
+/**
+ * GET /:collection/fields — what can this collection return?
+ *
+ * Exists so the website can build a column picker without hardcoding a field list that
+ * drifts from the API. Reports NATIVE fields (from the live Solr schema, filtered to
+ * stored ones — an unstored field cannot be returned and would be a permanently empty
+ * column) and ENRICHED fields (from the same join config the enrichment middleware
+ * reads, so the two cannot disagree), each with a readable label and a `source` flag.
+ *
+ * Mounted ahead of the catch-all GET because that handler would otherwise treat
+ * `/fields` as a record id. `app.param('dataType')` has already validated the
+ * collection against the allowlist before this runs.
+ *
+ * Readable labels are DERIVED, not curated — see lib/fieldLabels.js for why there is no
+ * authoritative label source to read from.
+ */
+router.get('/fields', function (req, res, next) {
+  const collection = req.params.dataType
+  const solrClient = makeSolrClient(collection)
+
+  solrClient.getSchema()
+    .then((body) => {
+      if (body && typeof body === 'string') {
+        body = JSON.parse(body)
+      }
+      res.set('content-type', 'application/json')
+      res.end(JSON.stringify(describeFields(collection, body)))
+    })
+    .catch((err) => {
+      console.error(`Error building field list for ${collection}: ${err && err.message}`)
+      next(err)
+    })
 })
 
 router.get('*', function (req, res, next) {
@@ -238,6 +278,66 @@ router.use([
     }
     next()
   },
+  // Validate http_fasta_header BEFORE the response starts.
+  //
+  // An unknown field name is a 400 rather than an empty substitution (decision 4 in
+  // util/fastaHeaderFormatter.js): silently emitting nothing is how the enrichment bug
+  // hid -- a header that looks plausible and is quietly missing data. That is only
+  // possible here, ahead of the serializer: once streaming begins the status is
+  // committed and the best a serializer can do is truncate.
+  async function fastaHeaderTemplateGuard (req, res, next) {
+    const template = req.fastaParams && req.fastaParams.http_fasta_header
+    if (!template || String(template).trim() === '') {
+      return next()
+    }
+
+    const syntaxError = validateTemplate(String(template))
+    if (syntaxError) {
+      return res.status(400).send({ status: 400, message: syntaxError })
+    }
+
+    // SYNTAX is always validated; FIELD NAMES only when the caller opts in with
+    // http_fasta_strict=true.
+    //
+    // Checking names needs the collection's Solr schema, and doing it unconditionally
+    // would put a schema fetch on every templated download -- which is why it is not
+    // the default. Opt-in makes the cost proportionate: a caller who wants to be told
+    // about a typo pays for the check, and the schema is cached for 10 minutes so even
+    // they pay it rarely.
+    //
+    // Without this, a typo renders empty and returns 200. That bit a GUI client:
+    // `{hostname}` for host_name produced a silently truncated header.
+    const strict = String((req.fastaParams && req.fastaParams.http_fasta_strict) || '')
+      .trim().toLowerCase()
+    if (strict !== 'true' && strict !== '1') {
+      return next()
+    }
+
+    try {
+      const collection = req.call_collection
+      const unknown = await findUnknownFields(
+        collection,
+        templateFields(String(template)),
+        () => makeSolrClient(collection).getSchema()
+      )
+
+      if (unknown.length > 0) {
+        return res.status(400).send({
+          status: 400,
+          message: `http_fasta_header references unknown field(s): ${unknown.join(', ')}. ` +
+            `See /${collection}/fields for the fields this collection can return.`
+        })
+      }
+    } catch (err) {
+      // FAIL OPEN. Strict mode is a convenience for catching typos, not a security
+      // control, so a Solr blip must not turn a valid download into a 400. The
+      // unchecked request then behaves exactly as a non-strict one would.
+      console.error(`[fastaStrict] field validation unavailable, proceeding: ${err && err.message}`)
+    }
+
+    next()
+  },
+
   // Snapshot the RQL as the client sent it, before RQLQueryParser rewrites
   // call_params[0] into Solr syntax against the TARGET collection. A
   // cross-collection download needs the original to re-parse against the SOURCE.
@@ -258,6 +358,8 @@ router.use([
   DecorateQuery,
   Limiter,
   CrossCollectionSource,  // Validate + permission-scope http_source_* (no-op when absent)
+  JoinResolution,  // Reject over-broad crossCollection joins; rewrite small ones to {!terms}
+  QueryClassifier,  // Layer 1 admission: bound concurrent heavy work (inert unless enabled)
   JoinFieldInjector,  // Inject join key fields into fl= before query execution
   DistributedQuery,  // Distributed query integration (after permission filters applied)
   ShardsPreference,

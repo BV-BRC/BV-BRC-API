@@ -60,11 +60,28 @@ const defaults = {
   distributeURL: 'http://localhost:3001/',
   publicURL: 'http://localhost:3001/',
 
+  /*
+   * Origins permitted to make *credentialed* cross-origin requests. Anonymous
+   * cross-origin reads remain open to everyone -- this is a public data API.
+   * See util/corsOptions.js.
+   *
+   * Exact-match serialized origins, enumerated explicitly: BV-BRC uses
+   * alpha./beta./dev-N. while the sibling properties use dev./test., so no
+   * interpolation over a property name is correct for all of them. This is
+   * the same list the OAuth2 redirect_uri registration needs; keep them in
+   * sync (PLAN-oauth2-migration.md, "Multi-Domain Rollout and CORS").
+   *
+   * Empty by default: the deployment places site-facing endpoints under the
+   * site's own registrable domain, so production traffic is same-origin and
+   * needs no entry here. Set it in p3api.conf only for a property that must
+   * genuinely make credentialed cross-origin calls.
+   */
+  cors_origins: [],
+
   jbrowseAPIRoot: 'http://localhost:3001/jbrowse',
 
   treeDirectory: './trees',
   contentDirectory: './content',
-  publicGenomeDir: '/genomes',
   queueDirectory: './index-queue-dir',
   signingSubjectURL: 'https://user.patricbrc.org/public_key',
   solr: {
@@ -146,6 +163,106 @@ const defaults = {
     taxonomy: 'taxon_id'
   },
 
+  // Layer 1 admission control. See lib/SolrAdmissionControl.js and
+  // Docs/ADMISSION_CONTROL_STATUS-2026-10.md.
+  //
+  // DISABLED BY DEFAULT, deliberately. Enabling it makes the API return 429, which needs
+  // coordinated client updates first (CLI tools and the website must honour Retry-After
+  // without tight-retrying). Until then the middleware still classifies every request and
+  // reports pool state at /stats, so a dry run shows what *would* have been shed.
+  //
+  // Pool sizes are per worker, so cluster-facing concurrency is size x worker count.
+  // The rule they are chosen against is "admission pool <= socket pool, so the socket
+  // queue stays empty" — heavy at 3 against the main Solr agent's maxSockets 8.
+  queryAdmission: {
+    enabled: false,
+    heavyMaxConcurrent: 3,
+    heavyMaxQueue: 6,
+    heavyMaxWaitMs: 10000,
+    interactiveMaxConcurrent: 20,
+    interactiveMaxQueue: 20,
+    interactiveMaxWaitMs: 1000
+  },
+
+  // Cross-collection join admission. See lib/joinResolver.js and
+  // Docs/OVERLOAD_PROTECTION_AMENDMENT-2026-10.md.
+  //
+  // Thresholds are genome counts, and they were calibrated against the measured cost
+  // curve on 2026-10-12 — re-measure before changing them, because the corpus grows:
+  // Bacteria was ~500K when the original plan was written and is 1.38M now.
+  //
+  //   <= rewriteMaxGenomes  resolve locally to {!terms} (3-6x faster, identical results)
+  //   <= rejectMaxGenomes   leave the join alone
+  //    > rejectMaxGenomes   refuse with 400 — this is the OOM guard
+  // Dribble reserve for streaming downloads. Cloudflare cuts a response that goes quiet
+  // for more than ~120-150s even after it has started, returning HTTP 200 with a
+  // truncated body. The reserve holds back the tail of real output and spends it one byte
+  // at a time during silence -- bytes are identical, only timing changes. Measured: a
+  // single space every 100s kept a 300-second response alive.
+  //
+  // OFF by default: it changes write timing on every streaming response. Note it protects
+  // gaps BETWEEN records, not a slow first record -- a walk that is silent from byte zero
+  // has nothing in reserve to spend. See util/streamWithBackpressure.js and
+  // PLAN_TWO_PHASE_DOWNLOAD.md section 7a.
+  streamDribble: {
+    enabled: false,
+    intervalMs: 60000,
+    reserveBytes: 256
+  },
+
+  // Local-only operational endpoints (/admin). See PLAN_ADMIN_ENDPOINT.md.
+  //
+  // OFF by default, and when off the routes 404 rather than 403 — an admin surface
+  // should not appear on upgrade, nor advertise that it exists.
+  //
+  // `token` has no default on purpose: with enabled:true and token:null the gate fails
+  // CLOSED (every request refused) rather than falling back to address-only. Set both in
+  // the untracked p3api.conf, same as the Solr credentials.
+  admin: {
+    enabled: false,
+    token: null
+  },
+
+  joinResolution: {
+    enabled: true,
+    rewriteMaxGenomes: 50000,
+    rejectMaxGenomes: 150000,
+    countCacheTtlMs: 300000,
+    idCacheTtlMs: 300000,
+    cacheMaxEntries: 200,
+
+    // Taxon-subtree rewrite: express a purely taxonomic join as
+    //   fq={!terms f=taxon_id}<subtree>  &  fq=-{!terms f=genome_id}<deprecated>
+    // rather than resolving it to a live genome_id list, which does not scale past
+    // ~50,000 genomes. Measured 1,770ms against the join's 25,097ms on E. coli with
+    // identical numFound, and it answers Influenza A in ~9.8s where the join cannot
+    // complete at all. OFF by default: it changes which query a broad taxon runs and
+    // wants shaking down on alpha first.
+    // See Docs/BROAD-TAXON-JOIN-COLD-BUILD-2026-10-23.md §4.1a.
+    taxonomicRewrite: false,
+
+    // Let a BULK DOWNLOAD whose join exceeds rejectMaxGenomes stream anyway, resolving
+    // the join in bounded slices instead of one oversized {!terms} filter. Grid pages
+    // are still refused -- a page must be fast or fail fast -- but a download is already
+    // a long operation, and slow-but-reliable beats a 400. ~5 min of Solr time for
+    // Viruses (14.9M genomes), with memory and request bodies bounded throughout.
+    // See lib/BatchedJoinStream.js. OFF by default: it turns a fast refusal into a long
+    // response, which is a deliberate operational choice.
+    batchedDownloads: false,
+
+    // Fill /data/summary_by_taxon by slicing the genome set and summing per-slice facets
+    // when the join is refused. Facet counts are additive over disjoint slices, and
+    // slicing measured ~10x CHEAPER than the join (5s vs 52s on 246,835 genomes), so this
+    // is not merely a survivable fallback. Taxon 10239 previously spent 600s here and
+    // returned a 500. Behind cacheWithRedis('1 day'), so the cost is paid once per day.
+    // OFF by default: a fast 400 becoming a multi-minute fill is an operational choice.
+    slicedSummary: false,
+    // Caps on the two lookups. Exceeding either abandons the rewrite and leaves the join
+    // intact -- emitting the subtree WITHOUT its exclusion would silently over-count.
+    exclusionMaxIds: 400000,
+    subtreeMaxTaxa: 250000
+  },
+
   shards: {
     genome_feature: {
       preference: 'replica.type:PULL,replica.type:TLOG'
@@ -189,53 +306,22 @@ const defaults = {
 
     // Admin users who can modify runtime config
     adminUsers: []
-  },
+  }
 
   // Join enrichment for paginated queries
   // Adds fields from related collections when explicitly requested via select()
-  joinEnrichment: {
-    enabled: true,
-    cacheSize: 200, // LRU cache size per target collection
-    collections: {
-      // genome_feature can fetch genome metadata
-      genome_feature: {
-        joinableFields: {
-          genome_name: { from: 'genome', via: 'genome_id', field: 'genome_name' },
-          taxon_id: { from: 'genome', via: 'genome_id', field: 'taxon_id' },
-          genome_status: { from: 'genome', via: 'genome_id', field: 'genome_status' },
-          strain: { from: 'genome', via: 'genome_id', field: 'strain' }
-        }
-      },
-      // pathway can fetch genome metadata
-      pathway: {
-        joinableFields: {
-          genome_name: { from: 'genome', via: 'genome_id', field: 'genome_name' },
-          taxon_id: { from: 'genome', via: 'genome_id', field: 'taxon_id' }
-        }
-      },
-      // subsystem can fetch genome metadata
-      subsystem: {
-        joinableFields: {
-          genome_name: { from: 'genome', via: 'genome_id', field: 'genome_name' },
-          taxon_id: { from: 'genome', via: 'genome_id', field: 'taxon_id' }
-        }
-      },
-      // sp_gene can fetch genome metadata
-      sp_gene: {
-        joinableFields: {
-          genome_name: { from: 'genome', via: 'genome_id', field: 'genome_name' },
-          taxon_id: { from: 'genome', via: 'genome_id', field: 'taxon_id' }
-        }
-      },
-      // genome_amr can fetch genome metadata
-      genome_amr: {
-        joinableFields: {
-          genome_name: { from: 'genome', via: 'genome_id', field: 'genome_name' },
-          taxon_id: { from: 'genome', via: 'genome_id', field: 'taxon_id' }
-        }
-      }
-    }
-  }
+  // Join enrichment defaults live in lib/joinConfig.js (DEFAULT_JOIN_CONFIG), NOT here.
+  //
+  // There used to be a second full copy of the collections map at this spot, and it
+  // silently WON: getJoinConfig() spreads p3api.conf's `joinEnrichment` over the
+  // defaults per collection, and an entry in this file is indistinguishable from one an
+  // operator wrote, so it overrode lib/joinConfig.js entirely. Adding a joinable field
+  // to lib/joinConfig.js therefore had no effect at all -- discovered when 33 new genome
+  // metadata fields did not appear.
+  //
+  // Leaving the key ABSENT means getJoinConfig() returns DEFAULT_JOIN_CONFIG untouched,
+  // while an operator overriding `joinEnrichment` in p3api.conf still works exactly as
+  // documented. Do not reintroduce a default here; add fields to lib/joinConfig.js.
 
 }
 

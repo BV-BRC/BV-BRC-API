@@ -5,3 +5,10 @@ module.exports = function (req, res, next) {
   req.publicFree = publicFree
   next()
 }
+
+// Exported so in-process callers that bypass the middleware chain (lib/internalQuery.js)
+// can supply the same list. buildPermissionFq fails CLOSED without it — an absent
+// publicFree filters even exempt collections — so a second hand-maintained copy of this
+// list would drift and silently over- or under-filter. Same array reference the
+// middleware assigns; treat as read-only.
+module.exports.publicFree = publicFree

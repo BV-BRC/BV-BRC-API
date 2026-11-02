@@ -19,17 +19,105 @@ GET /genome_feature/?eq(genome_id,12345.6)&select(feature_id,patric_id,product,g
 4. Merges the genome_name into each result document
 5. Returns the enriched documents to the client
 
+## Discovering what a collection can return
+
+**`GET /:collection/fields`** reports every field a collection can return — native and
+enriched — with a readable label and a `source` flag. Prefer it over hardcoding a list:
+it reads the same registry the enrichment middleware uses, so it cannot drift from what
+enrichment will actually do.
+
+```
+GET /genome_feature/fields
+{
+  "collection": "genome_feature",
+  "fields": [
+    { "name": "feature_id", "label": "Feature ID", "source": "native",
+      "type": "string", "multiValued": false },
+    { "name": "host_name",  "label": "Host Name",  "source": "enriched",
+      "from": "genome", "via": "genome_id", "hops": 1 }
+  ],
+  "counts": { "total": 88, "native": 46, "enriched": 42 }
+}
+```
+
+Two things it deliberately does:
+
+- **Unstored fields are omitted.** They are indexed and filterable but can never be
+  returned, so offering one as a selectable column produces a permanently empty column
+  (`genome.collection_date_dr` is exactly this).
+- **A field that is both native and joinable is listed once, as native** — the native
+  value wins, so showing a choice would be misleading.
+
+Labels are **derived** from field names, with a small override table for the cases
+derivation mangles (`genome_id` → "Genome ID", `patric_id` → "BRC ID"). There is no
+curated label source in the codebase; see `lib/fieldLabels.js` for why, and for where a
+curated set would plug in.
+
 ## Joinable fields by collection
 
-Configured in `middleware/JoinEnrichment.js` (and overridable via `joinEnrichment` in `p3api.conf`):
+Configured in **`lib/joinConfig.js`** (overridable via `joinEnrichment` in `p3api.conf`).
 
-| Source collection | Joinable fields | Joined from | Via key |
+> **Add joinable fields in `lib/joinConfig.js`, never in `config.js`.** A
+> `joinEnrichment` default declared in `config.js` is indistinguishable from an
+> operator's override and silently replaces the module defaults entirely — a second copy
+> lived there until 2026-10-30 and meant that adding a field to `lib/joinConfig.js` had
+> no effect at all. A regression test now pins that `config.js` declares no default.
+
+All six genome-keyed collections are **configured with the same 44 joinable fields**
+from `genome` via `genome_id` — the 42 shared metadata fields below plus `genome_name`
+and `taxon_id`.
+
+**What a client actually sees is slightly fewer, and that is correct.** A field that is
+also *native* to the collection is reported once, as native, because the native value
+wins. Measured against the live API:
+
+| Source collection | `/fields` total | enriched | why not 42 |
 |---|---|---|---|
-| genome_feature | genome_name, taxon_id, genome_status, strain | genome | genome_id |
-| pathway | genome_name, taxon_id | genome | genome_id |
-| subsystem | genome_name, taxon_id | genome | genome_id |
-| sp_gene | genome_name, taxon_id | genome | genome_id |
-| genome_amr | genome_name, taxon_id | genome | genome_id |
+| genome_feature | 88 | 42 | `genome_name`, `taxon_id` are native here |
+| pathway | 68 | 42 | same |
+| subsystem | 65 | 42 | same |
+| sp_gene | 76 | 42 | same |
+| genome_amr | 70 | 42 | same |
+| genome_sequence | 68 | **41** | also has a native `segment` — contigs carry their own |
+
+**Do not compute the list; read it from `/:collection/fields`.** The config count and
+the client-visible count differ for exactly this reason, and the difference is
+per-collection.
+
+The shared set (`GENOME_METADATA_FIELDS` in `lib/joinConfig.js`):
+
+```
+strain, genome_status
+isolation_source, isolation_comments, collection_date, collection_year, season
+isolation_country, state_province, county, city, geographic_group,
+  geographic_location, other_environmental
+host_name, host_common_name, host_scientific_name, host_gender, host_age,
+  host_health, host_group, lab_host, passage, other_clinical
+phenotype, gram_stain, cell_shape, motility, sporulation, temperature_range,
+  optimal_temperature, salinity, oxygen_requirement, habitat
+disease
+species, lineage, clade, h5_clade, segment, subtype, genbank_accessions
+```
+
+**`segment` and `h5_clade` are multiValued**, as are `disease`, `other_environmental`
+and `other_clinical`. In a FASTA header a multi-valued field renders **comma-joined**
+and that is not configurable — so a client parsing a header on commas cannot tell a
+multi-valued field from two single-valued ones. Request CSV or JSON if the distinction
+matters.
+
+**`genome` itself has no join config, and that is correct** — its own fields already
+include all of this, so a `genome`→`genome` join would be a no-op and would list every
+field twice.
+
+**Deprecated fields are deliberately excluded**: `isolation_site`, `latitude`,
+`longitude`, `altitude`, `depth`, `body_sample_site`, `body_sample_subsite`,
+`antimicrobial_resistance`, `antimicrobial_resistance_evidence`. Exposing them would
+advertise as current a surface that is being retired. `collection_date_dr` is also
+absent — it is `stored="false"`, so Solr cannot return it.
+
+**Cost of the field count is near zero.** All of these share `from`+`via`, so
+`buildJoinSpecs` groups them into **one** lookup however many are requested, and the
+`fl` sent to Solr lists only the fields actually asked for.
 
 ## How it works internally
 
@@ -92,11 +180,119 @@ DEBUG=p3api-server:distributed:join-enrichment-stream npm start
 DEBUG=p3api-server:distributed:*,p3api-server:middleware/DistributedQuery npm start
 ```
 
+## FASTA downloads: header fields and formatting
+
+FASTA headers can carry enriched fields, and the field names are the **same bare names**
+`/:collection/fields` reports — `host_name`, not `genome_metadata.host_name`. The
+prefixed form still works as an alias so existing saved URLs keep functioning, but bare
+is canonical and consistent with `select()`.
+
+Requesting an enriched field in a header is what triggers the genome join; there is no
+separate switch.
+
+### Zone parameters (the default scheme)
+
+```
+>«id_prefix»ID1«id_delim»ID2«id_delim» DESC1«desc_delim»DESC2 [CTX1«ctx_delim»CTX2]
+```
+
+| parameter | default | controls |
+|---|---|---|
+| `http_fasta_id_fields` | per-collection | fields in the ID zone |
+| `http_fasta_id_delimiter` | `\|` | between ID fields, **and appended as a trailing character** |
+| `http_fasta_id_prefix` | `''` (`accn\|` for genome_sequence) | literal prefix |
+| `http_fasta_description_fields` | per-collection | description zone |
+| `http_fasta_description_delimiter` | `' '` (single space) | between description fields |
+| `http_fasta_context_fields` | per-collection | the bracketed `[...]` zone |
+| `http_fasta_context_delimiter` | `' \| '` (spaces included) | between context fields |
+| `http_fasta_strict` | `false` | with `http_fasta_header`: reject unknown field names with 400 |
+
+**An empty value is skipped entirely** — no placeholder, and no stray delimiter. A zone
+whose fields all resolve empty is omitted along with its brackets. That is why a missing
+field looks like nothing rather than a gap.
+
+### Format strings (`http_fasta_header`)
+
+When the zone scheme cannot express the required layout, supply a template:
+
+```
+http_fasta_header={patric_id}|{genome_id} {product} [{genome_name}]
+  -> >fig|1.1.peg.1|1.1 ABC transporter [E. coli K-12]
+
+http_fasta_header=db|{genome_id}|{patric_id}::{host_name}
+  -> >db|1.1|fig|1.1.peg.1::Homo sapiens
+```
+
+Four behaviours, each chosen deliberately:
+
+1. **A missing value renders empty and the template is NOT rewritten around it.**
+   `{patric_id}|{strain}|{product}` with no strain gives `>fig|1.1.peg.1||ABC transporter`
+   — the delimiters stay. The zone scheme collapses them; a template cannot without
+   inventing conditional syntax. **If you need omit-when-absent, use the zone
+   parameters.**
+2. **It is exclusive.** When `http_fasta_header` is present the zone parameters are
+   ignored entirely, including for deciding which fields to join.
+3. **`{{` and `}}` are literal braces.** `A{{x}}B` → `>A{x}B`; `{{{patric_id}}}` →
+   `>{fig|1.1.peg.1}`, i.e. a literal brace followed by a real reference.
+4. **Syntax errors are rejected with 400 before the response starts** — unbalanced
+   braces, an empty `{}`, an empty template. This matters because an unbalanced brace is
+   not a partial failure: the raw template text lands in every header in the file.
+
+### Unknown field names: empty by default, 400 with `http_fasta_strict=true`
+
+**By default an unknown field renders empty and returns 200.** `{hostname}` (a typo of
+`host_name`) produces a silently truncated header, not an error — validating a bare name
+needs the collection's Solr schema, and fetching it on every templated download would be
+a round trip for a check most callers do not want.
+
+**Add `http_fasta_strict=true` to turn unknown names into a 400:**
+
+```
+?http_fasta_header={patric_id} {hostname}
+  -> 200, >fig|1.1.peg.1                                   (silently truncated)
+
+?http_fasta_header={patric_id} {hostname}&http_fasta_strict=true
+  -> 400, "http_fasta_header references unknown field(s): hostname.
+           See /genome_feature/fields for the fields this collection can return."
+```
+
+Strict mode validates against the same set `/:collection/fields` reports, so **joinable
+fields are accepted** (`host_name` passes even though it is not in the Solr schema) and
+**unstored fields are rejected** (they could never be returned). Dotted paths such as
+`genome_metadata.host_name` are skipped rather than guessed at. The schema is cached for
+10 minutes, so even a strict caller rarely pays the fetch.
+
+**Strict mode fails open.** If the schema cannot be fetched the request proceeds
+unvalidated rather than 400ing — it is a convenience for catching typos, not a security
+control, and a Solr blip should not break a valid download.
+
+Syntax errors (unbalanced braces, an empty `{}`) are **always** a 400, strict or not,
+because checking them needs nothing but the string.
+
+> **Clients that do not set `http_fasta_strict` should still validate against
+> `/:collection/fields`** — nothing server-side will catch a typo for them.
+
+### What formatting does not do
+
+**There is no quoting or escaping.** Values are interpolated verbatim in both schemes,
+so:
+
+- a value containing your delimiter is indistinguishable from a field boundary —
+  `host_name` is literally `"Human, Homo sapiens"`, so commas are already common;
+- a value containing a newline **would corrupt the record**, since the next line is read
+  as sequence data.
+
+Treat the header as display text. If you need to round-trip structured values, request
+CSV or JSON, whose serializers quote properly. If a header must be machine-parsed,
+choose a delimiter that cannot occur in the data and understand that it is a convention,
+not a guarantee.
+
 ## Limitations
 
 - All current joins are from other collections → genome collection via `genome_id`. The system is designed to be extensible to other join patterns.
 - The joinable fields must be explicitly configured — arbitrary cross-collection field requests are not supported.
-- FASTA serializers have their own separate enrichment streams (`SequenceJoinStream`, `GenomeMetadataJoinStream`) that predate the generic system.
+- FASTA serializers have their own separate enrichment streams (`SequenceJoinStream`, `GenomeMetadataJoinStream`) that predate the generic system. They now resolve which fields to fetch through the shared registry (`lib/fastaGenomeFields.js`), so they no longer diverge from what `/:collection/fields` advertises — but the transport is still separate.
+- No quoting or escaping in FASTA headers; see "What formatting does not do" above.
 
 ## Key files
 
@@ -106,3 +302,8 @@ DEBUG=p3api-server:distributed:*,p3api-server:middleware/DistributedQuery npm st
 - `lib/BatchJoiner.js` — Batched lookup and enrichment engine with LRU cache
 - `lib/parseFieldList.js` — Parses `fl=` / `select()` to identify requested join fields
 - `lib/distributed/DirectSolrClient.js` — Direct shard access for batch lookups
+- `lib/joinConfig.js` — **The joinable-field registry.** Add fields here, not in `config.js`
+- `lib/collectionFields.js` — Builds the `/:collection/fields` payload
+- `lib/fieldLabels.js` — Readable labels (derived, with an override table)
+- `lib/fastaGenomeFields.js` — Resolves which genome fields a FASTA request needs
+- `util/fastaHeaderFormatter.js` — Header assembly: zones, delimiters, format strings

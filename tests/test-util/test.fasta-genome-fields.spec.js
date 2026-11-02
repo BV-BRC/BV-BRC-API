@@ -1,0 +1,348 @@
+/**
+ * FASTA header fields resolve against the join registry, and accept bare names.
+ *
+ * Reported from a GUI session 2026-10-30, after `/:collection/fields` shipped:
+ *
+ *   1. `/fields` advertised 35 enriched fields but the FASTA serializers fetched a
+ *      hardcoded 8 (`GenomeMetadataJoinStream.DEFAULT_CONFIG.genomeFields`). Anything
+ *      else resolved to undefined and was SILENTLY DROPPED from the header:
+ *        genome_metadata.strain,genome_metadata.host_name,genome_metadata.isolation_country
+ *          -> ">fig|... MGYG-HGUT-00869"     strain only
+ *
+ *   2. Naming. `/fields` reports bare `host_name`; FASTA required a `genome_metadata.`
+ *      prefix because needsGenomeJoin() tested for that literal substring. A client
+ *      that correctly consumed `/fields` and passed back what it was given got nothing
+ *      at all -- including `strain`, which had worked when prefixed.
+ *
+ * Bare names are canonical (select() has always taken them); the prefix survives as an
+ * alias so saved URLs keep working.
+ *
+ * Offline: pure functions over a synthetic req.
+ */
+
+const assert = require('chai').assert
+const {
+  bareName, requestedHeaderFields, requestedGenomeFields,
+  needsGenomeJoin, genomeFieldsFor, ALWAYS_FETCH
+} = require('../../lib/fastaGenomeFields')
+
+const req = (params) => ({ fastaParams: params, call_collection: 'genome_feature' })
+
+describe('FASTA genome field resolution', function () {
+  describe('bare names — the reported breakage', function () {
+    it('triggers the join for a bare genome field', function () {
+      // The exact failing case: all three dropped because none carried the prefix.
+      const r = req({ http_fasta_description_fields: 'strain,host_name,isolation_country' })
+      assert.isTrue(needsGenomeJoin(r, 'genome_feature'))
+    })
+
+    it('fetches every requested bare field', function () {
+      const fields = genomeFieldsFor(
+        req({ http_fasta_description_fields: 'strain,host_name,isolation_country' }),
+        'genome_feature')
+      for (const f of ['strain', 'host_name', 'isolation_country']) {
+        assert.include(fields, f)
+      }
+    })
+
+    it('fetches fields BEYOND the old hardcoded list', function () {
+      // host_name, isolation_country, habitat and disease are all absent from
+      // DEFAULT_CONFIG.genomeFields -- that is why they vanished.
+      const fields = genomeFieldsFor(
+        req({ http_fasta_context_fields: 'habitat,disease,host_group' }), 'genome_feature')
+      for (const f of ['habitat', 'disease', 'host_group']) {
+        assert.include(fields, f)
+      }
+    })
+  })
+
+  describe('the genome_metadata. prefix still works', function () {
+    it('strips the prefix', function () {
+      assert.equal(bareName('genome_metadata.host_name'), 'host_name')
+      assert.equal(bareName('host_name'), 'host_name')
+    })
+
+    it('triggers the join for prefixed names', function () {
+      const r = req({ http_fasta_description_fields: 'genome_metadata.host_name' })
+      assert.isTrue(needsGenomeJoin(r, 'genome_feature'))
+      assert.include(genomeFieldsFor(r, 'genome_feature'), 'host_name')
+    })
+
+    it('treats prefixed and bare as the same field', function () {
+      const mixed = req({
+        http_fasta_id_fields: 'genome_metadata.strain',
+        http_fasta_description_fields: 'strain'
+      })
+      const hits = requestedGenomeFields(mixed, 'genome_feature').filter((f) => f === 'strain')
+      assert.lengthOf(hits, 1, 'must not fetch the same field twice')
+    })
+  })
+
+  describe('what gets fetched', function () {
+    it('always includes the join key and the historical defaults', function () {
+      // Dropping these would regress anyone relying on the old implicit behaviour.
+      const fields = genomeFieldsFor(req({ http_fasta_id_fields: 'host_name' }), 'genome_feature')
+      for (const f of ALWAYS_FETCH) assert.include(fields, f)
+      assert.include(fields, 'genome_id', 'the join key is mandatory')
+    })
+
+    it('does not fetch a field the registry does not know', function () {
+      // Stops a typo becoming a wasted fl entry, and keeps FASTA from diverging from
+      // the rest of the API again.
+      const fields = genomeFieldsFor(
+        req({ http_fasta_description_fields: 'not_a_real_field' }), 'genome_feature')
+      assert.notInclude(fields, 'not_a_real_field')
+    })
+
+    it('does not trigger a join for native-only fields', function () {
+      // patric_id and product live on genome_feature itself; no join needed.
+      const r = req({ http_fasta_description_fields: 'patric_id,product' })
+      assert.isFalse(needsGenomeJoin(r, 'genome_feature'))
+    })
+
+    it('deduplicates across the three header parameters', function () {
+      const r = req({
+        http_fasta_id_fields: 'host_name',
+        http_fasta_description_fields: 'host_name,habitat',
+        http_fasta_context_fields: 'habitat'
+      })
+      assert.deepEqual(requestedHeaderFields(r), ['host_name', 'habitat'])
+    })
+
+    it('tolerates absent, empty and whitespace-padded parameters', function () {
+      assert.deepEqual(requestedHeaderFields({}), [])
+      assert.deepEqual(requestedHeaderFields(req({})), [])
+      assert.deepEqual(
+        requestedHeaderFields(req({ http_fasta_id_fields: ' host_name , , habitat ' })),
+        ['host_name', 'habitat'])
+    })
+  })
+
+  describe('per-collection resolution', function () {
+    it('resolves against the collection being served', function () {
+      // The same field name must work wherever the registry offers it.
+      for (const c of ['genome_feature', 'genome_sequence', 'sp_gene']) {
+        assert.isTrue(needsGenomeJoin(req({ http_fasta_id_fields: 'host_name' }), c),
+          `${c} should join for host_name`)
+      }
+    })
+
+    it('does not join for a collection with no join config', function () {
+      assert.isFalse(needsGenomeJoin(req({ http_fasta_id_fields: 'host_name' }), 'taxonomy'))
+    })
+  })
+})
+
+describe('genome_sequence join config', function () {
+  const { DEFAULT_JOIN_CONFIG, GENOME_METADATA_FIELDS } = require('../../lib/joinConfig')
+
+  it('offers the metadata set — it was reporting 0 enriched fields', function () {
+    // `segment` is excluded ON PURPOSE: contigs carry their own, and joining the
+    // genome's value over it silently replaced "6" with the genome's whole segment
+    // list (reported from beta 2026-11-02). See tests/test-join/
+    // test.native-field-shadowing.spec.js.
+    const fields = DEFAULT_JOIN_CONFIG.collections.genome_sequence.joinableFields
+    const expected = GENOME_METADATA_FIELDS.filter((f) => f !== 'segment')
+    for (const f of expected) {
+      assert.property(fields, f)
+    }
+    assert.notProperty(fields, 'segment', 'native on genome_sequence; must not be joined')
+  })
+
+  it('does NOT add a self-join config for `genome`', function () {
+    // genome's own 145 native fields already include this metadata; a genome->genome
+    // join would be a no-op and would list every field twice in /fields.
+    assert.notProperty(DEFAULT_JOIN_CONFIG.collections, 'genome')
+  })
+})
+
+describe('fastaHeaderFormatter bare-name fallback', function () {
+  const { createFastaHeaderFormatter } = require('../../util/fastaHeaderFormatter')
+
+  const doc = {
+    patric_id: 'fig|83332.12.peg.1',
+    genome_metadata: { strain: 'H37Rv', host_name: 'Homo sapiens' }
+  }
+
+  const header = (fields) => createFastaHeaderFormatter({
+    idFields: ['patric_id'], descriptionFields: fields, contextFields: []
+  })(doc)
+
+  it('resolves a BARE name from joined metadata', function () {
+    assert.include(header(['host_name']), 'Homo sapiens')
+  })
+
+  it('still resolves the prefixed form', function () {
+    assert.include(header(['genome_metadata.host_name']), 'Homo sapiens')
+  })
+
+  it('prefers a field present on the document itself', function () {
+    const shadowed = { ...doc, strain: 'NATIVE-VALUE' }
+    const out = createFastaHeaderFormatter({
+      idFields: ['patric_id'], descriptionFields: ['strain'], contextFields: []
+    })(shadowed)
+    assert.include(out, 'NATIVE-VALUE')
+    assert.notInclude(out, 'H37Rv')
+  })
+
+  it('returns nothing for an unknown field rather than throwing', function () {
+    assert.doesNotThrow(() => header(['no_such_field']))
+  })
+})
+
+/**
+ * genome_sequence FASTA enrichment, and the record-loss hazard in wiring it.
+ *
+ * The genome_sequence branches of media/dna+fasta.js formatted headers but never
+ * performed the genome join, so `/genome_sequence/fields` advertised 33 enriched fields
+ * that a FASTA download silently dropped — bare and prefixed alike.
+ *
+ * The non-obvious part of fixing it is header handoff. GenomeMetadataJoinStream consumes
+ * the leading Solr metadata document (`skipHeader: true`), and `streamWithBackpressure`
+ * ALSO skips a first document by default. Both skipping loses the FIRST REAL CONTIG —
+ * a download that looks fine and is one record short, which is this codebase's
+ * characteristic failure. The feature path solves the same problem at the
+ * SequenceJoinStream boundary with `skipHeader: !includeGenomeMetadata`.
+ */
+describe('streamWithBackpressure first-document handoff', function () {
+  const { streamWithBackpressure } = require('../../util/streamWithBackpressure')
+  const { Readable } = require('stream')
+
+  function fakeRes () {
+    const chunks = []
+    return {
+      chunks,
+      headersSent: false,
+      writableEnded: false,
+      destroyed: false,
+      set () {},
+      write (c) { chunks.push(String(c)); return true },
+      end () { this.writableEnded = true; if (this._onEnd) this._onEnd() },
+      on () {},
+      removeListener () {},
+      get body () { return chunks.join('') }
+    }
+  }
+
+  const docs = () => Readable.from(
+    [{ _header: true }, { sequence_id: 'c1' }, { sequence_id: 'c2' }],
+    { objectMode: true })
+
+  it('drops the header when nothing upstream consumed it', async function () {
+    const res = fakeRes()
+    await streamWithBackpressure(docs(), res, {
+      skipFirstDoc: true,
+      transform: (d) => `${d.sequence_id}\n`
+    })
+    assert.equal(res.body, 'c1\nc2\n')
+  })
+
+  it('keeps every record when a join stream already consumed the header', async function () {
+    // skipFirstDoc:false is what stops the first contig vanishing once the genome
+    // join is in the pipeline.
+    const res = fakeRes()
+    await streamWithBackpressure(
+      Readable.from([{ sequence_id: 'c1' }, { sequence_id: 'c2' }], { objectMode: true }),
+      res,
+      { skipFirstDoc: false, transform: (d) => `${d.sequence_id}\n` })
+    assert.equal(res.body, 'c1\nc2\n', 'no contig may be lost to a double skip')
+  })
+})
+
+/**
+ * http_fasta_description_delimiter.
+ *
+ * The description zone was the only one with a hardcoded separator — a single space —
+ * so a multi-field description was unparseable whenever a value contained a space,
+ * which most do (`host_name` is literally "Human, Homo sapiens").
+ *
+ * THE DEFAULT MUST NOT CHANGE. The community already parses these headers with their
+ * own tooling, so every existing request has to produce byte-identical output; this is
+ * purely additive.
+ */
+describe('FASTA description delimiter', function () {
+  const { createFastaHeaderFormatter } = require('../../util/fastaHeaderFormatter')
+
+  const doc = { patric_id: 'fig|1.1.peg.1', product: 'ABC transporter', strain: 'K-12' }
+  const fmt = (o) => createFastaHeaderFormatter(
+    Object.assign({ idFields: ['patric_id'], contextFields: [] }, o))(doc).trim()
+
+  it('defaults to a single space — existing headers are unchanged', function () {
+    assert.equal(fmt({ descriptionFields: ['product', 'strain'] }),
+      '>fig|1.1.peg.1| ABC transporter K-12')
+  })
+
+  it('honours a custom delimiter', function () {
+    assert.equal(fmt({ descriptionFields: ['product', 'strain'], descriptionDelimiter: ' | ' }),
+      '>fig|1.1.peg.1| ABC transporter | K-12')
+  })
+
+  it('honours a tab', function () {
+    assert.include(fmt({ descriptionFields: ['product', 'strain'], descriptionDelimiter: '\t' }),
+      'ABC transporter\tK-12')
+  })
+
+  it('honours an EXPLICITLY EMPTY delimiter rather than falling back', function () {
+    // Mirrors the id/context delimiters, which use `!== undefined` for this reason.
+    assert.equal(fmt({ descriptionFields: ['product', 'strain'], descriptionDelimiter: '' }),
+      '>fig|1.1.peg.1| ABC transporterK-12')
+  })
+
+  it('still skips empty values rather than emitting a bare delimiter', function () {
+    const sparse = { patric_id: 'x', product: 'ABC transporter', strain: '' }
+    const out = createFastaHeaderFormatter({
+      idFields: ['patric_id'],
+      contextFields: [],
+      descriptionFields: ['product', 'strain'],
+      descriptionDelimiter: '~'
+    })(sparse).trim()
+    assert.equal(out, '>x| ABC transporter', 'no trailing delimiter for a missing value')
+  })
+
+  it('is read from the request like the other delimiters', function () {
+    const { createFastaHeaderFormatterFromRequest } = require('../../util/fastaHeaderFormatter')
+    const req = {
+      call_collection: 'genome_feature',
+      fastaParams: {
+        http_fasta_id_fields: 'patric_id',
+        http_fasta_description_fields: 'product,strain',
+        http_fasta_description_delimiter: ' ~ ',
+        http_fasta_context_fields: ''
+      }
+    }
+    assert.include(createFastaHeaderFormatterFromRequest(req)(doc), 'ABC transporter ~ K-12')
+  })
+})
+
+/**
+ * Multi-valued joinable fields.
+ *
+ * `segment` and `h5_clade` are the first multiValued fields added to the shared set
+ * since `disease`/`other_clinical`. They render comma-joined by getFieldValue(), which
+ * is NOT configurable -- worth pinning, because a client parsing a header on commas
+ * cannot distinguish a multi-valued field from two single-valued ones.
+ */
+describe('multi-valued genome metadata fields', function () {
+  const { GENOME_METADATA_FIELDS } = require('../../lib/joinConfig')
+  const { createFastaHeaderFormatter } = require('../../util/fastaHeaderFormatter')
+
+  it('exposes the influenza typing and taxonomy fields', function () {
+    for (const f of ['species', 'lineage', 'clade', 'h5_clade', 'segment', 'subtype',
+      'genbank_accessions']) {
+      assert.include(GENOME_METADATA_FIELDS, f)
+    }
+  })
+
+  it('renders a multi-valued field comma-joined', function () {
+    const doc = { patric_id: 'P', segment: ['4', '6'], h5_clade: ['2.3.4.4b'] }
+    assert.equal(
+      createFastaHeaderFormatter({ template: '{patric_id} {segment} {h5_clade}' })(doc).trim(),
+      '>P 4,6 2.3.4.4b')
+  })
+
+  it('renders a single-element array without brackets or quotes', function () {
+    // Real data: most segment/h5_clade values are single-element arrays.
+    const doc = { patric_id: 'P', segment: ['4'] }
+    assert.equal(createFastaHeaderFormatter({ template: '{segment}' })(doc).trim(), '>4')
+  })
+})

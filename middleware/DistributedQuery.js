@@ -172,6 +172,24 @@ function shouldUseDistributedQuery (req, config) {
     return { useDistributed: false, reason: 'facet/group query requires standard query path' }
   }
 
+  // An UNRESOLVED cross-collection join must not be fanned out to the shards.
+  //
+  // stripManagedParams keeps every fq, so a surviving {!join method=crossCollection}
+  // reaches each shard intact and every one of them builds the join DocSet independently
+  // -- the broad-taxon cold build that OOMed data nodes (crash-analysis-2026-06-25.md)
+  // and that Cloudflare cuts at 125s. JoinResolution normally removes the clause, either
+  // by rewriting it to {!terms} or by attaching a stream; this is the backstop for when
+  // it does not, which today means the fail-open path (a Solr blip during the genome
+  // lookup leaves the join intact and calls next()).
+  //
+  // Belt and braces with the res.results guard in the middleware: that one stops the
+  // known route in, this one stops the clause regardless of how it got here. The
+  // standard path handles these correctly -- measured 200/3.05 MB in 5.7s where the
+  // distributed path returned 524 after 125s.
+  if (/crossCollection/.test(contentQuery)) {
+    return { useDistributed: false, reason: 'unresolved crossCollection join requires standard query path' }
+  }
+
   // Check for explicit header override
   const headerOverride = req.headers['x-distributed-query']
   if (headerOverride !== undefined) {
@@ -293,6 +311,37 @@ function wrapForMediaHandler (queryResult, callMethod) {
 module.exports = async function distributedQueryMiddleware (req, res, next) {
   // Only process if we have a call method and collection
   if (!req.call_method || !req.call_collection) {
+    return next()
+  }
+
+  // SOMETHING UPSTREAM ALREADY RESOLVED THIS REQUEST INTO A STREAM. Leave it alone.
+  //
+  // `res.results = wrapForMediaHandler(...)` below overwrites res.results
+  // unconditionally, and that silently discarded the stream JoinResolution attaches for
+  // an over-broad join. JoinResolution handles those by attaching a BatchedJoinStream
+  // rather than by rewriting the query, so req.call_params[0] still carries the raw
+  // {!join method=crossCollection} clause -- and stripManagedParams keeps every fq, so
+  // the untouched join was sent to each shard. That is the 258s cold build; Cloudflare
+  // cut it at 125s with zero bytes.
+  //
+  // Measured on alpha 2026-10-29, identical protein-FASTA download of taxon 10239:
+  //
+  //                        distributed            standard
+  //     limit(9000)        524 @ 125s             200, 2.76 MB @ 6.3s
+  //     limit(10000)       524 @ 125s             200, 3.05 MB @ 5.7s
+  //
+  // The transport decided the outcome, not the row count -- the apparent cliff at 10,000
+  // was only minLimitThreshold choosing the path. Controls: the same limit(10000) with NO
+  // join returns byte-identical results on both paths (4,214,626 B), and a small-taxon
+  // join -- which JoinResolution *rewrites* into {!terms} instead of attaching a stream --
+  // succeeds distributed. The failure needs all three: a join, broad enough to be refused,
+  // on a request routed distributed.
+  //
+  // Checked before shouldUseDistributedQuery so an explicit `distributed=true` override
+  // cannot resurrect the bug: a caller asking for the distributed path does not override
+  // the fact that this request is already answered.
+  if (req.skipAPIMethodHandler || (res.results && res.results.stream)) {
+    debug('Request already has a stream attached upstream; leaving it untouched')
     return next()
   }
 

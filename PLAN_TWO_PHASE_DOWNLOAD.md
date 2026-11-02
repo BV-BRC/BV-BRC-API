@@ -1,0 +1,582 @@
+# PLAN: two-phase bulk download via a non-Cloudflare host
+
+**Status:** proposal. Not implemented.
+**Written:** 2026-10-28.
+**Audience:** network/infrastructure admins first — §2 and §7 are the decisions that need
+their input; the rest is API-side work that follows from those answers.
+
+---
+
+## 1. The problem, measured
+
+Cloudflare terminates a response that goes quiet for too long, **even after the response
+has started**. Measured against alpha through the real proxy chain (`stall-test`,
+2026-10-28):
+
+| silence between bytes | result |
+|---|---|
+| 60 s | 200, complete |
+| 100 s | 200, complete |
+| 120 s | 200, complete |
+| **150 s** | **connection cut at 127 s, body truncated** |
+| 30 s heartbeat × 6 (3 min total) | 200, complete — all ticks delivered |
+
+So the budget is **between 120 and 150 seconds of silence**, and it **resets on every
+byte**. It is not a time-to-first-byte limit and not a total-duration limit.
+
+Two properties of that make it nasty:
+
+- **The failure looks like success.** The 150 s case returned **HTTP 200** with a
+  truncated body, not a 524 — the status line goes out with the first chunk, so once any
+  byte is written Cloudflare cannot change the status. Same silent-truncation class as the
+  `sort()`-less stream and the mid-stream shard failure already recorded in `CLAUDE.md`.
+- **The origin is not the constraint.** `alpha.bv-brc.org.conf` sets
+  `proxy_read_timeout 1800s` and `proxy_buffering off` on `/api/`; `nginx.conf` sets
+  `proxy_read_timeout 3600`. nginx would wait 30 minutes and does not buffer. Confirmed
+  the cut is Cloudflare's: the body is literally `error code: 524`, `server: cloudflare`,
+  and five 1-second ticks arrive one second apart through the full chain.
+
+### Why this bites now
+
+Broad-taxon downloads resolve a cross-collection join by walking the genome set in slices
+(`lib/BatchedJoinStream.js`). When the query also carries a selective filter — the real
+example is `annotation:"PATRIC"` over Viruses, 14.9 M genomes — most slices match nothing,
+so the stream legitimately produces no rows for minutes at a time. Observed:
+
+```
+limit(3000)   -> 200, ttfb  3.6s
+limit(5000)   -> 200, ttfb  4.4s
+limit(10000)  -> 524, silent for 125s
+limit(2500000)-> 524, silent for 125s        <- the user's actual query
+```
+
+Nothing is broken. The pipeline is working and quiet, and Cloudflare kills it.
+
+### Why the obvious fix does not work
+
+A keepalive byte. **There is no byte that is harmless in every serializer this path
+feeds.** A blank line is tolerable in CSV and FASTA; inside `media/json.js`'s single JSON
+array — the default content type — it is a syntax error. A per-serializer keepalive would
+rescue two formats and corrupt the rest.
+
+---
+
+## 2. Proposal, and what it asks of infrastructure
+
+Split a bulk download in two:
+
+```
+  PHASE 1   POST https://www.bv-brc.org/api/<collection>/?http_download=true...
+            (through Cloudflare, as today)
+            -> validate, size the query, mint a token
+            -> 302 to the download host
+
+  PHASE 2   GET  https://download.bv-brc.org/dl/<token>
+            (NOT through Cloudflare)
+            -> stream for as long as it takes
+```
+
+Phase 1 stays small and fast, so Cloudflare never sees a long response. Phase 2 has no
+edge timeout, so the 30-minute Viruses download that nginx would already tolerate actually
+completes.
+
+### What we need from infrastructure
+
+1. **A hostname that bypasses Cloudflare.** Orange-cloud off / DNS-only, or a separate
+   name pointed straight at the origin. Cloudflare's protections are per-hostname, so this
+   does **not** require a separate machine — a second nginx `server` block on the same host
+   is sufficient and is the simplest option.
+2. **TLS for that hostname.** The existing setup uses Let's Encrypt
+   (`/etc/letsencrypt/live/alpha.bv-brc.org/`); a new name needs its own certificate.
+   Without CF in front, cert renewal must work directly against the origin.
+3. **A view on losing CF's protections** for that hostname — DDoS absorption, bot
+   filtering, WAF, rate limiting. §7 covers what we intend to do instead, and that is the
+   part most worth their review.
+4. **Confirmation of Redis reachability** (§4): if phase 2 runs on the same host, none
+   needed; if on a different host, Redis must be reachable and authenticated.
+
+### What this is not
+
+Not a CDN change, not a new machine (unless you want one), and not a change to how the
+website issues downloads beyond following a redirect.
+
+---
+
+## 3. Why a redirect rather than always using the download host
+
+The website could point downloads at the non-CF host directly and skip phase 1. We should
+not, for two reasons:
+
+- **The validation is worth doing behind Cloudflare.** Phase 1 already exists in all but
+  name: `lib/joinResolver.js` counts the genome set before anything streams, which is what
+  produces today's `join_too_broad` 400 with `genomeCount`, `limit`, and `taxonId`. Doing
+  that check at the protected edge means an abusive or malformed request is refused
+  without the unprotected host ever seeing it.
+- **It keeps the unprotected surface tiny.** Phase 2 accepts exactly one shape: a token.
+  No RQL, no collection name, no serializer parameters. Anything else is a 404. That is a
+  much smaller thing to defend than a general query API.
+
+---
+
+## 4. Token design
+
+**Opaque random token in Redis**, not a signed JWT. Reasons, in order of weight:
+
+- **Revocable and single-use.** Delete the key when the download starts and the URL is
+  spent. A signed token is valid until it expires, and phase-2 URLs will land in browser
+  history, proxy logs, and the occasional support ticket.
+- **No key management.** No signing secret to share between hosts or rotate.
+- **No size limit on the payload.** The user's real query was ~2.5 M rows of RQL with
+  nested clauses; stuffing that into a URL-safe JWT is unpleasant, and storing it is free.
+
+### Shape
+
+```
+key    dlt:<32 random url-safe bytes>          (prefix matters -- see below)
+ttl    300 seconds
+value  JSON {
+         collection:   "genome_feature",
+         rql:          "<the original RQL, verbatim>",
+         accept:       "application/protein+fasta",
+         fastaParams:  { ... },        // http_fasta_* as captured by http-params.js
+         filterParams: { ... },        // http_filter_* likewise
+         user:         "olson@patricbrc.org" | null,
+         createdAt:    1761690000,
+         clientIp:     "x.x.x.x"
+       }
+```
+
+Four points that are load-bearing:
+
+**Store the IDENTITY, re-derive the PERMISSIONS.** Do not cache the resolved
+`permissionFq`. A user whose access changed between phases would otherwise get the stale
+scope. Phase 2 calls `buildPermissionFq({collection, user, publicFree})` exactly as
+`DecorateQuery` does — one source of truth, per `lib/permissionFilter.js`.
+
+**Prefix the key.** `config.js` has `redis.db: 2` with `prefix: ''`, shared with apicache,
+whose keys are raw URLs. `dlt:` avoids collisions and makes the keyspace inspectable.
+
+**Short TTL.** 300 s is ample for a browser to follow a redirect and is short enough that
+a leaked URL is near-worthless. The TTL governs *starting* the download, not its duration —
+once streaming begins the token is gone and the stream runs as long as it needs.
+
+**The redis client is 2.x and callback-style.** `CLAUDE.md` lists the v4 upgrade as a real
+migration, not a version bump. New code should follow the callback pattern already in
+`rpc/proteinFamily.js`, not introduce a second client style.
+
+---
+
+## 5. Phase 1 — mint and redirect
+
+Where: a small middleware after `JoinResolution` in `routes/dataType.js`, active only when
+`req.isDownload` and the two-phase feature is enabled.
+
+```
+if (!twoPhaseEnabled() || !req.isDownload)         -> unchanged behaviour
+if (the query is cheap)                             -> stream inline, as today
+if (the query is over the two-phase threshold)      -> mint a token, 302
+if (the query is refused by joinResolver)           -> 400 join_too_broad, as today
+```
+
+**Which downloads go two-phase?** Simplest defensible rule: any download whose join
+exceeds `joinResolution.rewriteMaxGenomes`, since that is already the line between "inline
+`{!terms}`" and "needs the slice walk". Small downloads keep working exactly as they do
+now and never see a redirect.
+
+**302 vs 307.** Must be **302 to a GET**. A hidden-form POST — which is how the website
+issues downloads — cannot have its body replayed cross-origin, so the token has to carry
+everything. That is already the design.
+
+**CORS.** The redirect crosses origins. `util/corsOptions.js` currently exposes
+`Retry-After`, `Content-Range` and friends; the download host needs its own CORS policy,
+and a browser following a 302 to a different origin for a file download generally does not
+need CORS at all — but this must be verified against the website's actual download
+mechanism (hidden form vs `fetch` vs `window.location`), because the three behave
+differently.
+
+---
+
+## 6. Phase 2 — stream
+
+A separate lightweight express app, or a dedicated route mounted on a second nginx vhost:
+
+```
+GET /dl/:token
+  1. GETDEL dlt:<token>            (single use; 404 if absent or expired)
+  2. rebuild req-shaped context from the stored value
+  3. recompute the permission fq from `user`
+  4. run the existing pipeline: RQLQueryParser -> ... -> BatchedJoinStream -> media
+  5. stream until done
+```
+
+Nothing new in the streaming path — it is the same middleware chain and the same
+serializers. The only novelty is where the request parameters come from.
+
+**nginx for the download vhost** should mirror `/api/`:
+
+```nginx
+proxy_read_timeout 1800s;
+proxy_buffering off;
+proxy_ignore_client_abort on;
+proxy_max_temp_file_size 0;
+```
+
+Those are already proven on `/api/` and are what make a 30-minute stream possible.
+
+---
+
+## 6a. Resumability — why the browser cannot have it, and who should
+
+**Nothing is materialized.** Phase 2 streams live from Solr through the same cursor-paged
+pipeline as `/api/` (step 5 above). There is no file on the download host at any point.
+An earlier draft of this section claimed two-phase would make downloads "an ordinary
+static file" and give `Accept-Ranges` for free — **that was wrong**, and the distinction
+matters: two-phase changes *which host and which timeout regime*, not *whether the bytes
+exist anywhere to be re-served.
+
+### The current behaviour, measured 2026-10-29 on alpha
+
+A user interrupted a 2.5M-record download and asked Chrome to resume it. Chrome produced
+a **zero-length file**.
+
+The API advertises none of what HTTP resume requires:
+
+| requirement for HTTP resume | status |
+|---|---|
+| `Accept-Ranges: bytes` | not sent |
+| `Content-Length` known up front | not sent — chunked; length unknown until the stream ends |
+| honor `Range` → `206` + `Content-Range` | **ignored — returns `200` and the WHOLE body** |
+| stable `ETag`/`Last-Modified` validator | not sent |
+
+The third row is verified **with curl**: `Range: bytes=500000-` against a 920,614-byte
+download returns HTTP `200` with all 920,614 bytes, byte-identical to the unranged
+response and starting at record 1. A client that treated that as a continuation would
+append a complete second copy onto its partial file.
+
+**What the browser actually does on Resume is NOT that, and an earlier draft of this
+section said otherwise.** It claimed Chrome sent a `Range`, received the `200`, and
+refused it — "the browser protecting the user." That was an inference from the curl probe
+above, not an observation of Chrome, and direct measurement contradicts it:
+
+- Against the current no-`Accept-Ranges` shape, a manual Resume click issued **no new
+  request at all**. The test server's log did not move; the download stayed interrupted
+  with `lastReason: "Failed - Network error"`.
+- So the empty file comes from Chrome's resume failing **before it reaches the API**, not
+  from the API answering badly. The API's `Range` handling is never exercised.
+
+The practical conclusions are unchanged — resume does not work, do not add
+`Accept-Ranges`, send bulk users to the toolkit — but the mechanism is simpler than the
+earlier text claimed, and the corrected version is what belongs in user-facing copy.
+
+### Can the server tell Chrome not to offer Resume? No.
+
+`Accept-Ranges: none` is the RFC 9110 signal for "do not attempt range requests," and it
+**does not suppress the Resume button**. Measured against Chrome 156, a response carrying
+`Accept-Ranges: none` and one carrying no such header behaved identically: both reached
+`resume: true` in `chrome://downloads`, and both offered Resume in the UI.
+
+Chrome decides resumability from its own interrupt reason and the partial file it has
+kept (`Unconfirmed NNNNN.crdownload`), not from what the server advertised. There is no
+server-side header that reliably removes the affordance, which is why this has to be
+handled as **documentation plus a better client**, not as a response-header fix.
+
+Send `Accept-Ranges: none` anyway if phase 2 is built — it is one header, it is the
+honest declaration, and a non-browser client may well respect it. Just do not expect it
+to change what the user sees.
+
+### How a browser resumes when the server DOES support it
+
+Measured against a local test server, Chrome 156. This is what the API would be signing
+up for — it is **not** a description of current behaviour, which is the section above.
+
+Against a properly resumable response, Chrome re-issues the **identical request** — same
+method, same URL — with two headers added, and resumes on its own without asking:
+
+```
+range: bytes=2097152-          <- exactly the byte count already on disk
+if-range: "resume-test-v1"     <- the ETag from the original response
+accept-encoding: identity      <- drops gzip, so byte offsets stay meaningful
+```
+
+`If-Range` is the safety mechanism, and it is already part of the protocol: it makes the
+resume **conditional**. The server returns `206` only if the validator still matches; if
+it does not, the server returns `200` with the whole body and the browser discards its
+partial file and starts over. The "splice two different versions together" hazard is
+therefore solved at the protocol level — *provided the server participates honestly*.
+
+Three behaviours worth knowing, all observed:
+
+| server shape | Chrome's behaviour |
+|---|---|
+| `Accept-Ranges` + `Content-Length` + `ETag`, honoring `Range` with `206` | **6 attempts**, auto-retried without prompting, offsets advancing `2097152 → 3145728 → 3670016 → 3932160 → 4063232` until complete |
+| no `Accept-Ranges`, no `Content-Length` — **today's BV-BRC shape** | **1 attempt**, then gives up. No automatic retry, and a manual Resume sends nothing |
+| `Accept-Ranges: none` | **identical to the row above** — the signal does not suppress the Resume button |
+| advertises `Accept-Ranges` but ignores `Range`, returning `200` + full body | **retries forever without advancing** — same `bytes=1048576-` five times running |
+
+The third row is the trap for any future implementation, and it is what would happen if
+someone "added resume support" by setting the header. **`Accept-Ranges` is a promise.**
+Advertising it without honoring `Range` with a real `206` + `Content-Range` is worse than
+not advertising it at all: the client correctly refuses to treat each `200` as a
+continuation, so it loops against a server that keeps restarting. Half-implementing this
+is the one outcome to avoid.
+
+### Why byte-exact resume is hard here, and it is not the offset table
+
+The obvious design is to record `(byte offset → cursorMark)` at page boundaries.
+`_streamQuery` already threads `cursorMark` through every page (`lib/solrjs/index.js:146`)
+and `middleware/content-range.js:13` already exposes `X-Cursor-Mark` to clients, so the
+plumbing largely exists. Two constraints decide how far it can go:
+
+1. **Resume is only exact at page boundaries.** A client asks for `bytes=N-` where N is
+   wherever the socket died — mid-record, usually. The server must restart at the
+   preceding mark and discard the overshoot to land on byte N, which means reproducing
+   those bytes identically.
+2. **That requires the result set to be stable between the two requests, and it is not.**
+   `cursorMark` guarantees no duplicates *within one walk over one searcher*. Across a gap
+   it resumes against whatever the index looks like now, and `genome_feature` ingests
+   hourly. A document inserted before the resume point shifts every subsequent byte, so
+   offsets recorded in run 1 no longer describe run 2's stream — and the client splices
+   two slightly different files into one that looks fine. Same silent-corruption class as
+   the `sort()` trap and the mid-stream shard failure; it needs an explicit answer, not
+   best effort.
+
+So the cost is the **index-stability contract**, not the bookkeeping. Options, in
+increasing order of ambition:
+
+- **Validator only (cheap, worth doing regardless).** Serve an `ETag` encoding the query
+  plus an index version; a resume revalidates and gets **`412`** if the index moved. That
+  converts today's silent risk into a clean, actionable failure without implementing
+  resume at all.
+
+  **Use the collection's commit/index version, not a `date_inserted` probe over the
+  matched records.** Scanning the result set for its newest insertion date is the obvious
+  idea and it is **unsafe, not merely expensive**: `date_inserted` only witnesses
+  *insertions*. Deprecating a genome removes all of its features from a result set
+  filtered by `ne(genome_status,Deprecated)` — the shape these downloads actually use —
+  **without touching any `date_inserted` on `genome_feature`**; a hard delete behaves the
+  same way. So `max(date_inserted)` can report "unchanged" while the result set shrank,
+  which is the one direction a validator must never fail in. A validator may
+  over-invalidate freely (the client simply restarts); it may never under-invalidate.
+
+  The index version over-invalidates — with hourly ingest, roughly hourly, even when the
+  caller's own slice did not move — but it is one cheap lookup and it errs safely. That
+  trade is the right one: a needless restart costs a re-download, a missed invalidation
+  costs a silently spliced file.
+- **Pin the searcher** for the life of a token. Correct, but holds merge resources per
+  in-flight download across a 30-minute window. Needs the architects.
+- **Record-level resume** — `?resume_after=<mark>`, returning a fresh file from that
+  point. Honest semantics and no byte arithmetic, but it is not HTTP range resume, so a
+  browser cannot use it. It needs a client that concatenates.
+
+### Preferred direction: point large downloads at the Go toolkit
+
+The third option above is the one that actually fits, and the toolkit is the client for
+it — **because it has the downloaded file on disk and can truncate to a record boundary.**
+That is precisely the capability a browser lacks: Chrome can only append at a byte offset
+it chose, with no idea where a FASTA record starts. A toolkit client can scan back to the
+last complete record, discard the partial tail, and ask to resume from the corresponding
+cursor — making the page-boundary constraint above a non-issue rather than something the
+server must work around with byte arithmetic.
+
+This also puts the retry logic where the operational need is. Bulk consumers pulling
+hundreds of MB over flaky links are the population that needs resume; a human re-clicking
+a download tolerates "start over" fine. Steering them to the toolkit means the server
+contract can stay simple (`resume_after=<mark>` + a validator) instead of emulating
+byte-range semantics over a non-seekable source.
+
+**Implication for this plan:** do not add `Accept-Ranges` or range handling to phase 2.
+Ship the `412` validator so stale resumes fail loudly, document that browser resume is
+unsupported, and treat record-level `resume_after` as a toolkit-facing feature if and when
+demand justifies it.
+
+---
+
+## 7. What we lose with Cloudflare off, and what replaces it
+
+This is the section for the network admins.
+
+| CF provides | on the download host instead |
+|---|---|
+| bot filtering | the token: no valid token, no response. Tokens are single-use, 5-minute TTL, and only mintable through the protected phase-1 endpoint |
+| rate limiting | needs explicit provision — see below |
+| DDoS absorption | **genuinely lost.** The host is directly exposed |
+| WAF | surface is one route taking one opaque token; there is no query to inject into |
+| TLS termination | Let's Encrypt direct to origin |
+
+**Rate limiting is the gap that needs a decision.** The existing admission control
+(`lib/SolrAdmissionControl.js`) is per-worker and counts concurrency, not request rate, and
+phase 2 would be a different pool. Options, not mutually exclusive:
+
+- nginx `limit_req` / `limit_conn` on the download vhost, keyed by IP;
+- cap concurrent active downloads in the phase-2 app, rejecting with 503 + `Retry-After`;
+- bind the token to the requesting IP at mint time (stored as `clientIp`) and reject a
+  mismatch at phase 2. Note this breaks for users behind rotating egress IPs and for
+  mobile networks — worth discussing whether the trade is acceptable.
+
+**Exposure is bounded by design.** Even with no rate limiting, an attacker without a token
+gets a 404 from a route that does nothing else. The realistic abuse is someone who *can*
+mint tokens (any user) minting many and running concurrent downloads — which is a
+resource-exhaustion concern, addressed by the concurrency cap, not a security hole.
+
+---
+
+## 7a. Alternative — the dribble reserve (implemented, and it may be enough)
+
+**Added 2026-10-28, after the plan above was drafted.** This is a cheaper fix that
+addresses the same failure without touching DNS, TLS, or Cloudflare, and it is worth
+evaluating before committing to two-phase.
+
+### The measurement that enables it
+
+A **single byte** resets Cloudflare's silence budget. Measured against alpha through the
+production chain: one space written every 100 s, three times — three gaps each longer than
+the 150 s gap that truncated the earlier test — kept a **300-second response alive to
+completion**.
+
+### The idea
+
+Not synthesised filler. **Hold back the tail of output already produced, and spend it one
+byte at a time while the producer is quiet.** When the producer resumes, flush the reserve
+and continue normally.
+
+No byte is invented, so format legality never arises — the bytes on the wire are
+**identical**, only their timing changes. That makes it correct for every serializer,
+binary xlsx included, which is precisely where a keepalive-byte scheme fails.
+
+(For the record, my earlier claim that JSON admits no filler was wrong: RFC 8259 allows
+whitespace between structural tokens. But that rescues one more text format, not binary
+ones, so the reserve is still the better mechanism.)
+
+### Status
+
+Implemented in `util/streamWithBackpressure.js` as `makeDribbleReserve`, opted into with
+`dribbleMs` / `reserveBytes`, **off by default** — all seven serializers that use the
+helper are unchanged unless they ask for it. Eight tests, the load-bearing one asserting
+byte-identical output with and without the reserve.
+
+Cost when idle: one `Buffer.concat` per write and a timer that is cleared and reset. The
+fast path never enters the dribble branch, because real data resets the clock by itself —
+the two modes are mutually exclusive rather than interleaved.
+
+### What it does NOT fix
+
+**The reserve must be non-empty when the silence begins.** It protects gaps *between*
+records, not a slow first record. The Viruses `annotation:"PATRIC"` download is silent
+from byte zero, so it still depends on the producer reaching its first row promptly —
+which is what the row-limit cap (PR #250) addresses.
+
+It also does nothing about **total** duration if Cloudflare enforces one; the 300 s test
+says there is no cap at that scale, but a 33-minute download is untested.
+
+### How this bears on two-phase
+
+| | dribble reserve | two-phase |
+|---|---|---|
+| infrastructure change | none | DNS, TLS, nginx vhost |
+| loses CF protection | no | yes, for the download host |
+| fixes mid-stream gaps | yes | yes |
+| fixes slow first byte | no | yes |
+| fixes unbounded duration | unproven past 300 s | yes |
+| effort | done | substantial |
+
+**Recommended sequencing:** ship the dribble reserve now and measure whether real
+downloads still fail. If they do — or if a download genuinely needs 30+ minutes — two-phase
+remains the durable answer and this plan stands. If they do not, two-phase becomes a
+nice-to-have rather than a necessity, and the infrastructure conversation can be had at
+leisure.
+
+> **Measured 2026-10-29 — that step is done, and the answer was neither branch.**
+>
+> The reserve shipped (#253) and changed nothing on the reported query: still
+> `ttfb=125 s`, HTTP 524, 16 bytes. The prediction in that PR was right — the reserve
+> protects gaps *between* records, and that download was silent from byte zero, so there
+> was nothing held back to spend.
+>
+> **The cause was not silence at all.** `DistributedQuery` overwrote `res.results`
+> unconditionally, discarding the `BatchedJoinStream` that `JoinResolution` had attached,
+> and sent the raw `{!join method=crossCollection}` to every shard — the 258 s cold build.
+> The apparent 10,000-row cliff was only `minLimitThreshold` choosing the transport:
+> `limit(9000)` *forced* distributed also failed, `limit(10000)` *forced* standard
+> succeeded. Fixed in **PR #255**; the originally-failing download now returns 2,500,000
+> records through Chrome and Cloudflare.
+>
+> **What this means for this plan.** The acute failure is gone, so two-phase drops from
+> *necessary* to *durable insurance* — which is the plan's own second branch. It still
+> earns its place for downloads that genuinely exceed the CF budget on producer time
+> rather than on a bug, and §6a is now the other reason to keep it on the table. But the
+> infrastructure conversation is no longer blocking anyone.
+>
+> Worth recording as a method note: the reserve was built on a diagnosis
+> ("producer-side sparse walk") that measurement later falsified — 91% of non-deprecated
+> Viruses genomes have `patric_cds > 0`, **zero** have none, and the first 20,000-genome
+> slice alone holds 405,827 CDS and answers in 1.6 s. Nothing was sparse. The reserve is
+> still correct and still useful for genuinely slow producers; it just was not the fix
+> for this.
+
+---
+
+## 8. What this makes unnecessary
+
+Worth stating, because there is in-flight work it would supersede:
+
+- **The stall guard** currently uncommitted in `lib/BatchedJoinStream.js` (ends the walk
+  after 90 s with no rows rather than being cut mid-record). Still worth keeping as a
+  safety net — a walk finding nothing for 90 s is probably wrong — but it stops being
+  load-bearing.
+- **The partial-download logging** in `middleware/JoinResolution.js`, same status.
+- **A time-based flush in `SequenceJoinStream`** (prototyped, not committed, test harness
+  was wrong). Two-phase removes its reason to exist; drop it.
+- **Much of `PLAN_DOWNLOAD_SSE_NOTIFICATIONS.md`'s urgency.** That plan exists partly
+  because a hidden-form POST cannot read response headers and partly because downloads can
+  fail invisibly. Two-phase removes the truncation mode; the completion-notification case
+  remains.
+
+---
+
+## 9. Open questions
+
+1. **Same host or separate?** Same host with a second vhost is simplest and sufficient —
+   Cloudflare is per-hostname. A separate host is only needed if the goal is also to
+   isolate the load, and it brings the Redis reachability problem with it.
+2. **Hostname?** `download.bv-brc.org`, `dl.bv-brc.org`, or an alpha-only name while this
+   is shaken down.
+3. **Does the website's download mechanism follow cross-origin redirects cleanly?** Must
+   be verified per mechanism (hidden form / `fetch` / `window.location`) before committing
+   to the design.
+4. **Rate-limit strategy** — §7.
+5. **IP binding: yes or no?** Tightens the token materially; breaks for roaming clients.
+6. **Does this extend to all bulk downloads eventually,** or only the ones that currently
+   fail? Starting narrow (joins over the rewrite threshold) is lower risk and reversible.
+7. **Resumability — settled in principle (§6a): point large downloads at the Go toolkit,
+   not at browser range requests.** What remains open is whether to ship the `412`
+   validator on its own now (it makes a stale resume fail loudly rather than silently,
+   and is useful with or without resume), and whether there is real demand for
+   record-level `resume_after` from toolkit users. Worth asking before building.
+
+---
+
+## 10. Measurements this plan rests on
+
+All taken 2026-10-28 against alpha through the production proxy chain, so they include
+Cloudflare, nginx, and the API.
+
+| what | value |
+|---|---|
+| CF silence budget | between **120 s** (survives) and **150 s** (cut at 127 s) |
+| CF budget resets per byte | yes — 30 s heartbeat sustained 3 minutes |
+| nginx `/api/` read timeout | 1800 s, `proxy_buffering off` |
+| nginx buffering observed | none — 1 s ticks arrive 1 s apart end to end |
+| failure mode past the budget | **HTTP 200 with a truncated body**, not an error |
+| Viruses summary fill (comparable walk) | 783 slices, 15,643,163 genomes, **32.8 min** |
+| batched slice cost | ~5 s per 20,000 genomes; ~10× cheaper than the join |
+
+Added 2026-10-29, after the transport fix (PR #255) landed — these supersede the premise
+of §7a's "ship the reserve and measure" step, which has now been done:
+
+| what | value |
+|---|---|
+| the originally-failing Viruses download | **completes**: 2,500,000 records through Chrome + CF |
+| `limit(10000)` taxon 10239, before / after | 524 @ 125 s → **200 @ ~5 s** |
+| dribble reserve's effect on that query | **none** — it was a transport bug, not a silence bug |
+| `Range:` on a streaming download | **ignored**: `200` + full body, not `206` (§6a) |
+| browser resume outcome | zero-length file — Chrome refusing a `200` as a continuation |

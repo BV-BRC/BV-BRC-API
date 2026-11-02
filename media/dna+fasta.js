@@ -25,8 +25,10 @@
  */
 
 const debug = require('debug')('p3api-server:media:dna-fasta')
+const fastaGenomeFields = require('../lib/fastaGenomeFields')
 const LineWrap = require('../util/linewrap')
 const { streamWithBackpressure } = require('../util/streamWithBackpressure')
+const { registerAgent } = require('../lib/agentStats')
 const {
   createFastaHeaderFormatterFromRequest,
   formatLegacyHeader,
@@ -64,7 +66,11 @@ async function getGenomeMetadataDict (genomeIds, req) {
   if (genomeIds.length === 0) return {}
 
   const ids = genomeIds.join(',')
-  const fields = 'genome_id,genome_name,taxon_id,genome_status,strain,assembly_accession,bioproject_accession,biosample_accession'
+  // Driven by the request, not a hardcoded list. This was a THIRD copy of the default
+  // field set (alongside GenomeMetadataJoinStream.DEFAULT_CONFIG and the streaming
+  // path), so a field the header asked for was fetched on the streaming path and
+  // silently dropped here.
+  const fields = fastaGenomeFields.genomeFieldsFor(req, req && req.call_collection).join(',')
   const q = `&in(genome_id,(${ids}))&limit(${genomeIds.length})&select(${fields})`
 
   const distributeURL = Config.get('distributeURL')
@@ -142,11 +148,14 @@ function initializeDirectSolr () {
       debug('SSL certificate validation disabled')
     }
 
-    const httpsAgent = new https.Agent({
+    // Registered for /stats: these sequence lookups are the amplification path that
+    // Layer 2 of PLAN_SOLR_OVERLOAD_PROTECTION.md caps. The client instance is cached
+    // across requests, so this is a per-worker pool, not per-request.
+    const httpsAgent = registerAgent('serializer.dnaFasta', new https.Agent({
       keepAlive: true,
       maxSockets: 10,
       ...tlsOptions
-    })
+    }))
 
     // Create cluster client (reuse if exists)
     if (!solrClusterClientInstance) {
@@ -194,42 +203,18 @@ function formatGenomeSequenceRecord (doc) {
 }
 
 /**
- * Check if any FASTA header fields reference genome_metadata.
+ * Does this request need genome metadata joined in?
  *
- * @param {Object} req - Express request object
- * @returns {boolean} True if genome join is needed
+ * Delegates to lib/fastaGenomeFields.js, which resolves names against the SAME join
+ * registry that `/:collection/fields` reports and JoinEnrichment uses. The previous
+ * implementation tested for the literal 'genome_metadata.' substring, so a bare
+ * `host_name` -- which is what `/fields` advertises and what select() accepts --
+ * triggered no join and was silently dropped from the header.
  */
-function needsGenomeJoin (req) {
-  const fastaParams = req.fastaParams || {}
-  const fieldsToCheck = [
-    fastaParams.http_fasta_id_fields,
-    fastaParams.http_fasta_description_fields,
-    fastaParams.http_fasta_context_fields
-  ]
-
-  return fieldsToCheck.some(fields => {
-    return fields && fields.includes('genome_metadata.')
-  })
+function needsGenomeJoin (req, collection) {
+  return fastaGenomeFields.needsGenomeJoin(req, collection || (req && req.call_collection))
 }
 
-/**
- * Check if any FASTA header fields reference genome_metadata.
- *
- * @param {Object} req - Express request object
- * @returns {boolean} True if genome join is needed
- */
-function needsGenomeJoin (req) {
-  const fastaParams = req.fastaParams || {}
-  const fieldsToCheck = [
-    fastaParams.http_fasta_id_fields,
-    fastaParams.http_fasta_description_fields,
-    fastaParams.http_fasta_context_fields
-  ]
-
-  return fieldsToCheck.some(fields => {
-    return fields && fields.includes('genome_metadata.')
-  })
-}
 
 /**
  * Serialize genome_feature stream using SequenceJoinStream (new efficient path).
@@ -256,6 +241,10 @@ async function serializeFeatureStreamDirect (stream, res, req, directSolrClient)
       batchSize: 50,
       cacheSize: 100,
       skipHeader: true,
+      // Fetch what the HEADER actually asked for, not a hardcoded list. The stream's
+      // DEFAULT_CONFIG.genomeFields covers 8 fields; the join registry exposes 35, and
+      // the extras resolved to undefined and vanished from the header.
+      genomeFields: fastaGenomeFields.genomeFieldsFor(req, req.call_collection),
       user: req.user,
       publicFree: req.publicFree
     })
@@ -376,7 +365,44 @@ async function serializeFeatureStreamLegacy (stream, res, req) {
 async function serializeGenomeSequenceStream (stream, res, req) {
   const headerFormatter = createFastaHeaderFormatterFromRequest(req)
 
-  await streamWithBackpressure(stream, res, {
+  // Contigs carry genome_id, so they enrich exactly as features do. This path
+  // formatted headers but never joined, so /:collection/fields advertised 33 enriched
+  // fields on genome_sequence that a FASTA download silently dropped -- both bare and
+  // genome_metadata.-prefixed names.
+  //
+  // Unlike the feature path there is no sequence join to pipe through: contigs carry
+  // their own `sequence`, so the genome join is the only stage and the transform reads
+  // doc.genome_metadata straight off the enriched document.
+  let pipelineStream = stream
+  let joined = false
+  const directClient = initializeDirectSolr()
+
+  if (needsGenomeJoin(req) && directClient && GenomeMetadataJoinStream) {
+    debug('Adding genome metadata join to genome_sequence pipeline')
+    const genomeJoinStream = new GenomeMetadataJoinStream(directClient, {
+      batchSize: 50,
+      cacheSize: 100,
+      skipHeader: true,
+      genomeFields: fastaGenomeFields.genomeFieldsFor(req, req.call_collection),
+      user: req.user,
+      publicFree: req.publicFree
+    })
+    // pipe() does not forward errors; without this a mid-stream join failure becomes an
+    // unhandled 'error' event rather than failing the response. Same pattern as
+    // middleware/DistributedQuery.js.
+    stream.on('error', (err) => {
+      console.error(`genome_sequence genome-join upstream error: ${err && err.message}`)
+      genomeJoinStream.destroy(err)
+    })
+    pipelineStream = stream.pipe(genomeJoinStream)
+    joined = true
+  }
+
+  await streamWithBackpressure(pipelineStream, res, {
+    // The join stream consumed the Solr metadata header already (skipHeader: true);
+    // letting streamWithBackpressure skip again would drop the FIRST REAL CONTIG. The
+    // feature path handles the same handoff at the SequenceJoinStream boundary.
+    skipFirstDoc: !joined,
     transform: (doc) => {
       const header = headerFormatter(doc)
       const sequence = doc.sequence ? LineWrap(doc.sequence, 60) : ''
@@ -475,6 +501,22 @@ async function serializeQueryResults (docs, res, req) {
     }
   } else if (collection === 'genome_sequence') {
     const headerFormatter = createFastaHeaderFormatterFromRequest(req)
+
+    // Contigs carry genome_id, so they enrich exactly as features do. This branch
+    // formatted headers but never joined, so /:collection/fields advertised 33
+    // enriched fields on genome_sequence that a FASTA download silently dropped --
+    // both bare and genome_metadata.-prefixed.
+    if (needsGenomeJoin(req) && docs.length > 0) {
+      const genomeIds = [...new Set(docs.map(d => d.genome_id).filter(id => id))]
+      debug(`Query mode: enriching ${docs.length} contigs for ${genomeIds.length} genomes`)
+      const genomeMetadata = await getGenomeMetadataDict(genomeIds, req)
+      for (const doc of docs) {
+        if (doc.genome_id && genomeMetadata[doc.genome_id]) {
+          doc.genome_metadata = genomeMetadata[doc.genome_id]
+        }
+      }
+    }
+
     for (const doc of docs) {
       const header = headerFormatter(doc)
       const sequence = doc.sequence ? LineWrap(doc.sequence, 60) : ''

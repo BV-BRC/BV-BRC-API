@@ -108,9 +108,15 @@ function reject (res, message) {
  *
  * @param {string} rawRql - The RQL body as sent
  * @param {string} sourceCollection - Collection to parse against
+ * @param {Object} [req] - The calling request. ExpandingQuery needs it to resolve
+ *   join()/GenomeGroup()/FeatureGroup() terms as the caller: it reads `req.user` for the
+ *   sub-query's permission scope and `req.headers.authorization` for the Workspace API.
+ *   This used to be `{}`, which made any such term throw a TypeError inside an unwatched
+ *   promise; with that fixed, passing `{}` would instead have silently resolved the term
+ *   anonymously and dropped the user's private rows from their own download.
  * @returns {Promise<{q: string, fq: Array<string>}>}
  */
-async function parseSourceQuery (rawRql, sourceCollection) {
+async function parseSourceQuery (rawRql, sourceCollection, req) {
   const cleaned = String(rawRql || '')
     .replace(/&?\bselect\([^)]*\)/g, '')
     .replace(/&?\blimit\([^)]*\)/g, '')
@@ -123,7 +129,7 @@ async function parseSourceQuery (rawRql, sourceCollection) {
     return { q: '*:*', fq: [] }
   }
 
-  const resolved = await Expander.ResolveQuery(cleaned, { req: {}, res: {} })
+  const resolved = await Expander.ResolveQuery(cleaned, { req: req || {}, res: {} })
   const solr = Rql(resolved === '()' ? '' : resolved)
     .toSolr({ maxRequestLimit: 999999999, defaultLimit: 25, collection: sourceCollection })
 
@@ -220,7 +226,7 @@ async function crossCollectionSourceMiddleware (req, res, next) {
   // when the response has already started.
   let parsed
   try {
-    parsed = await parseSourceQuery(rawSourceQuery, sourceCollection)
+    parsed = await parseSourceQuery(rawSourceQuery, sourceCollection, req)
   } catch (err) {
     debug(`Source query parse failed: ${err.message}`)
     return reject(res, `Could not parse the source query for ${sourceCollection}: ${err.message}`)
