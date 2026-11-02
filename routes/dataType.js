@@ -21,7 +21,8 @@ const ShardsPreference = require('../middleware/ShardsPreference')
 const SolrQuerySanitizer = require('../middleware/SolrQuerySanitizer')
 const JoinResolution = require('../middleware/JoinResolution')
 const { describeFields } = require('../lib/collectionFields')
-const { validateTemplate } = require('../util/fastaHeaderFormatter')
+const { validateTemplate, templateFields } = require('../util/fastaHeaderFormatter')
+const { findUnknownFields } = require('../lib/collectionFields')
 const { makeSolrClient } = require('../middleware/APIMethodHandler')
 const QueryClassifier = require('../middleware/QueryClassifier')
 const DistributedQuery = require('../middleware/DistributedQuery')
@@ -284,7 +285,7 @@ router.use([
   // hid -- a header that looks plausible and is quietly missing data. That is only
   // possible here, ahead of the serializer: once streaming begins the status is
   // committed and the best a serializer can do is truncate.
-  function fastaHeaderTemplateGuard (req, res, next) {
+  async function fastaHeaderTemplateGuard (req, res, next) {
     const template = req.fastaParams && req.fastaParams.http_fasta_header
     if (!template || String(template).trim() === '') {
       return next()
@@ -295,19 +296,48 @@ router.use([
       return res.status(400).send({ status: 400, message: syntaxError })
     }
 
-    // SYNTAX is validated here; FIELD NAMES are not.
+    // SYNTAX is always validated; FIELD NAMES only when the caller opts in with
+    // http_fasta_strict=true.
     //
-    // Deciding whether a bare name is valid needs the collection's Solr schema, and
-    // fetching it would add a round trip to every templated download -- on the request
-    // path, for a check the caller can make once against /:collection/fields. The
-    // trade is deliberate: a mistyped name renders empty rather than 400ing, which is
-    // the weaker half of decision 4 and is recorded as such.
+    // Checking names needs the collection's Solr schema, and doing it unconditionally
+    // would put a schema fetch on every templated download -- which is why it is not
+    // the default. Opt-in makes the cost proportionate: a caller who wants to be told
+    // about a typo pays for the check, and the schema is cached for 10 minutes so even
+    // they pay it rarely.
     //
-    // Syntax errors are the ones worth catching here because they are silent and
-    // total: an unbalanced brace does not render "mostly right", it renders the raw
-    // template text into every header in the file.
+    // Without this, a typo renders empty and returns 200. That bit a GUI client:
+    // `{hostname}` for host_name produced a silently truncated header.
+    const strict = String((req.fastaParams && req.fastaParams.http_fasta_strict) || '')
+      .trim().toLowerCase()
+    if (strict !== 'true' && strict !== '1') {
+      return next()
+    }
+
+    try {
+      const collection = req.call_collection
+      const unknown = await findUnknownFields(
+        collection,
+        templateFields(String(template)),
+        () => makeSolrClient(collection).getSchema()
+      )
+
+      if (unknown.length > 0) {
+        return res.status(400).send({
+          status: 400,
+          message: `http_fasta_header references unknown field(s): ${unknown.join(', ')}. ` +
+            `See /${collection}/fields for the fields this collection can return.`
+        })
+      }
+    } catch (err) {
+      // FAIL OPEN. Strict mode is a convenience for catching typos, not a security
+      // control, so a Solr blip must not turn a valid download into a 400. The
+      // unchecked request then behaves exactly as a non-strict one would.
+      console.error(`[fastaStrict] field validation unavailable, proceeding: ${err && err.message}`)
+    }
+
     next()
   },
+
   // Snapshot the RQL as the client sent it, before RQLQueryParser rewrites
   // call_params[0] into Solr syntax against the TARGET collection. A
   // cross-collection download needs the original to re-parse against the SOURCE.
