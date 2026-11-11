@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 BV-BRC API (p3api) is a Node.js/Express REST API providing access to BV-BRC bioinformatics data. It acts as a gateway to Solr backends, supporting RQL (Resource Query Language) and Solr query syntax.
 
-## Branch state (2026-11-02)
+## Branch state (2026-11-11; re-verified same day, counts unchanged since 2026-11-02)
 
 **`upstream/alpha` is 161 commits AHEAD of `upstream/master`, 0 behind** — master is an
 ancestor, so the merge is a **fast-forward with zero conflicts**. This section goes stale
@@ -51,8 +51,21 @@ with `--head olsonanl:<branch>`. **`gh pr edit` still does not work against this
 (`GraphQL: Projects (classic) is being deprecated`); `gh pr create` is fine, and to change a
 body afterwards use `gh api -X PATCH repos/BV-BRC/BV-BRC-API/pulls/<n> -F body=@file`.
 
-**All dependabot PRs are closed as of 2026-11-02** — #209, #214, #215, #217, #218, #223,
-#227, #233, #242, #256, #275, superseded by **#280**, one sweep against alpha.
+**All dependabot PRs are closed** — #209, #214, #215, #217, #218, #223,
+#227, #233, #242, #256, #275, superseded by **#280**, one sweep against alpha; and
+**#282/#283 closed 2026-11-11** as superseded by #239 (see below).
+
+**2026-11-11: the trap is still live.** Dependabot opened #282 (`systeminformation`
+5.33.1→5.33.19) and #283 (`postcss-selector-parser` 6.0.6→6.1.5) against **master** —
+it reads `.github/dependabot.yml` from the default branch, which does not have
+`target-branch: alpha` until #239 merges. Both were evaluated for application to alpha
+and **closed as superseded**: alpha's lockfile already resolves 5.33.19 and 6.1.5
+(picked up in the #280 sweep; #283 carried GHSA-rj75-hqrm-r3gf, a CPU-exhaustion fix —
+`npm audit` on alpha shows neither package vulnerable, 39 advisories total, the 2
+criticals being the documented `request-promise` + `@pm2/js-api` axios pair). Merging
+either to master first would have ended the fast-forward. Neither is request-path
+(systeminformation ← pm2-sysmonit ← pm2 devDep; postcss-selector-parser ← tailwind/
+purgecss build tooling).
 
 That queue should not be treated as noise, which is how an earlier version of this section
 read. **Every one of the eleven carried an advisory**, and #227 was **critical**:
