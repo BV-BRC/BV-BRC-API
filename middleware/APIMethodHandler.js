@@ -4,6 +4,7 @@ const SOLR_URL = Config.get('solr').url
 const debug = require('debug')('p3api-server:middleware/APIMethodHandler')
 const http = require('http')
 const Web = require('../web');
+const { isDocVisible } = require('../lib/permissionFilter')
 
 var solrAgent = Web.getSolrAgent();
 
@@ -145,7 +146,7 @@ function getSOLR (req, res, next) {
       if (sresults && sresults.doc) {
         const results = sresults.doc
 
-        if (results.public || (req.publicFree.indexOf(req.call_collection) >= 0) || (results.owner === (req.user)) || (results.user_read && results.user_read.indexOf(req.user) >= 0)) {
+        if (isDocVisible(results, { collection: req.call_collection, user: req.user, publicFree: req.publicFree })) {
           res.results = sresults
           next()
         } else {
@@ -160,11 +161,8 @@ function getSOLR (req, res, next) {
       } else if (sresults && sresults.response && sresults.response.docs) {
         // handle for multiple ids in get request
         // Check permissions on EVERY document, not just the first
-        const isPublicFree = req.publicFree.indexOf(req.call_collection) >= 0
-
-        const authorizedDocs = sresults.response.docs.filter((doc) => {
-          return doc.public || isPublicFree || (doc.owner === req.user) || (doc.user_read && doc.user_read.indexOf(req.user) >= 0)
-        })
+        const scope = { collection: req.call_collection, user: req.user, publicFree: req.publicFree }
+        const authorizedDocs = sresults.response.docs.filter((doc) => isDocVisible(doc, scope))
 
         if (authorizedDocs.length > 0) {
           sresults.response.docs = authorizedDocs

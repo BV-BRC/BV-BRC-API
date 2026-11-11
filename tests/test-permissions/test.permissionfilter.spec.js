@@ -11,6 +11,8 @@ const {
   buildPermissionFq,
   permissionScopeKey,
   permissionContext,
+  isDocVisible,
+  normalizeOwners,
   escapeSolrValue
 } = require('../../lib/permissionFilter')
 
@@ -116,6 +118,73 @@ describe('permissionFilter', function () {
       assert.equal(escapeSolrValue('a:b'), 'a\\:b')
       assert.equal(escapeSolrValue('a b'), 'a b') // whitespace is not special inside a term clause
       assert.equal(escapeSolrValue('a"b'), 'a\\"b')
+    })
+  })
+})
+
+describe('permissionFilter publicOwners', function () {
+  const publicOwners = ['PATRIC@patricbrc.org', 'curator']
+
+  it('defaults to no extra owners (fq unchanged)', function () {
+    assert.equal(buildPermissionFq({ collection: 'genome', publicFree }), 'public:true')
+  })
+
+  it('widens the anonymous filter', function () {
+    assert.equal(
+      buildPermissionFq({ collection: 'genome', publicFree, publicOwners }),
+      '(public:true OR owner:PATRIC@patricbrc.org OR owner:curator)'
+    )
+  })
+
+  it('widens the authenticated filter', function () {
+    assert.equal(
+      buildPermissionFq({ collection: 'genome', user: 'alice', publicFree, publicOwners }),
+      '(public:true OR owner:PATRIC@patricbrc.org OR owner:curator OR owner:alice OR user_read:alice)'
+    )
+  })
+
+  it('does not filter publicFree collections', function () {
+    assert.isNull(buildPermissionFq({ collection: 'taxonomy', publicFree, publicOwners }))
+  })
+
+  it('escapes owner ids so they cannot widen the filter further', function () {
+    const fq = buildPermissionFq({ collection: 'genome', publicFree, publicOwners: ['x) OR *:*'] })
+    assert.equal(fq, '(public:true OR owner:x\\) OR \\*\\:\\*)')
+  })
+
+  it('normalizes comma-separated strings, trims and de-duplicates', function () {
+    assert.deepEqual(normalizeOwners(' a, b ,a,, '), ['a', 'b'])
+    assert.deepEqual(normalizeOwners(undefined), [])
+    assert.deepEqual(normalizeOwners(''), [])
+  })
+
+  it('rejects non-string entries', function () {
+    assert.throws(() => normalizeOwners([1]), /publicOwners/)
+  })
+
+  it('leaves the scope key alone (rows are visible under every scope)', function () {
+    assert.equal(permissionScopeKey({ collection: 'genome', publicFree, publicOwners }), 'public')
+  })
+
+  describe('isDocVisible', function () {
+    const priv = { public: false, owner: 'curator', user_read: [] }
+    const other = { public: false, owner: 'bob', user_read: ['carol'] }
+
+    it('shows a public-owner private doc to anonymous callers', function () {
+      assert.isTrue(isDocVisible(priv, { collection: 'genome', publicFree, publicOwners }))
+      assert.isFalse(isDocVisible(priv, { collection: 'genome', publicFree, publicOwners: [] }))
+    })
+
+    it('keeps other private docs hidden', function () {
+      assert.isFalse(isDocVisible(other, { collection: 'genome', publicFree, publicOwners }))
+      assert.isFalse(isDocVisible(other, { collection: 'genome', user: 'alice', publicFree, publicOwners }))
+      assert.isTrue(isDocVisible(other, { collection: 'genome', user: 'carol', publicFree, publicOwners }))
+      assert.isTrue(isDocVisible(other, { collection: 'genome', user: 'bob', publicFree, publicOwners }))
+    })
+
+    it('honors public and publicFree', function () {
+      assert.isTrue(isDocVisible({ public: true, owner: 'bob' }, { collection: 'genome', publicFree }))
+      assert.isTrue(isDocVisible(other, { collection: 'taxonomy', publicFree }))
     })
   })
 })
