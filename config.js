@@ -210,6 +210,17 @@ const defaults = {
     reserveBytes: 256
   },
 
+  // Owners whose PRIVATE rows are served as if public: visible to every caller,
+  // anonymous included, in queries, gets, joins, enrichment and downloads. Applied in
+  // lib/permissionFilter.js (buildPermissionFq + isDocVisible), the single source of
+  // the permission filter. Read access only -- write/ACL management is unchanged.
+  // Array of exact owner ids, e.g. ["someuser@patricbrc.org"]; a comma-separated
+  // string is also accepted. Read once at startup.
+  //
+  // Note the shared /data caches are anonymous, so these rows WILL appear in /data
+  // counts -- consistent, since they are visible to everyone.
+  publicOwners: [],
+
   // Local-only operational endpoints (/admin). See PLAN_ADMIN_ENDPOINT.md.
   //
   // OFF by default, and when off the routes 404 rather than 403 — an admin surface
