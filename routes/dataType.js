@@ -104,7 +104,9 @@ router.use(function (req, res, next) {
  * drifts from the API. Reports NATIVE fields (from the live Solr schema, filtered to
  * stored ones — an unstored field cannot be returned and would be a permanently empty
  * column) and ENRICHED fields (from the same join config the enrichment middleware
- * reads, so the two cannot disagree), each with a readable label and a `source` flag.
+ * reads, so the two cannot disagree), each with a readable label, a `source` flag, and
+ * `returnable`/`filterable`/`sortable`/`facetable` capability flags. Enriched fields
+ * are returnable only. `?all=true` adds filter-only native fields (`returnable: false`).
  *
  * Mounted ahead of the catch-all GET because that handler would otherwise treat
  * `/fields` as a record id. `app.param('dataType')` has already validated the
@@ -123,7 +125,8 @@ router.get('/fields', function (req, res, next) {
         body = JSON.parse(body)
       }
       res.set('content-type', 'application/json')
-      res.end(JSON.stringify(describeFields(collection, body)))
+      const includeUnreturnable = req.query.all === 'true'
+      res.end(JSON.stringify(describeFields(collection, body, { includeUnreturnable })))
     })
     .catch((err) => {
       console.error(`Error building field list for ${collection}: ${err && err.message}`)
