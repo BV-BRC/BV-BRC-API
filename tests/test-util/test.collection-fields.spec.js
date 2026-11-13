@@ -132,6 +132,135 @@ describe('collection field description', function () {
   })
 })
 
+/**
+ * Capability flags. The defect these exist for: /genome_feature/fields listed `segment`
+ * and `collection_year` (enriched), and a client that took the list as "fields I can
+ * filter on" got a 400 from Solr ("undefined field segment").
+ *
+ * Field types mirror alpha's live schema (version 1.6), where docValues is set on the
+ * TYPE and the schema API omits it from the field — so resolution must go through the
+ * fieldType or every string field reads as unsortable.
+ */
+describe('collection field capabilities', function () {
+  const { nativeCapabilities } = require('../../lib/collectionFields')
+
+  const TYPES = [
+    { name: 'string', class: 'solr.StrField', docValues: true },
+    { name: 'strings', class: 'solr.StrField', docValues: true, multiValued: true },
+    { name: 'string_ci', class: 'solr.SortableTextField', docValues: true },
+    { name: 'string_raw', class: 'solr.StrField' },
+    { name: 'int', class: 'solr.IntPointField', docValues: true },
+    { name: 'rdate', class: 'solr.DateRangeField', docValues: false },
+    { name: 'text_general', class: 'solr.TextField', multiValued: true }
+  ]
+  const FIELDS = [
+    { name: 'feature_id', type: 'string', indexed: true, stored: true },
+    { name: 'genome_name', type: 'string_ci', indexed: true, stored: true },
+    { name: 'go', type: 'string', indexed: true, stored: true, multiValued: true },
+    { name: 'tags', type: 'strings', indexed: true, stored: true },
+    { name: 'raw', type: 'string_raw', indexed: true, stored: true },
+    { name: 'na_length', type: 'int', indexed: true, stored: true },
+    { name: 'text', type: 'text_general', indexed: true, stored: false },
+    { name: 'collection_date_dr', type: 'rdate', indexed: true, stored: false },
+    { name: 'dv_only', type: 'int', indexed: false, stored: false },
+    { name: 'stored_only', type: 'string', indexed: false, stored: true, docValues: false }
+  ]
+  const full = { schema: { fields: FIELDS, fieldTypes: TYPES } }
+  const caps = (name, opts) => describeFields('genome_feature', full, opts).fields.find((f) => f.name === name)
+
+  it('enriched fields are returnable and NOTHING else', function () {
+    for (const name of ['segment', 'collection_year', 'host_name']) {
+      const f = caps(name)
+      assert.isOk(f, `${name} should still be listed`)
+      assert.deepInclude(f, { source: 'enriched', returnable: true, filterable: false, sortable: false, facetable: false })
+    }
+  })
+
+  it('a plain string field can do everything', function () {
+    assert.deepInclude(caps('feature_id'), { returnable: true, filterable: true, sortable: true, facetable: true })
+  })
+
+  it('resolves docValues from the fieldType, not just the field', function () {
+    // The field carries no docValues key; the type does. Without type resolution this
+    // would still be sortable via uninversion, so assert on a case where it matters:
+    const t = nativeCapabilities({ name: 'x', type: 'string', uninvertible: false }, TYPES[0])
+    assert.isTrue(t.sortable, 'docValues inherited from the type must count')
+    assert.isFalse(nativeCapabilities({ name: 'x', uninvertible: false }, undefined).sortable)
+  })
+
+  it('multiValued with docValues sorts (min/max) and facets', function () {
+    // Verified live: sort(+go) / sort(-go) on genome_feature is a 200, ordered by the
+    // smallest / largest value. multiValued may come from the field or the type.
+    for (const name of ['go', 'tags']) {
+      assert.deepInclude(caps(name), { multiValued: true, sortable: true, facetable: true, filterable: true })
+    }
+  })
+
+  it('multiValued WITHOUT docValues cannot sort (uninversion is single-valued only)', function () {
+    const t = nativeCapabilities({ name: 'x', type: 'string_raw', multiValued: true, indexed: true }, TYPES[3])
+    assert.isFalse(t.sortable)
+    assert.isTrue(t.facetable)
+  })
+
+  it('a tokenized text field filters but does not sort or facet', function () {
+    assert.deepInclude(caps('text', { includeUnreturnable: true }),
+      { filterable: true, sortable: false, facetable: false, returnable: false })
+  })
+
+  it('SortableTextField implies docValues even when the type omits it', function () {
+    // taxonomy's string_ci declares no docValues; sort(+other_names) works live.
+    const t = nativeCapabilities({ name: 'other_names', multiValued: true, indexed: true, stored: true },
+      { name: 'string_ci', class: 'solr.SortableTextField' })
+    assert.deepInclude(t, { sortable: true, facetable: true, returnable: true })
+    // ...but its docValues are not read back as stored.
+    const u = nativeCapabilities({ name: 'x', indexed: true, stored: false },
+      { name: 'string_ci', class: 'solr.SortableTextField' })
+    assert.isFalse(u.returnable)
+  })
+
+  it('SortableTextField (string_ci) sorts and facets', function () {
+    assert.deepInclude(caps('genome_name'), { sortable: true, facetable: true })
+  })
+
+  it('omits unreturnable fields by default — existing pickers treat entries as columns', function () {
+    assert.notOk(caps('collection_date_dr'))
+    assert.notOk(caps('text'))
+  })
+
+  it('includes them with returnable:false when asked, and they are filterable', function () {
+    assert.deepInclude(caps('collection_date_dr', { includeUnreturnable: true }),
+      { returnable: false, filterable: true, sortable: false, facetable: false })
+  })
+
+  it('an unstored docValues field IS returnable (useDocValuesAsStored)', function () {
+    // Previously dropped by the bare `stored === false` check.
+    assert.deepInclude(caps('dv_only'), { returnable: true, filterable: true, sortable: true })
+  })
+
+  it('a stored, unindexed, no-docValues field is returnable only', function () {
+    assert.deepInclude(caps('stored_only'), { returnable: true, filterable: false, sortable: false, facetable: false })
+  })
+
+  it('an unreturnable native field still shadows a same-named join', function () {
+    const s = { schema: { fields: [{ name: 'host_name', type: 'rdate', stored: false }], fieldTypes: TYPES } }
+    assert.notOk(describeFields('genome_feature', s).fields.find((f) => f.name === 'host_name'),
+      'must not advertise the enriched host_name in place of the real native field')
+  })
+
+  it('counts filterable fields', function () {
+    const out = describeFields('genome_feature', full)
+    assert.equal(out.counts.filterable, out.fields.filter((f) => f.filterable).length)
+    assert.isBelow(out.counts.filterable, out.counts.total)
+  })
+
+  it('strict download validation still means "returnable"', function () {
+    const { knownFieldNames } = require('../../lib/collectionFields')
+    const known = knownFieldNames('genome_feature', full)
+    assert.isTrue(known.has('segment'), 'enriched fields are valid in a template')
+    assert.isFalse(known.has('collection_date_dr'), 'a filter-only field would render empty')
+  })
+})
+
 describe('field labels', function () {
   it('derives title case from snake_case', function () {
     assert.equal(deriveLabel('host_common_name'), 'Host Common Name')
