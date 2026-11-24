@@ -43,6 +43,10 @@ process.on('unhandledRejection', (reason, promise) => {
 
 var app = module.exports = express()
 process.send = process.send || function(){}
+// Resolve hiddenPublicTaxa (no-op unless configured) before accepting traffic, so the
+// cache file, if any, is loaded before the first request is filtered.
+require('./lib/hiddenTaxa').start()
+
 const listener  = app.listen(config.get('http_port') || 3001, function(){
   console.log(`Listening on port ${listener.address().port}`)
 	  process.send("ready")

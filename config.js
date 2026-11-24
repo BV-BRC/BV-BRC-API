@@ -221,6 +221,21 @@ const defaults = {
   // counts -- consistent, since they are visible to everyone.
   publicOwners: [],
 
+  // Hide PUBLIC rows under these taxonomic roots from every read path (queries, gets,
+  // joins, enrichment, downloads, /data). Rows visible through ownership -- owner,
+  // user_read, publicOwners -- stay visible. Collections without ownership fields
+  // (publicFree) are never filtered. Applied in lib/permissionFilter.js; the
+  // subtree for taxon_id-only collections is resolved from the taxonomy collection at
+  // startup and every refreshHours. See lib/hiddenTaxa.js, which FAILS CLOSED until the
+  // subtree is known. Set cacheFile so a restart starts with the last resolved list.
+  // Example (alpha): { roots: [197911, 197912, 197913, 1511083],
+  //                    cacheFile: '/path/hidden-taxa.json' }   -- the influenza genera.
+  hiddenPublicTaxa: {
+    roots: [],
+    cacheFile: null,
+    refreshHours: 24
+  },
+
   // Local-only operational endpoints (/admin). See PLAN_ADMIN_ENDPOINT.md.
   //
   // OFF by default, and when off the routes 404 rather than 403 — an admin surface
