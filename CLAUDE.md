@@ -603,7 +603,8 @@ so it reaches queries, gets, enrichment, cross-collection and FASTA downloads, a
 - **Fails closed**: until the subtree is resolved, `taxon_id` collections serve *no* public
   rows. Set `cacheFile` so a restart starts from the last list. A refresh that shrinks the
   list by >10% is rejected (taxonomy mid-reload).
-- After enabling: flush the Redis `/data` cache, and note `taxonomy` docs' precomputed genome
+- After enabling: `pm2 reload`, then `node scripts/clear-data-cache.js --yes` (see
+  "Clearing the `/data` cache" below), and note `taxonomy` docs' precomputed genome
   counts still include the hidden rows.
 
 ## Testing Requirements
@@ -1336,6 +1337,18 @@ cache write round-trips correctly through apicache's read path.
 through the public URL at any speed, not merely slower — taxon 11118 returned 524 on alpha
 *and* production and could not be warmed by any means before. **This is why the refresh must
 run over loopback**; do not "simplify" it onto the public hostname.
+
+### Clearing the `/data` cache (`scripts/clear-data-cache.js`)
+
+Run it after anything that changes `/data` answers without changing their URLs
+(`hiddenPublicTaxa`/`publicOwners` changes, data loads, permission fixes), **after**
+`pm2 reload`. It's a dry run by default; pass `--yes` to delete. It reads Redis from `p3api.conf` via
+`adminRouter.redisOptions()` and only touches `/data/*` keys.
+
+**It keeps the warmed `summary_by_taxon` keys** (the warmer's `ALL_TAXA`, parsed from the
+script so the lists cannot drift). Deleting one opens a hole that no request can fill
+(Viruses: ~23 min vs Cloudflare's ~125 s). `--warm[=top6]` overwrites them in place first;
+otherwise the nightly cron does. `--all` deletes them anyway.
 
 ### Other security fixes
 
