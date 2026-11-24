@@ -594,14 +594,15 @@ it to hide BV-BRC's public influenza genomes (genera 197911, 197912, 197913, 151
 `publicOwners` exposes lowvan's. It lives in `lib/permissionFilter.js` via `lib/hiddenTaxa.js`,
 so it reaches queries, gets, enrichment, cross-collection and FASTA downloads, and `/data`.
 
-- `genome` and a few reference collections filter on `taxon_lineage_ids` (4 ids, cheap).
+- **Only collections with ownership fields are filtered.** publicFree collections
+  (`protein_feature`, `epitope`, `protein_structure`, ...) are left alone by design.
+- `genome` filters on `taxon_lineage_ids` (4 ids, cheap).
   `genome_feature`, `genome_sequence`, `sp_gene`, etc. carry only `taxon_id`, so they need the
   whole subtree: **~131k ids, a ~1 MB fq on every request**. It is resolved from `taxonomy`
   at startup and daily, not hardcoded — new strain taxa arrive with every load.
 - **Fails closed**: until the subtree is resolved, `taxon_id` collections serve *no* public
   rows. Set `cacheFile` so a restart starts from the last list. A refresh that shrinks the
   list by >10% is rejected (taxonomy mid-reload).
-- publicFree collections in the map get `(*:* AND NOT <taxa>)` where they used to get no fq.
 - After enabling: flush the Redis `/data` cache, and note `taxonomy` docs' precomputed genome
   counts still include the hidden rows.
 

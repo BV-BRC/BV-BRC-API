@@ -223,7 +223,8 @@ const defaults = {
 
   // Hide PUBLIC rows under these taxonomic roots from every read path (queries, gets,
   // joins, enrichment, downloads, /data). Rows visible through ownership -- owner,
-  // user_read, publicOwners -- stay visible. Applied in lib/permissionFilter.js; the
+  // user_read, publicOwners -- stay visible. Collections without ownership fields
+  // (publicFree) are never filtered. Applied in lib/permissionFilter.js; the
   // subtree for taxon_id-only collections is resolved from the taxonomy collection at
   // startup and every refreshHours. See lib/hiddenTaxa.js, which FAILS CLOSED until the
   // subtree is known. Set cacheFile so a restart starts with the last resolved list.

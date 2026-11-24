@@ -68,15 +68,12 @@ describe('hiddenPublicTaxa', function () {
       )
     })
 
-    it('filters publicFree collections it covers, which used to get no fq at all', function () {
-      assert.equal(
-        buildPermissionFq({ collection: 'epitope', publicFree, hiddenTaxa: resolved }),
-        `(*:* AND NOT ${LINEAGE})`
-      )
-      assert.equal(
-        buildPermissionFq({ collection: 'protein_feature', user: 'alice', publicFree, hiddenTaxa: resolved }),
-        `(*:* AND NOT ${TERMS})`
-      )
+    it('never filters publicFree collections (no ownership fields), even if configured', function () {
+      const forced = makeState({ roots: ROOTS, taxonIds: SUBTREE, collections: { epitope: 'taxon_lineage_ids', protein_feature: 'taxon_id' } })
+      for (const hiddenTaxa of [resolved, forced, unresolved]) {
+        assert.isNull(buildPermissionFq({ collection: 'epitope', publicFree, hiddenTaxa }))
+        assert.isNull(buildPermissionFq({ collection: 'protein_feature', user: 'alice', publicFree, hiddenTaxa }))
+      }
     })
 
     it('leaves uncovered collections alone (taxonomy, feature_sequence)', function () {
@@ -124,10 +121,11 @@ describe('hiddenPublicTaxa', function () {
       assert.isTrue(isDocVisible(gf, { collection: 'genome_feature', publicFree, hiddenTaxa: resolved }))
     })
 
-    it('applies to publicFree collections it covers', function () {
-      const ep = { taxon_lineage_ids: [11308, 197911, 11320] }
-      assert.isFalse(isDocVisible(ep, { collection: 'epitope', publicFree, hiddenTaxa: resolved }))
-      assert.isTrue(isDocVisible(ep, { collection: 'taxonomy', publicFree, hiddenTaxa: resolved }))
+    it('never hides publicFree rows', function () {
+      const forced = makeState({ roots: ROOTS, taxonIds: SUBTREE, collections: { epitope: 'taxon_lineage_ids' } })
+      const ep = { taxon_id: 11320, taxon_lineage_ids: [11308, 197911, 11320] }
+      assert.isTrue(isDocVisible(ep, { collection: 'epitope', publicFree, hiddenTaxa: forced }))
+      assert.isTrue(isDocVisible(ep, { collection: 'protein_feature', publicFree, hiddenTaxa: resolved }))
     })
   })
 
