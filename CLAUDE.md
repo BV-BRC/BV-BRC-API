@@ -586,6 +586,25 @@ are rewritten when a genome is shared; adding this collection would silently wid
 private metadata every time the underlying genome is shared. The omission looks like an
 oversight and carries a comment saying it is not — **don't "fix" it.**
 
+### Hidden public taxa (`hiddenPublicTaxa`)
+
+`hiddenPublicTaxa.roots` in `p3api.conf` hides **public** rows under those taxa from every
+read path; rows visible through `owner`/`user_read`/`publicOwners` stay visible. Alpha uses
+it to hide BV-BRC's public influenza genomes (genera 197911, 197912, 197913, 1511083) while
+`publicOwners` exposes lowvan's. It lives in `lib/permissionFilter.js` via `lib/hiddenTaxa.js`,
+so it reaches queries, gets, enrichment, cross-collection and FASTA downloads, and `/data`.
+
+- `genome` and a few reference collections filter on `taxon_lineage_ids` (4 ids, cheap).
+  `genome_feature`, `genome_sequence`, `sp_gene`, etc. carry only `taxon_id`, so they need the
+  whole subtree: **~131k ids, a ~1 MB fq on every request**. It is resolved from `taxonomy`
+  at startup and daily, not hardcoded — new strain taxa arrive with every load.
+- **Fails closed**: until the subtree is resolved, `taxon_id` collections serve *no* public
+  rows. Set `cacheFile` so a restart starts from the last list. A refresh that shrinks the
+  list by >10% is rejected (taxonomy mid-reload).
+- publicFree collections in the map get `(*:* AND NOT <taxa>)` where they used to get no fq.
+- After enabling: flush the Redis `/data` cache, and note `taxonomy` docs' precomputed genome
+  counts still include the hidden rows.
+
 ## Testing Requirements
 
 - Local Solr instance — **see `Docs/LOCAL_SOLR_SETUP.md`** (Solr 9.6.1, cloud mode, configsets from [bv-brc/bv-brc-solr](https://github.com/bv-brc/bv-brc-solr)). `tests/README.md`'s pointer to `PATRIC3/patric_solr` is stale: that repo is archived and Solr 5.3-era.
