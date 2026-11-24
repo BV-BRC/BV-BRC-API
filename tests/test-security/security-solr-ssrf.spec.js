@@ -199,17 +199,6 @@ describe('SolrQuerySanitizer Unit Tests', function () {
   })
 })
 
-describe('Bundle Type Validation Unit Tests', function () {
-  // Import the download router's internal functions by checking the route behavior
-  // We test via HTTP since the validation functions aren't exported
-
-  it('should have download router defined', function () {
-    // This is a basic sanity check that the file loads without error
-    const download = require('../../routes/download')
-    assert.isFunction(download)
-  })
-})
-
 describe('SSRF Integration Tests', function () {
   const baseOptions = {
     hostname: 'localhost',

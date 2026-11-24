@@ -6,7 +6,9 @@ const media = require('../middleware/media')
 const RQLQueryParser = require('../middleware/RQLQueryParser')
 const APIMethodHandler = require('../middleware/APIMethodHandler')
 const httpParams = require('../middleware/http-params')
-const { httpRequest } = require('../util/http')
+const { internalQuery } = require('../lib/internalQuery')
+const { resolveJoins } = require('../lib/joinResolver')
+const { slicedFacetCount } = require('../lib/slicedFacet')
 const debug = require('debug')('p3api-server:route/summary')
 const apicache = require('apicache')
 const redis = require('redis')
@@ -15,26 +17,135 @@ const redisOptions = config.get('redis')
 const cacheWithRedis = apicache.options({ redisClient: redis.createClient(redisOptions) }).middleware
 const onlyStatus200 = (req, res) => res.statusCode === 200
 
+// 26 hours, NOT 24, and the extra two are the point.
+//
+// scripts/warm-taxon-summaries.sh refreshes these entries from cron on a 24-hour cycle.
+// With a 24-hour TTL the two periods are equal, so the schedule races its own expiry:
+// a run that starts late, queues behind a slow taxon, or takes longer than usual leaves
+// the entry expired for the gap — and an expired entry means the next user pays the full
+// fill, which for taxon 10239 measured 32.8 minutes.
+//
+// A 2-hour margin means the refresh always lands while the previous value is still
+// serving. It costs nothing: the value is overwritten on every successful refresh
+// (/admin/cache/refresh rewrites hset + expire together), so entries do not actually
+// live 26 hours in steady state — the margin is only consumed when a run is late.
+//
+// Keep this strictly greater than the cron interval. If the schedule changes, change
+// this with it.
+const CACHE_TTL = '26 hours'
+
 router.use(httpParams)
 
+/**
+ * Run one summary sub-query in-process.
+ *
+ * Formerly an HTTP POST to this server's own listening port. See
+ * PLAN_ELIMINATE_SELF_CALL.md; these four endpoints were among the heaviest self-callers,
+ * and `/data/*` self-calls timing out at 120s are what precedes the recorded production
+ * abort in api.err.crash-162500.
+ *
+ * ALL /data/* COUNTS ARE PUBLIC-DATA-ONLY. That is not new — the HTTP version hardcoded
+ * `Authorization: ''`, so the inner request was always anonymous — but it is now explicit.
+ * `user` is deliberately left undefined and MUST STAY THAT WAY: three of these four
+ * endpoints are wrapped in `cacheWithRedis('1 day')`, whose key is `req.originalUrl` with
+ * `appendKey: []`. The cache is therefore NOT user-scoped, and a caller identity reaching
+ * these queries would publish one user's private counts to every subsequent requester for
+ * 24 hours.
+ *
+ * The old version JSON.parse'd whatever body came back. `util/http.js`'s httpRequest
+ * discards res.statusCode, so an inner 4xx/5xx — whose body is a plain-text
+ * "A Database Error Occured…" string, not JSON — threw a SyntaxError inside a promise.
+ * Where the caller had no rejection handler that became an unhandled rejection, which
+ * app.js:34 swallows, leaving the request hung forever and the process's async_hooks state
+ * corrupted; the next Solr-backed request then aborted with
+ * "Assertion failed: (trigger_async_id) >= (-1)". Reproduced 3/3 locally with a single
+ * `GET /data/distinct/genome/host_group?q=foo%3A%28` followed by `GET /data/taxon_category/`.
+ * internalQuery removes the whole class: Solrjs returns parsed JSON, and a Solr-reported
+ * error becomes a real Error carrying `statusCode`.
+ */
+/**
+ * Is the sliced-facet fallback enabled?
+ *
+ * Off by default: it turns a fast 400 into a multi-minute cache fill. That is the right
+ * trade for a cached summary nobody waits on, but it is an operational choice and should
+ * be made deliberately per deployment.
+ */
+function slicedSummaryEnabled () {
+  const cfg = config.get('joinResolution') || {}
+  return cfg.slicedSummary === true
+}
+
 async function subQuery (dataType, query, opts) {
-  return httpRequest({
-    port: config.get('http_port'),
-    headers: {
-      'Content-Type': 'application/solrquery+x-www-form-urlencoded',
-      Accept: opts.accept || 'application/json',
-      Authorization: ''
-    },
-    method: 'POST',
-    path: `/${dataType}`
-  }, query)
-    .then((body) => {
-      return JSON.parse(body)
+  // Cross-collection joins go through the resolver first: an over-broad one is refused
+  // with 400 rather than left to time out, and a small one is rewritten to a local
+  // {!terms} filter. summary_by_taxon's genome_feature query is the join that made this
+  // necessary — taxon 10239 (Viruses, 15.6M genomes) times out deterministically, and
+  // taxon 2 (Bacteria) takes 74s. See lib/joinResolver.js.
+  //
+  // Only the join-bearing queries pay anything: resolveJoins returns immediately when the
+  // string carries no 'crossCollection'.
+  let resolvedQuery = query
+  if (typeof query === 'string' && query.indexOf('crossCollection') !== -1) {
+    const resolution = await resolveJoins(query, {
+      queryGenome: ({ query: q }) => internalQuery({
+        collection: 'genome',
+        query: q,
+        queryType: 'solr',
+        user: undefined,
+        requestId: opts && opts.requestId
+      }),
+      collection: dataType
     })
+    resolvedQuery = resolution.query
+  }
+
+  return internalQuery({
+    collection: dataType,
+    query: resolvedQuery,
+    queryType: 'solr',
+    user: undefined,
+    requestId: opts && opts.requestId
+  })
+}
+
+/**
+ * Turn an internalQuery rejection into an Express response.
+ *
+ * Every subQuery consumer needs one of these. A `/data` handler that lets a rejection
+ * escape does not merely fail — it never calls next(), so the request hangs holding a
+ * worker slot, and under --unhandled-rejections=strict it takes the process with it.
+ */
+function failSubQuery (res, label) {
+  return (err) => {
+    const status = err && err.statusCode >= 400 && err.statusCode < 600 ? err.statusCode : 500
+    console.error(`[${(new Date()).toISOString()}] /data/${label} failed: ${err && err.message} rid=${res.req && res.req.requestId ? res.req.requestId : '-'}`)
+    if (res.headersSent) {
+      return
+    }
+    // Most upstream messages are generic or leak query internals, so they are replaced
+    // with a fixed string per status. Two exceptions carry information the caller can
+    // act on, and flattening them defeats the point of raising them:
+    //
+    //   - a join refused as too broad (JoinTooBroadError) names the genome count and
+    //     tells the user to narrow the filter. Observed live on alpha: without this,
+    //     /data/summary_by_taxon/1239 answered "Unable to query", which reads like a
+    //     server fault rather than "your taxon is too big".
+    //   - 504 says the query was too expensive to complete, not that it was malformed.
+    let message = 'Unable to query the database'
+    if (status === 400) {
+      message = err && err.name === 'JoinTooBroadError'
+        ? err.message
+        : 'Unable to query'
+    } else if (status === 504) {
+      message = 'The database did not respond in time'
+    }
+    res.status(status).set('content-type', 'application/json')
+      .end(JSON.stringify({ status, message }))
+  }
 }
 
 router.get('/summary_by_taxon/:taxon_id', [
-  cacheWithRedis('1 day', onlyStatus200),
+  cacheWithRedis(CACHE_TTL, onlyStatus200),
   bodyParser.json({ extended: true }),
   function (req, res, next) {
     const defs = []
@@ -46,9 +157,7 @@ router.get('/summary_by_taxon/:taxon_id', [
       subQuery(
         'genome',
         `q=*:*&fq=taxon_lineage_ids:${req.params.taxon_id}&rows=0&json.facet={unique_family:"unique(family)",unique_genus:"unique(genus)",unique_species:"unique(species)"}`,
-        {
-          accept: 'application/solr+json'
-        }
+        { requestId: req.requestId }
       ).then((results) => {
         res.results = Object.assign(res.results, results.facets)
       })
@@ -58,21 +167,55 @@ router.get('/summary_by_taxon/:taxon_id', [
         'genome_feature',
         (console.log(`[CrossCollectionJoin] dataRouter taxon_id=${req.params.taxon_id}`),
         `q=*:*&fq=feature_type:(CDS OR mat_peptide)&fq={!join method=crossCollection fromIndex=genome from=genome_id to=genome_id v=taxon_lineage_ids:${req.params.taxon_id}}&rows=0&facet=true&facet.field=feature_type&facet.mincount=1&json.nl=map`),
-        {
-          accept: 'application/solr+json'
-        }
+        { requestId: req.requestId }
       ).then((results) => {
         const feature_type_count = results.facet_counts.facet_fields.feature_type
         res.results = Object.assign(res.results, feature_type_count)
+      }).catch((err) => {
+        // A taxon too broad to join is exactly the case this endpoint exists to serve —
+        // the top of the taxonomy is the most-visited summary. Rather than fail, compute
+        // the same counts by slicing the genome set and summing the per-slice facets.
+        //
+        // Valid because facet counts are ADDITIVE over disjoint slices (measured; see
+        // lib/slicedFacet.js), and affordable because slicing is 10x CHEAPER than the
+        // join it replaces, not merely survivable: ~5s of Solr work against the join's
+        // ~52s on a 246,835-genome set. Taxon 10239 used to spend 600s here and return a
+        // 500, three times in one 75-minute window.
+        //
+        // This runs behind cacheWithRedis('1 day'), so a slow fill is paid once and
+        // served instantly for a day. Each slice is its own sub-second rows=0 request, so
+        // no single Solr call approaches SOLR_REQUEST_TIMEOUT_MS.
+        if (err && err.name !== 'JoinTooBroadError') {
+          throw err
+        }
+        if (!slicedSummaryEnabled()) {
+          throw err
+        }
+        console.log(`[SlicedFacet] summary_by_taxon=${req.params.taxon_id} genomes=${err.genomeCount} — join refused, slicing`)
+        const mk = (collection) => ({ query }) => internalQuery({
+          collection, query, queryType: 'solr', user: undefined, requestId: req.requestId
+        })
+        return slicedFacetCount({
+          queryGenome: mk('genome'),
+          queryTarget: mk('genome_feature'),
+          genomeFilter: `taxon_lineage_ids:${req.params.taxon_id}`,
+          facetField: 'feature_type',
+          extraFq: ['feature_type:(CDS OR mat_peptide)']
+        }).then((out) => {
+          if (out.truncated) {
+            // Caching a partial sum for a day would be worse than having no number.
+            throw err
+          }
+          console.log(`[SlicedFacet] summary_by_taxon=${req.params.taxon_id} done: ${out.slices} slices, ${out.genomes} genomes`)
+          res.results = Object.assign(res.results, out.counts)
+        })
       })
     )
     defs.push(
       subQuery(
         'protein_structure',
         `q=*:*&fq=taxon_lineage_ids:${req.params.taxon_id}&rows=0`,
-        {
-          accept: 'application/solr+json'
-        }
+        { requestId: req.requestId }
       ).then((results) => {
         const counts = {
           'PDB': results.response.numFound
@@ -84,9 +227,7 @@ router.get('/summary_by_taxon/:taxon_id', [
       subQuery(
         'strain',
         `q=*:*&fq=taxon_lineage_ids:${req.params.taxon_id}&rows=0`,
-        {
-          accept: 'application/solr+json'
-        }
+        { requestId: req.requestId }
       ).then((results) => {
         const counts = {
           'strains_count': results.response.numFound
@@ -95,11 +236,13 @@ router.get('/summary_by_taxon/:taxon_id', [
       })
     )
 
-    Promise.all(defs).then(() => {
-      next()
-    }, (err) => {
-      next(err)
-    })
+    // .catch() rather than .then(ok, fail): the two-argument form does not catch a throw
+    // from inside the success handler, and these handlers do reach into the response shape
+    // (results.facets, results.facet_counts.facet_fields.feature_type). An escaping
+    // TypeError there is the same unhandled-rejection defect in a different costume.
+    Promise.all(defs)
+      .then(() => { next() })
+      .catch(failSubQuery(res, `summary_by_taxon/${req.params.taxon_id}`))
   },
   function (req, res, next) {
     // post process, delete when count is 1
@@ -148,24 +291,31 @@ router.get('/distinct/:collection/:field', [
       res.end(JSON.stringify({ status: 405, message: `/distinct/${collection}/${field} is not allowed` }))
     }
   },
-  cacheWithRedis('1 day', onlyStatus200),
+  cacheWithRedis(CACHE_TTL, onlyStatus200),
   (req, res, next) => {
     const collection = req.params.collection
     const field = req.params.field
     const query = req.query && req.query.q ? req.query.q : '*:*'
 
-    subQuery(collection, `q=${query}&rows=0&facet=true&facet.field=${field}&facet.mincount=1&facet.limit=-1&json.nl=map`, {
-      accept: 'application/solr+json'
-    })
+    // `query` is raw user input (?q=). It is not escaped here on purpose: internalQuery runs
+    // the same SolrQuerySanitizer gate the HTTP path applied, which is what blocks
+    // parameter smuggling (`%26shards%3D…`) through this value. Solr rejects syntactically
+    // invalid input on its own, and internalQuery turns that into a 400.
+    subQuery(collection, `q=${query}&rows=0&facet=true&facet.field=${field}&facet.mincount=1&facet.limit=-1&json.nl=map`, { requestId: req.requestId })
       .then((body) => {
-        if (body && body.facet_counts) {
-          // debug(body.facet_counts.facet_fields[field])
-          res.results = body.facet_counts.facet_fields[field]
-          next()
+        const counts = body && body.facet_counts && body.facet_counts.facet_fields
+        if (counts && counts[field]) {
+          res.results = counts[field]
         } else {
-          next({ 'status': body.status, 'message': body.error.msg })
+          // A well-formed query that faceted on nothing. Answer with an empty object rather
+          // than falling through with no response — the missing else here is what used to
+          // leave the request hanging.
+          debug(`distinct/${collection}/${field}: no facet counts in response`)
+          res.results = {}
         }
+        next()
       })
+      .catch(failSubQuery(res, `distinct/${collection}/${field}`))
   },
   (req, res) => {
     res.set('content-type', 'application/json')
@@ -208,18 +358,17 @@ router.get('/taxon_category/', [
 
 router.get('/subsystem_summary/:genome_id', [
   bodyParser.json({ extended: true }),
-  cacheWithRedis('1 day', onlyStatus200),
+  cacheWithRedis(CACHE_TTL, onlyStatus200),
   (req, res, next) => {
     const genome_id = req.params.genome_id
     const query = `q=*:*&fq=genome_id:${genome_id}&rows=0&facet=true&facet.limit=-1&facet.pivot.mincount=1&facet.pivot=superclass,class,subclass,subsystem_id`
     const sortByGeneCount = (a, b) => a.gene_count > b.gene_count ? -1 : 1
 
-    subQuery('subsystem', query, {
-      accept: 'application/solr+json'
-    })
+    subQuery('subsystem', query, { requestId: req.requestId })
       .then((body) => {
-        if (body && body.facet_counts && body.facet_counts.facet_pivot && body.facet_counts.facet_pivot) {
-          const raw_data = body.facet_counts.facet_pivot['superclass,class,subclass,subsystem_id']
+        const pivot = body && body.facet_counts && body.facet_counts.facet_pivot
+        const raw_data = pivot && pivot['superclass,class,subclass,subsystem_id']
+        if (raw_data) {
           const data = []
           // console.log(raw_data[2]) // superclass
           // console.log(raw_data[2].pivot[0]) // class
@@ -268,12 +417,15 @@ router.get('/subsystem_summary/:genome_id', [
           })
 
           res.results = data.sort(sortByGeneCount)
-          next()
+        } else {
+          // Genome with no subsystem rows: Solr omits the pivot entirely. The old code had
+          // no else branch here, so this path never responded.
+          debug(`subsystem_summary/${genome_id}: no facet_pivot in response`)
+          res.results = []
         }
-      }, (err) => {
-        console.log(err)
-        res.status(400).send({ status: 400, message: 'Unable to query' })
+        next()
       })
+      .catch(failSubQuery(res, `subsystem_summary/${genome_id}`))
   },
   (req, res, next) => {
     res.set('content-type', 'application/json')

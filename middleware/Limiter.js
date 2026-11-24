@@ -8,6 +8,19 @@ const ID_COUNT_BUFFER = 10
  * Only applies when querying by the PRIMARY KEY of a collection,
  * where we know the max results equals the number of IDs.
  *
+ * Two forms are recognized, because RQL has two operators that produce one:
+ *
+ *   in(pk,(a,b,c))     -> q= ... (pk:(a OR b OR c))
+ *   terms(pk,(a,b,c))  -> &fq={!terms f=pk cache=false}a,b,c
+ *
+ * Both must be seen or the two operators get different `rows` for the same id
+ * list, and that is not a wash. `rows` is what DistributedQuery tests against
+ * `minLimitThreshold`, so with only in() detected a client sending the usual
+ * limit(25000) has its in() query capped onto the standard path while the
+ * equivalent terms() query keeps rows=25000 and engages the distributed one.
+ * The two then run on entirely different transports, which is how an external
+ * benchmark came to measure terms() as several times slower on small lists.
+ *
  * @param {string} query - The Solr query string
  * @param {string} collection - The collection being queried
  * @returns {number|null} - The count of IDs if detected, null otherwise
@@ -45,6 +58,30 @@ function detectFixedIdCount (query, collection) {
     const orCount = (idsClause.match(/(\+OR\+|\sOR\s)/gi) || []).length
     // Number of IDs = OR count + 1
     const idCount = orCount + 1
+    if (idCount > maxIdCount) {
+      maxIdCount = idCount
+    }
+  }
+
+  // terms(): a {!terms} filter in its own &fq=. Anchored to fq because an fq is
+  // ANDed, which makes the value count a hard upper bound on the result set —
+  // a stronger guarantee than the pattern above, which also matches inside an
+  // or() where the count bounds nothing.
+  const termsPattern = /(?:^|&)fq=\{!terms\b([^}]*)\}([^&]*)/gi
+  const termsKeyPattern = new RegExp(`\\bf=(?:${keysPattern})(?=\\s|$)`, 'i')
+
+  while ((match = termsPattern.exec(query)) !== null) {
+    const localParams = match[1]
+    if (!termsKeyPattern.test(localParams)) continue
+
+    // Values are comma-joined. A `separator` local param would change that;
+    // nothing we emit sets one, so skip rather than miscount.
+    if (/\bseparator\s*=/i.test(localParams)) continue
+
+    const values = match[2]
+    if (!values) continue
+
+    const idCount = (values.match(/,/g) || []).length + 1
     if (idCount > maxIdCount) {
       maxIdCount = idCount
     }

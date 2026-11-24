@@ -2,15 +2,12 @@ const Rql = require('../lib/solrjs/rql')
 const debug = require('debug')('RQLQueryParser')
 const Expander = require('../ExpandingQuery')
 const Config = require('../config')
+// Sanitize error messages to prevent XSS. Moved to lib/ so lib/internalQuery.js can use it
+// without requiring this middleware — that import was a require cycle once ExpandingQuery
+// started using internalQuery. See lib/sanitizeErrorMessage.js.
+const sanitizeErrorMessage = require('../lib/sanitizeErrorMessage')
 
 const collectionUniqueKeys = Config.get('collectionUniqueKeys') || {}
-
-// Sanitize error messages to prevent XSS
-function sanitizeErrorMessage(message) {
-  if (!message) return 'Invalid query'
-  // Remove HTML tags and limit length
-  return String(message).replace(/[<>"'&]/g, '').substring(0, 200)
-}
 
 // Extract cursor(TOKEN) from RQL query string and return { query, cursorMark }
 function extractCursor (rqlQuery) {
@@ -144,3 +141,7 @@ module.exports = function (req, res, next) {
     next()
   }
 }
+
+// Re-exported for callers that already import it from here (routes/multiQuery.js). The
+// implementation now lives in lib/sanitizeErrorMessage.js; this is the same function.
+module.exports.sanitizeErrorMessage = sanitizeErrorMessage

@@ -1,0 +1,46 @@
+# Dependabot configuration.
+#
+# TARGET BRANCH IS `alpha`, NOT THE DEFAULT BRANCH.
+#
+# Development happens on `alpha`; `master` receives it as a periodic merge (PR #239 at
+# time of writing). Dependabot defaults to the repository default branch, so every bump
+# it opened landed on `master` — where it was useless twice over:
+#
+#   - the fix was not where the work was, so it never reached developers; and
+#   - `master` is currently an ANCESTOR of `alpha`, which makes the release merge a
+#     fast-forward. A commit landing on `master` ends that and turns the next release
+#     into a real merge with real conflict potential.
+#
+# Eleven such PRs accumulated (#209–#275) before being superseded by a single sweep
+# against `alpha` in #280.
+#
+# NOTE dependabot reads this file from the DEFAULT branch only, so it takes effect when
+# `alpha` merges to `master` — not before. If `master` ever becomes the development
+# branch, change `target-branch` with it or the bumps go to the wrong place again.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    target-branch: alpha
+    schedule:
+      interval: weekly
+    # Transitive security bumps are lockfile-only and safe to batch; reviewing ten
+    # separate one-line PRs is how the queue came to be ignored in the first place.
+    groups:
+      transitive-security:
+        applies-to: security-updates
+        patterns: ["*"]
+        update-types: ["patch", "minor"]
+    # A semver-major on a direct dependency needs hand-verification against the code
+    # that uses it -- nodemailer 9 -> 10 required checking createTransport and the
+    # callback form of sendMail -- so those stay as individual PRs.
+    ignore:
+      - dependency-name: redis
+        # v4 removed the callback API that rpc/proteinFamily.js and routes/dataRouter.js
+        # both use. A real migration, plus an apicache compatibility pass.
+        update-types: ["version-update:semver-major"]
+      - dependency-name: eslint
+        # eslint-config-standard@12 and eslint-plugin-import@2.22 pin peer eslint <=7,
+        # so a bump fails ERESOLVE until the whole standard/plugin stack moves together.
+        update-types: ["version-update:semver-major"]
+    open-pull-requests-limit: 10

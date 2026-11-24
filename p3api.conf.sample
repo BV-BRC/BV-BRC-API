@@ -9,6 +9,17 @@
 	"publicGenomeDir": "/genomes",
 	"treeDirectory": "/trees",
 
+	"//cors_origins": [
+		"Origins allowed to make CREDENTIALED cross-origin requests. Anonymous",
+		"cross-origin reads stay open to any origin -- this is a public API.",
+		"Exact-match serialized origins only: no wildcards, no trailing slash,",
+		"no suffix matching. Leave empty unless a property genuinely needs",
+		"credentialed cross-origin access; the deployment keeps site-facing",
+		"endpoints on the site's own domain, so normal traffic is same-origin.",
+		"Example: [\"https://www.bv-brc.org\", \"https://alpha.bv-brc.org\"]"
+	],
+	"cors_origins": [],
+
 	"distributedQuery": {
 		"enabled": true,
 		"minLimitThreshold": 10000,

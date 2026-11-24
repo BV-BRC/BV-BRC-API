@@ -255,6 +255,97 @@ describe('MinHeap', function () {
       assert.equal(heap.pop().name, 'bob')
       assert.equal(heap.pop().name, 'charlie')
     })
+
+    // Regression: this used to be localeCompare (ICU collation), which orders
+    // by base letter and so disagrees with Solr on case. Each shard arrives
+    // sorted by Solr, so a comparator that disagrees makes MergeSortStream
+    // interleave correctly-sorted inputs into a wrongly-ordered output. A live
+    // sort(+feature_id)&limit(25000) returned 7 out-of-order positions.
+    it('should order mixed-case strings by byte order, not ICU collation', function () {
+      const comparator = MinHeap.fieldComparator('id', 'asc')
+      const heap = new MinHeap(comparator)
+
+      // 'R' (0x52) sorts before 'f' (0x66), so misc_RNA precedes misc_feature.
+      // localeCompare returns the opposite.
+      heap.push({ id: 'misc_feature' })
+      heap.push({ id: 'misc_RNA' })
+
+      assert.equal(heap.pop().id, 'misc_RNA')
+      assert.equal(heap.pop().id, 'misc_feature')
+    })
+
+    it('should sort uppercase before lowercase, matching Solr', function () {
+      const comparator = MinHeap.fieldComparator('id', 'asc')
+      const heap = new MinHeap(comparator)
+
+      for (const id of ['apple', 'Banana', 'Apple', 'banana']) heap.push({ id })
+
+      assert.deepEqual(
+        [heap.pop().id, heap.pop().id, heap.pop().id, heap.pop().id],
+        ['Apple', 'Banana', 'apple', 'banana']
+      )
+    })
+
+    it('should reverse byte order for descending sorts', function () {
+      const comparator = MinHeap.fieldComparator('id', 'desc')
+      const heap = new MinHeap(comparator)
+
+      heap.push({ id: 'misc_RNA' })
+      heap.push({ id: 'misc_feature' })
+
+      assert.equal(heap.pop().id, 'misc_feature')
+      assert.equal(heap.pop().id, 'misc_RNA')
+    })
+  })
+
+  describe('compareUtf8', function () {
+    // The comparator must agree with Lucene's unsigned-byte BytesRef ordering
+    // for every input, so Buffer.compare over UTF-8 is the oracle.
+    const cases = [
+      ['misc_feature', 'misc_RNA'],
+      ['a', 'B'],
+      ['Z', 'a'],
+      ['', 'a'],
+      ['abc', 'abcd'],
+      ['abc', 'abc'],
+      ['café', 'cafz'],
+      ['ä', 'z'], // ICU sorts a-umlaut with 'a'; UTF-8 puts it after 'z'
+      ['PATRIC.100.11.X.misc_feature.1.2.rev', 'PATRIC.100.11.X.misc_RNA.1.2.rev'],
+      ['\u{1F600}', ''], // supplementary vs BMP: the surrogate fallback
+      ['�', '\u{1F600}']
+    ]
+
+    it('should agree with UTF-8 byte order on every case', function () {
+      for (const [a, b] of cases) {
+        const expected = Math.sign(Buffer.compare(Buffer.from(a, 'utf8'), Buffer.from(b, 'utf8')))
+        assert.equal(
+          Math.sign(MinHeap.compareUtf8(a, b)), expected,
+          `compareUtf8(${JSON.stringify(a)}, ${JSON.stringify(b)})`
+        )
+      }
+    })
+
+    it('should be antisymmetric', function () {
+      for (const [a, b] of cases) {
+        assert.equal(
+          Math.sign(MinHeap.compareUtf8(a, b)),
+          -Math.sign(MinHeap.compareUtf8(b, a)),
+          `${JSON.stringify(a)} vs ${JSON.stringify(b)}`
+        )
+      }
+    })
+
+    it('should sort a list identically to a UTF-8 byte sort', function () {
+      const values = [
+        'misc_feature', 'misc_RNA', 'CDS', 'cds', 'assembly_gap', 'tRNA',
+        'Z', 'a', 'ä', '\u{1F600}', '', 'source', 'Source'
+      ]
+      const byComparator = values.slice().sort(MinHeap.compareUtf8)
+      const byBytes = values.slice().sort((a, b) =>
+        Buffer.compare(Buffer.from(a, 'utf8'), Buffer.from(b, 'utf8')))
+
+      assert.deepEqual(byComparator, byBytes)
+    })
   })
 
   describe('multiFieldComparator', function () {

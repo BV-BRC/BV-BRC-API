@@ -1,5 +1,68 @@
 # Media Handler Backpressure Fix Plan
 
+> **STATUS 2026-10-12: IMPLEMENTED — every step of this plan has shipped, including the
+> "optional" Step 3, plus four handlers the plan never scoped.** Kept for the problem
+> analysis and the verification procedure, both of which are still the right references.
+> See "Implementation status" immediately below for what landed and what is still unconverted.
+
+## Implementation status (2026-10-12)
+
+### Shipped
+
+| file | plan scope | state |
+|---|---|---|
+| `util/streamWithBackpressure.js` | Step 1 (CREATE) | **done** — 137 lines |
+| `media/json.js` | Step 2.1 | **done** |
+| `media/csv.js` | Step 2.2 | **done** |
+| `media/tsv.js` | Step 2.3 | **done** |
+| `media/gff.js` | Step 2.4 | **done** |
+| `media/ndjson.js` | Step 3 (optional) | **done** — shipped despite being optional |
+| `tests/test-util/test.streamWithBackpressure.spec.js` | CREATE | **done** — 12 passing |
+| `media/dna+fasta.js` | *not in plan* | **done** |
+| `media/protein+fasta.js` | *not in plan* | **done** |
+| `lib/CrossCollectionSourceStream.js` | *not in plan* | **done** |
+| `media/genbank.js` | *not in plan* | **done differently** — its own `writeChunk()` awaiting `drain`, with a dead-socket guard; see `Docs/GENBANK_DOWNLOAD_PERFORMANCE.md` |
+
+The utility ended up covering more than the plan sketched: pause/resume, `drain`, `close`,
+client-disconnect cleanup, `skipFirstDoc` for the leading metadata document, and a guard for
+the headers-already-sent case (setting a header after the first write throws
+`ERR_HTTP_HEADERS_SENT`, which would otherwise reject the promise from inside the error path).
+
+### Verified against a live server
+
+The plan's "Streaming Behavior Test" was run against production, 2026-10-12, which is the
+check that matters — the unit tests cannot prove the pause/resume actually reaches the socket:
+
+```
+genome_feature, eq(genome_id,83332.12)&sort(+feature_id)&limit(25000), Accept: text/csv
+
+  --limit-rate 500k   ->  wall 5.40s, speed   528,135 B/s, 10,941 rows, complete
+  --limit-rate 2000k  ->  wall 2.73s, speed 1,044,757 B/s,              complete
+```
+
+Download rate tracks the client's throttle rather than the server racing ahead and buffering,
+and output is complete and uncorrupted at both rates. That is success criteria 3 and 5 met.
+Criterion 2 (bounded memory) was not re-measured here — it needs the local
+`ps`/`watch` procedure below against a dev server.
+
+### Not converted — four streaming serializers
+
+Out of the plan's scope, but they have the problem the plan describes. All four are
+registered content types with live `results.stream` branches, so they are reachable; they are
+simply niche formats, and the `jsonh` variants are legacy.
+
+| serializer | content type | current pattern |
+|---|---|---|
+| `media/cufflinks+gff.js` | `application/cufflinks+gff` | **`EventStream.mapSync`** — the exact anti-pattern named under "Current Pattern (BAD)" below, and the last `mapSync` left in the tree outside this utility's own fallback |
+| `media/sralign+dna+fasta.js` | `application/sralign+dna+fasta` | `EventStream.map`, `res.write` return value ignored |
+| `media/dna+jsonh+fasta.js` | `application/dna+jsonh+fasta` | `transforms.map`, return value ignored |
+| `media/protein+jsonh+fasta.js` | `application/protein+jsonh+fasta` | `transforms.map`, return value ignored |
+
+Tracked as **TODO-10** in `Docs/TODO.md`. The conversion is mechanical — the four handlers
+converted under Step 2 are the template — but it needs a live API to verify, since the
+failure mode is a well-formed-looking download with wrong or truncated content rather than an
+error. Assert on row counts, not on "we got bytes."
+
 ## Context
 
 The BV-BRC API media handlers (csv.js, tsv.js, json.js, gff.js) use `EventStream.mapSync()` which does NOT handle backpressure. This causes:
@@ -287,3 +350,17 @@ curl -X POST http://localhost:3001/genome_feature/ \
 3. No "slow-then-burst" behavior - data streams smoothly
 4. Client disconnects properly clean up streams
 5. Output format identical to current behavior
+
+### Status against these criteria (2026-10-12)
+
+| # | criterion | state |
+|---|---|---|
+| 1 | `test-media` passes unchanged | **not re-run here** — `test-media` needs a live API |
+| 2 | memory bounded | **not measured** — needs the local `ps`/`watch` procedure above |
+| 3 | no slow-then-burst | **met** — throttled download tracks the client rate (see Implementation status) |
+| 4 | disconnect cleanup | **implemented** (`onClose` destroys the source); not separately exercised live |
+| 5 | output format identical | **met** — 10,941 complete rows at both throttle rates |
+
+Criteria 1, 2, and 4 are not claimed. They are the ones requiring a dev server, and they are
+worth running before the four unconverted serializers in TODO-10 are touched, so there is a
+baseline to compare against.
